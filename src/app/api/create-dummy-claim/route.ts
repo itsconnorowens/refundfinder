@@ -1,12 +1,19 @@
 import { NextRequest, NextResponse } from 'next/server';
 import Airtable from 'airtable';
 
-// Initialize Airtable
-const airtable = new Airtable({
-  apiKey: process.env.AIRTABLE_API_KEY,
-});
+// Lazy initialization of Airtable to avoid build-time errors
+function getAirtableBase() {
+  if (!process.env.AIRTABLE_API_KEY) {
+    throw new Error('AIRTABLE_API_KEY environment variable is required');
+  }
+  
+  const airtable = new Airtable({
+    apiKey: process.env.AIRTABLE_API_KEY,
+  });
+  
+  return airtable.base(process.env.AIRTABLE_BASE_ID || '');
+}
 
-const base = airtable.base(process.env.AIRTABLE_BASE_ID || '');
 const tableName = process.env.AIRTABLE_CLAIMS_TABLE_NAME || 'Claims';
 
 export async function POST(request: NextRequest) {
@@ -74,6 +81,7 @@ export async function POST(request: NextRequest) {
       fields.claim_id = claim_id;
     }
 
+    const base = getAirtableBase();
     const records = await base(tableName).create([{ fields }]);
 
     // Extract the Airtable record ID - this is our primary claim_id
@@ -120,6 +128,7 @@ export async function POST(request: NextRequest) {
 export async function GET() {
   try {
     // Fetch all records from the Claims table
+    const base = getAirtableBase();
     const records = await base(tableName)
       .select({
         // You can add filters, sorting, etc. here if needed
