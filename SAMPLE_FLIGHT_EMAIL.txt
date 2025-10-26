@@ -1,0 +1,59 @@
+Subject: Flight BA456 - Important Update: Your flight has been delayed
+
+Dear Ms. Thompson,
+
+We regret to inform you that your British Airways flight BA456 from London Heathrow (LHR) to Paris Charles de Gaulle (CDG) scheduled for departure on January 15, 2025 at 16:45 has been delayed.
+
+**NEW DEPARTURE TIME: 21:30 (4 hours 45 minutes delay)**
+
+**Flight Details:**
+- Flight Number: BA456
+- Route: London Heathrow (LHR) → Paris Charles de Gaulle (CDG)
+- Date: January 15, 2025
+- Original Departure: 16:45
+- New Departure: 21:30
+- Delay Duration: 4 hours 45 minutes
+- Delay Reason: Technical issues with the aircraft requiring maintenance
+
+**Passenger Information:**
+- Passenger Name: Emma Thompson
+- Booking Reference: BA123456
+- Ticket Number: 125-1234567890
+
+**What happens next:**
+- Please arrive at Gate A12 by 21:00 (30 minutes before departure)
+- Your seat assignment remains the same: 12A
+- Check-in remains open until 20:30
+- Your return flight BA457 on January 18, 2025 is not affected
+
+**Compensation Information:**
+Under EU Regulation 261/2004, you may be entitled to compensation for this delay. The amount depends on the distance of your flight and the length of delay.
+
+For flights between 1,500km and 3,500km delayed by more than 3 hours, you may be entitled to €400 compensation.
+
+You can claim compensation online at ba.com/compensation or contact our customer service team.
+
+**Alternative Options:**
+If you prefer not to travel on this delayed flight, you may be entitled to:
+- A full refund
+- Rebooking on the next available flight
+- Rebooking on an alternative airline
+
+We sincerely apologize for any inconvenience this delay may cause to your travel plans.
+
+**Contact Information:**
+- Customer Service: +44 20 8738 5000
+- Online: ba.com/help
+- Twitter: @British_Airways
+
+Thank you for your patience and understanding.
+
+Best regards,
+
+British Airways Customer Relations
+Customer Service Team
+
+---
+This email was sent to emma.thompson@email.com
+Booking Reference: BA123456
+Flight: BA456 | LHR-CDG | 15 Jan 2025

@@ -71,11 +71,13 @@ export function EligibilityForm() {
         // Pre-fill manual form with parsed data
         setFormData(prev => ({
           ...prev,
-          flightNumber: data.data.flight_number || '',
+          flightNumber: data.data.flightNumber || '',
           airline: data.data.airline || '',
-          departureDate: data.data.date || '',
-          departureAirport: data.data.departure_airport || '',
-          arrivalAirport: data.data.arrival_airport || '',
+          departureDate: data.data.departureDate || '',
+          departureAirport: data.data.departureAirport || '',
+          arrivalAirport: data.data.arrivalAirport || '',
+          delayDuration: data.data.delayDuration || '',
+          delayReason: data.data.delayReason || '',
         }));
         setParsedFlight(data.data);
         setInputMethod('manual');
@@ -93,10 +95,17 @@ export function EligibilityForm() {
   };
 
   const handleCheckEligibility = async () => {
-    // Validate required fields
-    if (!formData.flightNumber || !formData.airline || !formData.departureDate || 
-        !formData.departureAirport || !formData.arrivalAirport || !formData.delayDuration) {
-      setError('Please fill in all required fields');
+    // Validate required fields with better error messages
+    const missingFields = [];
+    if (!formData.flightNumber?.trim()) missingFields.push('Flight Number');
+    if (!formData.airline?.trim()) missingFields.push('Airline');
+    if (!formData.departureDate?.trim()) missingFields.push('Departure Date');
+    if (!formData.departureAirport?.trim()) missingFields.push('Departure Airport');
+    if (!formData.arrivalAirport?.trim()) missingFields.push('Arrival Airport');
+    if (!formData.delayDuration?.trim()) missingFields.push('Delay Duration');
+    
+    if (missingFields.length > 0) {
+      setError(`Please fill in: ${missingFields.join(', ')}`);
       return;
     }
 
@@ -140,7 +149,8 @@ export function EligibilityForm() {
         
         router.push(`/results?${params.toString()}`);
       } else {
-        setError(data.error || 'Failed to check eligibility');
+        const errorMessage = data.message || data.error || 'Failed to check eligibility';
+        setError(errorMessage);
       }
     } catch (error) {
       console.error('Error checking eligibility:', error);

@@ -47,16 +47,22 @@ export async function POST(request: NextRequest) {
       delayReason,
     } = body;
 
-    if (
-      !flightNumber ||
-      !airline ||
-      !departureDate ||
-      !departureAirport ||
-      !arrivalAirport ||
-      !delayDuration
-    ) {
+    // Validate required fields with better error messages
+    const missingFields = [];
+    if (!flightNumber?.trim()) missingFields.push('flightNumber');
+    if (!airline?.trim()) missingFields.push('airline');
+    if (!departureDate?.trim()) missingFields.push('departureDate');
+    if (!departureAirport?.trim()) missingFields.push('departureAirport');
+    if (!arrivalAirport?.trim()) missingFields.push('arrivalAirport');
+    if (!delayDuration?.trim()) missingFields.push('delayDuration');
+
+    if (missingFields.length > 0) {
       return NextResponse.json(
-        { error: 'Missing required fields' },
+        {
+          error: 'Missing required fields',
+          missingFields: missingFields,
+          message: `The following fields are required: ${missingFields.join(', ')}`,
+        },
         { status: 400 }
       );
     }
