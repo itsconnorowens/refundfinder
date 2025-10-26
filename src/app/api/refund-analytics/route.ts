@@ -35,41 +35,37 @@ export async function GET(request: NextRequest) {
 }
 
 /**
- * GET /api/refund-analytics/performance
- * Get refund performance metrics
+ * GET /api/refund-analytics
+ * Get refund analytics data based on query parameters
  */
 export async function GET(request: NextRequest) {
   try {
-    const metrics = await getRefundPerformanceMetrics();
+    const { searchParams } = new URL(request.url);
+    const type = searchParams.get('type');
 
-    return NextResponse.json({
-      success: true,
-      data: metrics,
-    });
+    if (type === 'performance') {
+      const metrics = await getRefundPerformanceMetrics();
+      return NextResponse.json({
+        success: true,
+        data: metrics,
+      });
+    } else if (type === 'alerts') {
+      const dashboardData = await getRefundDashboardData();
+      const alerts = dashboardData.alerts;
+      return NextResponse.json({
+        success: true,
+        data: alerts,
+      });
+    } else {
+      // Default: return dashboard data
+      const dashboardData = await getRefundDashboardData();
+      return NextResponse.json({
+        success: true,
+        data: dashboardData,
+      });
+    }
   } catch (error) {
-    console.error('Error getting refund performance metrics:', error);
-    return NextResponse.json(
-      { error: 'Internal server error' },
-      { status: 500 }
-    );
-  }
-}
-
-/**
- * GET /api/refund-analytics/alerts
- * Get current refund alerts
- */
-export async function GET(request: NextRequest) {
-  try {
-    const dashboardData = await getRefundDashboardData();
-    const alerts = dashboardData.alerts;
-
-    return NextResponse.json({
-      success: true,
-      data: alerts,
-    });
-  } catch (error) {
-    console.error('Error getting refund alerts:', error);
+    console.error('Error getting refund analytics:', error);
     return NextResponse.json(
       { error: 'Internal server error' },
       { status: 500 }
