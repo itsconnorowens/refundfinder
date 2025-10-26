@@ -1,5 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { updateClaimStatus as updateClaimStatusService, ClaimStatus } from '@/lib/claim-filing-service';
+import {
+  updateClaimStatus as updateClaimStatusService,
+  ClaimStatus,
+} from '@/lib/claim-filing-service';
 
 /**
  * PUT /api/admin/claims/[id]/status

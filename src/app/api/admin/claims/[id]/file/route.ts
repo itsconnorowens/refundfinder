@@ -16,7 +16,10 @@ export async function POST(
 
     if (!airlineReference || !filedBy || !filingMethod) {
       return NextResponse.json(
-        { error: 'Missing required fields: airlineReference, filedBy, filingMethod' },
+        {
+          error:
+            'Missing required fields: airlineReference, filedBy, filingMethod',
+        },
         { status: 400 }
       );
     }
