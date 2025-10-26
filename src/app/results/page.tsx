@@ -6,6 +6,8 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { CheckCircle, XCircle, DollarSign, Plane, Clock, MapPin, Calendar, AlertTriangle } from 'lucide-react';
+import { getTestimonialByAmount, getRandomTestimonial } from '@/lib/testimonials';
+import { TrustBadgeRow } from '@/components/TrustBadge';
 
 function ResultsPageContent() {
   const searchParams = useSearchParams();
@@ -41,6 +43,9 @@ function ResultsPageContent() {
   const handleCheckAnother = () => {
     router.push('/check-eligibility');
   };
+
+  // Get relevant testimonial for eligible claims
+  const relevantTestimonial = eligible ? getTestimonialByAmount(amount) || getRandomTestimonial() : null;
 
   return (
     <div className="min-h-screen bg-slate-950 py-12">
@@ -143,7 +148,32 @@ function ResultsPageContent() {
             )}
 
             {/* Action Buttons */}
-            <div className="flex flex-col sm:flex-row gap-4">
+            <div className="space-y-4">
+              {/* Trust Badges */}
+              {eligible && (
+                <div className="text-center mb-4">
+                  <TrustBadgeRow className="justify-center" />
+                </div>
+              )}
+
+              {/* Social Proof for Eligible Claims */}
+              {eligible && relevantTestimonial && (
+                <div className="bg-slate-700/50 border border-slate-600 rounded-lg p-4 mb-4">
+                  <div className="text-center">
+                    <p className="text-slate-300 text-sm mb-2">
+                      <span className="text-[#00D9B5] font-semibold">{relevantTestimonial.name}</span> recovered {relevantTestimonial.amount} from {relevantTestimonial.airline}
+                    </p>
+                    <p className="text-slate-400 text-xs italic">
+                      "{relevantTestimonial.quote}"
+                    </p>
+                    <p className="text-[#00D9B5] text-xs mt-1">
+                      ✓ Verified • {relevantTestimonial.timeline}
+                    </p>
+                  </div>
+                </div>
+              )}
+
+              <div className="flex flex-col sm:flex-row gap-4">
               {eligible ? (
                 <>
                   <Button
@@ -182,6 +212,7 @@ function ResultsPageContent() {
                   </Button>
                 </>
               )}
+              </div>
             </div>
           </CardContent>
         </Card>
@@ -192,7 +223,7 @@ function ResultsPageContent() {
             <CardHeader>
               <CardTitle className="text-xl text-white">What Happens Next?</CardTitle>
               <CardDescription className="text-slate-400">
-                If you choose to file a claim with us
+                Join 320+ travelers who have successfully claimed their compensation
               </CardDescription>
             </CardHeader>
             <CardContent>
@@ -227,6 +258,28 @@ function ResultsPageContent() {
                   </p>
                 </div>
               </div>
+
+              {/* Success Statistics */}
+              <div className="mt-8 bg-slate-700/50 rounded-lg p-4">
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
+                  <div>
+                    <div className="text-2xl font-bold text-[#00D9B5]">94%</div>
+                    <div className="text-xs text-slate-400">Success Rate</div>
+                  </div>
+                  <div>
+                    <div className="text-2xl font-bold text-[#00D9B5]">48h</div>
+                    <div className="text-xs text-slate-400">Filing Time</div>
+                  </div>
+                  <div>
+                    <div className="text-2xl font-bold text-[#00D9B5]">3.2w</div>
+                    <div className="text-xs text-slate-400">Avg Processing</div>
+                  </div>
+                  <div>
+                    <div className="text-2xl font-bold text-[#00D9B5]">€450</div>
+                    <div className="text-xs text-slate-400">Avg Payout</div>
+                  </div>
+                </div>
+              </div>
             </CardContent>
           </Card>
         )}
@@ -235,10 +288,28 @@ function ResultsPageContent() {
         {eligible && (
           <div className="mt-8 text-center">
             <div className="bg-slate-800 border border-slate-700 rounded-lg p-6">
-              <h3 className="text-lg font-semibold text-white mb-2">100% Refund Guarantee</h3>
-              <p className="text-slate-400">
+              <h3 className="text-lg font-semibold text-white mb-2">100% Money-Back Guarantee</h3>
+              <p className="text-slate-400 mb-4">
                 If we're unable to file your claim successfully, you'll receive a full automatic refund.
               </p>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm text-slate-300">
+                <div className="flex items-center justify-center gap-2">
+                  <span className="text-[#00D9B5]">✓</span>
+                  <span>If we don't file within 48 hours</span>
+                </div>
+                <div className="flex items-center justify-center gap-2">
+                  <span className="text-[#00D9B5]">✓</span>
+                  <span>If claim rejected due to our error</span>
+                </div>
+                <div className="flex items-center justify-center gap-2">
+                  <span className="text-[#00D9B5]">✓</span>
+                  <span>If you request refund within 24 hours</span>
+                </div>
+                <div className="flex items-center justify-center gap-2">
+                  <span className="text-[#00D9B5]">✓</span>
+                  <span>If flight isn't eligible after payment</span>
+                </div>
+              </div>
             </div>
           </div>
         )}

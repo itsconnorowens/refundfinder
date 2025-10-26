@@ -168,18 +168,21 @@ export function EligibilityForm() {
             <div className="bg-slate-900/90 backdrop-blur-xl border border-slate-800/50 rounded-2xl shadow-2xl p-8 sm:p-10 lg:p-12">
               <div className="text-center space-y-6">
                 <div className="inline-block px-4 py-2 bg-[#00D9B5]/10 border border-[#00D9B5]/30 rounded-full text-[#00D9B5] text-sm font-semibold mb-4">
-                  🚀 Join 10,000+ Travelers
+                  🚀 Join 320+ Travelers Who Got Paid
                 </div>
 
                 <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-white">
-                  Check Your Flight
+                  Flight Delayed 3+ Hours?
                   <br />
-                  Compensation Now
+                  <span className="text-[#00D9B5]">Get Your €250-€600</span>
+                  <br />
+                  Compensation in 30 Days
                 </h1>
 
                 <p className="text-lg text-slate-400">
-                  Enter your flight details and find out if you&apos;re eligible
-                  for up to €600 in compensation
+                  We handle the airline paperwork so you don't have to. 
+                  <br />
+                  <span className="text-[#00D9B5] font-semibold">Pay $49 upfront with 100% money-back guarantee.</span>
                 </p>
 
                 {/* Input Method Selection */}
@@ -363,7 +366,7 @@ export function EligibilityForm() {
                 </Button>
 
                 <p className="text-sm text-slate-500">
-                  ✓ Free check • ✓ No obligations • ✓ Secure & private
+                  ✓ Free eligibility check • ✓ No credit card required • ✓ Secure & private
                 </p>
               </div>
             </div>

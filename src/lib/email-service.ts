@@ -465,25 +465,36 @@ support@refundfinder.com
     `,
   },
 
-  refundNotification: {
-    subject: 'Refund Processed - {{claimId}}',
+  claimFiledNotification: {
+    subject: 'Your claim has been filed with {{airline}}',
     html: `
       <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
-        <h2 style="color: #00D9B5;">Refund Processed</h2>
+        <h2 style="color: #00D9B5;">Claim Filed Successfully</h2>
         <p>Dear {{userName}},</p>
-        <p>Your refund has been processed successfully.</p>
+        <p>Great news! We've successfully filed your compensation claim with {{airline}}.</p>
         
         <div style="background-color: #f8f9fa; padding: 20px; border-radius: 8px; margin: 20px 0;">
-          <h3>Refund Details:</h3>
+          <h3>Claim Details:</h3>
           <ul>
             <li><strong>Claim ID:</strong> {{claimId}}</li>
-            <li><strong>Refund Amount:</strong> $49</li>
-            <li><strong>Reason:</strong> {{refundReason}}</li>
-            <li><strong>Processed:</strong> {{refundDate}}</li>
+            <li><strong>Flight:</strong> {{flightNumber}} ({{airline}})</li>
+            <li><strong>Date:</strong> {{flightDate}}</li>
+            <li><strong>Route:</strong> {{departureAirport}} → {{arrivalAirport}}</li>
+            <li><strong>Delay:</strong> {{delayDuration}}</li>
+            <li><strong>Airline Reference:</strong> {{airlineReference}}</li>
+            <li><strong>Filing Method:</strong> {{filingMethod}}</li>
           </ul>
         </div>
 
-        <p>The refund will appear in your account within 5-10 business days, depending on your bank's processing time.</p>
+        <h3>What Happens Next:</h3>
+        <ol>
+          <li>{{airline}} will review your claim (typically {{expectedResponseTime}})</li>
+          <li>We'll monitor the progress and follow up as needed</li>
+          <li>You'll receive updates via email as we progress</li>
+          <li>If approved, you'll receive compensation directly from {{airline}}</li>
+        </ol>
+
+        <p><strong>Important:</strong> We'll handle all follow-ups with {{airline}} on your behalf. You don't need to take any further action.</p>
         
         <hr style="margin: 30px 0;">
         <p style="font-size: 12px; color: #666;">
@@ -493,23 +504,302 @@ support@refundfinder.com
       </div>
     `,
     text: `
-Refund Processed
+Claim Filed Successfully
 
 Dear {{userName}},
 
-Your refund has been processed successfully.
+Great news! We've successfully filed your compensation claim with {{airline}}.
 
-Refund Details:
+Claim Details:
 - Claim ID: {{claimId}}
-- Refund Amount: $49
-- Reason: {{refundReason}}
-- Processed: {{refundDate}}
+- Flight: {{flightNumber}} ({{airline}})
+- Date: {{flightDate}}
+- Route: {{departureAirport}} → {{arrivalAirport}}
+- Delay: {{delayDuration}}
+- Airline Reference: {{airlineReference}}
+- Filing Method: {{filingMethod}}
 
-The refund will appear in your account within 5-10 business days, depending on your bank's processing time.
+What Happens Next:
+1. {{airline}} will review your claim (typically {{expectedResponseTime}})
+2. We'll monitor the progress and follow up as needed
+3. You'll receive updates via email as we progress
+4. If approved, you'll receive compensation directly from {{airline}}
+
+Important: We'll handle all follow-ups with {{airline}} on your behalf. You don't need to take any further action.
 
 ---
 RefundFinder - Flight Delay Compensation Assistance
 support@refundfinder.com
+    `,
+  },
+
+  airlineAcknowledgedNotification: {
+    subject: '{{airline}} has acknowledged your claim',
+    html: `
+      <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+        <h2 style="color: #00D9B5;">Claim Acknowledged</h2>
+        <p>Dear {{userName}},</p>
+        <p>{{airline}} has confirmed receipt of your compensation claim.</p>
+        
+        <div style="background-color: #f8f9fa; padding: 20px; border-radius: 8px; margin: 20px 0;">
+          <h3>Claim Details:</h3>
+          <ul>
+            <li><strong>Claim ID:</strong> {{claimId}}</li>
+            <li><strong>Flight:</strong> {{flightNumber}} ({{airline}})</li>
+            <li><strong>Airline Reference:</strong> {{airlineReference}}</li>
+            <li><strong>Status:</strong> Under Review</li>
+            <li><strong>Expected Response:</strong> {{expectedResponseTime}}</li>
+          </ul>
+        </div>
+
+        <h3>Next Steps:</h3>
+        <ol>
+          <li>{{airline}} will review your claim and supporting documents</li>
+          <li>We'll continue monitoring and follow up if needed</li>
+          <li>You'll receive updates as the process progresses</li>
+        </ol>
+
+        <p>We'll keep you informed of any developments. Thank you for your patience!</p>
+        
+        <hr style="margin: 30px 0;">
+        <p style="font-size: 12px; color: #666;">
+          RefundFinder - Flight Delay Compensation Assistance<br>
+          <a href="mailto:support@refundfinder.com">support@refundfinder.com</a>
+        </p>
+      </div>
+    `,
+    text: `
+Claim Acknowledged
+
+Dear {{userName}},
+
+{{airline}} has confirmed receipt of your compensation claim.
+
+Claim Details:
+- Claim ID: {{claimId}}
+- Flight: {{flightNumber}} ({{airline}})
+- Airline Reference: {{airlineReference}}
+- Status: Under Review
+- Expected Response: {{expectedResponseTime}}
+
+Next Steps:
+1. {{airline}} will review your claim and supporting documents
+2. We'll continue monitoring and follow up if needed
+3. You'll receive updates as the process progresses
+
+We'll keep you informed of any developments. Thank you for your patience!
+
+---
+RefundFinder - Flight Delay Compensation Assistance
+support@refundfinder.com
+    `,
+  },
+
+  statusUpdateNotification: {
+    subject: 'Update: Your claim status has changed',
+    html: `
+      <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+        <h2 style="color: #00D9B5;">Claim Status Update</h2>
+        <p>Dear {{userName}},</p>
+        <p>We have an update on your compensation claim.</p>
+        
+        <div style="background-color: #f8f9fa; padding: 20px; border-radius: 8px; margin: 20px 0;">
+          <h3>Claim Details:</h3>
+          <ul>
+            <li><strong>Claim ID:</strong> {{claimId}}</li>
+            <li><strong>Flight:</strong> {{flightNumber}} ({{airline}})</li>
+            <li><strong>New Status:</strong> {{newStatus}}</li>
+            <li><strong>Previous Status:</strong> {{previousStatus}}</li>
+            <li><strong>Update Date:</strong> {{updateDate}}</li>
+          </ul>
+        </div>
+
+        <div style="background-color: #e8f5e8; padding: 15px; border-radius: 8px; margin: 20px 0;">
+          <h3>Update Message:</h3>
+          <p>{{updateMessage}}</p>
+        </div>
+
+        {{#if nextSteps}}
+        <h3>Next Steps:</h3>
+        <ol>
+          {{#each nextSteps}}
+          <li>{{this}}</li>
+          {{/each}}
+        </ol>
+        {{/if}}
+
+        <p>We'll continue to monitor your claim and keep you updated on any further developments.</p>
+        
+        <hr style="margin: 30px 0;">
+        <p style="font-size: 12px; color: #666;">
+          RefundFinder - Flight Delay Compensation Assistance<br>
+          <a href="mailto:support@refundfinder.com">support@refundfinder.com</a>
+        </p>
+      </div>
+    `,
+    text: `
+Claim Status Update
+
+Dear {{userName}},
+
+We have an update on your compensation claim.
+
+Claim Details:
+- Claim ID: {{claimId}}
+- Flight: {{flightNumber}} ({{airline}})
+- New Status: {{newStatus}}
+- Previous Status: {{previousStatus}}
+- Update Date: {{updateDate}}
+
+Update Message:
+{{updateMessage}}
+
+{{#if nextSteps}}
+Next Steps:
+{{#each nextSteps}}
+- {{this}}
+{{/each}}
+{{/if}}
+
+We'll continue to monitor your claim and keep you updated on any further developments.
+
+---
+RefundFinder - Flight Delay Compensation Assistance
+support@refundfinder.com
+    `,
+  },
+
+  adminReadyToFileAlert: {
+    subject: 'Alert: {{count}} claim(s) ready to file',
+    html: `
+      <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+        <h2 style="color: #ff6b6b;">Admin Alert: Claims Ready to File</h2>
+        <p>You have {{count}} claim(s) ready for filing with airlines.</p>
+        
+        <div style="background-color: #fff3cd; padding: 20px; border-radius: 8px; margin: 20px 0; border-left: 4px solid #ffc107;">
+          <h3>Ready to File Claims:</h3>
+          <ul>
+            {{#each claims}}
+            <li>
+              <strong>{{claimId}}</strong> - {{firstName}} {{lastName}}<br>
+              Flight: {{flightNumber}} ({{airline}}) - {{departureDate}}<br>
+              Route: {{departureAirport}} → {{arrivalAirport}}<br>
+              Delay: {{delayDuration}}<br>
+              <a href="/admin/claims/{{claimId}}" style="color: #00D9B5;">View Details</a>
+            </li>
+            {{/each}}
+          </ul>
+        </div>
+
+        <h3>Action Required:</h3>
+        <ol>
+          <li>Review each claim and generated submission materials</li>
+          <li>Submit claims to respective airlines</li>
+          <li>Update claim status to "filed" with airline reference</li>
+          <li>Ensure 48-hour filing promise is met</li>
+        </ol>
+
+        <p><a href="/admin/claims?status=ready_to_file" style="background-color: #00D9B5; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px;">View All Ready Claims</a></p>
+        
+        <hr style="margin: 30px 0;">
+        <p style="font-size: 12px; color: #666;">
+          RefundFinder Admin Dashboard<br>
+          Generated: {{timestamp}}
+        </p>
+      </div>
+    `,
+    text: `
+Admin Alert: Claims Ready to File
+
+You have {{count}} claim(s) ready for filing with airlines.
+
+Ready to File Claims:
+{{#each claims}}
+- {{claimId}} - {{firstName}} {{lastName}}
+  Flight: {{flightNumber}} ({{airline}}) - {{departureDate}}
+  Route: {{departureAirport}} → {{arrivalAirport}}
+  Delay: {{delayDuration}}
+  View: /admin/claims/{{claimId}}
+{{/each}}
+
+Action Required:
+1. Review each claim and generated submission materials
+2. Submit claims to respective airlines
+3. Update claim status to "filed" with airline reference
+4. Ensure 48-hour filing promise is met
+
+View all ready claims: /admin/claims?status=ready_to_file
+
+---
+RefundFinder Admin Dashboard
+Generated: {{timestamp}}
+    `,
+  },
+
+  adminOverdueAlert: {
+    subject: 'URGENT: {{count}} overdue claim(s) past 48-hour deadline',
+    html: `
+      <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+        <h2 style="color: #dc3545;">URGENT: Overdue Claims Alert</h2>
+        <p style="color: #dc3545; font-weight: bold;">You have {{count}} claim(s) past the 48-hour filing deadline!</p>
+        
+        <div style="background-color: #f8d7da; padding: 20px; border-radius: 8px; margin: 20px 0; border-left: 4px solid #dc3545;">
+          <h3>Overdue Claims:</h3>
+          <ul>
+            {{#each claims}}
+            <li>
+              <strong>{{claimId}}</strong> - {{firstName}} {{lastName}}<br>
+              Flight: {{flightNumber}} ({{airline}}) - {{departureDate}}<br>
+              Submitted: {{submittedAt}} ({{daysOverdue}} days ago)<br>
+              Current Status: {{status}}<br>
+              <a href="/admin/claims/{{claimId}}" style="color: #dc3545; font-weight: bold;">URGENT: File Now</a>
+            </li>
+            {{/each}}
+          </ul>
+        </div>
+
+        <h3>Immediate Action Required:</h3>
+        <ol>
+          <li><strong>File these claims immediately</strong> to meet our 48-hour promise</li>
+          <li>Prioritize these claims over new submissions</li>
+          <li>Consider refunding customers if filing is not possible</li>
+          <li>Review process to prevent future delays</li>
+        </ol>
+
+        <p><a href="/admin/claims?overdue=true" style="background-color: #dc3545; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px;">View All Overdue Claims</a></p>
+        
+        <hr style="margin: 30px 0;">
+        <p style="font-size: 12px; color: #666;">
+          RefundFinder Admin Dashboard<br>
+          Generated: {{timestamp}}
+        </p>
+      </div>
+    `,
+    text: `
+URGENT: Overdue Claims Alert
+
+You have {{count}} claim(s) past the 48-hour filing deadline!
+
+Overdue Claims:
+{{#each claims}}
+- {{claimId}} - {{firstName}} {{lastName}}
+  Flight: {{flightNumber}} ({{airline}}) - {{departureDate}}
+  Submitted: {{submittedAt}} ({{daysOverdue}} days ago)
+  Current Status: {{status}}
+  URGENT: File Now - /admin/claims/{{claimId}}
+{{/each}}
+
+Immediate Action Required:
+1. File these claims immediately to meet our 48-hour promise
+2. Prioritize these claims over new submissions
+3. Consider refunding customers if filing is not possible
+4. Review process to prevent future delays
+
+View all overdue claims: /admin/claims?overdue=true
+
+---
+RefundFinder Admin Dashboard
+Generated: {{timestamp}}
     `,
   },
 };
@@ -570,6 +860,115 @@ export async function sendRefundNotification(
   return emailService.sendEmail({
     to: email,
     template: emailTemplates.refundNotification,
+    variables,
+  });
+}
+
+// New helper functions for claim filing emails
+export async function sendClaimFiledNotification(
+  email: string,
+  claimData: any
+): Promise<EmailResult> {
+  const variables = {
+    userName: claimData.firstName || email.split('@')[0],
+    claimId: claimData.claimId,
+    flightNumber: claimData.flightNumber,
+    airline: claimData.airline,
+    flightDate: claimData.departureDate,
+    departureAirport: claimData.departureAirport,
+    arrivalAirport: claimData.arrivalAirport,
+    delayDuration: claimData.delayDuration,
+    airlineReference: claimData.airlineReference,
+    filingMethod: claimData.filingMethod,
+    expectedResponseTime: claimData.expectedResponseTime || '2-4 weeks',
+  };
+
+  return emailService.sendEmail({
+    to: email,
+    template: emailTemplates.claimFiledNotification,
+    variables,
+  });
+}
+
+export async function sendAirlineAcknowledgedNotification(
+  email: string,
+  claimData: any
+): Promise<EmailResult> {
+  const variables = {
+    userName: claimData.firstName || email.split('@')[0],
+    claimId: claimData.claimId,
+    flightNumber: claimData.flightNumber,
+    airline: claimData.airline,
+    airlineReference: claimData.airlineReference,
+    expectedResponseTime: claimData.expectedResponseTime || '2-4 weeks',
+  };
+
+  return emailService.sendEmail({
+    to: email,
+    template: emailTemplates.airlineAcknowledgedNotification,
+    variables,
+  });
+}
+
+export async function sendStatusUpdateNotification(
+  email: string,
+  claimData: any
+): Promise<EmailResult> {
+  const variables = {
+    userName: claimData.firstName || email.split('@')[0],
+    claimId: claimData.claimId,
+    flightNumber: claimData.flightNumber,
+    airline: claimData.airline,
+    newStatus: claimData.newStatus,
+    previousStatus: claimData.previousStatus,
+    updateDate: new Date().toLocaleDateString(),
+    updateMessage: claimData.updateMessage,
+    nextSteps: claimData.nextSteps || [],
+  };
+
+  return emailService.sendEmail({
+    to: email,
+    template: emailTemplates.statusUpdateNotification,
+    variables,
+  });
+}
+
+export async function sendAdminReadyToFileAlert(
+  adminEmail: string,
+  claimsData: any
+): Promise<EmailResult> {
+  const variables = {
+    count: claimsData.claims.length,
+    claims: claimsData.claims,
+    timestamp: new Date().toLocaleString(),
+  };
+
+  return emailService.sendEmail({
+    to: adminEmail,
+    template: emailTemplates.adminReadyToFileAlert,
+    variables,
+  });
+}
+
+export async function sendAdminOverdueAlert(
+  adminEmail: string,
+  claimsData: any
+): Promise<EmailResult> {
+  const variables = {
+    count: claimsData.claims.length,
+    claims: claimsData.claims.map((claim: any) => ({
+      ...claim,
+      daysOverdue: Math.floor(
+        (Date.now() - new Date(claim.submittedAt).getTime()) /
+          (1000 * 60 * 60 * 24)
+      ),
+    })),
+    timestamp: new Date().toLocaleString(),
+  };
+
+  return emailService.sendEmail({
+    to: adminEmail,
+    template: emailTemplates.adminOverdueAlert,
     variables,
   });
 }

@@ -8,7 +8,8 @@ import {
 } from '@stripe/react-stripe-js';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { AlertCircle, CheckCircle, Lock, ShieldCheck } from 'lucide-react';
+import { AlertCircle, CheckCircle, Lock, ShieldCheck, Users, Clock, DollarSign } from 'lucide-react';
+import { TrustBadgeRow } from './TrustBadge';
 
 interface PaymentStepProps {
   email: string;
@@ -91,6 +92,37 @@ export default function PaymentStep({
 
   return (
     <div className="space-y-6">
+      {/* Trust Bar */}
+      <div className="bg-slate-50 border border-slate-200 rounded-lg p-4">
+        <TrustBadgeRow className="justify-center" />
+      </div>
+
+      {/* Success Statistics */}
+      <div className="bg-slate-50 border border-slate-200 rounded-lg p-4">
+        <div className="text-center mb-4">
+          <h3 className="text-lg font-semibold text-gray-900 mb-2">You're in Good Company</h3>
+          <p className="text-sm text-gray-600">Join 320+ travelers who have successfully claimed their compensation</p>
+        </div>
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
+          <div>
+            <div className="text-2xl font-bold text-blue-600">320+</div>
+            <div className="text-xs text-gray-500">Claims Processed</div>
+          </div>
+          <div>
+            <div className="text-2xl font-bold text-blue-600">94%</div>
+            <div className="text-xs text-gray-500">Success Rate</div>
+          </div>
+          <div>
+            <div className="text-2xl font-bold text-blue-600">48h</div>
+            <div className="text-xs text-gray-500">Filing Time</div>
+          </div>
+          <div>
+            <div className="text-2xl font-bold text-blue-600">€450</div>
+            <div className="text-xs text-gray-500">Avg Payout</div>
+          </div>
+        </div>
+      </div>
+
       {/* Payment Summary */}
       <Card className="bg-linear-to-br from-blue-50 to-indigo-50 border-blue-200">
         <CardHeader>
@@ -120,12 +152,30 @@ export default function PaymentStep({
                 <ShieldCheck className="w-5 h-5 text-green-600 mr-2 mt-0.5 shrink-0" />
                 <div>
                   <p className="font-semibold text-green-900 text-sm">
-                    100% Refund Guarantee
+                    100% Money-Back Guarantee
                   </p>
                   <p className="text-green-700 text-sm mt-1">
-                    If we're unable to successfully file your claim within 10 business days,
+                    If we're unable to successfully file your claim within 48 hours,
                     you'll receive a full automatic refund. No questions asked.
                   </p>
+                  <div className="mt-2 grid grid-cols-1 md:grid-cols-2 gap-2 text-xs text-green-600">
+                    <div className="flex items-center gap-1">
+                      <CheckCircle className="w-3 h-3" />
+                      <span>If we don't file within 48 hours</span>
+                    </div>
+                    <div className="flex items-center gap-1">
+                      <CheckCircle className="w-3 h-3" />
+                      <span>If claim rejected due to our error</span>
+                    </div>
+                    <div className="flex items-center gap-1">
+                      <CheckCircle className="w-3 h-3" />
+                      <span>If you request refund within 24 hours</span>
+                    </div>
+                    <div className="flex items-center gap-1">
+                      <CheckCircle className="w-3 h-3" />
+                      <span>If flight isn't eligible after payment</span>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>

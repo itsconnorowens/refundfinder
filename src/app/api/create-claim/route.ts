@@ -4,28 +4,28 @@ import { retrievePaymentIntent } from '@/lib/stripe-server';
 
 export async function POST(request: NextRequest) {
   try {
-    const body = await request.json();
+    const formData = await request.formData();
 
     // Extract form fields
-    const firstName = body.firstName;
-    const lastName = body.lastName;
-    const email = body.email;
-    const flightNumber = body.flightNumber;
-    const airline = body.airline;
-    const departureDate = body.departureDate;
-    const departureAirport = body.departureAirport;
-    const arrivalAirport = body.arrivalAirport;
-    const delayDuration = body.delayDuration;
-    const delayReason = body.delayReason;
+    const firstName = formData.get('firstName') as string;
+    const lastName = formData.get('lastName') as string;
+    const email = formData.get('email') as string;
+    const flightNumber = formData.get('flightNumber') as string;
+    const airline = formData.get('airline') as string;
+    const departureDate = formData.get('departureDate') as string;
+    const departureAirport = formData.get('departureAirport') as string;
+    const arrivalAirport = formData.get('arrivalAirport') as string;
+    const delayDuration = formData.get('delayDuration') as string;
+    const delayReason = formData.get('delayReason') as string;
 
     // Extract payment information
-    const paymentIntentId = body.paymentIntentId;
+    const paymentIntentId = formData.get('paymentIntentId') as string;
 
     // Extract file URLs (already uploaded to Vercel Blob)
-    const boardingPassUrl = body.boardingPassUrl;
-    const delayProofUrl = body.delayProofUrl;
+    const boardingPassUrl = formData.get('boardingPassUrl') as string;
+    const delayProofUrl = formData.get('delayProofUrl') as string;
 
-    // Validate required fields
+    // Validate required form fields
     if (
       !firstName ||
       !lastName ||
@@ -36,14 +36,44 @@ export async function POST(request: NextRequest) {
       !departureAirport ||
       !arrivalAirport ||
       !delayDuration ||
-      !paymentIntentId ||
-      !boardingPassUrl ||
-      !delayProofUrl
+      !paymentIntentId
     ) {
       return NextResponse.json(
         { error: 'Missing required fields' },
         { status: 400 }
       );
+    }
+
+    // Validate required documents
+    if (!boardingPassUrl || !delayProofUrl) {
+      return NextResponse.json(
+        { error: 'Missing required documents' },
+        { status: 400 }
+      );
+    }
+
+    // Validate file types (if files are provided as File objects)
+    const boardingPassFile = formData.get('boardingPass') as File;
+    const delayProofFile = formData.get('delayProof') as File;
+    
+    if (boardingPassFile && boardingPassFile.size > 0) {
+      const allowedTypes = ['image/jpeg', 'image/png', 'image/jpg', 'application/pdf'];
+      if (!allowedTypes.includes(boardingPassFile.type)) {
+        return NextResponse.json(
+          { error: 'Invalid file type for boarding pass. Please upload a JPEG, PNG, or PDF file.' },
+          { status: 400 }
+        );
+      }
+    }
+    
+    if (delayProofFile && delayProofFile.size > 0) {
+      const allowedTypes = ['image/jpeg', 'image/png', 'image/jpg', 'application/pdf'];
+      if (!allowedTypes.includes(delayProofFile.type)) {
+        return NextResponse.json(
+          { error: 'Invalid file type for delay proof. Please upload a JPEG, PNG, or PDF file.' },
+          { status: 400 }
+        );
+      }
     }
 
     // Verify payment was successful

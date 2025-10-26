@@ -17,14 +17,18 @@ describe('parseFlightEmail', () => {
     vi.clearAllMocks();
   });
 
-  it('should return null for invalid input', async () => {
+  it('should return error for invalid input', async () => {
     const result = await parseFlightEmail('');
-    expect(result).toBeNull();
+    expect(result.success).toBe(false);
+    expect(result.error).toBe('Invalid email content');
+    expect(result.confidence).toBe(0);
   });
 
-  it('should return null for non-string input', async () => {
+  it('should return error for non-string input', async () => {
     const result = await parseFlightEmail(null as any);
-    expect(result).toBeNull();
+    expect(result.success).toBe(false);
+    expect(result.error).toBe('Invalid email content');
+    expect(result.confidence).toBe(0);
   });
 
   it('should validate that all required fields are present', () => {

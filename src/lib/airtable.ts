@@ -20,15 +20,20 @@ export const TABLES = {
   ELIGIBILITY_CHECKS: 'Eligibility_Checks',
 } as const;
 
-// Claim status types
+// Claim status types - Enhanced for detailed workflow tracking
 export type ClaimStatus =
-  | 'submitted'
-  | 'processing'
-  | 'filed'
-  | 'approved'
-  | 'rejected'
-  | 'refunded'
-  | 'completed';
+  | 'submitted' // Initial submission, payment received
+  | 'validated' // Documents and eligibility verified
+  | 'documents_prepared' // Airline-specific documents generated
+  | 'ready_to_file' // Ready for admin to send to airline
+  | 'filed' // Submitted to airline
+  | 'airline_acknowledged' // Airline confirmed receipt
+  | 'monitoring' // Waiting for airline response
+  | 'airline_responded' // Airline provided update
+  | 'approved' // Airline approved compensation
+  | 'rejected' // Airline rejected claim
+  | 'completed' // Process finished
+  | 'refunded'; // Refund processed (legacy status)
 
 // Payment status types
 export type PaymentStatus =
@@ -38,7 +43,7 @@ export type PaymentStatus =
   | 'refunded'
   | 'partially_refunded';
 
-// Claim record structure
+// Claim record structure - Enhanced for detailed tracking
 export interface ClaimRecord {
   id?: string;
   claimId: string;
@@ -56,6 +61,7 @@ export interface ClaimRecord {
   arrivalAirport: string;
   delayDuration: string;
   delayReason?: string;
+  bookingReference?: string;
 
   // Documents
   boardingPassUrl?: string;
@@ -65,6 +71,7 @@ export interface ClaimRecord {
 
   // Status and tracking
   status: ClaimStatus;
+  amount?: number; // Payment amount in cents
   estimatedCompensation?: string;
   actualCompensation?: string;
 
@@ -73,8 +80,22 @@ export interface ClaimRecord {
 
   // Timestamps
   submittedAt: string;
+  validatedAt?: string;
+  documentsPreparedAt?: string;
+  readyToFileAt?: string;
   filedAt?: string;
+  airlineAcknowledgedAt?: string;
+  airlineRespondedAt?: string;
   completedAt?: string;
+
+  // Filing details
+  filingMethod?: 'email' | 'web_form' | 'postal';
+  airlineReference?: string;
+  filedBy?: string;
+  nextFollowUpDate?: string;
+  airlineResponse?: string;
+  validationNotes?: string;
+  generatedSubmission?: string;
 
   // Processing notes
   internalNotes?: string;
@@ -222,9 +243,37 @@ export async function updateClaim(
   try {
     const fields: Record<string, any> = {};
 
+    // Status updates
     if (updates.status) fields['status'] = updates.status;
+
+    // Timestamp updates
+    if (updates.validatedAt) fields['validated_at'] = updates.validatedAt;
+    if (updates.documentsPreparedAt)
+      fields['documents_prepared_at'] = updates.documentsPreparedAt;
+    if (updates.readyToFileAt)
+      fields['ready_to_file_at'] = updates.readyToFileAt;
     if (updates.filedAt) fields['filed_at'] = updates.filedAt;
+    if (updates.airlineAcknowledgedAt)
+      fields['airline_acknowledged_at'] = updates.airlineAcknowledgedAt;
+    if (updates.airlineRespondedAt)
+      fields['airline_responded_at'] = updates.airlineRespondedAt;
     if (updates.completedAt) fields['completed_at'] = updates.completedAt;
+
+    // Filing details
+    if (updates.filingMethod) fields['filing_method'] = updates.filingMethod;
+    if (updates.airlineReference)
+      fields['airline_reference'] = updates.airlineReference;
+    if (updates.filedBy) fields['filed_by'] = updates.filedBy;
+    if (updates.nextFollowUpDate)
+      fields['next_follow_up_date'] = updates.nextFollowUpDate;
+    if (updates.airlineResponse)
+      fields['airline_response'] = updates.airlineResponse;
+    if (updates.validationNotes)
+      fields['validation_notes'] = updates.validationNotes;
+    if (updates.generatedSubmission)
+      fields['generated_submission'] = updates.generatedSubmission;
+
+    // Compensation and notes
     if (updates.actualCompensation)
       fields['actual_compensation'] = updates.actualCompensation;
     if (updates.internalNotes) fields['internal_notes'] = updates.internalNotes;
@@ -424,6 +473,34 @@ export async function updateRefund(
 }
 
 /**
+ * Get claims by status
+ */
+export async function getClaimsByStatus(
+  status: ClaimStatus
+): Promise<readonly any[]> {
+  if (!base) {
+    throw new Error('Airtable not configured');
+  }
+
+  try {
+    const records = await base(TABLES.CLAIMS)
+      .select({
+        filterByFormula: `{status} = '${status}'`,
+        sort: [{ field: 'submitted_at', direction: 'desc' }],
+      })
+      .all();
+
+    return records;
+  } catch (error) {
+    console.error(
+      `Error fetching claims with status ${status} from Airtable:`,
+      error
+    );
+    throw error;
+  }
+}
+
+/**
  * Get claims that are past the processing deadline
  */
 export async function getOverdueClaims(
@@ -441,7 +518,7 @@ export async function getOverdueClaims(
     const records = await base(TABLES.CLAIMS)
       .select({
         filterByFormula: `AND(
-          {status} = 'submitted',
+          OR({status} = 'submitted', {status} = 'validated', {status} = 'documents_prepared', {status} = 'ready_to_file'),
           IS_BEFORE({submitted_at}, '${deadlineDateStr}')
         )`,
       })
@@ -450,6 +527,44 @@ export async function getOverdueClaims(
     return records;
   } catch (error) {
     console.error('Error fetching overdue claims from Airtable:', error);
+    throw error;
+  }
+}
+
+/**
+ * Get claims ready to file (status: ready_to_file)
+ */
+export async function getClaimsReadyToFile(): Promise<readonly any[]> {
+  return getClaimsByStatus('ready_to_file');
+}
+
+/**
+ * Get claims needing follow-up
+ */
+export async function getClaimsNeedingFollowUp(): Promise<readonly any[]> {
+  if (!base) {
+    throw new Error('Airtable not configured');
+  }
+
+  try {
+    const today = new Date().toISOString().split('T')[0];
+
+    const records = await base(TABLES.CLAIMS)
+      .select({
+        filterByFormula: `AND(
+          OR({status} = 'filed', {status} = 'airline_acknowledged', {status} = 'monitoring'),
+          NOT({next_follow_up_date} = ''),
+          IS_BEFORE({next_follow_up_date}, '${today}')
+        )`,
+      })
+      .all();
+
+    return records;
+  } catch (error) {
+    console.error(
+      'Error fetching claims needing follow-up from Airtable:',
+      error
+    );
     throw error;
   }
 }

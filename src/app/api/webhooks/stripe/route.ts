@@ -3,6 +3,8 @@ import Stripe from 'stripe';
 import { headers } from 'next/headers';
 import { updateClaim, updatePayment, getClaimByClaimId } from '@/lib/airtable';
 import { sendPaymentConfirmation } from '@/lib/email';
+import { processAutomaticClaimPreparation } from '@/lib/claim-filing-service';
+import { sendAdminReadyToFileAlert } from '@/lib/email-service';
 
 // Initialize Stripe only if environment variables are available
 const stripe = process.env.STRIPE_SECRET_KEY
@@ -62,11 +64,12 @@ export async function POST(request: NextRequest) {
           const claimId = paymentIntent.metadata?.claimId;
           if (claimId) {
             await updateClaim(claimId, {
-              status: 'processing',
+              status: 'validated',
+              validatedAt: new Date().toISOString(),
             });
 
             console.log(
-              `Claim ${claimId} marked as processing after successful payment`
+              `Claim ${claimId} marked as validated after successful payment`
             );
 
             // Send payment confirmation email
@@ -76,19 +79,66 @@ export async function POST(request: NextRequest) {
               if (claim) {
                 await sendPaymentConfirmation({
                   claimId,
-                  customerName: `${claim.firstName} ${claim.lastName}`,
-                  customerEmail: claim.email,
+                  customerName: `${claim.fields.user_first_name} ${claim.fields.user_last_name}`,
+                  customerEmail: claim.fields.user_email,
                   amount: '$49.00',
-                  flightNumber: claim.flightNumber,
-                  airline: claim.airline,
-                  departureDate: claim.departureDate,
-                  departureAirport: claim.departureAirport,
-                  arrivalAirport: claim.arrivalAirport,
-                  delayDuration: claim.delayDuration,
+                  flightNumber: claim.fields.flight_number,
+                  airline: claim.fields.airline,
+                  departureDate: claim.fields.departure_date,
+                  departureAirport: claim.fields.departure_airport,
+                  arrivalAirport: claim.fields.arrival_airport,
+                  delayDuration: claim.fields.delay_duration,
                 });
                 console.log(
                   `Payment confirmation email sent for claim ${claimId}`
                 );
+
+                // Process automatic claim preparation
+                try {
+                  const preparationSuccess =
+                    await processAutomaticClaimPreparation(claimId);
+                  if (preparationSuccess) {
+                    console.log(
+                      `Claim ${claimId} automatically prepared for filing`
+                    );
+
+                    // Send admin alert if there's an admin email configured
+                    const adminEmail = process.env.ADMIN_EMAIL;
+                    if (adminEmail) {
+                      try {
+                        await sendAdminReadyToFileAlert(adminEmail, {
+                          claims: [
+                            {
+                              claimId: claim.fields.claim_id,
+                              firstName: claim.fields.user_first_name,
+                              lastName: claim.fields.user_last_name,
+                              flightNumber: claim.fields.flight_number,
+                              airline: claim.fields.airline,
+                              departureDate: claim.fields.departure_date,
+                              departureAirport: claim.fields.departure_airport,
+                              arrivalAirport: claim.fields.arrival_airport,
+                              delayDuration: claim.fields.delay_duration,
+                            },
+                          ],
+                        });
+                        console.log(`Admin alert sent for claim ${claimId}`);
+                      } catch (alertError) {
+                        console.error('Error sending admin alert:', alertError);
+                        // Don't fail the webhook if admin alert fails
+                      }
+                    }
+                  } else {
+                    console.log(
+                      `Automatic preparation failed for claim ${claimId}`
+                    );
+                  }
+                } catch (preparationError) {
+                  console.error(
+                    'Error in automatic claim preparation:',
+                    preparationError
+                  );
+                  // Don't fail the webhook if preparation fails
+                }
               }
             } catch (emailError) {
               console.error(

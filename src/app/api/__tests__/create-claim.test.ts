@@ -112,6 +112,8 @@ describe('POST /api/create-claim', () => {
     const invalidFile = new File(['content'], 'file.txt', { type: 'text/plain' });
     invalidFileFormData.append('boardingPass', invalidFile);
     invalidFileFormData.append('delayProof', invalidFile);
+    invalidFileFormData.append('boardingPassUrl', 'https://example.com/boarding-pass.pdf');
+    invalidFileFormData.append('delayProofUrl', 'https://example.com/delay-proof.pdf');
 
     const request = new NextRequest('http://localhost:3000/api/create-claim', {
       method: 'POST',
