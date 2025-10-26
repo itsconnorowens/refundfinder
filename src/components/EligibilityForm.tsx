@@ -66,22 +66,26 @@ export function EligibilityForm() {
       });
 
       const data = await response.json();
+      console.log('📧 Email parsing response:', JSON.stringify(data, null, 2));
 
       if (data.success && data.data) {
-        // Pre-fill manual form with parsed data
+        console.log('📧 Parsed flight data:', JSON.stringify(data.data, null, 2));
+        
+        // Pre-fill manual form with parsed data (handle both camelCase and snake_case)
         setFormData(prev => ({
           ...prev,
-          flightNumber: data.data.flightNumber || '',
+          flightNumber: data.data.flightNumber || data.data.flight_number || '',
           airline: data.data.airline || '',
-          departureDate: data.data.departureDate || '',
-          departureAirport: data.data.departureAirport || '',
-          arrivalAirport: data.data.arrivalAirport || '',
-          delayDuration: data.data.delayDuration || '',
-          delayReason: data.data.delayReason || '',
+          departureDate: data.data.departureDate || data.data.date || '',
+          departureAirport: data.data.departureAirport || data.data.departure_airport || '',
+          arrivalAirport: data.data.arrivalAirport || data.data.arrival_airport || '',
+          delayDuration: data.data.delayDuration || data.data.delay_duration || '',
+          delayReason: data.data.delayReason || data.data.delay_reason || '',
         }));
         setParsedFlight(data.data);
         setInputMethod('manual');
       } else {
+        console.log('❌ Email parsing failed:', data.error);
         setError('Could not extract flight details. Please enter them manually.');
         setInputMethod('manual');
       }

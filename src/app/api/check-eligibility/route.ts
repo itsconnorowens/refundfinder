@@ -9,12 +9,12 @@ import {
 
 export async function POST(request: NextRequest) {
   console.log('🔍 Eligibility Check API - Request received');
-  
+
   try {
     // Check rate limit
     const clientId = getClientIdentifier(request);
     console.log('📊 Rate limit check for client:', clientId);
-    
+
     const rateLimitResult = checkRateLimit(clientId, ELIGIBILITY_RATE_LIMIT);
     console.log('📊 Rate limit result:', rateLimitResult);
 
@@ -58,7 +58,11 @@ export async function POST(request: NextRequest) {
     console.log('  flightNumber:', flightNumber, typeof flightNumber);
     console.log('  airline:', airline, typeof airline);
     console.log('  departureDate:', departureDate, typeof departureDate);
-    console.log('  departureAirport:', departureAirport, typeof departureAirport);
+    console.log(
+      '  departureAirport:',
+      departureAirport,
+      typeof departureAirport
+    );
     console.log('  arrivalAirport:', arrivalAirport, typeof arrivalAirport);
     console.log('  delayDuration:', delayDuration, typeof delayDuration);
     console.log('  delayReason:', delayReason, typeof delayReason);
@@ -99,7 +103,10 @@ export async function POST(request: NextRequest) {
       delayReason: delayReason?.trim(),
     };
 
-    console.log('✈️ Flight details created:', JSON.stringify(flightDetails, null, 2));
+    console.log(
+      '✈️ Flight details created:',
+      JSON.stringify(flightDetails, null, 2)
+    );
 
     // Check eligibility
     console.log('🔍 Checking eligibility...');

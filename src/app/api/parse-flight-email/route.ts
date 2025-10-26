@@ -78,24 +78,28 @@ export async function POST(request: NextRequest) {
     }
 
     // Parse the email using Claude
+    console.log('📧 Email parsing - Input email length:', emailText.length);
     const flightData = await parseFlightEmail(emailText);
+    console.log('📧 Email parsing - Raw result:', JSON.stringify(flightData, null, 2));
 
     // Check if parsing was successful
-    if (!flightData) {
+    if (!flightData || !flightData.success) {
+      console.log('❌ Email parsing failed:', flightData?.error);
       return NextResponse.json(
         {
           success: false,
-          error:
-            'Could not extract flight details from the provided email. Please verify the email contains flight information and try again, or enter the details manually.',
+          error: flightData?.error || 'Could not extract flight details from the provided email. Please verify the email contains flight information and try again, or enter the details manually.',
         },
         { status: 200 } // 200 because parsing failure isn't a server error
       );
     }
 
+    console.log('✅ Email parsing successful - Data:', JSON.stringify(flightData.data, null, 2));
+
     // Return successful response
     return NextResponse.json({
       success: true,
-      data: flightData,
+      data: flightData.data,
     });
   } catch (error) {
     // Log error for debugging
