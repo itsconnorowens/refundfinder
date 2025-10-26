@@ -6,17 +6,19 @@ let stripeInstance: Stripe | null = null;
 function getStripe(): Stripe {
   if (!stripeInstance) {
     const stripeSecretKey = process.env.STRIPE_SECRET_KEY;
-    
+
     if (!stripeSecretKey) {
-      throw new Error('STRIPE_SECRET_KEY is not defined in environment variables');
+      throw new Error(
+        'STRIPE_SECRET_KEY is not defined in environment variables'
+      );
     }
-    
+
     stripeInstance = new Stripe(stripeSecretKey, {
       apiVersion: '2025-09-30.clover',
       typescript: true,
     });
   }
-  
+
   return stripeInstance;
 }
 
@@ -24,7 +26,7 @@ function getStripe(): Stripe {
 export const stripe = new Proxy({} as Stripe, {
   get(target, prop) {
     return getStripe()[prop as keyof Stripe];
-  }
+  },
 });
 
 // Service fee configuration

@@ -48,6 +48,14 @@ export default function PrivacyPage() {
                 <li>Improve our services</li>
                 <li>Comply with legal obligations</li>
               </ul>
+              <p className="mt-3">
+                <strong>Legal Basis for Processing (GDPR):</strong> We process your personal data based on:
+              </p>
+              <ul className="list-disc list-inside ml-4 space-y-1">
+                <li><strong>Contract:</strong> To provide the service you've requested</li>
+                <li><strong>Legitimate Interest:</strong> To improve our services and prevent fraud</li>
+                <li><strong>Legal Obligation:</strong> To comply with applicable laws</li>
+              </ul>
             </section>
 
             <section>
@@ -96,9 +104,9 @@ export default function PrivacyPage() {
             </section>
 
             <section>
-              <h2 className="text-xl font-semibold text-white mb-3">6. Your Rights (GDPR)</h2>
+              <h2 className="text-xl font-semibold text-white mb-3">6. Your Rights (GDPR/UK GDPR)</h2>
               <p>
-                If you are in the EU, you have the right to:
+                If you are in the EU or UK, you have the following rights:
               </p>
               <ul className="list-disc list-inside ml-4 space-y-1">
                 <li><strong>Access:</strong> Request a copy of your personal data</li>
@@ -106,7 +114,15 @@ export default function PrivacyPage() {
                 <li><strong>Erasure:</strong> Request deletion of your personal data</li>
                 <li><strong>Portability:</strong> Receive your data in a structured format</li>
                 <li><strong>Objection:</strong> Object to processing of your personal data</li>
+                <li><strong>Restriction:</strong> Request limitation of processing</li>
+                <li><strong>Withdraw Consent:</strong> Withdraw consent for data processing</li>
               </ul>
+              <p className="mt-3">
+                <strong>How to Exercise Your Rights:</strong> Contact us at privacy@refundfinder.com with your request. We will respond within 30 days (or 1 month for UK residents).
+              </p>
+              <p className="mt-3">
+                <strong>Right to Complain:</strong> You have the right to lodge a complaint with your local data protection authority if you believe we have not handled your data properly.
+              </p>
             </section>
 
             <section>
@@ -165,7 +181,19 @@ export default function PrivacyPage() {
             </section>
 
             <section>
-              <h2 className="text-xl font-semibold text-white mb-3">12. Contact Us</h2>
+              <h2 className="text-xl font-semibold text-white mb-3">12. EU Representative</h2>
+              <p>
+                As a US-based company processing personal data of EU residents, we have appointed an EU Representative to act as our point of contact for EU data protection matters:
+              </p>
+              <div className="bg-slate-700 rounded-lg p-4 mt-3">
+                <p><strong>EU Representative:</strong> eu-representative@refundfinder.com</p>
+                <p><strong>Purpose:</strong> To liaise with EU data protection authorities and data subjects</p>
+                <p><strong>Response Time:</strong> We will respond to EU Representative inquiries within 72 hours</p>
+              </div>
+            </section>
+
+            <section>
+              <h2 className="text-xl font-semibold text-white mb-3">13. Contact Us</h2>
               <p>
                 If you have any questions about this Privacy Policy or our data practices, please contact us:
               </p>
@@ -173,6 +201,7 @@ export default function PrivacyPage() {
                 <p><strong>Email:</strong> privacy@refundfinder.com</p>
                 <p><strong>Support:</strong> support@refundfinder.com</p>
                 <p><strong>Data Protection Officer:</strong> dpo@refundfinder.com</p>
+                <p><strong>EU Representative:</strong> eu-representative@refundfinder.com</p>
               </div>
             </section>
           </CardContent>

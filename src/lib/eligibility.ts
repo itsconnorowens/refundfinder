@@ -34,21 +34,25 @@ export function checkEligibility(flight: FlightDetails): EligibilityResult {
       amount: '€0',
       confidence: 100,
       message: 'Delay must be at least 3 hours to qualify for compensation',
-      regulation: 'EU261/US DOT',
+      regulation: 'EU261/UK CAA/US DOT',
       reason: 'Insufficient delay duration',
     };
   }
 
+  // Check if it's a UK flight (UK CAA regulations apply)
+  const isUKFlight = isUKCoveredFlight(flight);
+  if (isUKFlight) {
+    return checkUKCAAEligibility(flight, delayHours);
+  }
+
   // Check if it's an EU flight (EU261 applies)
   const isEUFlight = isEUCoveredFlight(flight);
-
   if (isEUFlight) {
     return checkEU261Eligibility(flight, delayHours);
   }
 
   // Check if it's a US flight (DOT regulations)
   const isUSFlightResult = isUSFlight(flight);
-
   if (isUSFlightResult) {
     return checkDOTEligibility(flight, delayHours);
   }
@@ -58,10 +62,102 @@ export function checkEligibility(flight: FlightDetails): EligibilityResult {
     eligible: false,
     amount: '€0',
     confidence: 80,
-    message: 'This flight may not be covered by major compensation regulations',
+    message:
+      'This flight may not be covered by major compensation regulations. We provide assistance services only and cannot guarantee eligibility.',
     regulation: 'Unknown',
-    reason: 'Route not covered by EU261 or US DOT',
+    reason: 'Route not covered by EU261, UK CAA, or US DOT',
   };
+}
+
+/**
+ * Check UK CAA eligibility (similar to EU261)
+ */
+function checkUKCAAEligibility(
+  flight: FlightDetails,
+  delayHours: number
+): EligibilityResult {
+  // Check for extraordinary circumstances
+  if (isExtraordinaryCircumstance(flight.delayReason)) {
+    return {
+      eligible: false,
+      amount: '£0',
+      confidence: 90,
+      message: 'Compensation not available due to extraordinary circumstances',
+      regulation: 'UK CAA',
+      reason: 'Extraordinary circumstances (weather, security, etc.)',
+    };
+  }
+
+  // Calculate compensation based on distance (same as EU261)
+  const distance = calculateFlightDistance(
+    flight.departureAirport,
+    flight.arrivalAirport
+  );
+  let amount = '£0';
+
+  if (distance <= 1500) {
+    amount = '£250';
+  } else if (distance <= 3500) {
+    amount = '£400';
+  } else {
+    amount = '£520';
+  }
+
+  return {
+    eligible: true,
+    amount,
+    confidence: 85,
+    message: `You're likely entitled to ${amount} compensation under UK CAA regulations`,
+    regulation: 'UK CAA',
+    reason: `Flight delayed ${delayHours} hours, distance ${distance}km`,
+  };
+}
+
+/**
+ * Check if flight is covered by UK CAA regulations
+ */
+function isUKCoveredFlight(flight: FlightDetails): boolean {
+  const ukAirlines = [
+    'British Airways',
+    'EasyJet',
+    'Ryanair',
+    'Virgin Atlantic',
+    'Jet2',
+    'TUI Airways',
+    'Wizz Air',
+    'Flybe',
+    'Loganair',
+    'Eastern Airways',
+  ];
+
+  const ukAirports = [
+    'LHR', // London Heathrow
+    'LGW', // London Gatwick
+    'STN', // London Stansted
+    'LTN', // London Luton
+    'LBA', // Leeds Bradford
+    'MAN', // Manchester
+    'BHX', // Birmingham
+    'BRS', // Bristol
+    'NCL', // Newcastle
+    'EDI', // Edinburgh
+    'GLA', // Glasgow
+    'BFS', // Belfast
+    'DUB', // Dublin (Ireland)
+  ];
+
+  // Check if airline is UK-based
+  const isUKAirline = ukAirlines.some((airline) =>
+    flight.airline.toLowerCase().includes(airline.toLowerCase())
+  );
+
+  // Check if departing from UK airport
+  const isFromUK = ukAirports.includes(flight.departureAirport.toUpperCase());
+
+  // Check if arriving at UK airport
+  const isToUK = ukAirports.includes(flight.arrivalAirport.toUpperCase());
+
+  return isUKAirline || isFromUK || isToUK;
 }
 
 /**

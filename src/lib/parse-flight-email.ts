@@ -1,5 +1,5 @@
 // Flight email parsing using Anthropic Claude
-import Anthropic from "@anthropic-ai/sdk";
+import Anthropic from '@anthropic-ai/sdk';
 
 const anthropic = new Anthropic({
   apiKey: process.env.ANTHROPIC_API_KEY,
@@ -37,10 +37,10 @@ export function isAnthropicConfigured(): boolean {
 export async function parseFlightEmail(
   emailContent: string
 ): Promise<EmailParseResult> {
-  if (!emailContent || typeof emailContent !== "string") {
+  if (!emailContent || typeof emailContent !== 'string') {
     return {
       success: false,
-      error: "Invalid email content",
+      error: 'Invalid email content',
       confidence: 0,
     };
   }
@@ -48,25 +48,24 @@ export async function parseFlightEmail(
   if (!isAnthropicConfigured()) {
     return {
       success: false,
-      error: "Anthropic API not configured",
+      error: 'Anthropic API not configured',
       confidence: 0,
     };
   }
 
-
   try {
     const prompt = createParsingPrompt(emailContent);
     const response = await anthropic.messages.create({
-      model: "claude-3-5-sonnet-20241022",
+      model: 'claude-3-5-sonnet-20241022',
       max_tokens: 2000,
-      messages: [{ role: "user", content: prompt }],
+      messages: [{ role: 'user', content: prompt }],
     });
 
     const content = response.content[0];
-    if (content.type !== "text") {
+    if (content.type !== 'text') {
       return {
         success: false,
-        error: "Unexpected response format from Anthropic",
+        error: 'Unexpected response format from Anthropic',
         confidence: 0,
       };
     }
@@ -80,10 +79,10 @@ export async function parseFlightEmail(
       confidence,
     };
   } catch (error) {
-    console.error("Error parsing flight email:", error);
+    console.error('Error parsing flight email:', error);
     return {
       success: false,
-      error: error instanceof Error ? error.message : "Unknown error occurred",
+      error: error instanceof Error ? error.message : 'Unknown error occurred',
       confidence: 0,
     };
   }
@@ -145,19 +144,19 @@ function calculateConfidence(data: any): number {
 
   // Required fields for basic flight identification
   const requiredFields = [
-    "flightNumber",
-    "airline",
-    "departureDate",
-    "scheduledDeparture",
-    "scheduledArrival",
-    "departureAirport",
-    "arrivalAirport",
+    'flightNumber',
+    'airline',
+    'departureDate',
+    'scheduledDeparture',
+    'scheduledArrival',
+    'departureAirport',
+    'arrivalAirport',
   ];
 
   // Check required fields
   for (const field of requiredFields) {
     totalFields++;
-    if (data[field] && data[field] !== null && data[field] !== "") {
+    if (data[field] && data[field] !== null && data[field] !== '') {
       filledFields++;
     }
   }
@@ -167,13 +166,13 @@ function calculateConfidence(data: any): number {
 
   // Bonus points for additional information
   const bonusFields = [
-    "delayDuration",
-    "delayReason",
-    "passengerName",
-    "bookingReference",
+    'delayDuration',
+    'delayReason',
+    'passengerName',
+    'bookingReference',
   ];
   for (const field of bonusFields) {
-    if (data[field] && data[field] !== null && data[field] !== "") {
+    if (data[field] && data[field] !== null && data[field] !== '') {
       confidence += 0.1;
     }
   }
@@ -212,43 +211,43 @@ export function validateFlightEmailData(data: FlightEmailData): {
   const errors: string[] = [];
 
   if (!data.flightNumber) {
-    errors.push("Flight number is required");
+    errors.push('Flight number is required');
   }
 
   if (!data.airline) {
-    errors.push("Airline is required");
+    errors.push('Airline is required');
   }
 
   if (!data.departureDate) {
-    errors.push("Departure date is required");
+    errors.push('Departure date is required');
   } else if (!isValidDate(data.departureDate)) {
-    errors.push("Invalid departure date format");
+    errors.push('Invalid departure date format');
   }
 
   if (!data.scheduledDeparture) {
-    errors.push("Scheduled departure time is required");
+    errors.push('Scheduled departure time is required');
   } else if (!isValidTime(data.scheduledDeparture)) {
-    errors.push("Invalid scheduled departure time format");
+    errors.push('Invalid scheduled departure time format');
   }
 
   if (data.scheduledArrival && !isValidTime(data.scheduledArrival)) {
-    errors.push("Invalid scheduled arrival time format");
+    errors.push('Invalid scheduled arrival time format');
   }
 
   if (!data.departureAirport) {
-    errors.push("Departure airport is required");
+    errors.push('Departure airport is required');
   } else if (!/^[A-Z]{3}$/.test(data.departureAirport)) {
-    errors.push("Invalid departure airport code format");
+    errors.push('Invalid departure airport code format');
   }
 
   if (!data.arrivalAirport) {
-    errors.push("Arrival airport is required");
+    errors.push('Arrival airport is required');
   } else if (!/^[A-Z]{3}$/.test(data.arrivalAirport)) {
-    errors.push("Invalid arrival airport code format");
+    errors.push('Invalid arrival airport code format');
   }
 
   if (data.confidence < 0.5) {
-    errors.push("Low confidence in extracted data");
+    errors.push('Low confidence in extracted data');
   }
 
   return {

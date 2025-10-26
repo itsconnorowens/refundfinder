@@ -13,8 +13,8 @@ export interface FlightData {
   delayMinutes: number;
   isCancelled: boolean;
   cancellationReason?: string;
-  status: "scheduled" | "delayed" | "cancelled" | "departed" | "arrived";
-  source: "aviationstack" | "flightlabs" | "combined";
+  status: 'scheduled' | 'delayed' | 'cancelled' | 'departed' | 'arrived';
+  source: 'aviationstack' | 'flightlabs' | 'combined';
   confidence: number; // 0-1 confidence score
 }
 
@@ -28,7 +28,7 @@ export interface FlightLookupResult {
 // AviationStack API integration
 class AviationStackAPI {
   private apiKey: string;
-  private baseUrl = "http://api.aviationstack.com/v1";
+  private baseUrl = 'http://api.aviationstack.com/v1';
 
   constructor(apiKey: string) {
     this.apiKey = apiKey;
@@ -56,7 +56,7 @@ class AviationStackAPI {
       const flight = data.data[0];
       return this.parseAviationStackData(flight);
     } catch (error) {
-      console.error("AviationStack API error:", error);
+      console.error('AviationStack API error:', error);
       return null;
     }
   }
@@ -71,20 +71,20 @@ class AviationStackAPI {
       flightNumber:
         (flight.flight?.iata as string) ||
         (flight.flight?.number as string) ||
-        "",
-      airline: (flight.airline?.name as string) || "",
-      departureAirport: (flight.departure?.iata as string) || "",
-      arrivalAirport: (flight.arrival?.iata as string) || "",
-      scheduledDeparture: (flight.departure?.scheduled as string) || "",
+        '',
+      airline: (flight.airline?.name as string) || '',
+      departureAirport: (flight.departure?.iata as string) || '',
+      arrivalAirport: (flight.arrival?.iata as string) || '',
+      scheduledDeparture: (flight.departure?.scheduled as string) || '',
       actualDeparture: (flight.departure?.actual as string) || undefined,
-      scheduledArrival: (flight.arrival?.scheduled as string) || "",
+      scheduledArrival: (flight.arrival?.scheduled as string) || '',
       actualArrival: (flight.arrival?.actual as string) || undefined,
       delayMinutes,
-      isCancelled: flight.flight_status === "cancelled",
+      isCancelled: flight.flight_status === 'cancelled',
       cancellationReason:
-        flight.flight_status === "cancelled" ? "Flight cancelled" : undefined,
+        flight.flight_status === 'cancelled' ? 'Flight cancelled' : undefined,
       status: this.mapFlightStatus(flight.flight_status as string),
-      source: "aviationstack",
+      source: 'aviationstack',
       confidence: 0.8, // AviationStack is generally reliable
     };
   }
@@ -101,17 +101,17 @@ class AviationStackAPI {
     );
   }
 
-  private mapFlightStatus(status: string): FlightData["status"] {
-    const statusMap: Record<string, FlightData["status"]> = {
-      scheduled: "scheduled",
-      delayed: "delayed",
-      cancelled: "cancelled",
-      departed: "departed",
-      arrived: "arrived",
-      active: "departed", // Active flights are typically departed
-      landed: "arrived", // Landed flights are arrived
+  private mapFlightStatus(status: string): FlightData['status'] {
+    const statusMap: Record<string, FlightData['status']> = {
+      scheduled: 'scheduled',
+      delayed: 'delayed',
+      cancelled: 'cancelled',
+      departed: 'departed',
+      arrived: 'arrived',
+      active: 'departed', // Active flights are typically departed
+      landed: 'arrived', // Landed flights are arrived
     };
-    return statusMap[status] || "scheduled";
+    return statusMap[status] || 'scheduled';
   }
 }
 
@@ -204,7 +204,6 @@ class FlightLabsAPI {
 }
 */
 
-
 // Flight lookup service - currently using only AviationStack
 export class FlightLookupService {
   private aviationStack: AviationStackAPI;
@@ -214,7 +213,7 @@ export class FlightLookupService {
     const aviationStackKey = process.env.AVIATIONSTACK_API_KEY;
 
     if (!aviationStackKey) {
-      throw new Error("AviationStack API key is required");
+      throw new Error('AviationStack API key is required');
     }
 
     this.aviationStack = new AviationStackAPI(aviationStackKey);
@@ -236,7 +235,7 @@ export class FlightLookupService {
       );
 
       if (aviationStackData) {
-        sources.push("aviationstack");
+        sources.push('aviationstack');
         return {
           success: true,
           data: aviationStackData,
@@ -244,12 +243,12 @@ export class FlightLookupService {
           sources,
         };
       } else {
-        errors.push("AviationStack: No data found");
+        errors.push('AviationStack: No data found');
       }
     } catch (error) {
-      console.error("AviationStack API error:", error);
+      console.error('AviationStack API error:', error);
       errors.push(
-        `AviationStack: ${error instanceof Error ? error.message : "Unknown error"}`
+        `AviationStack: ${error instanceof Error ? error.message : 'Unknown error'}`
       );
     }
 

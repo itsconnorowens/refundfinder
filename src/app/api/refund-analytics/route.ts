@@ -1,0 +1,159 @@
+import { NextRequest, NextResponse } from 'next/server';
+import {
+  calculateRefundAnalytics,
+  getRefundDashboardData,
+  getRefundPerformanceMetrics,
+  checkRefundAlerts,
+  acknowledgeAlert,
+  RefundAlert,
+  AnalyticsPeriod,
+} from '@/lib/refund-analytics';
+
+/**
+ * GET /api/refund-analytics/dashboard
+ * Get refund analytics dashboard data
+ */
+export async function GET(request: NextRequest) {
+  try {
+    const { searchParams } = new URL(request.url);
+    const period = (searchParams.get('period') as AnalyticsPeriod) || 'day';
+    const days = parseInt(searchParams.get('days') || '7');
+
+    const dashboardData = await getRefundDashboardData();
+
+    return NextResponse.json({
+      success: true,
+      data: dashboardData,
+    });
+  } catch (error) {
+    console.error('Error getting refund dashboard data:', error);
+    return NextResponse.json(
+      { error: 'Internal server error' },
+      { status: 500 }
+    );
+  }
+}
+
+/**
+ * GET /api/refund-analytics/performance
+ * Get refund performance metrics
+ */
+export async function GET(request: NextRequest) {
+  try {
+    const metrics = await getRefundPerformanceMetrics();
+
+    return NextResponse.json({
+      success: true,
+      data: metrics,
+    });
+  } catch (error) {
+    console.error('Error getting refund performance metrics:', error);
+    return NextResponse.json(
+      { error: 'Internal server error' },
+      { status: 500 }
+    );
+  }
+}
+
+/**
+ * GET /api/refund-analytics/alerts
+ * Get current refund alerts
+ */
+export async function GET(request: NextRequest) {
+  try {
+    const dashboardData = await getRefundDashboardData();
+    const alerts = dashboardData.alerts;
+
+    return NextResponse.json({
+      success: true,
+      data: alerts,
+    });
+  } catch (error) {
+    console.error('Error getting refund alerts:', error);
+    return NextResponse.json(
+      { error: 'Internal server error' },
+      { status: 500 }
+    );
+  }
+}
+
+/**
+ * POST /api/refund-analytics/alerts/acknowledge
+ * Acknowledge a refund alert
+ */
+export async function POST(request: NextRequest) {
+  try {
+    const body = await request.json();
+    const { alertId, acknowledgedBy } = body;
+
+    if (!alertId || !acknowledgedBy) {
+      return NextResponse.json(
+        { error: 'Missing required fields: alertId, acknowledgedBy' },
+        { status: 400 }
+      );
+    }
+
+    // In a real implementation, you'd fetch the alert from your database
+    // For now, we'll create a mock alert
+    const mockAlert: RefundAlert = {
+      id: alertId,
+      type: 'high_refund_rate',
+      severity: 'high',
+      title: 'High Refund Rate Detected',
+      message: 'Refund rate is 30%, exceeding threshold of 25%',
+      metadata: {},
+      createdAt: new Date(),
+      acknowledged: false,
+    };
+
+    const acknowledgedAlert = acknowledgeAlert(mockAlert, acknowledgedBy);
+
+    return NextResponse.json({
+      success: true,
+      data: acknowledgedAlert,
+    });
+  } catch (error) {
+    console.error('Error acknowledging alert:', error);
+    return NextResponse.json(
+      { error: 'Internal server error' },
+      { status: 500 }
+    );
+  }
+}
+
+/**
+ * GET /api/refund-analytics/period
+ * Get analytics for a specific time period
+ */
+export async function GET(request: NextRequest) {
+  try {
+    const { searchParams } = new URL(request.url);
+    const period = (searchParams.get('period') as AnalyticsPeriod) || 'day';
+    const startDate = searchParams.get('startDate');
+    const endDate = searchParams.get('endDate');
+
+    if (!startDate || !endDate) {
+      return NextResponse.json(
+        { error: 'Missing required parameters: startDate, endDate' },
+        { status: 400 }
+      );
+    }
+
+    const analytics = await calculateRefundAnalytics(
+      period,
+      new Date(startDate),
+      new Date(endDate)
+    );
+
+    return NextResponse.json({
+      success: true,
+      data: analytics,
+    });
+  } catch (error) {
+    console.error('Error calculating refund analytics:', error);
+    return NextResponse.json(
+      { error: 'Internal server error' },
+      { status: 500 }
+    );
+  }
+}

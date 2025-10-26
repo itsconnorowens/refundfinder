@@ -86,10 +86,15 @@ export async function POST(request: NextRequest) {
                   arrivalAirport: claim.arrivalAirport,
                   delayDuration: claim.delayDuration,
                 });
-                console.log(`Payment confirmation email sent for claim ${claimId}`);
+                console.log(
+                  `Payment confirmation email sent for claim ${claimId}`
+                );
               }
             } catch (emailError) {
-              console.error('Error sending payment confirmation email:', emailError);
+              console.error(
+                'Error sending payment confirmation email:',
+                emailError
+              );
               // Don't fail the webhook if email fails
             }
           }

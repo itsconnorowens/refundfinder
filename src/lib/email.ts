@@ -5,7 +5,9 @@ const apiKey = process.env.SENDGRID_API_KEY;
 if (apiKey) {
   sgMail.setApiKey(apiKey);
 } else {
-  console.warn('SendGrid API key not configured. Email sending will be disabled.');
+  console.warn(
+    'SendGrid API key not configured. Email sending will be disabled.'
+  );
 }
 
 // Email templates
@@ -40,7 +42,9 @@ export interface StatusUpdateData {
 /**
  * Payment confirmation email template
  */
-export function getPaymentConfirmationTemplate(data: PaymentConfirmationData): EmailTemplate {
+export function getPaymentConfirmationTemplate(
+  data: PaymentConfirmationData
+): EmailTemplate {
   return {
     subject: `Payment Confirmed - Claim ${data.claimId}`,
     html: `
@@ -159,7 +163,7 @@ Important: We'll email you with every update. No action needed from you - we han
 Questions? Contact us at support@refundfinder.com
 
 RefundFinder - We fight for your flight delay compensation
-    `
+    `,
   };
 }
 
@@ -172,7 +176,7 @@ export function getStatusUpdateTemplate(data: StatusUpdateData): EmailTemplate {
     filed: 'Your claim has been filed with the airline',
     approved: 'Great news! Your compensation has been approved',
     rejected: 'Unfortunately, your claim was not successful',
-    completed: 'Your claim has been completed'
+    completed: 'Your claim has been completed',
   };
 
   const statusIcons = {
@@ -180,7 +184,7 @@ export function getStatusUpdateTemplate(data: StatusUpdateData): EmailTemplate {
     filed: '📋',
     approved: '🎉',
     rejected: '❌',
-    completed: '✅'
+    completed: '✅',
   };
 
   return {
@@ -221,12 +225,16 @@ export function getStatusUpdateTemplate(data: StatusUpdateData): EmailTemplate {
                 <p><strong>Updated:</strong> ${new Date().toLocaleDateString()}</p>
               </div>
               
-              ${data.nextSteps ? `
+              ${
+                data.nextSteps
+                  ? `
                 <div style="background: #f0f9ff; padding: 20px; border-radius: 8px; margin: 20px 0; border-left: 4px solid #0ea5e9;">
                   <h3>Next Steps</h3>
                   <p>${data.nextSteps}</p>
                 </div>
-              ` : ''}
+              `
+                  : ''
+              }
               
               <p>We'll continue to keep you updated on any changes to your claim.</p>
             </div>
@@ -258,7 +266,7 @@ We'll continue to keep you updated on any changes to your claim.
 Questions? Contact us at support@refundfinder.com
 
 RefundFinder - We fight for your flight delay compensation
-    `
+    `,
   };
 }
 
@@ -300,7 +308,9 @@ export async function sendEmail(
 /**
  * Send payment confirmation email
  */
-export async function sendPaymentConfirmation(data: PaymentConfirmationData): Promise<boolean> {
+export async function sendPaymentConfirmation(
+  data: PaymentConfirmationData
+): Promise<boolean> {
   const template = getPaymentConfirmationTemplate(data);
   return await sendEmail(data.customerEmail, template);
 }
@@ -308,7 +318,9 @@ export async function sendPaymentConfirmation(data: PaymentConfirmationData): Pr
 /**
  * Send status update email
  */
-export async function sendStatusUpdate(data: StatusUpdateData): Promise<boolean> {
+export async function sendStatusUpdate(
+  data: StatusUpdateData
+): Promise<boolean> {
   const template = getStatusUpdateTemplate(data);
   return await sendEmail(data.customerEmail, template);
 }

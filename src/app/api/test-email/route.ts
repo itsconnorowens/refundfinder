@@ -22,7 +22,9 @@ export async function POST(request: NextRequest) {
 
       return NextResponse.json({
         success,
-        message: success ? 'Payment confirmation email sent' : 'Failed to send email',
+        message: success
+          ? 'Payment confirmation email sent'
+          : 'Failed to send email',
       });
     }
 
@@ -32,8 +34,10 @@ export async function POST(request: NextRequest) {
         customerName: testData.customerName || 'John Doe',
         customerEmail: testData.customerEmail || 'test@example.com',
         status: testData.status || 'processing',
-        message: testData.message || 'Your claim is being reviewed by our team.',
-        nextSteps: testData.nextSteps || 'We will file your claim within 48 hours.',
+        message:
+          testData.message || 'Your claim is being reviewed by our team.',
+        nextSteps:
+          testData.nextSteps || 'We will file your claim within 48 hours.',
       });
 
       return NextResponse.json({
@@ -43,7 +47,10 @@ export async function POST(request: NextRequest) {
     }
 
     return NextResponse.json(
-      { error: 'Invalid email type. Use "payment-confirmation" or "status-update"' },
+      {
+        error:
+          'Invalid email type. Use "payment-confirmation" or "status-update"',
+      },
       { status: 400 }
     );
   } catch (error) {
