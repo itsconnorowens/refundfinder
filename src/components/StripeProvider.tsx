@@ -4,16 +4,24 @@ import { Elements } from '@stripe/react-stripe-js';
 import { loadStripe, Stripe, StripeElementsOptions } from '@stripe/stripe-js';
 import { useEffect, useState } from 'react';
 
-const stripePublishableKey = process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY;
+// Lazy initialization of Stripe to avoid build-time environment variable checks
+let stripePromise: Promise<Stripe | null> | null = null;
 
-if (!stripePublishableKey) {
-  throw new Error(
-    'NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY is not defined in environment variables'
-  );
+function getStripePromise(): Promise<Stripe | null> {
+  if (!stripePromise) {
+    const stripePublishableKey = process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY;
+    
+    if (!stripePublishableKey) {
+      throw new Error(
+        'NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY is not defined in environment variables'
+      );
+    }
+    
+    stripePromise = loadStripe(stripePublishableKey);
+  }
+  
+  return stripePromise;
 }
-
-// Load Stripe outside component to avoid recreating on every render
-const stripePromise = loadStripe(stripePublishableKey);
 
 interface StripeProviderProps {
   clientSecret: string;
@@ -69,7 +77,7 @@ export default function StripeProvider({
   }
 
   return (
-    <Elements stripe={stripePromise} options={options}>
+    <Elements stripe={getStripePromise()} options={options}>
       {children}
     </Elements>
   );
