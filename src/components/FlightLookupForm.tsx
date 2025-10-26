@@ -173,10 +173,10 @@ export default function FlightLookupForm({ onResults, onLoading }: FlightLookupF
       <div className="text-center mb-6">
         <h2 className="text-2xl font-bold text-gray-900 mb-2">Enter Your Flight Details</h2>
         <p className="text-gray-600">We&apos;ll check if you&apos;re eligible for compensation</p>
-        <p className="text-xs text-gray-500 mt-2">Form Version: 3.0 (with airport autocomplete)</p>
+        <p className="text-sm text-gray-500 mt-2">💡 Find this information on your boarding pass or confirmation email</p>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
         {/* Flight Number */}
         <div>
           <label htmlFor="flightNumber" className="block text-sm font-medium text-gray-700 mb-2">
@@ -187,14 +187,15 @@ export default function FlightLookupForm({ onResults, onLoading }: FlightLookupF
             id="flightNumber"
             value={formData.flightNumber}
             onChange={(e) => handleInputChange('flightNumber', e.target.value)}
-            placeholder="e.g., TK157, AA123"
-            className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${
+            placeholder="e.g., UA2847 or BA456"
+            className={`w-full px-4 py-4 md:py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-base ${
               errors.flightNumber ? 'border-red-500' : 'border-gray-300'
             }`}
           />
           {errors.flightNumber && (
             <p className="mt-1 text-sm text-red-600">{errors.flightNumber}</p>
           )}
+          <p className="mt-1 text-xs text-gray-500">💡 Found on your boarding pass or confirmation email</p>
         </div>
 
         {/* Departure Date */}
@@ -207,13 +208,14 @@ export default function FlightLookupForm({ onResults, onLoading }: FlightLookupF
             id="departureDate"
             value={formData.departureDate}
             onChange={(e) => handleInputChange('departureDate', e.target.value)}
-            className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${
+            className={`w-full px-4 py-4 md:py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-base ${
               errors.departureDate ? 'border-red-500' : 'border-gray-300'
             }`}
           />
           {errors.departureDate && (
             <p className="mt-1 text-sm text-red-600">{errors.departureDate}</p>
           )}
+          <p className="mt-1 text-xs text-gray-500">📅 When was your flight scheduled to depart?</p>
         </div>
 
         {/* Departure Airport */}
@@ -246,14 +248,15 @@ export default function FlightLookupForm({ onResults, onLoading }: FlightLookupF
             id="airline"
             value={formData.airline}
             onChange={(e) => handleInputChange('airline', e.target.value)}
-            placeholder="e.g., British Airways, American Airlines"
-            className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${
+            placeholder="Select your airline..."
+            className={`w-full px-4 py-4 md:py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-base ${
               errors.airline ? 'border-red-500' : 'border-gray-300'
             }`}
           />
           {errors.airline && (
             <p className="mt-1 text-sm text-red-600">{errors.airline}</p>
           )}
+          <p className="mt-1 text-xs text-gray-500">✈️ The airline operating your flight</p>
         </div>
 
         {/* Disruption Type */}
@@ -303,7 +306,7 @@ export default function FlightLookupForm({ onResults, onLoading }: FlightLookupF
                   placeholder="Hours"
                   min="0"
                   max="24"
-                  className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${
+                  className={`w-full px-4 py-4 md:py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-base ${
                     errors.delayHours ? 'border-red-500' : 'border-gray-300'
                   }`}
                 />
@@ -317,7 +320,7 @@ export default function FlightLookupForm({ onResults, onLoading }: FlightLookupF
                   placeholder="Minutes"
                   min="0"
                   max="59"
-                  className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${
+                  className={`w-full px-4 py-4 md:py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-base ${
                     errors.delayHours ? 'border-red-500' : 'border-gray-300'
                   }`}
                 />
@@ -326,6 +329,7 @@ export default function FlightLookupForm({ onResults, onLoading }: FlightLookupF
             {errors.delayHours && (
               <p className="mt-1 text-sm text-red-600">{errors.delayHours}</p>
             )}
+            <p className="mt-1 text-xs text-gray-500">⏰ How long was your flight delayed from the original departure time?</p>
           </div>
         )}
 
@@ -426,7 +430,7 @@ export default function FlightLookupForm({ onResults, onLoading }: FlightLookupF
       {/* Passenger Information */}
       <div className="border-t pt-6">
         <h3 className="text-lg font-medium text-gray-900 mb-4">Passenger Information</h3>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6">
           <div>
             <label htmlFor="firstName" className="block text-sm font-medium text-gray-700 mb-2">
               First Name *
@@ -437,7 +441,7 @@ export default function FlightLookupForm({ onResults, onLoading }: FlightLookupF
               value={formData.firstName}
               onChange={(e) => handleInputChange('firstName', e.target.value)}
               placeholder="John"
-              className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${
+              className={`w-full px-4 py-4 md:py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-base ${
                 errors.firstName ? 'border-red-500' : 'border-gray-300'
               }`}
             />
@@ -456,7 +460,7 @@ export default function FlightLookupForm({ onResults, onLoading }: FlightLookupF
               value={formData.lastName}
               onChange={(e) => handleInputChange('lastName', e.target.value)}
               placeholder="Doe"
-              className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${
+              className={`w-full px-4 py-4 md:py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-base ${
                 errors.lastName ? 'border-red-500' : 'border-gray-300'
               }`}
             />
@@ -475,7 +479,7 @@ export default function FlightLookupForm({ onResults, onLoading }: FlightLookupF
               value={formData.passengerEmail}
               onChange={(e) => handleInputChange('passengerEmail', e.target.value)}
               placeholder="john@example.com"
-              className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${
+              className={`w-full px-4 py-4 md:py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-base ${
                 errors.passengerEmail ? 'border-red-500' : 'border-gray-300'
               }`}
             />
@@ -489,9 +493,9 @@ export default function FlightLookupForm({ onResults, onLoading }: FlightLookupF
       <div className="flex justify-center pt-6">
         <button
           type="submit"
-          className="w-full md:w-auto px-8 py-4 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 focus:ring-4 focus:ring-blue-200 transition-colors"
+          className="w-full md:w-auto px-8 py-4 md:py-4 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 focus:ring-4 focus:ring-blue-200 transition-colors text-base min-h-[48px]"
         >
-          Check My Eligibility
+          Check My Compensation →
         </button>
       </div>
     </form>

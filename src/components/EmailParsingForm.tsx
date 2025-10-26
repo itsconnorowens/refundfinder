@@ -128,6 +128,7 @@ Turkish Airlines`;
       <div className="text-center mb-6">
         <h2 className="text-xl sm:text-2xl font-bold text-gray-900 mb-2">Upload Your Flight Email</h2>
         <p className="text-sm sm:text-base text-gray-600">Paste your flight delay or cancellation email below</p>
+        <p className="text-sm text-gray-500 mt-2">⚡ Fastest method — AI extracts all details automatically</p>
       </div>
 
       {/* Email Content */}
@@ -151,6 +152,15 @@ Turkish Airlines`;
         <p className="mt-2 text-sm text-gray-500">
           💡 <strong>Tip:</strong> Copy and paste the entire email including the subject line and any delay/cancellation details.
         </p>
+        <div className="mt-3 p-3 bg-gray-50 rounded-lg">
+          <p className="text-xs text-gray-600 mb-2"><strong>Example email format:</strong></p>
+          <div className="text-xs text-gray-500 font-mono bg-white p-2 rounded border">
+            Subject: Flight Delay Notification - TK157<br/>
+            Dear Passenger,<br/>
+            We regret to inform you that your flight TK157...<br/>
+            <span className="text-blue-600">[rest of email content]</span>
+          </div>
+        </div>
       </div>
 
       {/* Additional Information for Cancellations */}
@@ -260,7 +270,7 @@ Turkish Airlines`;
       {/* Passenger Information */}
       <div className="border-t pt-6">
         <h3 className="text-lg font-medium text-gray-900 mb-4">Passenger Information</h3>
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 md:gap-6">
           <div>
             <label htmlFor="firstName" className="block text-sm font-medium text-gray-700 mb-2">
               First Name *
@@ -271,7 +281,7 @@ Turkish Airlines`;
               value={formData.firstName}
               onChange={(e) => handleInputChange('firstName', e.target.value)}
               placeholder="John"
-              className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-base ${
+              className={`w-full px-4 py-4 md:py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-base ${
                 errors.firstName ? 'border-red-500' : 'border-gray-300'
               }`}
             />
@@ -290,7 +300,7 @@ Turkish Airlines`;
               value={formData.lastName}
               onChange={(e) => handleInputChange('lastName', e.target.value)}
               placeholder="Doe"
-              className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-base ${
+              className={`w-full px-4 py-4 md:py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-base ${
                 errors.lastName ? 'border-red-500' : 'border-gray-300'
               }`}
             />
@@ -309,7 +319,7 @@ Turkish Airlines`;
               value={formData.passengerEmail}
               onChange={(e) => handleInputChange('passengerEmail', e.target.value)}
               placeholder="john@example.com"
-              className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-base ${
+              className={`w-full px-4 py-4 md:py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-base ${
                 errors.passengerEmail ? 'border-red-500' : 'border-gray-300'
               }`}
             />
@@ -336,7 +346,7 @@ Turkish Airlines`;
           type="submit"
           className="w-full sm:w-auto px-8 py-4 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 focus:ring-4 focus:ring-blue-200 transition-colors min-h-[48px] text-base"
         >
-          Analyze My Email
+          Check My Compensation →
         </button>
       </div>
     </form>

@@ -6,6 +6,11 @@ import EmailParsingForm from '../components/EmailParsingForm';
 import EligibilityResults from '../components/EligibilityResults';
 import FlightPathsAnimation from '../components/FlightPathsAnimation';
 import { CheckEligibilityResponse } from '../types/api';
+import { CheckIcon, MoneyIcon, BoltIcon, PlaneIcon, EmailIcon } from '../components/icons';
+import { StarRating } from '../components/StarRating';
+import { Avatar } from '../components/Avatar';
+import { TrustBadges } from '../components/TrustBadges';
+import { StepIcon } from '../components/icons';
 
 export default function Home() {
   const [activeTab, setActiveTab] = useState<'flight' | 'email'>('flight');
@@ -41,9 +46,9 @@ export default function Home() {
       </header>
 
       {/* Hero Section with Animation */}
-      <section className="relative py-20 overflow-hidden">
+      <section className="relative py-12 overflow-hidden">
         {/* Background Animation */}
-        <div className="absolute inset-0 z-0 opacity-20">
+        <div className="absolute inset-0 z-0 opacity-10 sm:opacity-20">
           <FlightPathsAnimation />
         </div>
         
@@ -53,33 +58,42 @@ export default function Home() {
         {/* Content */}
         <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center">
-            <h1 className="text-4xl md:text-6xl font-bold text-gray-900 mb-6">
-              Get Compensation for
-              <span className="text-blue-600"> Flight Delays</span>
+            <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-gray-900 mb-6">
+              Get Up to €600 for Your Delayed Flight
             </h1>
-            <p className="text-xl text-gray-600 mb-8 max-w-3xl mx-auto">
+            <p className="text-base sm:text-lg md:text-xl text-gray-600 mb-8 max-w-3xl mx-auto">
               Check if you're eligible for compensation under EU Regulation 261/2004. 
               We handle the entire process for you - no hassle, no risk.
             </p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <div className="bg-green-100 text-green-800 px-4 py-2 rounded-full text-sm font-medium">
-                ✅ Free eligibility check
+            <div className="flex flex-col sm:flex-row gap-3 justify-center mb-6">
+              <div className="bg-green-100 text-green-800 px-4 py-2 rounded-full text-sm font-medium flex items-center gap-2">
+                <CheckIcon size={16} />
+                Free eligibility check
               </div>
-              <div className="bg-blue-100 text-blue-800 px-4 py-2 rounded-full text-sm font-medium">
-                💰 Up to €600 compensation
+              <div className="bg-blue-100 text-blue-800 px-4 py-2 rounded-full text-sm font-medium flex items-center gap-2">
+                <MoneyIcon size={16} />
+                Up to €600 compensation
               </div>
-              <div className="bg-purple-100 text-purple-800 px-4 py-2 rounded-full text-sm font-medium">
-                ⚡ Quick 2-minute check
+              <div className="bg-purple-100 text-purple-800 px-4 py-2 rounded-full text-sm font-medium flex items-center gap-2">
+                <BoltIcon size={16} />
+                Quick 2-minute check
               </div>
+            </div>
+            <div className="text-center">
+              <p className="text-lg text-blue-600 font-medium">Check your flight in 60 seconds ↓</p>
             </div>
           </div>
         </div>
       </section>
 
       {/* Main Form Section */}
-      <section className="py-12">
+      <section className="py-8">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="bg-white rounded-2xl shadow-xl p-8">
+          <div className="text-center mb-8">
+            <h2 className="text-2xl font-bold text-gray-900 mb-2">Check Your Eligibility — Free & Instant</h2>
+            <p className="text-gray-600">Get your compensation estimate in under 60 seconds</p>
+          </div>
+          <div className="bg-white rounded-2xl shadow-xl border border-gray-100 p-8">
             {/* Tab Navigation */}
             <div className="flex space-x-1 mb-8 bg-gray-100 p-1 rounded-lg">
               <button
@@ -90,7 +104,13 @@ export default function Home() {
                     : 'text-gray-500 hover:text-gray-700'
                 }`}
               >
-                ✈️ Flight Details
+                <div className="flex items-center justify-center gap-2">
+                  <PlaneIcon size={20} />
+                  <div className="text-left">
+                    <div className="font-semibold">Flight Details</div>
+                    <div className="text-xs opacity-75">Manual — Enter details yourself</div>
+                  </div>
+                </div>
               </button>
               <button
                 onClick={() => setActiveTab('email')}
@@ -100,7 +120,13 @@ export default function Home() {
                     : 'text-gray-500 hover:text-gray-700'
                 }`}
               >
-                📧 Email Upload
+                <div className="flex items-center justify-center gap-2">
+                  <EmailIcon size={20} />
+                  <div className="text-left">
+                    <div className="font-semibold">Email Upload</div>
+                    <div className="text-xs opacity-75">Fastest — Paste your confirmation email</div>
+                  </div>
+                </div>
               </button>
             </div>
 
@@ -131,80 +157,10 @@ export default function Home() {
               </div>
             )}
           </div>
-        </div>
-      </section>
-
-      {/* How It Works Section */}
-      <section id="how-it-works" className="py-20 bg-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-16">
-            <h2 className="text-3xl font-bold text-gray-900 mb-4">How It Works</h2>
-            <p className="text-xl text-gray-600">Simple steps to get your compensation</p>
-          </div>
-          <div className="grid md:grid-cols-4 gap-8">
-            <div className="text-center">
-              <div className="bg-blue-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
-                <span className="text-2xl">1️⃣</span>
-              </div>
-              <h3 className="text-xl font-semibold mb-2">Check Eligibility</h3>
-              <p className="text-gray-600">Enter your flight details or upload your delay/cancellation email. We'll check if you're eligible for compensation.</p>
-            </div>
-            <div className="text-center">
-              <div className="bg-blue-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
-                <span className="text-2xl">2️⃣</span>
-              </div>
-              <h3 className="text-xl font-semibold mb-2">We Verify Your Flight</h3>
-              <p className="text-gray-600">We verify your flight status using real-time data to ensure accuracy and maximize your chances of success.</p>
-            </div>
-            <div className="text-center">
-              <div className="bg-blue-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
-                <span className="text-2xl">3️⃣</span>
-              </div>
-              <h3 className="text-xl font-semibold mb-2">Pay Only If Eligible</h3>
-              <p className="text-gray-600">If eligible, pay our $49 service fee and we'll submit your claim to the airline within 48 hours.</p>
-            </div>
-            <div className="text-center">
-              <div className="bg-blue-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
-                <span className="text-2xl">4️⃣</span>
-              </div>
-              <h3 className="text-xl font-semibold mb-2">Get Updates & Compensation</h3>
-              <p className="text-gray-600">Receive email updates at every step. Once approved, you'll get your compensation directly from the airline.</p>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Pricing Section */}
-      <section id="pricing" className="py-20 bg-gray-50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-16">
-            <h2 className="text-3xl font-bold text-gray-900 mb-4">Simple, Transparent Pricing</h2>
-            <p className="text-xl text-gray-600">No upfront costs, no hidden fees</p>
-          </div>
-          <div className="max-w-md mx-auto bg-white rounded-2xl shadow-xl p-8">
-            <div className="text-center">
-              <h3 className="text-2xl font-bold text-gray-900 mb-2">Success Fee Only</h3>
-              <div className="text-4xl font-bold text-blue-600 mb-4">$49</div>
-              <p className="text-gray-600 mb-6">Only if we win your case</p>
-              <ul className="text-left space-y-3">
-                <li className="flex items-center">
-                  <span className="text-green-500 mr-2">✓</span>
-                  Free eligibility check
-                </li>
-                <li className="flex items-center">
-                  <span className="text-green-500 mr-2">✓</span>
-                  We handle all paperwork
-                </li>
-                <li className="flex items-center">
-                  <span className="text-green-500 mr-2">✓</span>
-                  Direct communication with airline
-                </li>
-                <li className="flex items-center">
-                  <span className="text-green-500 mr-2">✓</span>
-                  No win, no fee guarantee
-                </li>
-              </ul>
-            </div>
+          
+          {/* Trust Indicators */}
+          <div className="text-center mt-8">
+            <TrustBadges />
           </div>
         </div>
       </section>
@@ -217,15 +173,14 @@ export default function Home() {
             <p className="text-xl text-gray-600">We've helped travelers recover over €147,000 in compensation</p>
           </div>
           
-          <div className="grid md:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 md:gap-8">
             <div className="bg-gray-50 rounded-lg p-6">
               <div className="flex items-center mb-4">
-                <div className="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center mr-3">
-                  <span className="text-blue-600 font-bold">SJ</span>
-                </div>
+                <Avatar initials="SJ" color="blue" className="mr-3" />
                 <div>
                   <h4 className="font-semibold">Sarah J.</h4>
                   <p className="text-sm text-gray-600">London → Paris</p>
+                  <StarRating rating={5} size={14} className="mt-1" />
                 </div>
               </div>
               <p className="text-gray-700 mb-4">
@@ -239,12 +194,11 @@ export default function Home() {
 
             <div className="bg-gray-50 rounded-lg p-6">
               <div className="flex items-center mb-4">
-                <div className="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center mr-3">
-                  <span className="text-green-600 font-bold">MR</span>
-                </div>
+                <Avatar initials="MR" color="green" className="mr-3" />
                 <div>
                   <h4 className="font-semibold">Michael R.</h4>
                   <p className="text-sm text-gray-600">Frankfurt → New York</p>
+                  <StarRating rating={5} size={14} className="mt-1" />
                 </div>
               </div>
               <p className="text-gray-700 mb-4">
@@ -258,12 +212,11 @@ export default function Home() {
 
             <div className="bg-gray-50 rounded-lg p-6">
               <div className="flex items-center mb-4">
-                <div className="w-12 h-12 bg-purple-100 rounded-full flex items-center justify-center mr-3">
-                  <span className="text-purple-600 font-bold">AL</span>
-                </div>
+                <Avatar initials="AL" color="purple" className="mr-3" />
                 <div>
                   <h4 className="font-semibold">Anna L.</h4>
                   <p className="text-sm text-gray-600">Amsterdam → Barcelona</p>
+                  <StarRating rating={5} size={14} className="mt-1" />
                 </div>
               </div>
               <p className="text-gray-700 mb-4">
@@ -282,6 +235,51 @@ export default function Home() {
               <p className="text-blue-800">
                 Average compensation: €450 • Success rate: 94% • Average processing time: 3.2 weeks
               </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* How It Works Section */}
+      <section id="how-it-works" className="py-20 bg-gray-50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-16">
+            <h2 className="text-3xl font-bold text-gray-900 mb-4">How It Works</h2>
+            <p className="text-xl text-gray-600">Simple steps to get your compensation</p>
+          </div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 md:gap-8">
+            <div className="text-center">
+              <div className="bg-blue-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
+                <StepIcon step={1} size={24} />
+              </div>
+              <h3 className="text-xl font-semibold mb-2">Check Eligibility</h3>
+              <p className="text-gray-600">Enter your flight details or paste your email. Get instant results for free.</p>
+            </div>
+            <div className="text-center">
+              <div className="bg-blue-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
+                <StepIcon step={2} size={24} />
+              </div>
+              <h3 className="text-xl font-semibold mb-2">We File Your Claim</h3>
+              <p className="text-gray-600">If eligible, pay $49 and we'll submit your claim within 48 hours.</p>
+            </div>
+            <div className="text-center">
+              <div className="bg-blue-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
+                <StepIcon step={3} size={24} />
+              </div>
+              <h3 className="text-xl font-semibold mb-2">Get Your Money</h3>
+              <p className="text-gray-600">Receive €250-€600 compensation directly from the airline in 4-8 weeks.</p>
+            </div>
+          </div>
+          
+          {/* Pricing Callout */}
+          <div className="mt-16 max-w-md mx-auto bg-white rounded-2xl shadow-xl p-8">
+            <div className="text-center">
+              <h3 className="text-2xl font-bold text-gray-900 mb-2">Success Fee Only</h3>
+              <div className="text-4xl font-bold text-blue-600 mb-4">$49</div>
+              <p className="text-gray-600 mb-6">Only if we win your case</p>
+              <div className="bg-green-50 rounded-lg p-4">
+                <p className="text-green-800 font-medium">✓ No win, no fee guarantee</p>
+              </div>
             </div>
           </div>
         </div>
@@ -321,14 +319,6 @@ export default function Home() {
             </div>
 
             <div className="bg-white rounded-lg p-6 shadow-sm">
-              <h3 className="text-lg font-semibold text-gray-900 mb-3">What's your refund policy?</h3>
-              <p className="text-gray-600">
-                We offer a 100% money-back guarantee. If we can't file your claim successfully or you're not satisfied with our service, 
-                you'll receive a full automatic refund of the $49 service fee.
-              </p>
-            </div>
-
-            <div className="bg-white rounded-lg p-6 shadow-sm">
               <h3 className="text-lg font-semibold text-gray-900 mb-3">How long does the process take?</h3>
               <p className="text-gray-600">
                 We file your claim within 48 hours of payment. Airlines typically respond within 2-6 weeks. You'll receive email updates 
@@ -337,10 +327,10 @@ export default function Home() {
             </div>
 
             <div className="bg-white rounded-lg p-6 shadow-sm">
-              <h3 className="text-lg font-semibold text-gray-900 mb-3">Do I need to provide documents?</h3>
+              <h3 className="text-lg font-semibold text-gray-900 mb-3">What if I'm not eligible?</h3>
               <p className="text-gray-600">
-                Yes, you'll need to upload your boarding pass and proof of delay/cancellation (like screenshots or airline emails). 
-                We'll guide you through the document requirements during the claim process.
+                If your flight doesn't qualify for compensation, we'll explain why and suggest checking other recent flights. 
+                Our eligibility check is completely free with no obligation.
               </p>
             </div>
           </div>
