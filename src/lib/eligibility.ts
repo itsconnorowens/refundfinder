@@ -238,18 +238,38 @@ function checkDOTEligibility(
  * Parse delay duration from string to hours
  */
 function parseDelayHours(delayDuration: string): number {
-  // Extract numbers from strings like "4 hours", "3.5 hours", "180 minutes", etc.
-  const match = delayDuration.match(/(\d+(?:\.\d+)?)/);
-  if (!match) return 0;
-
-  const value = parseFloat(match[1]);
-
-  // If it mentions minutes, convert to hours
-  if (delayDuration.toLowerCase().includes('minute')) {
-    return value / 60;
+  // Handle formats like "4 hours 45 minutes", "4.75 hours", "285 minutes", etc.
+  const lowerDelay = delayDuration.toLowerCase();
+  
+  // Extract hours and minutes separately
+  const hoursMatch = lowerDelay.match(/(\d+(?:\.\d+)?)\s*hours?/);
+  const minutesMatch = lowerDelay.match(/(\d+(?:\.\d+)?)\s*minutes?/);
+  
+  let totalHours = 0;
+  
+  // Add hours if found
+  if (hoursMatch) {
+    totalHours += parseFloat(hoursMatch[1]);
   }
-
-  return value;
+  
+  // Add minutes converted to hours if found
+  if (minutesMatch) {
+    totalHours += parseFloat(minutesMatch[1]) / 60;
+  }
+  
+  // If no hours/minutes found, try to extract just a number and assume it's hours
+  if (totalHours === 0) {
+    const numberMatch = delayDuration.match(/(\d+(?:\.\d+)?)/);
+    if (numberMatch) {
+      totalHours = parseFloat(numberMatch[1]);
+      // If it mentions minutes, convert to hours
+      if (lowerDelay.includes('minute')) {
+        totalHours = totalHours / 60;
+      }
+    }
+  }
+  
+  return totalHours;
 }
 
 /**
