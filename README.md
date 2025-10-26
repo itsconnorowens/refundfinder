@@ -15,6 +15,13 @@ A Next.js application that helps users check their eligibility for flight delay 
 
 ## Current Status
 
+### ✅ **Recent Improvements (December 2024)**
+- **Code Quality**: Comprehensive ESLint and TypeScript setup
+- **Build Process**: Stable and reliable build pipeline
+- **Quality Safeguards**: Pre-commit hooks and CI/CD pipeline
+- **Deployment**: Successfully deployed to Vercel
+- **Documentation**: Complete developer guides and troubleshooting docs
+
 ### ✅ **What Works Well**
 - Basic EU261/UK CAA/US DOT scenarios
 - AI-powered email parsing with Claude
@@ -177,6 +184,23 @@ Open [http://localhost:3000](http://localhost:3000) with your browser to see the
 - **Email**: Resend
 - **Storage**: Vercel Blob (planned)
 - **Testing**: Vitest, Playwright
+
+## 📚 Documentation
+
+### **Development & Quality**
+- [Developer Guide](./DEVELOPER_GUIDE.md) - Complete developer onboarding and workflow
+- [Code Quality Safeguards](./CODE_QUALITY_SAFEGUARDS.md) - Prevention strategies and best practices
+- [Session Summary](./SESSION_SUMMARY_CODE_QUALITY_CLEANUP.md) - Recent improvements and fixes
+
+### **Project Documentation**
+- [Implementation Summary](./IMPLEMENTATION_SUMMARY.md) - Current implementation status
+- [Development Roadmap](./DEVELOPMENT_ROADMAP.md) - Future development plans
+- [API Strategy](./API_STRATEGY_UPDATE.md) - API design and integration strategy
+
+### **Feature Documentation**
+- [Payment Implementation](./PAYMENT_IMPLEMENTATION_SUMMARY.md) - Stripe integration details
+- [Email System](./EMAIL_SYSTEM_README.md) - Email parsing and notification system
+- [Flight Validation](./FLIGHT_VALIDATION_IMPLEMENTATION_SUMMARY.md) - Flight verification system
 
 ## Learn More
 

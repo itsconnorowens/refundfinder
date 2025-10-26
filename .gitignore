@@ -43,3 +43,6 @@ next-env.d.ts
 # Documentation files to track
 !refundfinder_prd.md
 !PROCESS_GUIDELINES.md
+!CODE_QUALITY_SAFEGUARDS.md
+!DEVELOPER_GUIDE.md
+!SESSION_SUMMARY_CODE_QUALITY_CLEANUP.md
