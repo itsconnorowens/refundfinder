@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { motion } from 'framer-motion';
 import { CheckEligibilityResponse } from '../types/api';
 import AirportAutocomplete from './AirportAutocomplete';
 import { validateAirportCode } from '@/lib/airports';
@@ -30,6 +31,7 @@ export default function FlightLookupForm({ onResults, onLoading }: FlightLookupF
     alternativeTiming: ''
   });
   const [errors, setErrors] = useState<Record<string, string>>({});
+  const [loading, setLoading] = useState(false);
 
   const validateForm = () => {
     const newErrors: Record<string, string> = {};
@@ -119,6 +121,7 @@ export default function FlightLookupForm({ onResults, onLoading }: FlightLookupF
     }
 
     onLoading(true);
+    setLoading(true);
     setErrors({});
 
     try {
@@ -157,6 +160,7 @@ export default function FlightLookupForm({ onResults, onLoading }: FlightLookupF
       });
     } finally {
       onLoading(false);
+      setLoading(false);
     }
   };
 
@@ -491,12 +495,51 @@ export default function FlightLookupForm({ onResults, onLoading }: FlightLookupF
       </div>
 
       <div className="flex justify-center pt-6">
-        <button
+        <motion.button
           type="submit"
-          className="w-full md:w-auto px-8 py-4 md:py-4 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 focus:ring-4 focus:ring-blue-200 transition-colors text-base min-h-[48px]"
+          className="w-full md:w-auto px-8 py-4 md:py-4 bg-blue-600 text-white font-semibold rounded-lg focus:ring-4 focus:ring-blue-200 text-base min-h-[48px] relative overflow-hidden"
+          whileHover={{ 
+            scale: 1.05,
+            boxShadow: "0 10px 25px rgba(59, 130, 246, 0.3)"
+          }}
+          whileTap={{ scale: 0.98 }}
+          transition={{ 
+            type: "spring", 
+            stiffness: 400, 
+            damping: 17 
+          }}
         >
-          Check My Compensation →
-        </button>
+          <motion.span
+            className="relative z-10"
+            initial={{ opacity: 1 }}
+            animate={{ opacity: loading ? 0.7 : 1 }}
+          >
+            {loading ? (
+              <div className="flex items-center justify-center space-x-2">
+                <motion.div
+                  className="w-4 h-4 border-2 border-white border-t-transparent rounded-full"
+                  animate={{ rotate: 360 }}
+                  transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
+                />
+                <span>Checking...</span>
+              </div>
+            ) : (
+              "Check My Compensation →"
+            )}
+          </motion.span>
+          
+          {/* Ripple effect on click */}
+          <motion.div
+            className="absolute inset-0 bg-white opacity-0"
+            initial={{ scale: 0, opacity: 0 }}
+            animate={{ scale: 0, opacity: 0 }}
+            whileTap={{ 
+              scale: [0, 1.2], 
+              opacity: [0, 0.3, 0] 
+            }}
+            transition={{ duration: 0.6 }}
+          />
+        </motion.button>
       </div>
     </form>
   );

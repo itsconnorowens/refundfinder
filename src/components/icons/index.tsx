@@ -160,6 +160,58 @@ export const StarFilledIcon: React.FC<IconProps> = ({ className = '', size = 20 
   </svg>
 );
 
+export const ClockIcon: React.FC<IconProps> = ({ className = '', size = 20 }) => (
+  <svg
+    width={size}
+    height={size}
+    viewBox="0 0 20 20"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+    className={className}
+  >
+    <path
+      d="M10 18C14.4183 18 18 14.4183 18 10C18 5.58172 14.4183 2 10 2C5.58172 2 2 5.58172 2 10C2 14.4183 5.58172 18 10 18Z"
+      stroke="currentColor"
+      strokeWidth="1.5"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+    <path
+      d="M10 6V10L13 13"
+      stroke="currentColor"
+      strokeWidth="1.5"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+  </svg>
+);
+
+export const UsersIcon: React.FC<IconProps> = ({ className = '', size = 20 }) => (
+  <svg
+    width={size}
+    height={size}
+    viewBox="0 0 20 20"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+    className={className}
+  >
+    <path
+      d="M13 6C13 7.65685 11.6569 9 10 9C8.34315 9 7 7.65685 7 6C7 4.34315 8.34315 3 10 3C11.6569 3 13 4.34315 13 6Z"
+      stroke="currentColor"
+      strokeWidth="1.5"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+    <path
+      d="M3 18C3 15.2386 5.23858 13 8 13H12C14.7614 13 17 15.2386 17 18"
+      stroke="currentColor"
+      strokeWidth="1.5"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+  </svg>
+);
+
 export const StepIcon: React.FC<IconProps & { step: number }> = ({ className = '', size = 24, step }) => (
   <div className={`w-${size/4} h-${size/4} rounded-full bg-blue-100 flex items-center justify-center ${className}`}>
     <span className="text-blue-600 font-semibold text-sm">{step}</span>

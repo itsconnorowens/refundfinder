@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { motion } from 'framer-motion';
 import FlightLookupForm from '../components/FlightLookupForm';
 import EmailParsingForm from '../components/EmailParsingForm';
 import EligibilityResults from '../components/EligibilityResults';
@@ -10,6 +11,7 @@ import { CheckIcon, MoneyIcon, BoltIcon, PlaneIcon, EmailIcon } from '../compone
 import { StarRating } from '../components/StarRating';
 import { Avatar } from '../components/Avatar';
 import { TrustBadges } from '../components/TrustBadges';
+import { TrustMetrics } from '../components/TrustMetrics';
 import { StepIcon } from '../components/icons';
 
 export default function Home() {
@@ -186,6 +188,13 @@ export default function Home() {
         </div>
       </section>
 
+      {/* Trust Metrics Dashboard */}
+      <section className="py-12 bg-gray-50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <TrustMetrics />
+        </div>
+      </section>
+
       {/* Success Stories Section */}
       <section className="py-20 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -195,7 +204,17 @@ export default function Home() {
           </div>
           
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 md:gap-8">
-            <div className="bg-gray-50 rounded-lg p-6">
+            <motion.div 
+              className="bg-gray-50 rounded-lg p-6 hover:shadow-lg transition-shadow cursor-pointer"
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0 }}
+              viewport={{ once: true, margin: "-50px" }}
+              whileHover={{ 
+                scale: 1.02,
+                transition: { duration: 0.2 }
+              }}
+            >
               <div className="flex items-center mb-4">
                 <Avatar initials="SJ" color="blue" className="mr-3" />
                 <div>
@@ -211,9 +230,19 @@ export default function Home() {
                 <span className="text-green-600 font-semibold">€400 recovered</span>
                 <span className="text-sm text-gray-500">3 weeks</span>
               </div>
-            </div>
+            </motion.div>
 
-            <div className="bg-gray-50 rounded-lg p-6">
+            <motion.div 
+              className="bg-gray-50 rounded-lg p-6 hover:shadow-lg transition-shadow cursor-pointer"
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.1 }}
+              viewport={{ once: true, margin: "-50px" }}
+              whileHover={{ 
+                scale: 1.02,
+                transition: { duration: 0.2 }
+              }}
+            >
               <div className="flex items-center mb-4">
                 <Avatar initials="MR" color="green" className="mr-3" />
                 <div>
@@ -229,9 +258,19 @@ export default function Home() {
                 <span className="text-green-600 font-semibold">€600 recovered</span>
                 <span className="text-sm text-gray-500">2 weeks</span>
               </div>
-            </div>
+            </motion.div>
 
-            <div className="bg-gray-50 rounded-lg p-6">
+            <motion.div 
+              className="bg-gray-50 rounded-lg p-6 hover:shadow-lg transition-shadow cursor-pointer"
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.2 }}
+              viewport={{ once: true, margin: "-50px" }}
+              whileHover={{ 
+                scale: 1.02,
+                transition: { duration: 0.2 }
+              }}
+            >
               <div className="flex items-center mb-4">
                 <Avatar initials="AL" color="purple" className="mr-3" />
                 <div>
@@ -247,7 +286,7 @@ export default function Home() {
                 <span className="text-green-600 font-semibold">€250 recovered</span>
                 <span className="text-sm text-gray-500">4 weeks</span>
               </div>
-            </div>
+            </motion.div>
           </div>
 
           <div className="text-center mt-12">
