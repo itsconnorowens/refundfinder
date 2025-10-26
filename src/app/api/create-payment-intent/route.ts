@@ -1,15 +1,29 @@
-import { NextRequest, NextResponse } from 'next/server';
-import { createPaymentIntent } from '@/lib/stripe-server';
+import { NextRequest, NextResponse } from "next/server";
+import Stripe from "stripe";
+
+// Initialize Stripe only if environment variables are available
+const stripe = process.env.STRIPE_SECRET_KEY
+  ? new Stripe(process.env.STRIPE_SECRET_KEY, {
+      apiVersion: "2025-09-30.clover",
+    })
+  : null;
 
 export async function POST(request: NextRequest) {
   try {
+    if (!stripe) {
+      return NextResponse.json(
+        { error: "Stripe not configured" },
+        { status: 503 }
+      );
+    }
+
     const body = await request.json();
     const { email, claimId, firstName, lastName } = body;
 
     // Validate required fields
-    if (!email || !claimId) {
+    if (!email || !claimId || !firstName || !lastName) {
       return NextResponse.json(
-        { error: 'Missing required fields: email and claimId' },
+        { error: "Missing required fields" },
         { status: 400 }
       );
     }
@@ -18,28 +32,34 @@ export async function POST(request: NextRequest) {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(email)) {
       return NextResponse.json(
-        { error: 'Invalid email address' },
+        { error: "Invalid email format" },
         { status: 400 }
       );
     }
 
     // Create payment intent
-    const paymentIntent = await createPaymentIntent(email, claimId, {
-      customerName: `${firstName || ''} ${lastName || ''}`.trim(),
-      email,
+    const paymentIntent = await stripe.paymentIntents.create({
+      amount: 4900, // $49.00 in cents
+      currency: "usd",
+      metadata: {
+        claimId,
+        email,
+        firstName,
+        lastName,
+      },
+      automatic_payment_methods: {
+        enabled: true,
+      },
     });
 
-    // Return client secret for frontend
     return NextResponse.json({
       clientSecret: paymentIntent.client_secret,
       paymentIntentId: paymentIntent.id,
-      amount: paymentIntent.amount,
-      currency: paymentIntent.currency,
     });
   } catch (error) {
-    console.error('Error creating payment intent:', error);
+    console.error("Payment intent creation failed:", error);
     return NextResponse.json(
-      { error: 'Failed to create payment intent' },
+      { error: "Failed to create payment intent" },
       { status: 500 }
     );
   }
