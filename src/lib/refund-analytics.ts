@@ -184,12 +184,11 @@ function generateMockAnalyticsData(
     refundsByHour: generateHourlyDistribution(),
     claimsByStatus: {
       submitted: Math.floor(baseClaims * 0.3),
-      processing: Math.floor(baseClaims * 0.2),
+      validated: Math.floor(baseClaims * 0.2),
       filed: Math.floor(baseClaims * 0.2),
       approved: Math.floor(baseClaims * 0.15),
       rejected: Math.floor(baseClaims * 0.1),
-      refunded: totalRefunds,
-      completed: Math.floor(baseClaims * 0.05),
+      monitoring: Math.floor(baseClaims * 0.05),
     },
     paymentsByStatus: {
       pending: Math.floor(baseClaims * 0.05),
