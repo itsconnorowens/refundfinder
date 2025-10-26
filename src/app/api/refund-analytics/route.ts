@@ -56,6 +56,28 @@ export async function GET(request: NextRequest) {
         success: true,
         data: alerts,
       });
+    } else if (type === 'period') {
+      const period = (searchParams.get('period') as AnalyticsPeriod) || 'day';
+      const startDate = searchParams.get('startDate');
+      const endDate = searchParams.get('endDate');
+
+      if (!startDate || !endDate) {
+        return NextResponse.json(
+          { error: 'Missing required parameters: startDate, endDate' },
+          { status: 400 }
+        );
+      }
+
+      const analytics = await calculateRefundAnalytics(
+        period,
+        new Date(startDate),
+        new Date(endDate)
+      );
+
+      return NextResponse.json({
+        success: true,
+        data: analytics,
+      });
     } else {
       // Default: return dashboard data
       const dashboardData = await getRefundDashboardData();
@@ -117,39 +139,3 @@ export async function POST(request: NextRequest) {
   }
 }
 
-/**
- * GET /api/refund-analytics/period
- * Get analytics for a specific time period
- */
-export async function GET(request: NextRequest) {
-  try {
-    const { searchParams } = new URL(request.url);
-    const period = (searchParams.get('period') as AnalyticsPeriod) || 'day';
-    const startDate = searchParams.get('startDate');
-    const endDate = searchParams.get('endDate');
-
-    if (!startDate || !endDate) {
-      return NextResponse.json(
-        { error: 'Missing required parameters: startDate, endDate' },
-        { status: 400 }
-      );
-    }
-
-    const analytics = await calculateRefundAnalytics(
-      period,
-      new Date(startDate),
-      new Date(endDate)
-    );
-
-    return NextResponse.json({
-      success: true,
-      data: analytics,
-    });
-  } catch (error) {
-    console.error('Error calculating refund analytics:', error);
-    return NextResponse.json(
-      { error: 'Internal server error' },
-      { status: 500 }
-    );
-  }
-}
