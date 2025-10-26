@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { useSearchParams } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -8,6 +9,8 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Progress } from '@/components/ui/progress';
 import { Badge } from '@/components/ui/badge';
 import { ChevronLeft, ChevronRight, Upload, FileText, CheckCircle, AlertCircle, X } from 'lucide-react';
+import StripeProvider from '@/components/StripeProvider';
+import PaymentStep from '@/components/PaymentStep';
 
 interface FormData {
   // Step 1: Personal Info
@@ -37,10 +40,12 @@ const STEPS = [
   { id: 1, title: 'Personal Info', description: 'Your contact details' },
   { id: 2, title: 'Flight Details', description: 'Flight information' },
   { id: 3, title: 'Documentation', description: 'Upload required documents' },
-  { id: 4, title: 'Review & Submit', description: 'Confirm your claim' }
+  { id: 4, title: 'Review', description: 'Review your claim' },
+  { id: 5, title: 'Payment', description: 'Secure payment' }
 ];
 
 export default function ClaimSubmissionForm() {
+  const searchParams = useSearchParams();
   const [currentStep, setCurrentStep] = useState(1);
   const [formData, setFormData] = useState<FormData>({
     firstName: '',
@@ -60,19 +65,45 @@ export default function ClaimSubmissionForm() {
   const [errors, setErrors] = useState<FormErrors>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [dragActive, setDragActive] = useState<string | null>(null);
+  const [claimId, setClaimId] = useState<string>('');
+  const [paymentClientSecret, setPaymentClientSecret] = useState<string | null>(null);
+  const [paymentIntentId, setPaymentIntentId] = useState<string | null>(null);
+  const [isCreatingPaymentIntent, setIsCreatingPaymentIntent] = useState(false);
 
-  // Load form data from localStorage on mount
+  // Load form data from localStorage on mount and pre-fill from URL params
   useEffect(() => {
-    const savedData = localStorage.getItem('claimFormData');
-    if (savedData) {
-      try {
-        const parsed = JSON.parse(savedData);
-        setFormData(parsed);
-      } catch (error) {
-        console.error('Error parsing saved form data:', error);
+    // First, try to pre-fill from URL parameters
+    const urlFlightNumber = searchParams.get('flightNumber');
+    const urlAirline = searchParams.get('airline');
+    const urlDepartureDate = searchParams.get('departureDate');
+    const urlDepartureAirport = searchParams.get('departureAirport');
+    const urlArrivalAirport = searchParams.get('arrivalAirport');
+    const urlDelayDuration = searchParams.get('delayDuration');
+
+    if (urlFlightNumber || urlAirline || urlDepartureDate) {
+      // Pre-fill from URL parameters
+      setFormData(prev => ({
+        ...prev,
+        flightNumber: urlFlightNumber || prev.flightNumber,
+        airline: urlAirline || prev.airline,
+        departureDate: urlDepartureDate || prev.departureDate,
+        departureAirport: urlDepartureAirport || prev.departureAirport,
+        arrivalAirport: urlArrivalAirport || prev.arrivalAirport,
+        delayDuration: urlDelayDuration || prev.delayDuration,
+      }));
+    } else {
+      // Fall back to localStorage
+      const savedData = localStorage.getItem('claimFormData');
+      if (savedData) {
+        try {
+          const parsed = JSON.parse(savedData);
+          setFormData(parsed);
+        } catch (error) {
+          console.error('Error parsing saved form data:', error);
+        }
       }
     }
-  }, []);
+  }, [searchParams]);
 
   // Save form data to localStorage whenever it changes
   useEffect(() => {
@@ -118,9 +149,48 @@ export default function ClaimSubmissionForm() {
     }
   };
 
-  const handleNext = () => {
+  const handleNext = async () => {
     if (validateStep(currentStep)) {
+      // If moving from review to payment, create payment intent
+      if (currentStep === 4 && !paymentClientSecret) {
+        await createPaymentIntent();
+      }
       setCurrentStep(prev => Math.min(prev + 1, STEPS.length));
+    }
+  };
+
+  const createPaymentIntent = async () => {
+    setIsCreatingPaymentIntent(true);
+    try {
+      // Generate claim ID if not already created
+      const newClaimId = `claim-${Date.now()}`;
+      setClaimId(newClaimId);
+
+      const response = await fetch('/api/create-payment-intent', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          email: formData.email,
+          claimId: newClaimId,
+          firstName: formData.firstName,
+          lastName: formData.lastName,
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to create payment intent');
+      }
+
+      const data = await response.json();
+      setPaymentClientSecret(data.clientSecret);
+      setPaymentIntentId(data.paymentIntentId);
+    } catch (error) {
+      console.error('Error creating payment intent:', error);
+      alert('Failed to initialize payment. Please try again.');
+    } finally {
+      setIsCreatingPaymentIntent(false);
     }
   };
 
@@ -170,9 +240,7 @@ export default function ClaimSubmissionForm() {
     handleInputChange(type, null);
   };
 
-  const handleSubmit = async () => {
-    if (!validateStep(3)) return;
-    
+  const handlePaymentSuccess = async (paymentIntentId: string) => {
     setIsSubmitting(true);
     
     try {
@@ -187,6 +255,7 @@ export default function ClaimSubmissionForm() {
       formDataToSend.append('arrivalAirport', formData.arrivalAirport);
       formDataToSend.append('delayDuration', formData.delayDuration);
       formDataToSend.append('delayReason', formData.delayReason);
+      formDataToSend.append('paymentIntentId', paymentIntentId);
       
       if (formData.boardingPass) {
         formDataToSend.append('boardingPass', formData.boardingPass);
@@ -200,17 +269,21 @@ export default function ClaimSubmissionForm() {
         body: formDataToSend,
       });
 
+      const result = await response.json();
+
       if (response.ok) {
         // Clear form data from localStorage
         localStorage.removeItem('claimFormData');
-        // Redirect or show success message
-        alert('Claim submitted successfully! We&apos;ll file your claim within 48 hours and email you with every update.');
+        // Show success message
+        alert(`✅ Claim submitted successfully!\n\n${result.message}\n\n${result.refundGuarantee}\n\nClaim ID: ${result.claimId}`);
+        // Could redirect to a success page here
+        window.location.href = '/';
       } else {
-        throw new Error('Failed to submit claim');
+        throw new Error(result.error || 'Failed to submit claim');
       }
     } catch (error) {
       console.error('Error submitting claim:', error);
-      alert('Failed to submit claim. Please try again.');
+      alert('Failed to submit claim. Please contact support with your payment confirmation.');
     } finally {
       setIsSubmitting(false);
     }
@@ -603,7 +676,7 @@ export default function ClaimSubmissionForm() {
             </div>
           )}
 
-          {/* Step 4: Review & Submit */}
+          {/* Step 4: Review */}
           {currentStep === 4 && (
             <div className="space-y-6">
               <div className="bg-gray-50 rounded-lg p-6">
@@ -647,56 +720,86 @@ export default function ClaimSubmissionForm() {
               
               <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
                 <p className="text-sm text-blue-800">
-                  <strong>What happens next:</strong> We&apos;ll file your claim within 48 hours and email you with every update. 
+                  <strong>What happens next:</strong> We&apos;ll file your claim within 10 business days and email you with every update. 
                   Our team will handle all communication with the airline and legal requirements.
+                </p>
+              </div>
+
+              <div className="bg-green-50 border border-green-200 rounded-lg p-4">
+                <p className="text-sm text-green-800">
+                  <strong>100% Refund Guarantee:</strong> If we&apos;re unable to file your claim successfully, you&apos;ll receive a full automatic refund.
                 </p>
               </div>
             </div>
           )}
 
-          {/* Navigation Buttons */}
-          <div className="flex justify-between mt-8">
-            <Button
-              type="button"
-              variant="outline"
-              onClick={handleBack}
-              disabled={currentStep === 1}
-              className="flex items-center"
-            >
-              <ChevronLeft className="w-4 h-4 mr-2" />
-              Back
-            </Button>
-            
-            {currentStep < STEPS.length ? (
+          {/* Step 5: Payment */}
+          {currentStep === 5 && (
+            <div>
+              {isCreatingPaymentIntent ? (
+                <div className="flex items-center justify-center min-h-[300px]">
+                  <div className="text-center">
+                    <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
+                    <p className="text-gray-600">Preparing payment...</p>
+                  </div>
+                </div>
+              ) : paymentClientSecret ? (
+                <StripeProvider clientSecret={paymentClientSecret}>
+                  <PaymentStep
+                    email={formData.email}
+                    firstName={formData.firstName}
+                    lastName={formData.lastName}
+                    claimId={claimId}
+                    amount={4900}
+                    onPaymentSuccess={handlePaymentSuccess}
+                    onBack={handleBack}
+                  />
+                </StripeProvider>
+              ) : (
+                <div className="text-center py-8">
+                  <p className="text-red-600">Failed to initialize payment. Please try again.</p>
+                  <Button onClick={createPaymentIntent} className="mt-4">
+                    Retry
+                  </Button>
+                </div>
+              )}
+            </div>
+          )}
+
+          {/* Navigation Buttons - Only show if not on payment step */}
+          {currentStep !== 5 && (
+            <div className="flex justify-between mt-8">
+              <Button
+                type="button"
+                variant="outline"
+                onClick={handleBack}
+                disabled={currentStep === 1}
+                className="flex items-center"
+              >
+                <ChevronLeft className="w-4 h-4 mr-2" />
+                Back
+              </Button>
+              
               <Button
                 type="button"
                 onClick={handleNext}
+                disabled={isCreatingPaymentIntent}
                 className="flex items-center"
               >
-                Continue
-                <ChevronRight className="w-4 h-4 ml-2" />
-              </Button>
-            ) : (
-              <Button
-                type="button"
-                onClick={handleSubmit}
-                disabled={isSubmitting}
-                className="flex items-center bg-green-600 hover:bg-green-700"
-              >
-                {isSubmitting ? (
+                {isCreatingPaymentIntent ? (
                   <>
                     <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
-                    Submitting...
+                    Preparing...
                   </>
                 ) : (
                   <>
-                    Submit Claim & Pay
-                    <CheckCircle className="w-4 h-4 ml-2" />
+                    Continue
+                    <ChevronRight className="w-4 h-4 ml-2" />
                   </>
                 )}
               </Button>
-            )}
-          </div>
+            </div>
+          )}
         </CardContent>
       </Card>
     </div>

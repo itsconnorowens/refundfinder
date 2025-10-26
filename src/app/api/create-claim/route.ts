@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { writeFile, mkdir } from 'fs/promises';
 import { join } from 'path';
+import { createClaim, createPayment } from '@/lib/airtable';
+import { retrievePaymentIntent } from '@/lib/stripe-server';
 
 export async function POST(request: NextRequest) {
   try {
@@ -18,6 +20,9 @@ export async function POST(request: NextRequest) {
     const delayDuration = formData.get('delayDuration') as string;
     const delayReason = formData.get('delayReason') as string;
 
+    // Extract payment information
+    const paymentIntentId = formData.get('paymentIntentId') as string;
+
     // Extract files
     const boardingPass = formData.get('boardingPass') as File;
     const delayProof = formData.get('delayProof') as File;
@@ -32,10 +37,33 @@ export async function POST(request: NextRequest) {
       !departureDate ||
       !departureAirport ||
       !arrivalAirport ||
-      !delayDuration
+      !delayDuration ||
+      !paymentIntentId
     ) {
       return NextResponse.json(
         { error: 'Missing required fields' },
+        { status: 400 }
+      );
+    }
+
+    // Verify payment was successful
+    let paymentIntent;
+    try {
+      paymentIntent = await retrievePaymentIntent(paymentIntentId);
+
+      if (paymentIntent.status !== 'succeeded') {
+        return NextResponse.json(
+          {
+            error:
+              'Payment has not been completed. Please complete payment before submitting your claim.',
+          },
+          { status: 400 }
+        );
+      }
+    } catch (error) {
+      console.error('Error verifying payment:', error);
+      return NextResponse.json(
+        { error: 'Failed to verify payment. Please contact support.' },
         { status: 400 }
       );
     }
@@ -99,63 +127,72 @@ export async function POST(request: NextRequest) {
     await writeFile(boardingPassPath, boardingPassBuffer);
     await writeFile(delayProofPath, delayProofBuffer);
 
-    // Create claim data object
-    const claimData = {
-      id: `claim-${timestamp}`,
-      personalInfo: {
+    // Generate claim ID
+    const claimId = `claim-${timestamp}`;
+    const paymentId = `payment-${timestamp}`;
+
+    const estimatedCompensation = calculateEstimatedCompensation(
+      departureAirport,
+      arrivalAirport,
+      delayDuration
+    );
+
+    // Create payment record in Airtable
+    try {
+      await createPayment({
+        paymentId,
+        stripePaymentIntentId: paymentIntent.id,
+        amount: paymentIntent.amount,
+        currency: paymentIntent.currency,
+        status: 'succeeded',
+        email,
+        claimId,
+        createdAt: new Date().toISOString(),
+        succeededAt: new Date().toISOString(),
+      });
+    } catch (error) {
+      console.error('Error creating payment record:', error);
+      // Continue even if Airtable fails - we have the payment in Stripe
+    }
+
+    // Create claim record in Airtable
+    try {
+      await createClaim({
+        claimId,
         firstName,
         lastName,
         email,
-      },
-      flightDetails: {
         flightNumber,
         airline,
         departureDate,
         departureAirport,
         arrivalAirport,
         delayDuration,
-        delayReason: delayReason || null,
-      },
-      documents: {
-        boardingPass: {
-          filename: boardingPassFilename,
-          originalName: boardingPass.name,
-          size: boardingPass.size,
-          type: boardingPass.type,
-          path: boardingPassPath,
-        },
-        delayProof: {
-          filename: delayProofFilename,
-          originalName: delayProof.name,
-          size: delayProof.size,
-          type: delayProof.type,
-          path: delayProofPath,
-        },
-      },
-      status: 'submitted',
-      submittedAt: new Date().toISOString(),
-      estimatedCompensation: calculateEstimatedCompensation(
-        departureAirport,
-        arrivalAirport,
-        delayDuration
-      ),
-    };
+        delayReason: delayReason || '',
+        status: 'submitted',
+        estimatedCompensation,
+        paymentId,
+        submittedAt: new Date().toISOString(),
+        boardingPassFilename,
+        delayProofFilename,
+      });
+    } catch (error) {
+      console.error('Error creating claim record:', error);
+      // Continue even if Airtable fails
+    }
 
-    // In a real application, you would save this to a database
-    // For now, we'll just log it and return success
-    console.log('New claim submitted:', claimData);
-
-    // TODO: Save to database
     // TODO: Send confirmation email
-    // TODO: Process payment
     // TODO: Queue claim for processing
 
     return NextResponse.json({
       success: true,
-      claimId: claimData.id,
+      claimId,
+      paymentId,
       message:
-        "Claim submitted successfully. We'll file your claim within 48 hours and email you with every update.",
-      estimatedCompensation: claimData.estimatedCompensation,
+        "Claim submitted successfully! We'll file your claim within 10 business days and email you with every update.",
+      estimatedCompensation,
+      refundGuarantee:
+        "If we're unable to file your claim successfully, you'll receive a 100% refund automatically.",
     });
   } catch (error) {
     console.error('Error processing claim:', error);

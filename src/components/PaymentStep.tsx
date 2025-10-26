@@ -1,0 +1,230 @@
+'use client';
+
+import { useState, useEffect } from 'react';
+import {
+  PaymentElement,
+  useStripe,
+  useElements,
+} from '@stripe/react-stripe-js';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { AlertCircle, CheckCircle, Lock, ShieldCheck } from 'lucide-react';
+
+interface PaymentStepProps {
+  email: string;
+  firstName: string;
+  lastName: string;
+  claimId: string;
+  amount: number;
+  onPaymentSuccess: (paymentIntentId: string) => void;
+  onBack: () => void;
+}
+
+export default function PaymentStep({
+  email,
+  firstName,
+  lastName,
+  claimId,
+  amount,
+  onPaymentSuccess,
+  onBack,
+}: PaymentStepProps) {
+  const stripe = useStripe();
+  const elements = useElements();
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [isProcessing, setIsProcessing] = useState(false);
+  const [paymentReady, setPaymentReady] = useState(false);
+
+  useEffect(() => {
+    if (!stripe || !elements) {
+      return;
+    }
+
+    // Elements are ready
+    setPaymentReady(true);
+  }, [stripe, elements]);
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+
+    if (!stripe || !elements) {
+      return;
+    }
+
+    setIsProcessing(true);
+    setErrorMessage(null);
+
+    try {
+      // Confirm payment
+      const { error, paymentIntent } = await stripe.confirmPayment({
+        elements,
+        confirmParams: {
+          return_url: `${window.location.origin}/claim-submitted`,
+          receipt_email: email,
+        },
+        redirect: 'if_required',
+      });
+
+      if (error) {
+        setErrorMessage(error.message || 'Payment failed. Please try again.');
+        setIsProcessing(false);
+      } else if (paymentIntent && paymentIntent.status === 'succeeded') {
+        // Payment successful
+        onPaymentSuccess(paymentIntent.id);
+      } else {
+        setErrorMessage('Payment could not be completed. Please try again.');
+        setIsProcessing(false);
+      }
+    } catch (err) {
+      console.error('Payment error:', err);
+      setErrorMessage('An unexpected error occurred. Please try again.');
+      setIsProcessing(false);
+    }
+  };
+
+  const formatAmount = (cents: number) => {
+    return new Intl.NumberFormat('en-US', {
+      style: 'currency',
+      currency: 'USD',
+    }).format(cents / 100);
+  };
+
+  return (
+    <div className="space-y-6">
+      {/* Payment Summary */}
+      <Card className="bg-linear-to-br from-blue-50 to-indigo-50 border-blue-200">
+        <CardHeader>
+          <CardTitle className="text-xl flex items-center">
+            <Lock className="w-5 h-5 mr-2 text-blue-600" />
+            Secure Payment
+          </CardTitle>
+          <CardDescription>
+            Complete your payment to submit your claim
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div className="space-y-4">
+            <div className="flex justify-between items-center py-3 border-b border-blue-200">
+              <span className="text-gray-700">Service Fee</span>
+              <span className="text-2xl font-bold text-gray-900">
+                {formatAmount(amount)}
+              </span>
+            </div>
+            
+            <div className="text-sm text-gray-600">
+              <p className="mb-2">Tax included in price</p>
+            </div>
+
+            <div className="bg-green-50 border border-green-200 rounded-lg p-4">
+              <div className="flex items-start">
+                <ShieldCheck className="w-5 h-5 text-green-600 mr-2 mt-0.5 shrink-0" />
+                <div>
+                  <p className="font-semibold text-green-900 text-sm">
+                    100% Refund Guarantee
+                  </p>
+                  <p className="text-green-700 text-sm mt-1">
+                    If we're unable to successfully file your claim within 10 business days,
+                    you'll receive a full automatic refund. No questions asked.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Payment Form */}
+      <Card>
+        <CardHeader>
+          <CardTitle>Payment Information</CardTitle>
+          <CardDescription>
+            Enter your payment details below
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <form onSubmit={handleSubmit} className="space-y-6">
+            {/* Stripe Payment Element */}
+            <div className="min-h-[200px]">
+              <PaymentElement
+                options={{
+                  layout: 'tabs',
+                  defaultValues: {
+                    billingDetails: {
+                      name: `${firstName} ${lastName}`,
+                      email: email,
+                    },
+                  },
+                }}
+              />
+            </div>
+
+            {/* Error Message */}
+            {errorMessage && (
+              <div className="bg-red-50 border border-red-200 rounded-lg p-4">
+                <div className="flex items-start">
+                  <AlertCircle className="w-5 h-5 text-red-600 mr-2 mt-0.5 shrink-0" />
+                  <div>
+                    <p className="font-semibold text-red-900 text-sm">
+                      Payment Error
+                    </p>
+                    <p className="text-red-700 text-sm mt-1">{errorMessage}</p>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* Security Notice */}
+            <div className="bg-gray-50 border border-gray-200 rounded-lg p-4">
+              <div className="flex items-start text-sm text-gray-600">
+                <Lock className="w-4 h-4 mr-2 mt-0.5 shrink-0" />
+                <p>
+                  Your payment information is encrypted and secure. We never store
+                  your card details. Powered by Stripe.
+                </p>
+              </div>
+            </div>
+
+            {/* Action Buttons */}
+            <div className="flex justify-between pt-4">
+              <Button
+                type="button"
+                variant="outline"
+                onClick={onBack}
+                disabled={isProcessing}
+              >
+                Back
+              </Button>
+
+              <Button
+                type="submit"
+                disabled={!stripe || !paymentReady || isProcessing}
+                className="bg-blue-600 hover:bg-blue-700 min-w-[200px]"
+              >
+                {isProcessing ? (
+                  <>
+                    <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
+                    Processing...
+                  </>
+                ) : (
+                  <>
+                    Pay {formatAmount(amount)}
+                    <CheckCircle className="w-4 h-4 ml-2" />
+                  </>
+                )}
+              </Button>
+            </div>
+          </form>
+        </CardContent>
+      </Card>
+
+      {/* Additional Info */}
+      <div className="text-center text-sm text-gray-500">
+        <p>
+          By completing this payment, you agree to our terms of service and
+          privacy policy.
+        </p>
+      </div>
+    </div>
+  );
+}
+
