@@ -25,7 +25,6 @@ export async function PUT(
     const success = await updateClaimStatusService(
       claimId,
       status as ClaimStatus,
-      'admin@refundfinder.com',
       notes
     );
 
