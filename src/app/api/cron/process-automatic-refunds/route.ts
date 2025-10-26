@@ -4,7 +4,7 @@ import {
   processBatchAutomaticRefunds,
   RefundTrigger,
 } from '@/lib/automated-refund';
-import { checkRefundAlerts } from '@/lib/refund-analytics';
+import { checkRefundAlerts, getRefundDashboardData } from '@/lib/refund-analytics';
 
 /**
  * POST /api/cron/process-automatic-refunds
