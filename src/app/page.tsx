@@ -223,6 +223,47 @@ export default function Home() {
           </div>
         </div>
       </section>
+
+      {/* Footer */}
+      <footer className="bg-slate-950 border-t border-slate-800 py-12">
+        <div className="container mx-auto px-5 sm:px-10 lg:px-15">
+          <div className="text-center">
+            <h3 className="text-2xl font-bold text-white mb-4">✈️ RefundFinder</h3>
+            <p className="text-slate-400 mb-6">
+              Get the compensation you deserve for flight delays and cancellations
+            </p>
+            <div className="flex flex-wrap justify-center gap-6 mb-6">
+              <a 
+                href="/terms" 
+                className="text-slate-400 hover:text-white transition-colors"
+              >
+                Terms of Service
+              </a>
+              <a 
+                href="/privacy" 
+                className="text-slate-400 hover:text-white transition-colors"
+              >
+                Privacy Policy
+              </a>
+              <a 
+                href="/gdpr" 
+                className="text-slate-400 hover:text-white transition-colors"
+              >
+                GDPR Rights
+              </a>
+              <a 
+                href="mailto:support@refundfinder.com" 
+                className="text-slate-400 hover:text-white transition-colors"
+              >
+                Contact Support
+              </a>
+            </div>
+            <div className="text-sm text-slate-500">
+              © 2024 RefundFinder. All rights reserved.
+            </div>
+          </div>
+        </div>
+      </footer>
     </main>
   );
 }
