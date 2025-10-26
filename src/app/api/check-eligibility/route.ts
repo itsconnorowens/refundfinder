@@ -152,18 +152,18 @@ export async function POST(request: NextRequest) {
             departureDate: flightDetails.departureDate,
             departureAirport: flightDetails.departureAirport,
             arrivalAirport: flightDetails.arrivalAirport,
-            status: 'Delayed'
+            status: 'Delayed',
           },
           eligibility: {
             isEligible: result.eligible,
             compensationAmount: result.amount,
-            reason: result.reason || result.message
+            reason: result.reason || result.message,
           },
           validation: {
-            isValid: true
-          }
+            isValid: true,
+          },
         },
-        method: 'flight_lookup'
+        method: 'flight_lookup',
       },
       {
         headers: {

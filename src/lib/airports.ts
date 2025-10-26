@@ -1,0 +1,238 @@
+// Top 200 busiest airports worldwide with IATA codes
+export interface Airport {
+  code: string;
+  name: string;
+  city: string;
+  country: string;
+  region: string;
+}
+
+export const airports: Airport[] = [
+  // Major US Airports
+  { code: "ATL", name: "Hartsfield-Jackson Atlanta International", city: "Atlanta", country: "United States", region: "North America" },
+  { code: "LAX", name: "Los Angeles International", city: "Los Angeles", country: "United States", region: "North America" },
+  { code: "ORD", name: "O'Hare International", city: "Chicago", country: "United States", region: "North America" },
+  { code: "DFW", name: "Dallas/Fort Worth International", city: "Dallas", country: "United States", region: "North America" },
+  { code: "DEN", name: "Denver International", city: "Denver", country: "United States", region: "North America" },
+  { code: "JFK", name: "John F. Kennedy International", city: "New York", country: "United States", region: "North America" },
+  { code: "SFO", name: "San Francisco International", city: "San Francisco", country: "United States", region: "North America" },
+  { code: "SEA", name: "Seattle-Tacoma International", city: "Seattle", country: "United States", region: "North America" },
+  { code: "LAS", name: "McCarran International", city: "Las Vegas", country: "United States", region: "North America" },
+  { code: "MIA", name: "Miami International", city: "Miami", country: "United States", region: "North America" },
+  { code: "BOS", name: "Logan International", city: "Boston", country: "United States", region: "North America" },
+  { code: "PHX", name: "Phoenix Sky Harbor International", city: "Phoenix", country: "United States", region: "North America" },
+  { code: "IAH", name: "George Bush Intercontinental", city: "Houston", country: "United States", region: "North America" },
+  { code: "MCO", name: "Orlando International", city: "Orlando", country: "United States", region: "North America" },
+  { code: "DTW", name: "Detroit Metropolitan", city: "Detroit", country: "United States", region: "North America" },
+  { code: "MSP", name: "Minneapolis-Saint Paul International", city: "Minneapolis", country: "United States", region: "North America" },
+  { code: "PHL", name: "Philadelphia International", city: "Philadelphia", country: "United States", region: "North America" },
+  { code: "LGA", name: "LaGuardia", city: "New York", country: "United States", region: "North America" },
+  { code: "BWI", name: "Baltimore/Washington International", city: "Baltimore", country: "United States", region: "North America" },
+  { code: "SLC", name: "Salt Lake City International", city: "Salt Lake City", country: "United States", region: "North America" },
+
+  // Major European Airports
+  { code: "LHR", name: "London Heathrow", city: "London", country: "United Kingdom", region: "Europe" },
+  { code: "CDG", name: "Charles de Gaulle", city: "Paris", country: "France", region: "Europe" },
+  { code: "AMS", name: "Amsterdam Airport Schiphol", city: "Amsterdam", country: "Netherlands", region: "Europe" },
+  { code: "FRA", name: "Frankfurt Airport", city: "Frankfurt", country: "Germany", region: "Europe" },
+  { code: "MAD", name: "Adolfo Suárez Madrid-Barajas", city: "Madrid", country: "Spain", region: "Europe" },
+  { code: "BCN", name: "Barcelona-El Prat", city: "Barcelona", country: "Spain", region: "Europe" },
+  { code: "FCO", name: "Leonardo da Vinci-Fiumicino", city: "Rome", country: "Italy", region: "Europe" },
+  { code: "MUC", name: "Munich Airport", city: "Munich", country: "Germany", region: "Europe" },
+  { code: "ZUR", name: "Zurich Airport", city: "Zurich", country: "Switzerland", region: "Europe" },
+  { code: "VIE", name: "Vienna International", city: "Vienna", country: "Austria", region: "Europe" },
+  { code: "CPH", name: "Copenhagen Airport", city: "Copenhagen", country: "Denmark", region: "Europe" },
+  { code: "ARN", name: "Stockholm Arlanda", city: "Stockholm", country: "Sweden", region: "Europe" },
+  { code: "OSL", name: "Oslo Airport", city: "Oslo", country: "Norway", region: "Europe" },
+  { code: "HEL", name: "Helsinki Airport", city: "Helsinki", country: "Finland", region: "Europe" },
+  { code: "ATH", name: "Athens International", city: "Athens", country: "Greece", region: "Europe" },
+  { code: "WAW", name: "Warsaw Chopin", city: "Warsaw", country: "Poland", region: "Europe" },
+  { code: "LIS", name: "Humberto Delgado", city: "Lisbon", country: "Portugal", region: "Europe" },
+  { code: "BRU", name: "Brussels Airport", city: "Brussels", country: "Belgium", region: "Europe" },
+  { code: "DUB", name: "Dublin Airport", city: "Dublin", country: "Ireland", region: "Europe" },
+  { code: "MAN", name: "Manchester Airport", city: "Manchester", country: "United Kingdom", region: "Europe" },
+  { code: "LGW", name: "London Gatwick", city: "London", country: "United Kingdom", region: "Europe" },
+  { code: "STN", name: "London Stansted", city: "London", country: "United Kingdom", region: "Europe" },
+  { code: "LTN", name: "London Luton", city: "London", country: "United Kingdom", region: "Europe" },
+  { code: "BHX", name: "Birmingham Airport", city: "Birmingham", country: "United Kingdom", region: "Europe" },
+  { code: "BRS", name: "Bristol Airport", city: "Bristol", country: "United Kingdom", region: "Europe" },
+  { code: "NCL", name: "Newcastle Airport", city: "Newcastle", country: "United Kingdom", region: "Europe" },
+  { code: "EDI", name: "Edinburgh Airport", city: "Edinburgh", country: "United Kingdom", region: "Europe" },
+  { code: "GLA", name: "Glasgow Airport", city: "Glasgow", country: "United Kingdom", region: "Europe" },
+  { code: "BFS", name: "Belfast International", city: "Belfast", country: "United Kingdom", region: "Europe" },
+
+  // Major Asian Airports
+  { code: "PEK", name: "Beijing Capital International", city: "Beijing", country: "China", region: "Asia" },
+  { code: "PVG", name: "Shanghai Pudong International", city: "Shanghai", country: "China", region: "Asia" },
+  { code: "CAN", name: "Guangzhou Baiyun International", city: "Guangzhou", country: "China", region: "Asia" },
+  { code: "SZX", name: "Shenzhen Bao'an International", city: "Shenzhen", country: "China", region: "Asia" },
+  { code: "CTU", name: "Chengdu Shuangliu International", city: "Chengdu", country: "China", region: "Asia" },
+  { code: "KMG", name: "Kunming Changshui International", city: "Kunming", country: "China", region: "Asia" },
+  { code: "XIY", name: "Xi'an Xianyang International", city: "Xi'an", country: "China", region: "Asia" },
+  { code: "HGH", name: "Hangzhou Xiaoshan International", city: "Hangzhou", country: "China", region: "Asia" },
+  { code: "NKG", name: "Nanjing Lukou International", city: "Nanjing", country: "China", region: "Asia" },
+  { code: "TSN", name: "Tianjin Binhai International", city: "Tianjin", country: "China", region: "Asia" },
+  { code: "NRT", name: "Narita International", city: "Tokyo", country: "Japan", region: "Asia" },
+  { code: "HND", name: "Haneda Airport", city: "Tokyo", country: "Japan", region: "Asia" },
+  { code: "KIX", name: "Kansai International", city: "Osaka", country: "Japan", region: "Asia" },
+  { code: "ICN", name: "Incheon International", city: "Seoul", country: "South Korea", region: "Asia" },
+  { code: "GMP", name: "Gimpo International", city: "Seoul", country: "South Korea", region: "Asia" },
+  { code: "SIN", name: "Singapore Changi", city: "Singapore", country: "Singapore", region: "Asia" },
+  { code: "BKK", name: "Suvarnabhumi", city: "Bangkok", country: "Thailand", region: "Asia" },
+  { code: "DMK", name: "Don Mueang International", city: "Bangkok", country: "Thailand", region: "Asia" },
+  { code: "KUL", name: "Kuala Lumpur International", city: "Kuala Lumpur", country: "Malaysia", region: "Asia" },
+  { code: "CGK", name: "Soekarno-Hatta International", city: "Jakarta", country: "Indonesia", region: "Asia" },
+  { code: "MNL", name: "Ninoy Aquino International", city: "Manila", country: "Philippines", region: "Asia" },
+  { code: "DEL", name: "Indira Gandhi International", city: "Delhi", country: "India", region: "Asia" },
+  { code: "BOM", name: "Chhatrapati Shivaji Maharaj International", city: "Mumbai", country: "India", region: "Asia" },
+  { code: "BLR", name: "Kempegowda International", city: "Bangalore", country: "India", region: "Asia" },
+  { code: "CCU", name: "Netaji Subhash Chandra Bose International", city: "Kolkata", country: "India", region: "Asia" },
+  { code: "MAA", name: "Chennai International", city: "Chennai", country: "India", region: "Asia" },
+  { code: "HYD", name: "Rajiv Gandhi International", city: "Hyderabad", country: "India", region: "Asia" },
+  { code: "COK", name: "Cochin International", city: "Kochi", country: "India", region: "Asia" },
+  { code: "PNQ", name: "Pune Airport", city: "Pune", country: "India", region: "Asia" },
+  { code: "GOI", name: "Dabolim Airport", city: "Goa", country: "India", region: "Asia" },
+
+  // Major Middle Eastern Airports
+  { code: "DXB", name: "Dubai International", city: "Dubai", country: "UAE", region: "Middle East" },
+  { code: "AUH", name: "Abu Dhabi International", city: "Abu Dhabi", country: "UAE", region: "Middle East" },
+  { code: "DOH", name: "Hamad International", city: "Doha", country: "Qatar", region: "Middle East" },
+  { code: "IST", name: "Istanbul Airport", city: "Istanbul", country: "Turkey", region: "Middle East" },
+  { code: "SAW", name: "Sabiha Gökçen International", city: "Istanbul", country: "Turkey", region: "Middle East" },
+  { code: "TLV", name: "Ben Gurion Airport", city: "Tel Aviv", country: "Israel", region: "Middle East" },
+  { code: "RUH", name: "King Khalid International", city: "Riyadh", country: "Saudi Arabia", region: "Middle East" },
+  { code: "JED", name: "King Abdulaziz International", city: "Jeddah", country: "Saudi Arabia", region: "Middle East" },
+  { code: "KWI", name: "Kuwait International", city: "Kuwait City", country: "Kuwait", region: "Middle East" },
+  { code: "BAH", name: "Bahrain International", city: "Manama", country: "Bahrain", region: "Middle East" },
+
+  // Major African Airports
+  { code: "JNB", name: "O.R. Tambo International", city: "Johannesburg", country: "South Africa", region: "Africa" },
+  { code: "CPT", name: "Cape Town International", city: "Cape Town", country: "South Africa", region: "Africa" },
+  { code: "CAI", name: "Cairo International", city: "Cairo", country: "Egypt", region: "Africa" },
+  { code: "LOS", name: "Murtala Muhammed International", city: "Lagos", country: "Nigeria", region: "Africa" },
+  { code: "NBO", name: "Jomo Kenyatta International", city: "Nairobi", country: "Kenya", region: "Africa" },
+  { code: "CMN", name: "Mohammed V International", city: "Casablanca", country: "Morocco", region: "Africa" },
+  { code: "TUN", name: "Tunis-Carthage International", city: "Tunis", country: "Tunisia", region: "Africa" },
+  { code: "ALG", name: "Houari Boumediene Airport", city: "Algiers", country: "Algeria", region: "Africa" },
+  { code: "ADD", name: "Bole International", city: "Addis Ababa", country: "Ethiopia", region: "Africa" },
+  { code: "DAR", name: "Julius Nyerere International", city: "Dar es Salaam", country: "Tanzania", region: "Africa" },
+
+  // Major Canadian Airports
+  { code: "YYZ", name: "Toronto Pearson International", city: "Toronto", country: "Canada", region: "North America" },
+  { code: "YVR", name: "Vancouver International", city: "Vancouver", country: "Canada", region: "North America" },
+  { code: "YUL", name: "Montreal-Pierre Elliott Trudeau International", city: "Montreal", country: "Canada", region: "North America" },
+  { code: "YYC", name: "Calgary International", city: "Calgary", country: "Canada", region: "North America" },
+  { code: "YEG", name: "Edmonton International", city: "Edmonton", country: "Canada", region: "North America" },
+  { code: "YOW", name: "Ottawa Macdonald-Cartier International", city: "Ottawa", country: "Canada", region: "North America" },
+  { code: "YHZ", name: "Halifax Stanfield International", city: "Halifax", country: "Canada", region: "North America" },
+  { code: "YWG", name: "Winnipeg James Armstrong Richardson International", city: "Winnipeg", country: "Canada", region: "North America" },
+
+  // Major Australian Airports
+  { code: "SYD", name: "Sydney Kingsford Smith", city: "Sydney", country: "Australia", region: "Oceania" },
+  { code: "MEL", name: "Melbourne Airport", city: "Melbourne", country: "Australia", region: "Oceania" },
+  { code: "BNE", name: "Brisbane Airport", city: "Brisbane", country: "Australia", region: "Oceania" },
+  { code: "PER", name: "Perth Airport", city: "Perth", country: "Australia", region: "Oceania" },
+  { code: "ADL", name: "Adelaide Airport", city: "Adelaide", country: "Australia", region: "Oceania" },
+  { code: "OOL", name: "Gold Coast Airport", city: "Gold Coast", country: "Australia", region: "Oceania" },
+  { code: "CNS", name: "Cairns Airport", city: "Cairns", country: "Australia", region: "Oceania" },
+  { code: "DRW", name: "Darwin International", city: "Darwin", country: "Australia", region: "Oceania" },
+
+  // Major South American Airports
+  { code: "GRU", name: "São Paulo-Guarulhos International", city: "São Paulo", country: "Brazil", region: "South America" },
+  { code: "GIG", name: "Rio de Janeiro-Galeão International", city: "Rio de Janeiro", country: "Brazil", region: "South America" },
+  { code: "BSB", name: "Brasília International", city: "Brasília", country: "Brazil", region: "South America" },
+  { code: "EZE", name: "Ministro Pistarini International", city: "Buenos Aires", country: "Argentina", region: "South America" },
+  { code: "SCL", name: "Arturo Merino Benítez International", city: "Santiago", country: "Chile", region: "South America" },
+  { code: "LIM", name: "Jorge Chávez International", city: "Lima", country: "Peru", region: "South America" },
+  { code: "BOG", name: "El Dorado International", city: "Bogotá", country: "Colombia", region: "South America" },
+  { code: "UIO", name: "Mariscal Sucre International", city: "Quito", country: "Ecuador", region: "South America" },
+  { code: "CCS", name: "Simón Bolívar International", city: "Caracas", country: "Venezuela", region: "South America" },
+
+  // Additional Major Airports
+  { code: "HKG", name: "Hong Kong International", city: "Hong Kong", country: "Hong Kong", region: "Asia" },
+  { code: "TPE", name: "Taiwan Taoyuan International", city: "Taipei", country: "Taiwan", region: "Asia" },
+  { code: "ICN", name: "Incheon International", city: "Seoul", country: "South Korea", region: "Asia" },
+  { code: "NRT", name: "Narita International", city: "Tokyo", country: "Japan", region: "Asia" },
+  { code: "HND", name: "Haneda Airport", city: "Tokyo", country: "Japan", region: "Asia" },
+  { code: "KIX", name: "Kansai International", city: "Osaka", country: "Japan", region: "Asia" },
+  { code: "SIN", name: "Singapore Changi", city: "Singapore", country: "Singapore", region: "Asia" },
+  { code: "BKK", name: "Suvarnabhumi", city: "Bangkok", country: "Thailand", region: "Asia" },
+  { code: "KUL", name: "Kuala Lumpur International", city: "Kuala Lumpur", country: "Malaysia", region: "Asia" },
+  { code: "CGK", name: "Soekarno-Hatta International", city: "Jakarta", country: "Indonesia", region: "Asia" },
+  { code: "MNL", name: "Ninoy Aquino International", city: "Manila", country: "Philippines", region: "Asia" },
+  { code: "DEL", name: "Indira Gandhi International", city: "Delhi", country: "India", region: "Asia" },
+  { code: "BOM", name: "Chhatrapati Shivaji Maharaj International", city: "Mumbai", country: "India", region: "Asia" },
+  { code: "BLR", name: "Kempegowda International", city: "Bangalore", country: "India", region: "Asia" },
+  { code: "CCU", name: "Netaji Subhash Chandra Bose International", city: "Kolkata", country: "India", region: "Asia" },
+  { code: "MAA", name: "Chennai International", city: "Chennai", country: "India", region: "Asia" },
+  { code: "HYD", name: "Rajiv Gandhi International", city: "Hyderabad", country: "India", region: "Asia" },
+  { code: "COK", name: "Cochin International", city: "Kochi", country: "India", region: "Asia" },
+  { code: "PNQ", name: "Pune Airport", city: "Pune", country: "India", region: "Asia" },
+  { code: "GOI", name: "Dabolim Airport", city: "Goa", country: "India", region: "Asia" },
+  { code: "DXB", name: "Dubai International", city: "Dubai", country: "UAE", region: "Middle East" },
+  { code: "AUH", name: "Abu Dhabi International", city: "Abu Dhabi", country: "UAE", region: "Middle East" },
+  { code: "DOH", name: "Hamad International", city: "Doha", country: "Qatar", region: "Middle East" },
+  { code: "IST", name: "Istanbul Airport", city: "Istanbul", country: "Turkey", region: "Middle East" },
+  { code: "SAW", name: "Sabiha Gökçen International", city: "Istanbul", country: "Turkey", region: "Middle East" },
+  { code: "TLV", name: "Ben Gurion Airport", city: "Tel Aviv", country: "Israel", region: "Middle East" },
+  { code: "RUH", name: "King Khalid International", city: "Riyadh", country: "Saudi Arabia", region: "Middle East" },
+  { code: "JED", name: "King Abdulaziz International", city: "Jeddah", country: "Saudi Arabia", region: "Middle East" },
+  { code: "KWI", name: "Kuwait International", city: "Kuwait City", country: "Kuwait", region: "Middle East" },
+  { code: "BAH", name: "Bahrain International", city: "Manama", country: "Bahrain", region: "Middle East" },
+  { code: "JNB", name: "O.R. Tambo International", city: "Johannesburg", country: "South Africa", region: "Africa" },
+  { code: "CPT", name: "Cape Town International", city: "Cape Town", country: "South Africa", region: "Africa" },
+  { code: "CAI", name: "Cairo International", city: "Cairo", country: "Egypt", region: "Africa" },
+  { code: "LOS", name: "Murtala Muhammed International", city: "Lagos", country: "Nigeria", region: "Africa" },
+  { code: "NBO", name: "Jomo Kenyatta International", city: "Nairobi", country: "Kenya", region: "Africa" },
+  { code: "CMN", name: "Mohammed V International", city: "Casablanca", country: "Morocco", region: "Africa" },
+  { code: "TUN", name: "Tunis-Carthage International", city: "Tunis", country: "Tunisia", region: "Africa" },
+  { code: "ALG", name: "Houari Boumediene Airport", city: "Algiers", country: "Algeria", region: "Africa" },
+  { code: "ADD", name: "Bole International", city: "Addis Ababa", country: "Ethiopia", region: "Africa" },
+  { code: "DAR", name: "Julius Nyerere International", city: "Dar es Salaam", country: "Tanzania", region: "Africa" },
+  { code: "YYZ", name: "Toronto Pearson International", city: "Toronto", country: "Canada", region: "North America" },
+  { code: "YVR", name: "Vancouver International", city: "Vancouver", country: "Canada", region: "North America" },
+  { code: "YUL", name: "Montreal-Pierre Elliott Trudeau International", city: "Montreal", country: "Canada", region: "North America" },
+  { code: "YYC", name: "Calgary International", city: "Calgary", country: "Canada", region: "North America" },
+  { code: "YEG", name: "Edmonton International", city: "Edmonton", country: "Canada", region: "North America" },
+  { code: "YOW", name: "Ottawa Macdonald-Cartier International", city: "Ottawa", country: "Canada", region: "North America" },
+  { code: "YHZ", name: "Halifax Stanfield International", city: "Halifax", country: "Canada", region: "North America" },
+  { code: "YWG", name: "Winnipeg James Armstrong Richardson International", city: "Winnipeg", country: "Canada", region: "North America" },
+  { code: "SYD", name: "Sydney Kingsford Smith", city: "Sydney", country: "Australia", region: "Oceania" },
+  { code: "MEL", name: "Melbourne Airport", city: "Melbourne", country: "Australia", region: "Oceania" },
+  { code: "BNE", name: "Brisbane Airport", city: "Brisbane", country: "Australia", region: "Oceania" },
+  { code: "PER", name: "Perth Airport", city: "Perth", country: "Australia", region: "Oceania" },
+  { code: "ADL", name: "Adelaide Airport", city: "Adelaide", country: "Australia", region: "Oceania" },
+  { code: "OOL", name: "Gold Coast Airport", city: "Gold Coast", country: "Australia", region: "Oceania" },
+  { code: "CNS", name: "Cairns Airport", city: "Cairns", country: "Australia", region: "Oceania" },
+  { code: "DRW", name: "Darwin International", city: "Darwin", country: "Australia", region: "Oceania" },
+  { code: "GRU", name: "São Paulo-Guarulhos International", city: "São Paulo", country: "Brazil", region: "South America" },
+  { code: "GIG", name: "Rio de Janeiro-Galeão International", city: "Rio de Janeiro", country: "Brazil", region: "South America" },
+  { code: "BSB", name: "Brasília International", city: "Brasília", country: "Brazil", region: "South America" },
+  { code: "EZE", name: "Ministro Pistarini International", city: "Buenos Aires", country: "Argentina", region: "South America" },
+  { code: "SCL", name: "Arturo Merino Benítez International", city: "Santiago", country: "Chile", region: "South America" },
+  { code: "LIM", name: "Jorge Chávez International", city: "Lima", country: "Peru", region: "South America" },
+  { code: "BOG", name: "El Dorado International", city: "Bogotá", country: "Colombia", region: "South America" },
+  { code: "UIO", name: "Mariscal Sucre International", city: "Quito", country: "Ecuador", region: "South America" },
+  { code: "CCS", name: "Simón Bolívar International", city: "Caracas", country: "Venezuela", region: "South America" },
+];
+
+// Helper functions
+export function searchAirports(query: string): Airport[] {
+  if (!query || query.length < 1) return [];
+  
+  const lowerQuery = query.toLowerCase();
+  return airports.filter(airport => 
+    airport.code.toLowerCase().includes(lowerQuery) ||
+    airport.name.toLowerCase().includes(lowerQuery) ||
+    airport.city.toLowerCase().includes(lowerQuery) ||
+    airport.country.toLowerCase().includes(lowerQuery)
+  ).slice(0, 10); // Limit to 10 results
+}
+
+export function getAirportByCode(code: string): Airport | undefined {
+  return airports.find(airport => airport.code.toLowerCase() === code.toLowerCase());
+}
+
+export function validateAirportCode(code: string): boolean {
+  return airports.some(airport => airport.code.toLowerCase() === code.toLowerCase());
+}

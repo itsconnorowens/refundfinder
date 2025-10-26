@@ -2,6 +2,8 @@
 
 import { useState } from 'react';
 import { CheckEligibilityResponse } from '../types/api';
+import AirportAutocomplete from './AirportAutocomplete';
+import { validateAirportCode } from '@/lib/airports';
 
 interface FlightLookupFormProps {
   onResults: (results: CheckEligibilityResponse) => void;
@@ -52,14 +54,14 @@ export default function FlightLookupForm({ onResults, onLoading }: FlightLookupF
 
     if (!formData.departureAirport.trim()) {
       newErrors.departureAirport = 'Departure airport is required';
-    } else if (!/^[A-Z]{3}$/i.test(formData.departureAirport.trim())) {
-      newErrors.departureAirport = 'Please enter a valid 3-letter airport code (e.g., IST, LHR)';
+    } else if (!validateAirportCode(formData.departureAirport.trim())) {
+      newErrors.departureAirport = 'Please enter a valid airport code';
     }
 
     if (!formData.arrivalAirport.trim()) {
       newErrors.arrivalAirport = 'Arrival airport is required';
-    } else if (!/^[A-Z]{3}$/i.test(formData.arrivalAirport.trim())) {
-      newErrors.arrivalAirport = 'Please enter a valid 3-letter airport code (e.g., MIA, CDG)';
+    } else if (!validateAirportCode(formData.arrivalAirport.trim())) {
+      newErrors.arrivalAirport = 'Please enter a valid airport code';
     }
 
     if (!formData.airline.trim()) {
@@ -151,7 +153,7 @@ export default function FlightLookupForm({ onResults, onLoading }: FlightLookupF
       <div className="text-center mb-6">
         <h2 className="text-2xl font-bold text-gray-900 mb-2">Enter Your Flight Details</h2>
         <p className="text-gray-600">We&apos;ll check if you&apos;re eligible for compensation</p>
-        <p className="text-xs text-gray-500 mt-2">Form Version: 2.0 (with airline and delay fields)</p>
+        <p className="text-xs text-gray-500 mt-2">Form Version: 3.0 (with airport autocomplete)</p>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -195,46 +197,24 @@ export default function FlightLookupForm({ onResults, onLoading }: FlightLookupF
         </div>
 
         {/* Departure Airport */}
-        <div>
-          <label htmlFor="departureAirport" className="block text-sm font-medium text-gray-700 mb-2">
-            Departure Airport *
-          </label>
-          <input
-            type="text"
-            id="departureAirport"
-            value={formData.departureAirport}
-            onChange={(e) => handleInputChange('departureAirport', e.target.value)}
-            placeholder="e.g., IST, LHR"
-            maxLength={3}
-            className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${
-              errors.departureAirport ? 'border-red-500' : 'border-gray-300'
-            }`}
-          />
-          {errors.departureAirport && (
-            <p className="mt-1 text-sm text-red-600">{errors.departureAirport}</p>
-          )}
-        </div>
+        <AirportAutocomplete
+          value={formData.departureAirport}
+          onChange={(value) => handleInputChange('departureAirport', value)}
+          placeholder="e.g., LHR, JFK"
+          error={errors.departureAirport}
+          label="Departure Airport"
+          required={true}
+        />
 
         {/* Arrival Airport */}
-        <div>
-          <label htmlFor="arrivalAirport" className="block text-sm font-medium text-gray-700 mb-2">
-            Arrival Airport *
-          </label>
-          <input
-            type="text"
-            id="arrivalAirport"
-            value={formData.arrivalAirport}
-            onChange={(e) => handleInputChange('arrivalAirport', e.target.value)}
-            placeholder="e.g., MIA, CDG"
-            maxLength={3}
-            className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${
-              errors.arrivalAirport ? 'border-red-500' : 'border-gray-300'
-            }`}
-          />
-          {errors.arrivalAirport && (
-            <p className="mt-1 text-sm text-red-600">{errors.arrivalAirport}</p>
-          )}
-        </div>
+        <AirportAutocomplete
+          value={formData.arrivalAirport}
+          onChange={(value) => handleInputChange('arrivalAirport', value)}
+          placeholder="e.g., CDG, LAX"
+          error={errors.arrivalAirport}
+          label="Arrival Airport"
+          required={true}
+        />
 
         {/* Airline */}
         <div>
