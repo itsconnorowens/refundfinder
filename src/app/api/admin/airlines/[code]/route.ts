@@ -7,10 +7,10 @@ import { getAllAirlineConfigs, getAirlineConfig } from '@/lib/airline-config';
  */
 export async function GET(
   request: NextRequest,
-  { params }: { params: { code: string } }
+  { params }: { params: Promise<{ code: string }> }
 ) {
   try {
-    const airlineCode = params.code;
+    const { code: airlineCode } = await params;
     const config = getAirlineConfig(airlineCode);
 
     if (!config) {
@@ -39,9 +39,10 @@ export async function GET(
  */
 export async function PUT(
   request: NextRequest,
-  { params }: { params: { code: string } }
+  { params }: { params: Promise<{ code: string }> }
 ) {
   try {
+    const { code } = await params;
     // For now, return not implemented
     // In the future, this could update airline configs in a database
     return NextResponse.json(

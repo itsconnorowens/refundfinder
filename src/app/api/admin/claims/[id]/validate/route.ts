@@ -7,10 +7,10 @@ import { validateClaimForFiling } from '@/lib/claim-filing-service';
  */
 export async function POST(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const claimId = params.id;
+    const { id: claimId } = await params;
     const validation = await validateClaimForFiling(claimId);
 
     return NextResponse.json({

@@ -7,10 +7,10 @@ import { generateAirlineSubmission } from '@/lib/claim-filing-service';
  */
 export async function POST(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const claimId = params.id;
+    const { id: claimId } = await params;
     const result = await generateAirlineSubmission(claimId);
 
     if (!result.success) {

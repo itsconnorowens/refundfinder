@@ -14,10 +14,10 @@ import {
  */
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const claimId = params.id;
+    const { id: claimId } = await params;
     const claim = await getClaimByClaimId(claimId);
 
     if (!claim) {
@@ -46,10 +46,10 @@ export async function GET(
  */
 export async function POST_VALIDATE(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const claimId = params.id;
+    const { id: claimId } = await params;
     const validation = await validateClaimForFiling(claimId);
 
     return NextResponse.json({
@@ -71,10 +71,10 @@ export async function POST_VALIDATE(
  */
 export async function POST_GENERATE_SUBMISSION(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const claimId = params.id;
+    const { id: claimId } = await params;
     const result = await generateAirlineSubmission(claimId);
 
     if (!result.success) {
@@ -100,10 +100,10 @@ export async function POST_GENERATE_SUBMISSION(
  */
 export async function PUT_STATUS(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const claimId = params.id;
+    const { id: claimId } = await params;
     const body = await request.json();
     const { status, notes } = body;
 
@@ -146,10 +146,10 @@ export async function PUT_STATUS(
  */
 export async function POST_FILE(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const claimId = params.id;
+    const { id: claimId } = await params;
     const body = await request.json();
     const { airlineReference, filedBy, filingMethod } = body;
 
@@ -193,10 +193,10 @@ export async function POST_FILE(
  */
 export async function POST_FOLLOW_UP(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const claimId = params.id;
+    const { id: claimId } = await params;
     const body = await request.json();
     const { followUpDate, followUpType, notes } = body;
 
@@ -240,10 +240,10 @@ export async function POST_FOLLOW_UP(
  */
 export async function PUT(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const claimId = params.id;
+    const { id: claimId } = await params;
     const body = await request.json();
 
     const claim = await getClaimByClaimId(claimId);
