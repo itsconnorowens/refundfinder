@@ -23,7 +23,6 @@ export interface FlightLookupResult {
   data?: FlightData;
   errors: string[];
   sources: string[];
-  usage?: any; // Usage information from monitoring
 }
 
 // AviationStack API integration
@@ -205,9 +204,6 @@ class FlightLabsAPI {
 }
 */
 
-// Import usage monitoring
-import { usageMiddleware } from "./usage-middleware";
-import { mockFlightDataService } from "./mock-flight-data";
 
 // Flight lookup service - currently using only AviationStack
 export class FlightLookupService {
@@ -232,22 +228,6 @@ export class FlightLookupService {
     const errors: string[] = [];
     const sources: string[] = [];
 
-    // Check usage limits before making API call
-    const usageCheck = await usageMiddleware.checkUsage({
-      apiName: "aviationstack",
-      requestCount: 1,
-      blockOnLimit: true,
-      logUsage: true,
-    });
-
-    if (!usageCheck.allowed) {
-      return {
-        success: false,
-        errors: [usageCheck.error || "API usage limit exceeded"],
-        sources,
-      };
-    }
-
     try {
       // Try AviationStack API first
       const aviationStackData = await this.aviationStack.lookupFlight(
@@ -262,7 +242,6 @@ export class FlightLookupService {
           data: aviationStackData,
           errors,
           sources,
-          usage: usageCheck.usage, // Include usage info in response
         };
       } else {
         errors.push("AviationStack: No data found");
@@ -274,44 +253,12 @@ export class FlightLookupService {
       );
     }
 
-    // Fallback to mock data if AviationStack fails
-    try {
-      console.log("Falling back to mock flight data...");
-      const mockData = await mockFlightDataService.lookupFlight(
-        flightNumber,
-        date
-      );
-
-      if (mockData) {
-        sources.push("mock");
-        return {
-          success: true,
-          data: mockData,
-          errors: [...errors, "Using mock data - real-time data unavailable"],
-          sources,
-          usage: usageCheck.usage,
-        };
-      } else {
-        errors.push("Mock data: No data found");
-        return {
-          success: false,
-          errors,
-          sources,
-          usage: usageCheck.usage,
-        };
-      }
-    } catch (error) {
-      console.error("Mock data error:", error);
-      errors.push(
-        `Mock data: ${error instanceof Error ? error.message : "Unknown error"}`
-      );
-      return {
-        success: false,
-        errors,
-        sources,
-        usage: usageCheck.usage,
-      };
-    }
+    // If all APIs fail, return error
+    return {
+      success: false,
+      errors,
+      sources,
+    };
   }
 
   // Commented out for single API implementation
