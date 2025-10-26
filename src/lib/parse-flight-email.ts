@@ -1,6 +1,5 @@
 // Flight email parsing using Anthropic Claude
 import Anthropic from "@anthropic-ai/sdk";
-import { usageMiddleware } from "./usage-middleware";
 
 const anthropic = new Anthropic({
   apiKey: process.env.ANTHROPIC_API_KEY,
@@ -29,7 +28,6 @@ export interface EmailParseResult {
   data?: FlightEmailData;
   error?: string;
   confidence: number;
-  usage?: any; // Usage information from monitoring
 }
 
 export function isAnthropicConfigured(): boolean {
@@ -55,22 +53,6 @@ export async function parseFlightEmail(
     };
   }
 
-  // Check usage limits before making API call
-  const usageCheck = await usageMiddleware.checkUsage({
-    apiName: "anthropic",
-    requestCount: 1,
-    blockOnLimit: true,
-    logUsage: true,
-  });
-
-  if (!usageCheck.allowed) {
-    return {
-      success: false,
-      error: usageCheck.error || "API usage limit exceeded",
-      confidence: 0,
-      usage: usageCheck.usage,
-    };
-  }
 
   try {
     const prompt = createParsingPrompt(emailContent);
@@ -86,7 +68,6 @@ export async function parseFlightEmail(
         success: false,
         error: "Unexpected response format from Anthropic",
         confidence: 0,
-        usage: usageCheck.usage,
       };
     }
 
@@ -97,7 +78,6 @@ export async function parseFlightEmail(
       success: true,
       data: parsedData,
       confidence,
-      usage: usageCheck.usage,
     };
   } catch (error) {
     console.error("Error parsing flight email:", error);
@@ -105,7 +85,6 @@ export async function parseFlightEmail(
       success: false,
       error: error instanceof Error ? error.message : "Unknown error occurred",
       confidence: 0,
-      usage: usageCheck.usage,
     };
   }
 }
