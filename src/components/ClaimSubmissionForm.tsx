@@ -30,6 +30,8 @@ interface FormData {
   // Step 3: Documentation
   boardingPass: File | null;
   delayProof: File | null;
+  boardingPassUrl?: string;
+  delayProofUrl?: string;
 }
 
 interface FormErrors {
@@ -69,6 +71,7 @@ export default function ClaimSubmissionForm() {
   const [paymentClientSecret, setPaymentClientSecret] = useState<string | null>(null);
   const [paymentIntentId, setPaymentIntentId] = useState<string | null>(null);
   const [isCreatingPaymentIntent, setIsCreatingPaymentIntent] = useState(false);
+  const [isUploading, setIsUploading] = useState<{ [key: string]: boolean }>({});
 
   // Load form data from localStorage on mount and pre-fill from URL params
   useEffect(() => {
@@ -198,7 +201,7 @@ export default function ClaimSubmissionForm() {
     setCurrentStep(prev => Math.max(prev - 1, 1));
   };
 
-  const handleFileUpload = (file: File, type: 'boardingPass' | 'delayProof') => {
+  const handleFileUpload = async (file: File, type: 'boardingPass' | 'delayProof') => {
     // Validate file type
     const allowedTypes = ['application/pdf', 'image/jpeg', 'image/jpg', 'image/png'];
     if (!allowedTypes.includes(file.type)) {
@@ -212,8 +215,40 @@ export default function ClaimSubmissionForm() {
       return;
     }
 
-    handleInputChange(type, file);
-    setErrors(prev => ({ ...prev, [type]: '' }));
+    setIsUploading(prev => ({ ...prev, [type]: true }));
+    
+    try {
+      const formData = new FormData();
+      formData.append('file', file);
+      formData.append('fileType', type);
+
+      const response = await fetch('/api/upload-file', {
+        method: 'POST',
+        body: formData,
+      });
+
+      const result = await response.json();
+
+      if (response.ok) {
+        // Store both the file object and the uploaded URL
+        setFormData(prev => ({
+          ...prev,
+          [type]: file,
+          [`${type}Url`]: result.url
+        }));
+        setErrors(prev => ({ ...prev, [type]: '' }));
+      } else {
+        throw new Error(result.error || 'Upload failed');
+      }
+    } catch (error) {
+      console.error('Upload error:', error);
+      setErrors(prev => ({ 
+        ...prev, 
+        [type]: 'Failed to upload file. Please try again.' 
+      }));
+    } finally {
+      setIsUploading(prev => ({ ...prev, [type]: false }));
+    }
   };
 
   const handleDrag = (e: React.DragEvent, type: 'boardingPass' | 'delayProof') => {
@@ -237,36 +272,44 @@ export default function ClaimSubmissionForm() {
   };
 
   const removeFile = (type: 'boardingPass' | 'delayProof') => {
-    handleInputChange(type, null);
+    setFormData(prev => ({
+      ...prev,
+      [type]: null,
+      [`${type}Url`]: undefined
+    }));
   };
 
   const handlePaymentSuccess = async (paymentIntentId: string) => {
     setIsSubmitting(true);
     
     try {
-      const formDataToSend = new FormData();
-      formDataToSend.append('firstName', formData.firstName);
-      formDataToSend.append('lastName', formData.lastName);
-      formDataToSend.append('email', formData.email);
-      formDataToSend.append('flightNumber', formData.flightNumber);
-      formDataToSend.append('airline', formData.airline);
-      formDataToSend.append('departureDate', formData.departureDate);
-      formDataToSend.append('departureAirport', formData.departureAirport);
-      formDataToSend.append('arrivalAirport', formData.arrivalAirport);
-      formDataToSend.append('delayDuration', formData.delayDuration);
-      formDataToSend.append('delayReason', formData.delayReason);
-      formDataToSend.append('paymentIntentId', paymentIntentId);
-      
-      if (formData.boardingPass) {
-        formDataToSend.append('boardingPass', formData.boardingPass);
-      }
-      if (formData.delayProof) {
-        formDataToSend.append('delayProof', formData.delayProof);
+      // Validate that files have been uploaded
+      if (!formData.boardingPassUrl || !formData.delayProofUrl) {
+        alert('Please ensure all files have been uploaded successfully before proceeding.');
+        setIsSubmitting(false);
+        return;
       }
 
       const response = await fetch('/api/create-claim', {
         method: 'POST',
-        body: formDataToSend,
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          firstName: formData.firstName,
+          lastName: formData.lastName,
+          email: formData.email,
+          flightNumber: formData.flightNumber,
+          airline: formData.airline,
+          departureDate: formData.departureDate,
+          departureAirport: formData.departureAirport,
+          arrivalAirport: formData.arrivalAirport,
+          delayDuration: formData.delayDuration,
+          delayReason: formData.delayReason,
+          paymentIntentId: paymentIntentId,
+          boardingPassUrl: formData.boardingPassUrl,
+          delayProofUrl: formData.delayProofUrl,
+        }),
       });
 
       const result = await response.json();
@@ -557,7 +600,12 @@ export default function ClaimSubmissionForm() {
                   onDragOver={(e) => handleDrag(e, 'boardingPass')}
                   onDrop={(e) => handleDrop(e, 'boardingPass')}
                 >
-                  {formData.boardingPass ? (
+                  {isUploading.boardingPass ? (
+                    <div className="flex items-center justify-center">
+                      <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-blue-600 mr-2"></div>
+                      <span className="text-sm text-gray-600">Uploading...</span>
+                    </div>
+                  ) : formData.boardingPass ? (
                     <div className="flex items-center justify-between">
                       <div className="flex items-center">
                         <FileText className="w-5 h-5 text-green-600 mr-2" />
@@ -565,12 +613,18 @@ export default function ClaimSubmissionForm() {
                         <Badge variant="secondary" className="ml-2">
                           {(formData.boardingPass.size / 1024 / 1024).toFixed(1)} MB
                         </Badge>
+                        {formData.boardingPassUrl && (
+                          <Badge variant="outline" className="ml-2 text-green-600">
+                            ✓ Uploaded
+                          </Badge>
+                        )}
                       </div>
                       <Button
                         type="button"
                         variant="ghost"
                         size="sm"
                         onClick={() => removeFile('boardingPass')}
+                        disabled={isUploading.boardingPass}
                       >
                         <X className="w-4 h-4" />
                       </Button>
@@ -626,7 +680,12 @@ export default function ClaimSubmissionForm() {
                   onDragOver={(e) => handleDrag(e, 'delayProof')}
                   onDrop={(e) => handleDrop(e, 'delayProof')}
                 >
-                  {formData.delayProof ? (
+                  {isUploading.delayProof ? (
+                    <div className="flex items-center justify-center">
+                      <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-blue-600 mr-2"></div>
+                      <span className="text-sm text-gray-600">Uploading...</span>
+                    </div>
+                  ) : formData.delayProof ? (
                     <div className="flex items-center justify-between">
                       <div className="flex items-center">
                         <FileText className="w-5 h-5 text-green-600 mr-2" />
@@ -634,12 +693,18 @@ export default function ClaimSubmissionForm() {
                         <Badge variant="secondary" className="ml-2">
                           {(formData.delayProof.size / 1024 / 1024).toFixed(1)} MB
                         </Badge>
+                        {formData.delayProofUrl && (
+                          <Badge variant="outline" className="ml-2 text-green-600">
+                            ✓ Uploaded
+                          </Badge>
+                        )}
                       </div>
                       <Button
                         type="button"
                         variant="ghost"
                         size="sm"
                         onClick={() => removeFile('delayProof')}
+                        disabled={isUploading.delayProof}
                       >
                         <X className="w-4 h-4" />
                       </Button>

@@ -1,31 +1,29 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { writeFile, mkdir } from 'fs/promises';
-import { join } from 'path';
 import { createClaim, createPayment } from '@/lib/airtable';
 import { retrievePaymentIntent } from '@/lib/stripe-server';
 
 export async function POST(request: NextRequest) {
   try {
-    const formData = await request.formData();
+    const body = await request.json();
 
     // Extract form fields
-    const firstName = formData.get('firstName') as string;
-    const lastName = formData.get('lastName') as string;
-    const email = formData.get('email') as string;
-    const flightNumber = formData.get('flightNumber') as string;
-    const airline = formData.get('airline') as string;
-    const departureDate = formData.get('departureDate') as string;
-    const departureAirport = formData.get('departureAirport') as string;
-    const arrivalAirport = formData.get('arrivalAirport') as string;
-    const delayDuration = formData.get('delayDuration') as string;
-    const delayReason = formData.get('delayReason') as string;
+    const firstName = body.firstName;
+    const lastName = body.lastName;
+    const email = body.email;
+    const flightNumber = body.flightNumber;
+    const airline = body.airline;
+    const departureDate = body.departureDate;
+    const departureAirport = body.departureAirport;
+    const arrivalAirport = body.arrivalAirport;
+    const delayDuration = body.delayDuration;
+    const delayReason = body.delayReason;
 
     // Extract payment information
-    const paymentIntentId = formData.get('paymentIntentId') as string;
+    const paymentIntentId = body.paymentIntentId;
 
-    // Extract files
-    const boardingPass = formData.get('boardingPass') as File;
-    const delayProof = formData.get('delayProof') as File;
+    // Extract file URLs (already uploaded to Vercel Blob)
+    const boardingPassUrl = body.boardingPassUrl;
+    const delayProofUrl = body.delayProofUrl;
 
     // Validate required fields
     if (
@@ -38,7 +36,9 @@ export async function POST(request: NextRequest) {
       !departureAirport ||
       !arrivalAirport ||
       !delayDuration ||
-      !paymentIntentId
+      !paymentIntentId ||
+      !boardingPassUrl ||
+      !delayProofUrl
     ) {
       return NextResponse.json(
         { error: 'Missing required fields' },
@@ -68,66 +68,8 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Validate files
-    if (!boardingPass || !delayProof) {
-      return NextResponse.json(
-        { error: 'Missing required documents' },
-        { status: 400 }
-      );
-    }
-
-    // Validate file types
-    const allowedTypes = [
-      'application/pdf',
-      'image/jpeg',
-      'image/jpg',
-      'image/png',
-    ];
-    if (
-      !allowedTypes.includes(boardingPass.type) ||
-      !allowedTypes.includes(delayProof.type)
-    ) {
-      return NextResponse.json(
-        {
-          error: 'Invalid file type. Only PDF, JPG, and PNG files are allowed.',
-        },
-        { status: 400 }
-      );
-    }
-
-    // Validate file sizes (5MB limit)
-    const maxSize = 5 * 1024 * 1024; // 5MB
-    if (boardingPass.size > maxSize || delayProof.size > maxSize) {
-      return NextResponse.json(
-        { error: 'File size too large. Maximum size is 5MB.' },
-        { status: 400 }
-      );
-    }
-
-    // Create uploads directory if it doesn't exist
-    const uploadsDir = join(process.cwd(), 'uploads');
-    try {
-      await mkdir(uploadsDir, { recursive: true });
-    } catch {
-      // Directory might already exist, ignore error
-    }
-
-    // Generate unique filenames
-    const timestamp = Date.now();
-    const boardingPassFilename = `boarding-pass-${timestamp}-${boardingPass.name}`;
-    const delayProofFilename = `delay-proof-${timestamp}-${delayProof.name}`;
-
-    // Save files
-    const boardingPassPath = join(uploadsDir, boardingPassFilename);
-    const delayProofPath = join(uploadsDir, delayProofFilename);
-
-    const boardingPassBuffer = Buffer.from(await boardingPass.arrayBuffer());
-    const delayProofBuffer = Buffer.from(await delayProof.arrayBuffer());
-
-    await writeFile(boardingPassPath, boardingPassBuffer);
-    await writeFile(delayProofPath, delayProofBuffer);
-
     // Generate claim ID
+    const timestamp = Date.now();
     const claimId = `claim-${timestamp}`;
     const paymentId = `payment-${timestamp}`;
 
@@ -173,8 +115,8 @@ export async function POST(request: NextRequest) {
         estimatedCompensation,
         paymentId,
         submittedAt: new Date().toISOString(),
-        boardingPassFilename,
-        delayProofFilename,
+        boardingPassUrl,
+        delayProofUrl,
       });
     } catch (error) {
       console.error('Error creating claim record:', error);

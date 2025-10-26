@@ -17,6 +17,7 @@ export const TABLES = {
   CLAIMS: 'Claims',
   PAYMENTS: 'Payments',
   REFUNDS: 'Refunds',
+  ELIGIBILITY_CHECKS: 'Eligibility_Checks',
 } as const;
 
 // Claim status types
@@ -140,6 +141,36 @@ export interface RefundRecord {
   internalNotes?: string;
 }
 
+// Eligibility check record structure
+export interface EligibilityCheckRecord {
+  id?: string;
+  checkId: string;
+
+  // Flight details
+  flightNumber: string;
+  airline: string;
+  departureDate: string;
+  departureAirport: string;
+  arrivalAirport: string;
+  delayDuration: string;
+  delayReason?: string;
+
+  // Eligibility result
+  eligible: boolean;
+  amount: string;
+  confidence: number;
+  message: string;
+  regulation: string;
+  reason?: string;
+
+  // Request info
+  ipAddress: string;
+  userAgent?: string;
+
+  // Timestamps
+  createdAt: string;
+}
+
 /**
  * Create a new claim in Airtable
  */
@@ -165,8 +196,8 @@ export async function createClaim(claim: ClaimRecord): Promise<string> {
       estimated_compensation: claim.estimatedCompensation || '',
       payment_id: claim.paymentId || '',
       submitted_at: claim.submittedAt,
-      boarding_pass_filename: claim.boardingPassFilename || '',
-      delay_proof_filename: claim.delayProofFilename || '',
+      boarding_pass_url: claim.boardingPassUrl || '',
+      delay_proof_url: claim.delayProofUrl || '',
       internal_notes: claim.internalNotes || '',
     });
 
@@ -444,6 +475,44 @@ export async function getClaimsNeedingRefund(): Promise<readonly any[]> {
     return records;
   } catch (error) {
     console.error('Error fetching claims needing refund from Airtable:', error);
+    throw error;
+  }
+}
+
+/**
+ * Create a new eligibility check in Airtable
+ */
+export async function createEligibilityCheck(
+  check: EligibilityCheckRecord
+): Promise<string> {
+  if (!base) {
+    throw new Error('Airtable not configured');
+  }
+
+  try {
+    const record = await base(TABLES.ELIGIBILITY_CHECKS).create({
+      'Check ID': check.checkId,
+      'Flight Number': check.flightNumber,
+      Airline: check.airline,
+      'Departure Date': check.departureDate,
+      'Departure Airport': check.departureAirport,
+      'Arrival Airport': check.arrivalAirport,
+      'Delay Duration': check.delayDuration,
+      'Delay Reason': check.delayReason || '',
+      Eligible: check.eligible,
+      Amount: check.amount,
+      Confidence: check.confidence,
+      Message: check.message,
+      Regulation: check.regulation,
+      Reason: check.reason || '',
+      'IP Address': check.ipAddress,
+      'User Agent': check.userAgent || '',
+      'Created At': check.createdAt,
+    });
+
+    return record.id;
+  } catch (error) {
+    console.error('Error creating eligibility check in Airtable:', error);
     throw error;
   }
 }

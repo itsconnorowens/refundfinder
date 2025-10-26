@@ -1,212 +1,158 @@
-// API endpoint for checking flight delay compensation eligibility
-import { NextRequest, NextResponse } from "next/server";
-import { flightLookupService } from "../../../lib/flight-apis";
-import { flightValidationService } from "../../../lib/flight-validation";
+import { NextRequest, NextResponse } from 'next/server';
+import { checkEligibility, FlightDetails } from '@/lib/eligibility';
+import { createEligibilityCheck, EligibilityCheckRecord } from '@/lib/airtable';
 import {
-  parseFlightEmail,
-  validateFlightEmailData,
-} from "../../../lib/parse-flight-email";
-
-export interface CheckEligibilityRequest {
-  // Method 1: Direct flight lookup
-  flightNumber?: string;
-  departureDate?: string;
-  departureAirport?: string;
-  arrivalAirport?: string;
-
-  // Method 2: Email parsing
-  emailContent?: string;
-
-  // Optional passenger info
-  passengerEmail?: string;
-  firstName?: string;
-  lastName?: string;
-}
-
-export interface CheckEligibilityResponse {
-  success: boolean;
-  data?: {
-    flightData: unknown;
-    eligibility: unknown;
-    validation: unknown;
-  };
-  error?: string;
-  method: "flight_lookup" | "email_parsing";
-}
+  checkRateLimit,
+  getClientIdentifier,
+  ELIGIBILITY_RATE_LIMIT,
+} from '@/lib/rate-limit';
 
 export async function POST(request: NextRequest) {
   try {
-    const body: CheckEligibilityRequest = await request.json();
+    // Check rate limit
+    const clientId = getClientIdentifier(request);
+    const rateLimitResult = checkRateLimit(clientId, ELIGIBILITY_RATE_LIMIT);
 
-    // Validate request
-    if (!body.flightNumber && !body.emailContent) {
+    if (!rateLimitResult.allowed) {
       return NextResponse.json(
         {
-          success: false,
-          error: "Either flightNumber or emailContent must be provided",
+          error: 'Rate limit exceeded',
+          message: `Too many requests. Please try again in ${rateLimitResult.retryAfter} seconds.`,
+          retryAfter: rateLimitResult.retryAfter,
         },
+        {
+          status: 429,
+          headers: {
+            'Retry-After': rateLimitResult.retryAfter?.toString() || '3600',
+            'X-RateLimit-Limit': ELIGIBILITY_RATE_LIMIT.maxRequests.toString(),
+            'X-RateLimit-Remaining': rateLimitResult.remaining.toString(),
+            'X-RateLimit-Reset': Math.ceil(
+              rateLimitResult.resetTime / 1000
+            ).toString(),
+          },
+        }
+      );
+    }
+
+    const body = await request.json();
+
+    // Validate required fields
+    const {
+      flightNumber,
+      airline,
+      departureDate,
+      departureAirport,
+      arrivalAirport,
+      delayDuration,
+      delayReason,
+    } = body;
+
+    if (
+      !flightNumber ||
+      !airline ||
+      !departureDate ||
+      !departureAirport ||
+      !arrivalAirport ||
+      !delayDuration
+    ) {
+      return NextResponse.json(
+        { error: 'Missing required fields' },
         { status: 400 }
       );
     }
 
-    let result: CheckEligibilityResponse;
+    // Create flight details object
+    const flightDetails: FlightDetails = {
+      flightNumber: flightNumber.trim(),
+      airline: airline.trim(),
+      departureDate,
+      departureAirport: departureAirport.trim().toUpperCase(),
+      arrivalAirport: arrivalAirport.trim().toUpperCase(),
+      delayDuration: delayDuration.trim(),
+      delayReason: delayReason?.trim(),
+    };
 
-    if (body.emailContent) {
-      // Method 1: Parse email content
-      result = await handleEmailParsing(body);
-    } else {
-      // Method 2: Direct flight lookup
-      result = await handleFlightLookup(body);
+    // Check eligibility
+    const result = checkEligibility(flightDetails);
+
+    // Store check in Airtable
+    try {
+      const checkId = `check-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+      const eligibilityCheck: EligibilityCheckRecord = {
+        checkId,
+        flightNumber: flightDetails.flightNumber,
+        airline: flightDetails.airline,
+        departureDate: flightDetails.departureDate,
+        departureAirport: flightDetails.departureAirport,
+        arrivalAirport: flightDetails.arrivalAirport,
+        delayDuration: flightDetails.delayDuration,
+        delayReason: flightDetails.delayReason || '',
+        eligible: result.eligible,
+        amount: result.amount,
+        confidence: result.confidence,
+        message: result.message,
+        regulation: result.regulation,
+        reason: result.reason || '',
+        ipAddress: getClientIP(request),
+        userAgent: request.headers.get('user-agent') || '',
+        createdAt: new Date().toISOString(),
+      };
+
+      await createEligibilityCheck(eligibilityCheck);
+      console.log(`Eligibility check ${checkId} stored successfully`);
+    } catch (error) {
+      console.error('Error storing eligibility check:', error);
+      // Continue even if storage fails
     }
 
-    return NextResponse.json(result);
-  } catch (error) {
-    console.error("Error in check-eligibility API:", error);
     return NextResponse.json(
       {
-        success: false,
-        error: "Internal server error",
+        success: true,
+        result,
       },
+      {
+        headers: {
+          'X-RateLimit-Limit': ELIGIBILITY_RATE_LIMIT.maxRequests.toString(),
+          'X-RateLimit-Remaining': rateLimitResult.remaining.toString(),
+          'X-RateLimit-Reset': Math.ceil(
+            rateLimitResult.resetTime / 1000
+          ).toString(),
+        },
+      }
+    );
+  } catch (error) {
+    console.error('Error checking eligibility:', error);
+    return NextResponse.json(
+      { error: 'Internal server error' },
       { status: 500 }
     );
   }
 }
 
-async function handleEmailParsing(
-  body: CheckEligibilityRequest
-): Promise<CheckEligibilityResponse> {
-  try {
-    // Parse the email content
-    const parseResult = await parseFlightEmail(body.emailContent!);
-
-    if (!parseResult.success || !parseResult.data) {
-      return {
-        success: false,
-        error: parseResult.error || "Failed to parse email content",
-        method: "email_parsing",
-      };
-    }
-
-    // Validate the parsed data
-    const validation = validateFlightEmailData(parseResult.data);
-    if (!validation.isValid) {
-      return {
-        success: false,
-        error: `Invalid flight data: ${validation.errors.join(", ")}`,
-        method: "email_parsing",
-      };
-    }
-
-    // Look up flight data using the parsed information
-    const flightLookupResult = await flightLookupService.lookupFlight(
-      parseResult.data.flightNumber,
-      parseResult.data.departureDate
-    );
-
-    if (!flightLookupResult.success || !flightLookupResult.data) {
-      return {
-        success: false,
-        error: "Flight data not found in external APIs",
-        method: "email_parsing",
-      };
-    }
-
-    // Validate eligibility
-    const eligibilityResult =
-      await flightValidationService.validateFlightEligibility(
-        parseResult.data.flightNumber,
-        parseResult.data.departureDate,
-        parseResult.data.departureAirport,
-        parseResult.data.arrivalAirport,
-        body.passengerEmail
-      );
-
-    return {
-      success: true,
-      data: {
-        flightData: flightLookupResult.data,
-        eligibility: eligibilityResult.eligibility,
-        validation: eligibilityResult.validation,
-      },
-      method: "email_parsing",
-    };
-  } catch (error) {
-    console.error("Error in email parsing:", error);
-    return {
-      success: false,
-      error: "Failed to process email content",
-      method: "email_parsing",
-    };
-  }
-}
-
-async function handleFlightLookup(
-  body: CheckEligibilityRequest
-): Promise<CheckEligibilityResponse> {
-  try {
-    // Validate required fields
-    if (
-      !body.flightNumber ||
-      !body.departureDate ||
-      !body.departureAirport ||
-      !body.arrivalAirport
-    ) {
-      return {
-        success: false,
-        error:
-          "Missing required fields: flightNumber, departureDate, departureAirport, arrivalAirport",
-        method: "flight_lookup",
-      };
-    }
-
-    // Look up flight data
-    const flightLookupResult = await flightLookupService.lookupFlight(
-      body.flightNumber,
-      body.departureDate
-    );
-
-    if (!flightLookupResult.success || !flightLookupResult.data) {
-      return {
-        success: false,
-        error: "Flight data not found",
-        method: "flight_lookup",
-      };
-    }
-
-    // Validate eligibility
-    const eligibilityResult =
-      await flightValidationService.validateFlightEligibility(
-        body.flightNumber,
-        body.departureDate,
-        body.departureAirport,
-        body.arrivalAirport,
-        body.passengerEmail
-      );
-
-    return {
-      success: true,
-      data: {
-        flightData: flightLookupResult.data,
-        eligibility: eligibilityResult.eligibility,
-        validation: eligibilityResult.validation,
-      },
-      method: "flight_lookup",
-    };
-  } catch (error) {
-    console.error("Error in flight lookup:", error);
-    return {
-      success: false,
-      error: "Failed to lookup flight data",
-      method: "flight_lookup",
-    };
-  }
-}
-
-// GET endpoint for health check
 export async function GET() {
   return NextResponse.json({
-    status: "healthy",
-    service: "check-eligibility",
-    timestamp: new Date().toISOString(),
+    message: 'Eligibility checker API is running',
+    endpoints: {
+      'POST /api/check-eligibility':
+        'Check flight eligibility for compensation',
+    },
   });
+}
+
+/**
+ * Get client IP address from request
+ */
+function getClientIP(request: NextRequest): string {
+  const forwarded = request.headers.get('x-forwarded-for');
+  const realIP = request.headers.get('x-real-ip');
+
+  if (forwarded) {
+    return forwarded.split(',')[0].trim();
+  }
+
+  if (realIP) {
+    return realIP;
+  }
+
+  return 'unknown';
 }
