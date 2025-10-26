@@ -183,7 +183,7 @@ function generateMockAnalyticsData(
     averageRefundTime: Math.random() * 48 + 24, // 24-72 hours
     refundsByHour: generateHourlyDistribution(),
     claimsByStatus: {
-      submitted: Math.floor(baseClaims * 0.25),
+      submitted: Math.floor(baseClaims * 0.2),
       validated: Math.floor(baseClaims * 0.15),
       documents_prepared: Math.floor(baseClaims * 0.1),
       ready_to_file: Math.floor(baseClaims * 0.1),
@@ -193,6 +193,8 @@ function generateMockAnalyticsData(
       airline_responded: Math.floor(baseClaims * 0.05),
       approved: Math.floor(baseClaims * 0.03),
       rejected: Math.floor(baseClaims * 0.02),
+      completed: Math.floor(baseClaims * 0.03),
+      refunded: Math.floor(baseClaims * 0.02),
     },
     paymentsByStatus: {
       pending: Math.floor(baseClaims * 0.05),
