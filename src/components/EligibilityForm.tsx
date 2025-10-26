@@ -113,25 +113,31 @@ export function EligibilityForm() {
     setError('');
 
     try {
+      const requestData = {
+        flightNumber: formData.flightNumber,
+        airline: formData.airline,
+        departureDate: formData.departureDate,
+        departureAirport: formData.departureAirport,
+        arrivalAirport: formData.arrivalAirport,
+        delayDuration: formData.delayDuration,
+        delayReason: formData.delayReason
+      };
+      
+      console.log('🚀 Frontend - Sending eligibility check request:', JSON.stringify(requestData, null, 2));
+      
       const response = await fetch('/api/check-eligibility', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({
-          flightNumber: formData.flightNumber,
-          airline: formData.airline,
-          departureDate: formData.departureDate,
-          departureAirport: formData.departureAirport,
-          arrivalAirport: formData.arrivalAirport,
-          delayDuration: formData.delayDuration,
-          delayReason: formData.delayReason
-        }),
+        body: JSON.stringify(requestData),
       });
 
       const data = await response.json();
+      console.log('📥 Frontend - Received response:', JSON.stringify(data, null, 2));
 
       if (data.success) {
+        console.log('✅ Frontend - Eligibility check successful');
         // Navigate to results page with data
         const params = new URLSearchParams({
           eligible: data.result.eligible.toString(),
@@ -149,6 +155,7 @@ export function EligibilityForm() {
         
         router.push(`/results?${params.toString()}`);
       } else {
+        console.log('❌ Frontend - Eligibility check failed:', data.error);
         const errorMessage = data.message || data.error || 'Failed to check eligibility';
         setError(errorMessage);
       }

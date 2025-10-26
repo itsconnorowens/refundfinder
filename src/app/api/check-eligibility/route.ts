@@ -8,12 +8,18 @@ import {
 } from '@/lib/rate-limit';
 
 export async function POST(request: NextRequest) {
+  console.log('🔍 Eligibility Check API - Request received');
+  
   try {
     // Check rate limit
     const clientId = getClientIdentifier(request);
+    console.log('📊 Rate limit check for client:', clientId);
+    
     const rateLimitResult = checkRateLimit(clientId, ELIGIBILITY_RATE_LIMIT);
+    console.log('📊 Rate limit result:', rateLimitResult);
 
     if (!rateLimitResult.allowed) {
+      console.log('❌ Rate limit exceeded');
       return NextResponse.json(
         {
           error: 'Rate limit exceeded',
@@ -35,6 +41,7 @@ export async function POST(request: NextRequest) {
     }
 
     const body = await request.json();
+    console.log('📝 Request body received:', JSON.stringify(body, null, 2));
 
     // Validate required fields
     const {
@@ -47,6 +54,15 @@ export async function POST(request: NextRequest) {
       delayReason,
     } = body;
 
+    console.log('🔍 Field validation:');
+    console.log('  flightNumber:', flightNumber, typeof flightNumber);
+    console.log('  airline:', airline, typeof airline);
+    console.log('  departureDate:', departureDate, typeof departureDate);
+    console.log('  departureAirport:', departureAirport, typeof departureAirport);
+    console.log('  arrivalAirport:', arrivalAirport, typeof arrivalAirport);
+    console.log('  delayDuration:', delayDuration, typeof delayDuration);
+    console.log('  delayReason:', delayReason, typeof delayReason);
+
     // Validate required fields with better error messages
     const missingFields = [];
     if (!flightNumber?.trim()) missingFields.push('flightNumber');
@@ -56,7 +72,10 @@ export async function POST(request: NextRequest) {
     if (!arrivalAirport?.trim()) missingFields.push('arrivalAirport');
     if (!delayDuration?.trim()) missingFields.push('delayDuration');
 
+    console.log('❌ Missing fields:', missingFields);
+
     if (missingFields.length > 0) {
+      console.log('❌ Validation failed - returning error');
       return NextResponse.json(
         {
           error: 'Missing required fields',
@@ -66,6 +85,8 @@ export async function POST(request: NextRequest) {
         { status: 400 }
       );
     }
+
+    console.log('✅ All fields validated successfully');
 
     // Create flight details object
     const flightDetails: FlightDetails = {
@@ -78,8 +99,12 @@ export async function POST(request: NextRequest) {
       delayReason: delayReason?.trim(),
     };
 
+    console.log('✈️ Flight details created:', JSON.stringify(flightDetails, null, 2));
+
     // Check eligibility
+    console.log('🔍 Checking eligibility...');
     const result = checkEligibility(flightDetails);
+    console.log('📊 Eligibility result:', JSON.stringify(result, null, 2));
 
     // Store check in Airtable
     try {
