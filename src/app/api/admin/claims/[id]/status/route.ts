@@ -1,8 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
-import {
-  updateClaimStatus as updateClaimStatusService,
-  ClaimStatus,
-} from '@/lib/claim-filing-service';
+import { updateClaimStatus as updateClaimStatusService } from '@/lib/claim-filing-service';
+import { ClaimStatus } from '@/lib/airtable';
 
 /**
  * PUT /api/admin/claims/[id]/status
