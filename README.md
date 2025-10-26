@@ -6,10 +6,36 @@ A Next.js application that helps users check their eligibility for flight delay 
 
 - **Eligibility Checker**: AI-powered flight delay compensation eligibility assessment
 - **Email Parser**: Extract flight details from confirmation emails using Claude AI
+- **Smart Form Interface**: Airport autocomplete with 200+ airports worldwide
+- **Multi-Regulation Support**: EU261, UK CAA, and US DOT compliance
 - **Claim Submission**: Multi-step form for submitting compensation claims
 - **Payment Processing**: Stripe integration for processing claim fees
 - **Results Display**: Clear eligibility results with compensation amounts
 - **Legal Pages**: Terms of Service and Privacy Policy
+
+## Current Status
+
+### ✅ **What Works Well**
+- Basic EU261/UK CAA/US DOT scenarios
+- AI-powered email parsing with Claude
+- Smart form interface with validation
+- Airport autocomplete functionality
+- Delay duration parsing (fixed)
+- Extraordinary circumstances detection
+
+### ⚠️ **Known Limitations**
+- Limited airline/airport coverage (missing major carriers)
+- Inaccurate distance calculations for many routes
+- Missing cancellation scenarios
+- No flight validation (doesn't check if flights exist)
+- Limited regulatory coverage (missing Swiss, Norwegian, Canadian)
+
+### 📋 **Development Status**
+- **MVP Ready**: ✅ Basic functionality works for common scenarios
+- **Production Ready**: ⚠️ Needs airline/airport expansion and distance fixes
+- **Enterprise Ready**: ❌ Needs comprehensive coverage and validation
+
+See [DEVELOPMENT_ROADMAP.md](./DEVELOPMENT_ROADMAP.md) for detailed improvement plans.
 
 ## Getting Started
 

@@ -2,7 +2,7 @@
 
 ## 🎯 **Complete System Overview**
 
-The Flight Refund Finder application now includes a comprehensive email parsing and flight validation system with AI-powered analysis and regulatory compliance checking.
+The Flight Refund Finder application is a comprehensive flight delay compensation platform with AI-powered email parsing, regulatory compliance checking, and user-friendly interfaces. The system handles EU261, UK CAA, and US DOT regulations with smart form validation and airport autocomplete functionality.
 
 ## ✅ **Implemented Features**
 
@@ -21,28 +21,35 @@ The Flight Refund Finder application now includes a comprehensive email parsing 
 
 ### 2. **Flight Validation & Eligibility Engine**
 - **EU Regulation 261/2004**: Full compliance checking for EU/EEA flights
+- **UK CAA Regulations**: Coverage for UK flights and airlines
 - **US DOT Regulations**: Coverage for US domestic flights
 - **Multi-Regulation Support**: Extensible framework for additional regulations
 - **Distance-Based Compensation**: Automatic calculation based on flight distance
 - **Comprehensive Validation**: Input validation, flight data verification, and eligibility determination
+- **Delay Duration Parsing**: Handles complex formats like "4 hours 45 minutes"
 
 **Key Components:**
-- `src/lib/flight-validation.ts` - Core validation and eligibility logic
+- `src/lib/eligibility.ts` - Core validation and eligibility logic
 - EU compensation amounts (€250-€600 based on distance)
+- UK compensation amounts (£250-£520 based on distance)
 - Airport code validation and regulation mapping
+- Extraordinary circumstances detection
 - Detailed requirements and next steps
 
-### 3. **Mock Flight Data Service**
-- **Development Support**: Mock data when real APIs are unavailable
-- **Realistic Scenarios**: Various flight types (delayed, cancelled, on-time)
-- **Testing Coverage**: Multiple airlines and routes for comprehensive testing
-- **Fallback System**: Automatic fallback when real APIs fail
+### 3. **Smart Form Interface**
+- **Airport Autocomplete**: 200+ major airports worldwide with search functionality
+- **Form Validation**: Real-time validation with helpful error messages
+- **Dual Input Methods**: Email parsing or manual entry
+- **Delay Duration Fields**: Separate hours/minutes inputs for precision
+- **Delay Reason Dropdown**: Common delay reasons with extraordinary circumstances detection
+- **Date Validation**: Allows past dates for flight delays (not just future dates)
 
 **Key Components:**
-- `src/lib/mock-flight-data.ts` - Mock flight database
-- Realistic flight scenarios (TK157, AA123, LH456, BA789, TK123)
-- Configurable delays and cancellations
-- Easy addition of new test flights
+- `src/components/FlightLookupForm.tsx` - Main eligibility form
+- `src/components/AirportAutocomplete.tsx` - Smart airport selection
+- `src/lib/airports.ts` - Comprehensive airport database
+- Real-time validation and error handling
+- User-friendly interface with clear feedback
 
 ### 4. **API Usage Monitoring System**
 - **Real-time Tracking**: Monitor API usage across all services
@@ -118,44 +125,97 @@ The Flight Refund Finder application now includes a comprehensive email parsing 
 - Real-time usage updates
 - Alert generation and management
 
-## 🚀 **Ready for Production**
+## ⚠️ **Current Limitations & Known Issues**
 
-### **Current Status**
+### **Eligibility Logic Limitations**
+- **Limited Airline Coverage**: Missing major carriers (Emirates, Qatar, Turkish, etc.)
+- **Limited Airport Coverage**: Missing many international airports
+- **Distance Calculation**: Only ~60 hardcoded routes, defaults to 1000km for unknown routes
+- **Missing Scenarios**: No handling of cancellations, denied boarding, or downgrading
+- **No Flight Validation**: Doesn't verify if flight numbers actually exist
+- **Limited Regulatory Coverage**: Missing Swiss, Norwegian, Canadian regulations
+
+### **Data Quality Issues**
+- **Arbitrary Confidence Scores**: No statistical basis for confidence calculations
+- **No Airline Normalization**: "BA" vs "British Airways" vs "British Airways PLC"
+- **No Historical Validation**: No check if flight already happened
+- **Limited Extraordinary Circumstances**: May be too broad or too narrow
+
+### **Technical Debt**
+- **Hardcoded Route Distances**: Should use Haversine formula with actual coordinates
+- **No Codeshare Handling**: BA flight operated by American Airlines not detected
+- **No Multi-Delay Support**: Only handles single delay, not cascading delays
+- **No Time Zone Handling**: All times assumed to be in same timezone
+
+## 🚀 **Future Development Priorities**
+
+### **High Priority (Production Critical)**
+1. **Expand Airline/Airport Databases**: 10x larger coverage for major carriers and airports
+2. **Implement Proper Distance Calculation**: Haversine formula with airport coordinates
+3. **Add Flight Validation**: Check if flight numbers exist and are valid
+4. **Add Cancellation Scenarios**: Handle flight cancellations, not just delays
+5. **Expand Regulatory Coverage**: Add Swiss, Norwegian, Canadian regulations
+
+### **Medium Priority (User Experience)**
+1. **Add Denied Boarding Support**: Handle overbooking scenarios
+2. **Add Downgrading Support**: Handle seat downgrades
+3. **Improve Confidence Scoring**: Data-driven confidence calculations
+4. **Add Airline Normalization**: Handle different airline name formats
+5. **Add Historical Validation**: Check if flight already happened
+
+### **Low Priority (Nice to Have)**
+1. **Add Codeshare Detection**: Handle flights operated by different airlines
+2. **Add Multi-Delay Support**: Handle cascading delays
+3. **Add Time Zone Support**: Handle different timezones
+4. **Add Charter Flight Support**: Handle charter and cargo flights
+5. **Add Military Flight Exclusion**: Exclude government/military flights
+
+## 🎯 **Current Production Readiness**
+
+### **What Works Well**
+- ✅ Basic EU261/UK CAA/US DOT scenarios
 - ✅ Email parsing with AI
-- ✅ Flight validation and eligibility
-- ✅ Usage monitoring and limits
-- ✅ Mock data for development
-- ✅ Comprehensive testing
-- ✅ Dashboard interface
-- ✅ API documentation
+- ✅ Smart form interface with validation
+- ✅ Airport autocomplete functionality
+- ✅ Delay duration parsing (fixed)
+- ✅ Extraordinary circumstances detection
+- ✅ User-friendly error messages
 
-### **Next Steps for Production**
-1. **Upgrade to Paid APIs**: Replace mock data with real AviationStack paid plan
-2. **Database Integration**: Add persistent storage for claims and usage data
-3. **User Authentication**: Implement user accounts and claim management
-4. **Payment Processing**: Integrate Stripe for service fees
-5. **Email Notifications**: Add email alerts for usage limits and claims
-6. **Advanced Analytics**: Usage trends and business intelligence
+### **What Needs Improvement**
+- ⚠️ Limited airline/airport coverage
+- ⚠️ Inaccurate distance calculations for many routes
+- ⚠️ Missing cancellation scenarios
+- ⚠️ No flight validation
+- ⚠️ Limited regulatory coverage
+
+### **Production Deployment Status**
+- **MVP Ready**: ✅ Basic functionality works for common scenarios
+- **Production Ready**: ⚠️ Needs airline/airport expansion and distance fixes
+- **Enterprise Ready**: ❌ Needs comprehensive coverage and validation
 
 ## 📁 **File Structure**
 
 ```
 src/
 ├── lib/
-│   ├── parse-flight-email.ts      # Email parsing with Anthropic
-│   ├── flight-validation.ts       # Validation and eligibility logic
-│   ├── flight-apis.ts            # Flight lookup APIs
-│   ├── mock-flight-data.ts       # Mock data service
-│   ├── usage-monitor.ts          # Usage monitoring service
-│   └── usage-middleware.ts       # Usage middleware
+│   ├── parse-flight-email.ts      # Email parsing with Anthropic Claude
+│   ├── eligibility.ts            # Core eligibility and validation logic
+│   ├── airports.ts               # Airport database and autocomplete
+│   ├── airtable.ts               # Airtable integration
+│   └── usage-monitor.ts          # Usage monitoring service
 ├── app/
 │   ├── api/
-│   │   ├── check-eligibility/    # Main API endpoint
+│   │   ├── check-eligibility/    # Main eligibility API endpoint
+│   │   ├── parse-flight-email/   # Email parsing API endpoint
 │   │   └── usage/                # Usage monitoring API
-│   └── usage/                    # Usage dashboard page
+│   └── check-eligibility/        # Eligibility check page
 ├── components/
-│   └── UsageDashboard.tsx        # React dashboard component
-└── demo.html                     # Demo interface
+│   ├── FlightLookupForm.tsx      # Main eligibility form
+│   ├── AirportAutocomplete.tsx   # Smart airport selection
+│   ├── EligibilityResults.tsx    # Results display component
+│   └── EligibilityForm.tsx       # Alternative form component
+└── types/
+    └── api.ts                    # TypeScript interfaces
 ```
 
 ## 🎉 **Success Metrics**

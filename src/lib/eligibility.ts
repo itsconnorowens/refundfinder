@@ -240,23 +240,23 @@ function checkDOTEligibility(
 function parseDelayHours(delayDuration: string): number {
   // Handle formats like "4 hours 45 minutes", "4.75 hours", "285 minutes", etc.
   const lowerDelay = delayDuration.toLowerCase();
-  
+
   // Extract hours and minutes separately
   const hoursMatch = lowerDelay.match(/(\d+(?:\.\d+)?)\s*hours?/);
   const minutesMatch = lowerDelay.match(/(\d+(?:\.\d+)?)\s*minutes?/);
-  
+
   let totalHours = 0;
-  
+
   // Add hours if found
   if (hoursMatch) {
     totalHours += parseFloat(hoursMatch[1]);
   }
-  
+
   // Add minutes converted to hours if found
   if (minutesMatch) {
     totalHours += parseFloat(minutesMatch[1]) / 60;
   }
-  
+
   // If no hours/minutes found, try to extract just a number and assume it's hours
   if (totalHours === 0) {
     const numberMatch = delayDuration.match(/(\d+(?:\.\d+)?)/);
@@ -268,7 +268,7 @@ function parseDelayHours(delayDuration: string): number {
       }
     }
   }
-  
+
   return totalHours;
 }
 
