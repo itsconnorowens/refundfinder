@@ -101,7 +101,9 @@ export async function testCancellationEligibility() {
 
   // Test EU261 cancellation with < 7 days notice
   console.log('1. EU261 Cancellation < 7 days notice:');
-  const result1 = await await checkEligibility(testScenarios.euCancellationEligible);
+  const result1 = await await checkEligibility(
+    testScenarios.euCancellationEligible
+  );
   console.log(
     `   Expected: Eligible €600, Got: ${result1.eligible ? 'Eligible' : 'Not Eligible'} ${result1.amount}`
   );
@@ -109,7 +111,9 @@ export async function testCancellationEligibility() {
 
   // Test EU261 cancellation with alternative flight
   console.log('2. EU261 Cancellation with alternative within 1 hour:');
-  const result2 = await await checkEligibility(testScenarios.euCancellationWithAlternative);
+  const result2 = await await checkEligibility(
+    testScenarios.euCancellationWithAlternative
+  );
   console.log(
     `   Expected: Eligible €300 (50%), Got: ${result2.eligible ? 'Eligible' : 'Not Eligible'} ${result2.amount}`
   );
@@ -117,7 +121,9 @@ export async function testCancellationEligibility() {
 
   // Test EU261 cancellation with > 14 days notice
   console.log('3. EU261 Cancellation > 14 days notice:');
-  const result3 = await checkEligibility(testScenarios.euCancellationTooMuchNotice);
+  const result3 = await checkEligibility(
+    testScenarios.euCancellationTooMuchNotice
+  );
   console.log(
     `   Expected: Not Eligible, Got: ${result3.eligible ? 'Eligible' : 'Not Eligible'} ${result3.amount}`
   );
