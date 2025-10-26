@@ -510,10 +510,10 @@ export async function getClaimsNeedingAutomaticRefunds(): Promise<{
     }
 
     return {
-      overdueClaims,
-      rejectedClaims,
-      insufficientDocClaims,
-      ineligibleClaims,
+      overdueClaims: overdueClaims as any[],
+      rejectedClaims: rejectedClaims as any[],
+      insufficientDocClaims: insufficientDocClaims as any[],
+      ineligibleClaims: ineligibleClaims as any[],
     };
   } catch (error) {
     console.error('Error getting claims needing automatic refunds:', error);
