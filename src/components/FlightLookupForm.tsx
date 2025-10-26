@@ -38,8 +38,14 @@ export default function FlightLookupForm({ onResults, onLoading }: FlightLookupF
       const selectedDate = new Date(formData.departureDate);
       const today = new Date();
       today.setHours(0, 0, 0, 0);
-      if (selectedDate < today) {
-        newErrors.departureDate = 'Please select a future date';
+      // Allow dates from 1 year ago to 1 year in the future
+      const oneYearAgo = new Date();
+      oneYearAgo.setFullYear(oneYearAgo.getFullYear() - 1);
+      const oneYearFromNow = new Date();
+      oneYearFromNow.setFullYear(oneYearFromNow.getFullYear() + 1);
+      
+      if (selectedDate < oneYearAgo || selectedDate > oneYearFromNow) {
+        newErrors.departureDate = 'Please select a date within the last year or next year';
       }
     }
 
@@ -137,7 +143,8 @@ export default function FlightLookupForm({ onResults, onLoading }: FlightLookupF
     <form onSubmit={handleSubmit} className="space-y-6">
       <div className="text-center mb-6">
         <h2 className="text-2xl font-bold text-gray-900 mb-2">Enter Your Flight Details</h2>
-            <p className="text-gray-600">We&apos;ll check if you&apos;re eligible for compensation</p>
+        <p className="text-gray-600">We&apos;ll check if you&apos;re eligible for compensation</p>
+        <p className="text-xs text-gray-500 mt-2">Form Version: 2.0 (with airline and delay fields)</p>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
