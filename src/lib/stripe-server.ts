@@ -1,15 +1,30 @@
 import Stripe from 'stripe';
 
-// Initialize Stripe with the secret key
-const stripeSecretKey = process.env.STRIPE_SECRET_KEY;
+// Lazy initialization of Stripe to avoid build-time environment variable checks
+let stripeInstance: Stripe | null = null;
 
-if (!stripeSecretKey) {
-  throw new Error('STRIPE_SECRET_KEY is not defined in environment variables');
+function getStripe(): Stripe {
+  if (!stripeInstance) {
+    const stripeSecretKey = process.env.STRIPE_SECRET_KEY;
+    
+    if (!stripeSecretKey) {
+      throw new Error('STRIPE_SECRET_KEY is not defined in environment variables');
+    }
+    
+    stripeInstance = new Stripe(stripeSecretKey, {
+      apiVersion: '2025-09-30.clover',
+      typescript: true,
+    });
+  }
+  
+  return stripeInstance;
 }
 
-export const stripe = new Stripe(stripeSecretKey, {
-  apiVersion: '2025-09-30.clover',
-  typescript: true,
+// Export a getter function instead of the instance directly
+export const stripe = new Proxy({} as Stripe, {
+  get(target, prop) {
+    return getStripe()[prop as keyof Stripe];
+  }
 });
 
 // Service fee configuration
@@ -30,6 +45,7 @@ export async function createPaymentIntent(
   metadata?: Record<string, string>
 ): Promise<Stripe.PaymentIntent> {
   try {
+    const stripe = getStripe();
     const paymentIntent = await stripe.paymentIntents.create({
       amount: SERVICE_FEE_AMOUNT,
       currency: SERVICE_FEE_CURRENCY,
@@ -61,6 +77,7 @@ export async function retrievePaymentIntent(
   paymentIntentId: string
 ): Promise<Stripe.PaymentIntent> {
   try {
+    const stripe = getStripe();
     return await stripe.paymentIntents.retrieve(paymentIntentId);
   } catch (error) {
     console.error('Error retrieving payment intent:', error);
@@ -77,6 +94,7 @@ export async function processRefund(
   metadata?: Record<string, string>
 ): Promise<Stripe.Refund> {
   try {
+    const stripe = getStripe();
     const refund = await stripe.refunds.create({
       payment_intent: paymentIntentId,
       reason: reason as Stripe.RefundCreateParams.Reason | undefined,
@@ -103,6 +121,7 @@ export async function processPartialRefund(
   metadata?: Record<string, string>
 ): Promise<Stripe.Refund> {
   try {
+    const stripe = getStripe();
     const refund = await stripe.refunds.create({
       payment_intent: paymentIntentId,
       amount,
@@ -129,6 +148,7 @@ export function verifyWebhookSignature(
   secret: string
 ): Stripe.Event {
   try {
+    const stripe = getStripe();
     return stripe.webhooks.constructEvent(payload, signature, secret);
   } catch (error) {
     console.error('Error verifying webhook signature:', error);
@@ -143,6 +163,7 @@ export async function getPaymentMethodDetails(
   paymentMethodId: string
 ): Promise<Stripe.PaymentMethod> {
   try {
+    const stripe = getStripe();
     return await stripe.paymentMethods.retrieve(paymentMethodId);
   } catch (error) {
     console.error('Error retrieving payment method:', error);
@@ -159,6 +180,7 @@ export async function createCustomer(
   metadata?: Record<string, string>
 ): Promise<Stripe.Customer> {
   try {
+    const stripe = getStripe();
     return await stripe.customers.create({
       email,
       name,
@@ -180,6 +202,7 @@ export async function findCustomerByEmail(
   email: string
 ): Promise<Stripe.Customer | null> {
   try {
+    const stripe = getStripe();
     const customers = await stripe.customers.list({
       email,
       limit: 1,
