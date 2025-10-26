@@ -15,7 +15,8 @@ export default function FlightLookupForm({ onResults, onLoading }: FlightLookupF
     departureDate: '',
     departureAirport: '',
     arrivalAirport: '',
-    delayDuration: '',
+    delayHours: '',
+    delayMinutes: '',
     delayReason: '',
     passengerEmail: '',
     firstName: '',
@@ -65,8 +66,14 @@ export default function FlightLookupForm({ onResults, onLoading }: FlightLookupF
       newErrors.airline = 'Airline is required';
     }
 
-    if (!formData.delayDuration.trim()) {
-      newErrors.delayDuration = 'Delay duration is required';
+    if (!formData.delayHours.trim() && !formData.delayMinutes.trim()) {
+      newErrors.delayHours = 'Delay duration is required';
+    } else {
+      const hours = parseInt(formData.delayHours) || 0;
+      const minutes = parseInt(formData.delayMinutes) || 0;
+      if (hours === 0 && minutes === 0) {
+        newErrors.delayHours = 'Please enter delay duration';
+      }
     }
 
     if (!formData.passengerEmail.trim()) {
@@ -109,7 +116,7 @@ export default function FlightLookupForm({ onResults, onLoading }: FlightLookupF
           departureDate: formData.departureDate,
           departureAirport: formData.departureAirport.trim().toUpperCase(),
           arrivalAirport: formData.arrivalAirport.trim().toUpperCase(),
-          delayDuration: formData.delayDuration.trim(),
+          delayDuration: `${formData.delayHours || 0} hours ${formData.delayMinutes || 0} minutes`,
           delayReason: formData.delayReason.trim(),
           passengerEmail: formData.passengerEmail.trim(),
           firstName: formData.firstName.trim(),
@@ -251,21 +258,41 @@ export default function FlightLookupForm({ onResults, onLoading }: FlightLookupF
 
         {/* Delay Duration */}
         <div>
-          <label htmlFor="delayDuration" className="block text-sm font-medium text-gray-700 mb-2">
+          <label className="block text-sm font-medium text-gray-700 mb-2">
             Delay Duration *
           </label>
-          <input
-            type="text"
-            id="delayDuration"
-            value={formData.delayDuration}
-            onChange={(e) => handleInputChange('delayDuration', e.target.value)}
-            placeholder="e.g., 4 hours, 3.5 hours, 180 minutes"
-            className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${
-              errors.delayDuration ? 'border-red-500' : 'border-gray-300'
-            }`}
-          />
-          {errors.delayDuration && (
-            <p className="mt-1 text-sm text-red-600">{errors.delayDuration}</p>
+          <div className="flex space-x-2">
+            <div className="flex-1">
+              <input
+                type="number"
+                id="delayHours"
+                value={formData.delayHours}
+                onChange={(e) => handleInputChange('delayHours', e.target.value)}
+                placeholder="Hours"
+                min="0"
+                max="24"
+                className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${
+                  errors.delayHours ? 'border-red-500' : 'border-gray-300'
+                }`}
+              />
+            </div>
+            <div className="flex-1">
+              <input
+                type="number"
+                id="delayMinutes"
+                value={formData.delayMinutes}
+                onChange={(e) => handleInputChange('delayMinutes', e.target.value)}
+                placeholder="Minutes"
+                min="0"
+                max="59"
+                className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${
+                  errors.delayHours ? 'border-red-500' : 'border-gray-300'
+                }`}
+              />
+            </div>
+          </div>
+          {errors.delayHours && (
+            <p className="mt-1 text-sm text-red-600">{errors.delayHours}</p>
           )}
         </div>
 
@@ -274,14 +301,21 @@ export default function FlightLookupForm({ onResults, onLoading }: FlightLookupF
           <label htmlFor="delayReason" className="block text-sm font-medium text-gray-700 mb-2">
             Reason for Delay (Optional)
           </label>
-          <input
-            type="text"
+          <select
             id="delayReason"
             value={formData.delayReason}
             onChange={(e) => handleInputChange('delayReason', e.target.value)}
-            placeholder="e.g., Technical issues, weather, crew delay"
             className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-          />
+          >
+            <option value="">Select delay reason</option>
+            <option value="Technical issues">Technical issues</option>
+            <option value="Weather conditions">Weather conditions</option>
+            <option value="Crew scheduling">Crew scheduling</option>
+            <option value="Air traffic control">Air traffic control</option>
+            <option value="Security issues">Security issues</option>
+            <option value="Operational issues">Operational issues</option>
+            <option value="Other">Other</option>
+          </select>
           <p className="mt-1 text-sm text-gray-500">
             This helps us determine if extraordinary circumstances apply
           </p>

@@ -146,7 +146,24 @@ export async function POST(request: NextRequest) {
     return NextResponse.json(
       {
         success: true,
-        result,
+        data: {
+          flightData: {
+            flightNumber: flightDetails.flightNumber,
+            departureDate: flightDetails.departureDate,
+            departureAirport: flightDetails.departureAirport,
+            arrivalAirport: flightDetails.arrivalAirport,
+            status: 'Delayed'
+          },
+          eligibility: {
+            isEligible: result.eligible,
+            compensationAmount: result.amount,
+            reason: result.reason || result.message
+          },
+          validation: {
+            isValid: true
+          }
+        },
+        method: 'flight_lookup'
       },
       {
         headers: {
