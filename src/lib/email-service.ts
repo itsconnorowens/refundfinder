@@ -802,6 +802,80 @@ RefundFinder Admin Dashboard
 Generated: {{timestamp}}
     `,
   },
+  refundNotification: {
+    subject: 'Refund Processed - {{claimId}}',
+    html: `
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Refund Processed</title>
+    <style>
+        body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; max-width: 600px; margin: 0 auto; padding: 20px; }
+        .header { background: #2563eb; color: white; padding: 20px; text-align: center; border-radius: 8px 8px 0 0; }
+        .content { background: #f8fafc; padding: 30px; border-radius: 0 0 8px 8px; }
+        .highlight { background: #dcfce7; padding: 15px; border-radius: 6px; border-left: 4px solid #16a34a; margin: 20px 0; }
+        .claim-details { background: white; padding: 20px; border-radius: 6px; margin: 20px 0; }
+        .footer { text-align: center; margin-top: 30px; color: #64748b; font-size: 14px; }
+        .button { display: inline-block; background: #2563eb; color: white; padding: 12px 24px; text-decoration: none; border-radius: 6px; margin: 10px 0; }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>✅ Refund Processed</h1>
+        <p>Your claim has been successfully refunded</p>
+    </div>
+    
+    <div class="content">
+        <p>Dear {{userName}},</p>
+        
+        <div class="highlight">
+            <h3>🎉 Great News!</h3>
+            <p>Your refund has been processed and should appear in your account within 5-7 business days.</p>
+        </div>
+        
+        <div class="claim-details">
+            <h3>Refund Details</h3>
+            <p><strong>Claim ID:</strong> {{claimId}}</p>
+            <p><strong>Refund Reason:</strong> {{refundReason}}</p>
+            <p><strong>Processed Date:</strong> {{refundDate}}</p>
+        </div>
+        
+        <p>Thank you for using RefundFinder. We're glad we could help you get the compensation you deserve!</p>
+        
+        <p>If you have any questions about this refund, please don't hesitate to contact our support team.</p>
+        
+        <div class="footer">
+            <p>Best regards,<br>The RefundFinder Team</p>
+            <p>This email was sent regarding claim {{claimId}}</p>
+        </div>
+    </div>
+</body>
+</html>
+    `,
+    text: `
+Refund Processed - {{claimId}}
+
+Dear {{userName}},
+
+🎉 Great News! Your refund has been processed and should appear in your account within 5-7 business days.
+
+Refund Details:
+- Claim ID: {{claimId}}
+- Refund Reason: {{refundReason}}
+- Processed Date: {{refundDate}}
+
+Thank you for using RefundFinder. We're glad we could help you get the compensation you deserve!
+
+If you have any questions about this refund, please don't hesitate to contact our support team.
+
+Best regards,
+The RefundFinder Team
+
+This email was sent regarding claim {{claimId}}
+    `,
+  },
 };
 
 // Helper functions for common email operations
