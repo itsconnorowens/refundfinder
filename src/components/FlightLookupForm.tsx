@@ -11,9 +11,12 @@ interface FlightLookupFormProps {
 export default function FlightLookupForm({ onResults, onLoading }: FlightLookupFormProps) {
   const [formData, setFormData] = useState({
     flightNumber: '',
+    airline: '',
     departureDate: '',
     departureAirport: '',
     arrivalAirport: '',
+    delayDuration: '',
+    delayReason: '',
     passengerEmail: '',
     firstName: '',
     lastName: ''
@@ -52,6 +55,14 @@ export default function FlightLookupForm({ onResults, onLoading }: FlightLookupF
       newErrors.arrivalAirport = 'Please enter a valid 3-letter airport code (e.g., MIA, CDG)';
     }
 
+    if (!formData.airline.trim()) {
+      newErrors.airline = 'Airline is required';
+    }
+
+    if (!formData.delayDuration.trim()) {
+      newErrors.delayDuration = 'Delay duration is required';
+    }
+
     if (!formData.passengerEmail.trim()) {
       newErrors.passengerEmail = 'Email is required';
     } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.passengerEmail.trim())) {
@@ -88,9 +99,12 @@ export default function FlightLookupForm({ onResults, onLoading }: FlightLookupF
         },
         body: JSON.stringify({
           flightNumber: formData.flightNumber.trim().toUpperCase(),
+          airline: formData.airline.trim(),
           departureDate: formData.departureDate,
           departureAirport: formData.departureAirport.trim().toUpperCase(),
           arrivalAirport: formData.arrivalAirport.trim().toUpperCase(),
+          delayDuration: formData.delayDuration.trim(),
+          delayReason: formData.delayReason.trim(),
           passengerEmail: formData.passengerEmail.trim(),
           firstName: formData.firstName.trim(),
           lastName: formData.lastName.trim()
@@ -206,6 +220,64 @@ export default function FlightLookupForm({ onResults, onLoading }: FlightLookupF
           {errors.arrivalAirport && (
             <p className="mt-1 text-sm text-red-600">{errors.arrivalAirport}</p>
           )}
+        </div>
+
+        {/* Airline */}
+        <div>
+          <label htmlFor="airline" className="block text-sm font-medium text-gray-700 mb-2">
+            Airline *
+          </label>
+          <input
+            type="text"
+            id="airline"
+            value={formData.airline}
+            onChange={(e) => handleInputChange('airline', e.target.value)}
+            placeholder="e.g., British Airways, American Airlines"
+            className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${
+              errors.airline ? 'border-red-500' : 'border-gray-300'
+            }`}
+          />
+          {errors.airline && (
+            <p className="mt-1 text-sm text-red-600">{errors.airline}</p>
+          )}
+        </div>
+
+        {/* Delay Duration */}
+        <div>
+          <label htmlFor="delayDuration" className="block text-sm font-medium text-gray-700 mb-2">
+            Delay Duration *
+          </label>
+          <input
+            type="text"
+            id="delayDuration"
+            value={formData.delayDuration}
+            onChange={(e) => handleInputChange('delayDuration', e.target.value)}
+            placeholder="e.g., 4 hours, 3.5 hours, 180 minutes"
+            className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${
+              errors.delayDuration ? 'border-red-500' : 'border-gray-300'
+            }`}
+          />
+          {errors.delayDuration && (
+            <p className="mt-1 text-sm text-red-600">{errors.delayDuration}</p>
+          )}
+        </div>
+
+        {/* Delay Reason */}
+        <div>
+          <label htmlFor="delayReason" className="block text-sm font-medium text-gray-700 mb-2">
+            Reason for Delay (Optional)
+          </label>
+          <input
+            type="text"
+            id="delayReason"
+            value={formData.delayReason}
+            onChange={(e) => handleInputChange('delayReason', e.target.value)}
+            placeholder="e.g., Technical issues, weather, crew delay"
+            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+          />
+          <p className="mt-1 text-sm text-gray-500">
+            This helps us determine if extraordinary circumstances apply
+          </p>
         </div>
       </div>
 
