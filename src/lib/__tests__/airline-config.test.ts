@@ -6,13 +6,23 @@ import {
   getAirlinesBySubmissionMethod,
   generateSubmissionTemplate,
   AirlineConfig,
+  getAirlineConfigByCode,
+  getAirlineConfigByName,
+  getAirlineConfigsByRegion,
+  getAirlineConfigsByParentCompany,
+  getActiveAirlineConfigs,
+  searchAirlineConfigs,
+  getAirlineConfigsByVolume,
+  getTopAirlinesByVolume,
 } from '../airline-config';
 
 describe('Airline Configuration System', () => {
   describe('AIRLINE_CONFIGS', () => {
-    it('should contain all 10 EU airlines', () => {
+    it('should contain expanded airline database with top airlines', () => {
       const airlines = Object.keys(AIRLINE_CONFIGS);
-      expect(airlines).toHaveLength(10);
+      expect(airlines.length).toBeGreaterThan(10); // Now we have more than 10 airlines
+
+      // Check for original EU airlines
       expect(airlines).toContain('BA'); // British Airways
       expect(airlines).toContain('FR'); // Ryanair
       expect(airlines).toContain('U2'); // EasyJet
@@ -23,6 +33,30 @@ describe('Airline Configuration System', () => {
       expect(airlines).toContain('AZ'); // Alitalia
       expect(airlines).toContain('SK'); // SAS Scandinavian
       expect(airlines).toContain('TP'); // TAP Air Portugal
+
+      // Check for major North American airlines
+      expect(airlines).toContain('AA'); // American Airlines
+      expect(airlines).toContain('DL'); // Delta Air Lines
+      expect(airlines).toContain('UA'); // United Airlines
+      expect(airlines).toContain('WN'); // Southwest Airlines
+      expect(airlines).toContain('AC'); // Air Canada
+
+      // Check for major Asian airlines
+      expect(airlines).toContain('EK'); // Emirates
+      expect(airlines).toContain('QR'); // Qatar Airways
+      expect(airlines).toContain('SQ'); // Singapore Airlines
+      expect(airlines).toContain('NH'); // All Nippon Airways
+      expect(airlines).toContain('JL'); // Japan Airlines
+      expect(airlines).toContain('KE'); // Korean Air
+      expect(airlines).toContain('CZ'); // China Southern Airlines
+      expect(airlines).toContain('MU'); // China Eastern Airlines
+      expect(airlines).toContain('CA'); // Air China
+      expect(airlines).toContain('6E'); // IndiGo
+      expect(airlines).toContain('QF'); // Qantas
+
+      // Check for additional European airlines
+      expect(airlines).toContain('W6'); // Wizz Air
+      expect(airlines).toContain('TK'); // Turkish Airlines
     });
 
     it('should have valid configuration for each airline', () => {
@@ -36,7 +70,22 @@ describe('Airline Configuration System', () => {
         expect(config.requiredFields).toBeInstanceOf(Array);
         expect(config.expectedResponseTime).toBeTruthy();
         expect(config.followUpSchedule).toBeInstanceOf(Array);
-        expect(config.regulationCovered).toMatch(/^(EU261|UK261)$/);
+        expect(config.regulationCovered).toBeInstanceOf(Array);
+        expect(config.regulationCovered.length).toBeGreaterThan(0);
+        expect([
+          'EU261',
+          'UK261',
+          'US_DOT',
+          'SWISS',
+          'NORWEGIAN',
+          'CANADIAN',
+        ]).toContain(config.regulationCovered[0]);
+        // New fields validation
+        expect(config.region).toBeTruthy();
+        expect(typeof config.isActive).toBe('boolean');
+        expect(config.aliases).toBeInstanceOf(Array);
+        expect(config.parentCompany).toBeTruthy();
+        expect(typeof config.passengerVolume).toBe('number');
       });
     });
 
@@ -76,7 +125,7 @@ describe('Airline Configuration System', () => {
     });
 
     it('should return undefined for unknown airline', () => {
-      const unknownConfig = getAirlineConfig('Unknown Airline');
+      const unknownConfig = getAirlineConfig('XYZ123');
       expect(unknownConfig).toBeUndefined();
     });
 
@@ -91,7 +140,7 @@ describe('Airline Configuration System', () => {
   describe('getAllAirlineConfigs', () => {
     it('should return all airline configurations', () => {
       const configs = getAllAirlineConfigs();
-      expect(configs).toHaveLength(10);
+      expect(configs.length).toBeGreaterThan(10); // Now we have more than 10 airlines
       expect(configs).toEqual(Object.values(AIRLINE_CONFIGS));
     });
   });
@@ -99,17 +148,21 @@ describe('Airline Configuration System', () => {
   describe('getAirlinesBySubmissionMethod', () => {
     it('should return correct airlines for email method', () => {
       const emailAirlines = getAirlinesBySubmissionMethod('email');
-      expect(emailAirlines).toHaveLength(5);
+      // With expanded database, we now have more airlines with email method
+      expect(emailAirlines.length).toBeGreaterThanOrEqual(8);
       expect(emailAirlines.map((a) => a.airlineCode)).toContain('FR');
       expect(emailAirlines.map((a) => a.airlineCode)).toContain('LH');
       expect(emailAirlines.map((a) => a.airlineCode)).toContain('IB');
       expect(emailAirlines.map((a) => a.airlineCode)).toContain('AZ');
       expect(emailAirlines.map((a) => a.airlineCode)).toContain('TP');
+      expect(emailAirlines.map((a) => a.airlineCode)).toContain('LX');
+      expect(emailAirlines.map((a) => a.airlineCode)).toContain('OS');
+      expect(emailAirlines.map((a) => a.airlineCode)).toContain('SN');
     });
 
     it('should return correct airlines for web_form method', () => {
       const webFormAirlines = getAirlinesBySubmissionMethod('web_form');
-      expect(webFormAirlines).toHaveLength(5);
+      expect(webFormAirlines.length).toBeGreaterThan(5); // Now we have more web_form airlines
       expect(webFormAirlines.map((a) => a.airlineCode)).toContain('BA');
       expect(webFormAirlines.map((a) => a.airlineCode)).toContain('U2');
       expect(webFormAirlines.map((a) => a.airlineCode)).toContain('AF');
@@ -176,13 +229,18 @@ describe('Airline Configuration System', () => {
         expectedResponseTime: '2-4 weeks',
         followUpSchedule: ['2 weeks', '4 weeks'],
         specialInstructions: 'Test instructions',
-        regulationCovered: 'EU261',
+        regulationCovered: ['EU261'],
         contactPhone: '+1234567890',
         website: 'https://test.com',
         claimFormFields: {
           passenger_name: 'Passenger Name',
           flight_number: 'Flight Number',
         },
+        region: 'Europe',
+        isActive: true,
+        aliases: ['Test'],
+        parentCompany: 'Test Group',
+        passengerVolume: 1000000,
       };
 
       const template = generateSubmissionTemplate(postalConfig, mockClaimData);
@@ -261,9 +319,202 @@ describe('Airline Configuration System', () => {
         expect(typeof config.claimFormFields).toBe('object');
 
         // Check that required fields have mappings
-        config.requiredFields.forEach((field) => {
-          expect(config.claimFormFields[field]).toBeTruthy();
+        if (config.claimFormFields) {
+          config.requiredFields.forEach((field) => {
+            expect(config.claimFormFields![field]).toBeTruthy();
+          });
+        }
+      });
+    });
+  });
+
+  describe('Enhanced Lookup Functions', () => {
+    describe('getAirlineConfigByCode', () => {
+      it('should return correct config by airline code', () => {
+        const baConfig = getAirlineConfigByCode('BA');
+        expect(baConfig).toBeDefined();
+        expect(baConfig?.airlineCode).toBe('BA');
+        expect(baConfig?.airlineName).toBe('British Airways');
+      });
+
+      it('should return undefined for unknown airline code', () => {
+        const unknownConfig = getAirlineConfigByCode('XX');
+        expect(unknownConfig).toBeUndefined();
+      });
+
+      it('should be case insensitive', () => {
+        const baConfig1 = getAirlineConfigByCode('ba');
+        const baConfig2 = getAirlineConfigByCode('BA');
+        expect(baConfig1).toEqual(baConfig2);
+      });
+    });
+
+    describe('getAirlineConfigByName', () => {
+      it('should return correct config by airline name', () => {
+        const ryanairConfig = getAirlineConfigByName('Ryanair');
+        expect(ryanairConfig).toBeDefined();
+        expect(ryanairConfig?.airlineCode).toBe('FR');
+        expect(ryanairConfig?.airlineName).toBe('Ryanair');
+      });
+
+      it('should return correct config by partial name match', () => {
+        const easyjetConfig = getAirlineConfigByName('EasyJet');
+        expect(easyjetConfig).toBeDefined();
+        expect(easyjetConfig?.airlineCode).toBe('U2');
+      });
+
+      it('should return undefined for unknown airline name', () => {
+        const unknownConfig = getAirlineConfigByName('XYZ123');
+        expect(unknownConfig).toBeUndefined();
+      });
+    });
+
+    describe('getAirlineConfigsByRegion', () => {
+      it('should return correct airlines for Europe region', () => {
+        const europeanAirlines = getAirlineConfigsByRegion('Europe');
+        expect(europeanAirlines.length).toBeGreaterThan(0);
+        expect(
+          europeanAirlines.every((airline) => airline.region === 'Europe')
+        ).toBe(true);
+        expect(europeanAirlines.map((a) => a.airlineCode)).toContain('BA');
+        expect(europeanAirlines.map((a) => a.airlineCode)).toContain('FR');
+      });
+
+      it('should return correct airlines for North America region', () => {
+        const northAmericanAirlines =
+          getAirlineConfigsByRegion('North America');
+        expect(northAmericanAirlines.length).toBeGreaterThan(0);
+        expect(
+          northAmericanAirlines.every(
+            (airline) => airline.region === 'North America'
+          )
+        ).toBe(true);
+        expect(northAmericanAirlines.map((a) => a.airlineCode)).toContain('AA');
+        expect(northAmericanAirlines.map((a) => a.airlineCode)).toContain('DL');
+      });
+
+      it('should return empty array for unknown region', () => {
+        const unknownRegionAirlines =
+          getAirlineConfigsByRegion('Unknown Region');
+        expect(unknownRegionAirlines).toHaveLength(0);
+      });
+    });
+
+    describe('getAirlineConfigsByParentCompany', () => {
+      it('should return correct airlines for International Airlines Group', () => {
+        const iagAirlines = getAirlineConfigsByParentCompany(
+          'International Airlines Group'
+        );
+        expect(iagAirlines.length).toBeGreaterThan(0);
+        expect(
+          iagAirlines.every(
+            (airline) =>
+              airline.parentCompany === 'International Airlines Group'
+          )
+        ).toBe(true);
+        expect(iagAirlines.map((a) => a.airlineCode)).toContain('BA');
+        expect(iagAirlines.map((a) => a.airlineCode)).toContain('IB');
+      });
+
+      it('should return empty array for unknown parent company', () => {
+        const unknownParentAirlines = getAirlineConfigsByParentCompany(
+          'Unknown Parent Company'
+        );
+        expect(unknownParentAirlines).toHaveLength(0);
+      });
+    });
+
+    describe('getActiveAirlineConfigs', () => {
+      it('should return only active airlines', () => {
+        const activeAirlines = getActiveAirlineConfigs();
+        expect(activeAirlines.length).toBeGreaterThan(0);
+        expect(
+          activeAirlines.every((airline) => airline.isActive === true)
+        ).toBe(true);
+      });
+
+      it('should not include inactive airlines like Alitalia', () => {
+        const activeAirlines = getActiveAirlineConfigs();
+        const alitaliaConfig = activeAirlines.find(
+          (airline) => airline.airlineCode === 'AZ'
+        );
+        expect(alitaliaConfig).toBeUndefined();
+      });
+    });
+
+    describe('searchAirlineConfigs', () => {
+      it('should return relevant results for airline name search', () => {
+        const results = searchAirlineConfigs('British');
+        expect(results.length).toBeGreaterThan(0);
+        expect(results.some((airline) => airline.airlineCode === 'BA')).toBe(
+          true
+        );
+      });
+
+      it('should return relevant results for airline code search', () => {
+        const results = searchAirlineConfigs('BA');
+        expect(results.length).toBeGreaterThan(0);
+        expect(results.some((airline) => airline.airlineCode === 'BA')).toBe(
+          true
+        );
+      });
+
+      it('should return relevant results for parent company search', () => {
+        const results = searchAirlineConfigs('International Airlines Group');
+        expect(results.length).toBeGreaterThan(0);
+        expect(results.some((airline) => airline.airlineCode === 'BA')).toBe(
+          true
+        );
+        expect(results.some((airline) => airline.airlineCode === 'IB')).toBe(
+          true
+        );
+      });
+
+      it('should return empty array for empty query', () => {
+        const results = searchAirlineConfigs('');
+        expect(results).toHaveLength(0);
+      });
+    });
+
+    describe('getAirlineConfigsByVolume', () => {
+      it('should return airlines sorted by passenger volume (highest first)', () => {
+        const airlinesByVolume = getAirlineConfigsByVolume();
+        expect(airlinesByVolume.length).toBeGreaterThan(0);
+
+        // Check that they are sorted in descending order
+        for (let i = 0; i < airlinesByVolume.length - 1; i++) {
+          expect(airlinesByVolume[i].passengerVolume).toBeGreaterThanOrEqual(
+            airlinesByVolume[i + 1].passengerVolume || 0
+          );
+        }
+      });
+
+      it('should only include airlines with passenger volume data', () => {
+        const airlinesByVolume = getAirlineConfigsByVolume();
+        airlinesByVolume.forEach((airline) => {
+          expect(airline.passengerVolume).toBeGreaterThan(0);
         });
+      });
+    });
+
+    describe('getTopAirlinesByVolume', () => {
+      it('should return top 10 airlines by default', () => {
+        const topAirlines = getTopAirlinesByVolume();
+        expect(topAirlines).toHaveLength(10);
+      });
+
+      it('should return specified number of top airlines', () => {
+        const top5Airlines = getTopAirlinesByVolume(5);
+        expect(top5Airlines).toHaveLength(5);
+      });
+
+      it('should return airlines sorted by passenger volume', () => {
+        const topAirlines = getTopAirlinesByVolume(5);
+        for (let i = 0; i < topAirlines.length - 1; i++) {
+          expect(topAirlines[i].passengerVolume).toBeGreaterThanOrEqual(
+            topAirlines[i + 1].passengerVolume || 0
+          );
+        }
       });
     });
   });

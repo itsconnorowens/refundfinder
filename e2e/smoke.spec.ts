@@ -89,7 +89,7 @@ test.describe('Smoke Tests - Critical Paths', () => {
     await expect(charset).toBeAttached();
   });
 
-  test('API health check - payment intent endpoint exists', async ({ request }) => {
+  test('API health check - payment intent endpoint exists', async ({ request: _request }) => {
     // This is a basic check that the API endpoints are set up
     // We don't actually call them without proper setup
     expect(true).toBe(true);

@@ -22,7 +22,12 @@ export default function FlightLookupForm({ onResults, onLoading }: FlightLookupF
     delayReason: '',
     passengerEmail: '',
     firstName: '',
-    lastName: ''
+    lastName: '',
+    // New fields for cancellation support
+    disruptionType: 'delay' as 'delay' | 'cancellation',
+    noticeGiven: '',
+    alternativeOffered: false,
+    alternativeTiming: ''
   });
   const [errors, setErrors] = useState<Record<string, string>>({});
 
@@ -78,6 +83,16 @@ export default function FlightLookupForm({ onResults, onLoading }: FlightLookupF
       }
     }
 
+    // Validate cancellation-specific fields
+    if (formData.disruptionType === 'cancellation') {
+      if (!formData.noticeGiven) {
+        newErrors.noticeGiven = 'Notice period is required for cancellations';
+      }
+      if (formData.alternativeOffered && !formData.alternativeTiming.trim()) {
+        newErrors.alternativeTiming = 'Alternative timing is required when alternative flight is offered';
+      }
+    }
+
     if (!formData.passengerEmail.trim()) {
       newErrors.passengerEmail = 'Email is required';
     } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.passengerEmail.trim())) {
@@ -122,7 +137,12 @@ export default function FlightLookupForm({ onResults, onLoading }: FlightLookupF
           delayReason: formData.delayReason.trim(),
           passengerEmail: formData.passengerEmail.trim(),
           firstName: formData.firstName.trim(),
-          lastName: formData.lastName.trim()
+          lastName: formData.lastName.trim(),
+          // New fields for cancellation support
+          disruptionType: formData.disruptionType,
+          noticeGiven: formData.noticeGiven,
+          alternativeOffered: formData.alternativeOffered,
+          alternativeTiming: formData.alternativeTiming.trim()
         }),
       });
 
@@ -236,50 +256,151 @@ export default function FlightLookupForm({ onResults, onLoading }: FlightLookupF
           )}
         </div>
 
-        {/* Delay Duration */}
+        {/* Disruption Type */}
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-2">
-            Delay Duration *
+            What happened? *
           </label>
-          <div className="flex space-x-2">
-            <div className="flex-1">
+          <div className="flex space-x-4">
+            <label className="flex items-center">
               <input
-                type="number"
-                id="delayHours"
-                value={formData.delayHours}
-                onChange={(e) => handleInputChange('delayHours', e.target.value)}
-                placeholder="Hours"
-                min="0"
-                max="24"
-                className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${
-                  errors.delayHours ? 'border-red-500' : 'border-gray-300'
-                }`}
+                type="radio"
+                name="disruptionType"
+                value="delay"
+                checked={formData.disruptionType === 'delay'}
+                onChange={(e) => handleInputChange('disruptionType', e.target.value)}
+                className="mr-2"
               />
-            </div>
-            <div className="flex-1">
+              <span className="text-sm">Flight Delayed</span>
+            </label>
+            <label className="flex items-center">
               <input
-                type="number"
-                id="delayMinutes"
-                value={formData.delayMinutes}
-                onChange={(e) => handleInputChange('delayMinutes', e.target.value)}
-                placeholder="Minutes"
-                min="0"
-                max="59"
-                className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${
-                  errors.delayHours ? 'border-red-500' : 'border-gray-300'
-                }`}
+                type="radio"
+                name="disruptionType"
+                value="cancellation"
+                checked={formData.disruptionType === 'cancellation'}
+                onChange={(e) => handleInputChange('disruptionType', e.target.value)}
+                className="mr-2"
               />
-            </div>
+              <span className="text-sm">Flight Cancelled</span>
+            </label>
           </div>
-          {errors.delayHours && (
-            <p className="mt-1 text-sm text-red-600">{errors.delayHours}</p>
-          )}
         </div>
 
-        {/* Delay Reason */}
+        {/* Delay Duration - Only show for delays */}
+        {formData.disruptionType === 'delay' && (
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              Delay Duration *
+            </label>
+            <div className="flex space-x-2">
+              <div className="flex-1">
+                <input
+                  type="number"
+                  id="delayHours"
+                  value={formData.delayHours}
+                  onChange={(e) => handleInputChange('delayHours', e.target.value)}
+                  placeholder="Hours"
+                  min="0"
+                  max="24"
+                  className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${
+                    errors.delayHours ? 'border-red-500' : 'border-gray-300'
+                  }`}
+                />
+              </div>
+              <div className="flex-1">
+                <input
+                  type="number"
+                  id="delayMinutes"
+                  value={formData.delayMinutes}
+                  onChange={(e) => handleInputChange('delayMinutes', e.target.value)}
+                  placeholder="Minutes"
+                  min="0"
+                  max="59"
+                  className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${
+                    errors.delayHours ? 'border-red-500' : 'border-gray-300'
+                  }`}
+                />
+              </div>
+            </div>
+            {errors.delayHours && (
+              <p className="mt-1 text-sm text-red-600">{errors.delayHours}</p>
+            )}
+          </div>
+        )}
+
+        {/* Notice Given - Only show for cancellations */}
+        {formData.disruptionType === 'cancellation' && (
+          <div>
+            <label htmlFor="noticeGiven" className="block text-sm font-medium text-gray-700 mb-2">
+              When were you notified? *
+            </label>
+            <select
+              id="noticeGiven"
+              value={formData.noticeGiven}
+              onChange={(e) => handleInputChange('noticeGiven', e.target.value)}
+              className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${
+                errors.noticeGiven ? 'border-red-500' : 'border-gray-300'
+              }`}
+            >
+              <option value="">Select notice period</option>
+              <option value="< 7 days">Less than 7 days before departure</option>
+              <option value="7-14 days">7-14 days before departure</option>
+              <option value="> 14 days">More than 14 days before departure</option>
+            </select>
+            {errors.noticeGiven && (
+              <p className="mt-1 text-sm text-red-600">{errors.noticeGiven}</p>
+            )}
+            <p className="mt-1 text-sm text-gray-500">
+              This affects your compensation eligibility
+            </p>
+          </div>
+        )}
+
+        {/* Alternative Flight Offered - Only show for cancellations */}
+        {formData.disruptionType === 'cancellation' && (
+          <div>
+            <label className="flex items-center">
+              <input
+                type="checkbox"
+                checked={formData.alternativeOffered}
+                onChange={(e) => handleInputChange('alternativeOffered', e.target.checked.toString())}
+                className="mr-2"
+              />
+              <span className="text-sm font-medium text-gray-700">
+                Airline offered alternative flight
+              </span>
+            </label>
+            {formData.alternativeOffered && (
+              <div className="mt-2">
+                <label htmlFor="alternativeTiming" className="block text-sm font-medium text-gray-700 mb-2">
+                  When was the alternative flight? *
+                </label>
+                <input
+                  type="text"
+                  id="alternativeTiming"
+                  value={formData.alternativeTiming}
+                  onChange={(e) => handleInputChange('alternativeTiming', e.target.value)}
+                  placeholder="e.g., 2 hours later, next day"
+                  className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${
+                    errors.alternativeTiming ? 'border-red-500' : 'border-gray-300'
+                  }`}
+                />
+                {errors.alternativeTiming && (
+                  <p className="mt-1 text-sm text-red-600">{errors.alternativeTiming}</p>
+                )}
+                <p className="mt-1 text-sm text-gray-500">
+                  This affects your compensation amount
+                </p>
+              </div>
+            )}
+          </div>
+        )}
+
+        {/* Reason for Disruption */}
         <div>
           <label htmlFor="delayReason" className="block text-sm font-medium text-gray-700 mb-2">
-            Reason for Delay (Optional)
+            Reason for {formData.disruptionType === 'delay' ? 'Delay' : 'Cancellation'} (Optional)
           </label>
           <select
             id="delayReason"
@@ -287,7 +408,7 @@ export default function FlightLookupForm({ onResults, onLoading }: FlightLookupF
             onChange={(e) => handleInputChange('delayReason', e.target.value)}
             className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
           >
-            <option value="">Select delay reason</option>
+            <option value="">Select reason</option>
             <option value="Technical issues">Technical issues</option>
             <option value="Weather conditions">Weather conditions</option>
             <option value="Crew scheduling">Crew scheduling</option>

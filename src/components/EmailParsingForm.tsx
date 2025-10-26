@@ -13,7 +13,12 @@ export default function EmailParsingForm({ onResults, onLoading }: EmailParsingF
     emailContent: '',
     passengerEmail: '',
     firstName: '',
-    lastName: ''
+    lastName: '',
+    // New fields for cancellation support
+    disruptionType: 'delay' as 'delay' | 'cancellation',
+    noticeGiven: '',
+    alternativeOffered: false,
+    alternativeTiming: ''
   });
   const [errors, setErrors] = useState<Record<string, string>>({});
 
@@ -40,6 +45,16 @@ export default function EmailParsingForm({ onResults, onLoading }: EmailParsingF
       newErrors.lastName = 'Last name is required';
     }
 
+    // Validate cancellation-specific fields
+    if (formData.disruptionType === 'cancellation') {
+      if (!formData.noticeGiven) {
+        newErrors.noticeGiven = 'Notice period is required for cancellations';
+      }
+      if (formData.alternativeOffered && !formData.alternativeTiming.trim()) {
+        newErrors.alternativeTiming = 'Alternative timing is required when alternative flight is offered';
+      }
+    }
+
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
@@ -64,7 +79,12 @@ export default function EmailParsingForm({ onResults, onLoading }: EmailParsingF
           emailContent: formData.emailContent.trim(),
           passengerEmail: formData.passengerEmail.trim(),
           firstName: formData.firstName.trim(),
-          lastName: formData.lastName.trim()
+          lastName: formData.lastName.trim(),
+          // New fields for cancellation support
+          disruptionType: formData.disruptionType,
+          noticeGiven: formData.noticeGiven,
+          alternativeOffered: formData.alternativeOffered,
+          alternativeTiming: formData.alternativeTiming.trim()
         }),
       });
 
@@ -104,10 +124,10 @@ We apologize for any inconvenience.
 Turkish Airlines`;
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-6">
+    <form onSubmit={handleSubmit} className="space-y-6 px-4 sm:px-0">
       <div className="text-center mb-6">
-        <h2 className="text-2xl font-bold text-gray-900 mb-2">Upload Your Flight Email</h2>
-        <p className="text-gray-600">Paste your flight delay or cancellation email below</p>
+        <h2 className="text-xl sm:text-2xl font-bold text-gray-900 mb-2">Upload Your Flight Email</h2>
+        <p className="text-sm sm:text-base text-gray-600">Paste your flight delay or cancellation email below</p>
       </div>
 
       {/* Email Content */}
@@ -121,7 +141,7 @@ Turkish Airlines`;
           onChange={(e) => handleInputChange('emailContent', e.target.value)}
           placeholder={sampleEmail}
           rows={12}
-          className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 resize-none ${
+          className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 resize-none text-base ${
             errors.emailContent ? 'border-red-500' : 'border-gray-300'
           }`}
         />
@@ -133,10 +153,114 @@ Turkish Airlines`;
         </p>
       </div>
 
+      {/* Additional Information for Cancellations */}
+      <div className="border-t pt-6">
+        <h3 className="text-lg font-medium text-gray-900 mb-4">Additional Information</h3>
+        
+        {/* Disruption Type */}
+        <div className="mb-6">
+          <label className="block text-sm font-medium text-gray-700 mb-2">
+            What happened? *
+          </label>
+          <div className="flex space-x-4">
+            <label className="flex items-center">
+              <input
+                type="radio"
+                name="disruptionType"
+                value="delay"
+                checked={formData.disruptionType === 'delay'}
+                onChange={(e) => handleInputChange('disruptionType', e.target.value)}
+                className="mr-2"
+              />
+              <span className="text-sm">Flight Delayed</span>
+            </label>
+            <label className="flex items-center">
+              <input
+                type="radio"
+                name="disruptionType"
+                value="cancellation"
+                checked={formData.disruptionType === 'cancellation'}
+                onChange={(e) => handleInputChange('disruptionType', e.target.value)}
+                className="mr-2"
+              />
+              <span className="text-sm">Flight Cancelled</span>
+            </label>
+          </div>
+        </div>
+
+        {/* Notice Given - Only show for cancellations */}
+        {formData.disruptionType === 'cancellation' && (
+          <div className="mb-6">
+            <label htmlFor="noticeGiven" className="block text-sm font-medium text-gray-700 mb-2">
+              When were you notified? *
+            </label>
+            <select
+              id="noticeGiven"
+              value={formData.noticeGiven}
+              onChange={(e) => handleInputChange('noticeGiven', e.target.value)}
+              className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${
+                errors.noticeGiven ? 'border-red-500' : 'border-gray-300'
+              }`}
+            >
+              <option value="">Select notice period</option>
+              <option value="< 7 days">Less than 7 days before departure</option>
+              <option value="7-14 days">7-14 days before departure</option>
+              <option value="> 14 days">More than 14 days before departure</option>
+            </select>
+            {errors.noticeGiven && (
+              <p className="mt-1 text-sm text-red-600">{errors.noticeGiven}</p>
+            )}
+            <p className="mt-1 text-sm text-gray-500">
+              This affects your compensation eligibility
+            </p>
+          </div>
+        )}
+
+        {/* Alternative Flight Offered - Only show for cancellations */}
+        {formData.disruptionType === 'cancellation' && (
+          <div className="mb-6">
+            <label className="flex items-center">
+              <input
+                type="checkbox"
+                checked={formData.alternativeOffered}
+                onChange={(e) => handleInputChange('alternativeOffered', e.target.checked.toString())}
+                className="mr-2"
+              />
+              <span className="text-sm font-medium text-gray-700">
+                Airline offered alternative flight
+              </span>
+            </label>
+            {formData.alternativeOffered && (
+              <div className="mt-2">
+                <label htmlFor="alternativeTiming" className="block text-sm font-medium text-gray-700 mb-2">
+                  When was the alternative flight? *
+                </label>
+                <input
+                  type="text"
+                  id="alternativeTiming"
+                  value={formData.alternativeTiming}
+                  onChange={(e) => handleInputChange('alternativeTiming', e.target.value)}
+                  placeholder="e.g., 2 hours later, next day"
+                  className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${
+                    errors.alternativeTiming ? 'border-red-500' : 'border-gray-300'
+                  }`}
+                />
+                {errors.alternativeTiming && (
+                  <p className="mt-1 text-sm text-red-600">{errors.alternativeTiming}</p>
+                )}
+                <p className="mt-1 text-sm text-gray-500">
+                  This affects your compensation amount
+                </p>
+              </div>
+            )}
+          </div>
+        )}
+      </div>
+
       {/* Passenger Information */}
       <div className="border-t pt-6">
         <h3 className="text-lg font-medium text-gray-900 mb-4">Passenger Information</h3>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
           <div>
             <label htmlFor="firstName" className="block text-sm font-medium text-gray-700 mb-2">
               First Name *
@@ -147,7 +271,7 @@ Turkish Airlines`;
               value={formData.firstName}
               onChange={(e) => handleInputChange('firstName', e.target.value)}
               placeholder="John"
-              className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${
+              className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-base ${
                 errors.firstName ? 'border-red-500' : 'border-gray-300'
               }`}
             />
@@ -166,7 +290,7 @@ Turkish Airlines`;
               value={formData.lastName}
               onChange={(e) => handleInputChange('lastName', e.target.value)}
               placeholder="Doe"
-              className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${
+              className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-base ${
                 errors.lastName ? 'border-red-500' : 'border-gray-300'
               }`}
             />
@@ -185,7 +309,7 @@ Turkish Airlines`;
               value={formData.passengerEmail}
               onChange={(e) => handleInputChange('passengerEmail', e.target.value)}
               placeholder="john@example.com"
-              className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${
+              className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-base ${
                 errors.passengerEmail ? 'border-red-500' : 'border-gray-300'
               }`}
             />
@@ -207,10 +331,10 @@ Turkish Airlines`;
         </ul>
       </div>
 
-      <div className="flex justify-center pt-6">
+      <div className="flex justify-center pt-6 pb-8 md:pb-0">
         <button
           type="submit"
-          className="w-full md:w-auto px-8 py-4 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 focus:ring-4 focus:ring-blue-200 transition-colors"
+          className="w-full sm:w-auto px-8 py-4 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 focus:ring-4 focus:ring-blue-200 transition-colors min-h-[48px] text-base"
         >
           Analyze My Email
         </button>

@@ -26,8 +26,18 @@ interface FormData {
   arrivalAirport: string;
   delayDuration: string;
   delayReason: string;
+  disruptionType?: 'delay' | 'cancellation';
+  noticeGiven?: string;
+  alternativeOffered?: boolean;
+  alternativeTiming?: string;
   
-  // Step 3: Documentation
+  // Step 3: Verification
+  verificationStatus?: 'pending' | 'verified' | 'unverified' | 'failed' | 'manual';
+  verificationConfidence?: number;
+  verificationMessage?: string;
+  actualDelayMinutes?: number;
+  
+  // Step 4: Documentation
   boardingPass: File | null;
   delayProof: File | null;
   boardingPassUrl?: string;
@@ -41,9 +51,10 @@ interface FormErrors {
 const STEPS = [
   { id: 1, title: 'Personal Info', description: 'Your contact details' },
   { id: 2, title: 'Flight Details', description: 'Flight information' },
-  { id: 3, title: 'Documentation', description: 'Upload required documents' },
-  { id: 4, title: 'Review', description: 'Review your claim' },
-  { id: 5, title: 'Payment', description: 'Secure payment' }
+  { id: 3, title: 'Verification', description: 'Verify flight status' },
+  { id: 4, title: 'Documentation', description: 'Upload required documents' },
+  { id: 5, title: 'Review', description: 'Review your claim' },
+  { id: 6, title: 'Payment', description: 'Secure payment' }
 ];
 
 export default function ClaimSubmissionForm() {
@@ -82,6 +93,10 @@ export default function ClaimSubmissionForm() {
     const urlDepartureAirport = searchParams.get('departureAirport');
     const urlArrivalAirport = searchParams.get('arrivalAirport');
     const urlDelayDuration = searchParams.get('delayDuration');
+    const urlDisruptionType = searchParams.get('disruptionType') as 'delay' | 'cancellation' | null;
+    const urlNoticeGiven = searchParams.get('noticeGiven');
+    const urlAlternativeOffered = searchParams.get('alternativeOffered') === 'true';
+    const urlAlternativeTiming = searchParams.get('alternativeTiming');
 
     if (urlFlightNumber || urlAirline || urlDepartureDate) {
       // Pre-fill from URL parameters
@@ -93,6 +108,11 @@ export default function ClaimSubmissionForm() {
         departureAirport: urlDepartureAirport || prev.departureAirport,
         arrivalAirport: urlArrivalAirport || prev.arrivalAirport,
         delayDuration: urlDelayDuration || prev.delayDuration,
+        disruptionType: urlDisruptionType || prev.disruptionType,
+        noticeGiven: urlNoticeGiven || prev.noticeGiven,
+        alternativeOffered: urlAlternativeOffered || prev.alternativeOffered,
+        alternativeTiming: urlAlternativeTiming || prev.alternativeTiming,
+        verificationStatus: 'pending'
       }));
     } else {
       // Fall back to localStorage
@@ -136,6 +156,10 @@ export default function ClaimSubmissionForm() {
     }
 
     if (step === 3) {
+      // Verification step - no validation required
+    }
+
+    if (step === 4) {
       if (!formData.boardingPass) newErrors.boardingPass = 'Boarding pass is required';
       if (!formData.delayProof) newErrors.delayProof = 'Delay proof is required';
     }
@@ -154,8 +178,13 @@ export default function ClaimSubmissionForm() {
 
   const handleNext = async () => {
     if (validateStep(currentStep)) {
+      // If moving from step 2 to step 3, perform flight verification
+      if (currentStep === 2) {
+        await performFlightVerification();
+      }
+      
       // If moving from review to payment, create payment intent
-      if (currentStep === 4 && !paymentClientSecret) {
+      if (currentStep === 5 && !paymentClientSecret) {
         await createPaymentIntent();
       }
       setCurrentStep(prev => Math.min(prev + 1, STEPS.length));
@@ -197,11 +226,62 @@ export default function ClaimSubmissionForm() {
     }
   };
 
+  const performFlightVerification = async () => {
+    try {
+      // Parse delay duration to get hours
+      const delayMatch = formData.delayDuration.match(/(\d+(?:\.\d+)?)\s*hours?/);
+      const delayHours = delayMatch ? parseFloat(delayMatch[1]) : 0;
+
+      const response = await fetch('/api/verify-flight', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          flightNumber: formData.flightNumber,
+          flightDate: formData.departureDate,
+          userReportedDelay: delayHours,
+          userReportedType: formData.disruptionType || 'delay',
+          departureAirport: formData.departureAirport,
+          arrivalAirport: formData.arrivalAirport
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to verify flight');
+      }
+
+      const verificationResult = await response.json();
+      
+      // Update form data with verification results
+      setFormData(prev => ({
+        ...prev,
+        verificationStatus: verificationResult.status,
+        verificationConfidence: verificationResult.confidence,
+        verificationMessage: verificationResult.message,
+        actualDelayMinutes: verificationResult.actualData?.delayMinutes
+      }));
+
+    } catch (error) {
+      console.error('Flight verification error:', error);
+      // Set verification as failed but allow user to proceed
+      setFormData(prev => ({
+        ...prev,
+        verificationStatus: 'failed',
+        verificationConfidence: 0,
+        verificationMessage: 'Unable to verify flight status. Proceeding with your reported information.'
+      }));
+    }
+  };
+
   const handleBack = () => {
     setCurrentStep(prev => Math.max(prev - 1, 1));
   };
 
   const handleFileUpload = async (file: File, type: 'boardingPass' | 'delayProof') => {
+    // Clear any existing errors
+    setErrors(prev => ({ ...prev, [type]: '' }));
+
     // Validate file type
     const allowedTypes = ['application/pdf', 'image/jpeg', 'image/jpg', 'image/png'];
     if (!allowedTypes.includes(file.type)) {
@@ -212,6 +292,21 @@ export default function ClaimSubmissionForm() {
     // Validate file size (5MB limit)
     if (file.size > 5 * 1024 * 1024) {
       setErrors(prev => ({ ...prev, [type]: 'File size must be less than 5MB' }));
+      return;
+    }
+
+    // Additional validation for image quality
+    if (file.type.startsWith('image/')) {
+      // Check if image is too small (less than 100KB might be too compressed)
+      if (file.size < 100 * 1024) {
+        setErrors(prev => ({ ...prev, [type]: 'Image quality appears too low. Please upload a higher quality image.' }));
+        return;
+      }
+    }
+
+    // Check filename for obvious issues
+    if (file.name.length > 100) {
+      setErrors(prev => ({ ...prev, [type]: 'Filename is too long. Please rename the file.' }));
       return;
     }
 
@@ -237,6 +332,9 @@ export default function ClaimSubmissionForm() {
           [`${type}Url`]: result.url
         }));
         setErrors(prev => ({ ...prev, [type]: '' }));
+        
+        // Show success message
+        console.log(`${type} uploaded successfully`);
       } else {
         throw new Error(result.error || 'Upload failed');
       }
@@ -576,9 +674,120 @@ export default function ClaimSubmissionForm() {
             </div>
           )}
 
-          {/* Step 3: Documentation */}
+          {/* Step 3: Verification */}
           {currentStep === 3 && (
+            <div className="space-y-6">
+              <div className="text-center">
+                <h3 className="text-lg font-semibold mb-2">Flight Verification</h3>
+                <p className="text-gray-600">We're verifying your flight information...</p>
+              </div>
+
+              {formData.verificationStatus === 'pending' && (
+                <div className="flex items-center justify-center py-8">
+                  <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mr-3"></div>
+                  <span className="text-gray-600">Verifying flight status...</span>
+                </div>
+              )}
+
+              {formData.verificationStatus && formData.verificationStatus !== 'pending' && (
+                <div className="bg-gray-50 rounded-lg p-6">
+                  <div className="flex items-start">
+                    {formData.verificationStatus === 'verified' ? (
+                      <CheckCircle className="w-6 h-6 text-green-600 mr-3 mt-0.5" />
+                    ) : formData.verificationStatus === 'unverified' ? (
+                      <AlertCircle className="w-6 h-6 text-yellow-600 mr-3 mt-0.5" />
+                    ) : (
+                      <AlertCircle className="w-6 h-6 text-red-600 mr-3 mt-0.5" />
+                    )}
+                    <div className="flex-1">
+                      <h4 className="font-medium text-gray-900 mb-2">
+                        {formData.verificationStatus === 'verified' ? 'Flight Verified' : 
+                         formData.verificationStatus === 'unverified' ? 'Partial Verification' : 
+                         'Verification Failed'}
+                      </h4>
+                      <p className="text-gray-600 mb-3">{formData.verificationMessage}</p>
+                      
+                      {formData.verificationConfidence && (
+                        <div className="mb-3">
+                          <div className="flex justify-between text-sm text-gray-600 mb-1">
+                            <span>Confidence Level</span>
+                            <span>{formData.verificationConfidence}%</span>
+                          </div>
+                          <div className="w-full bg-gray-200 rounded-full h-2">
+                            <div 
+                              className={`h-2 rounded-full ${
+                                formData.verificationConfidence >= 80 ? 'bg-green-500' :
+                                formData.verificationConfidence >= 60 ? 'bg-yellow-500' : 'bg-red-500'
+                              }`}
+                              style={{ width: `${formData.verificationConfidence}%` }}
+                            ></div>
+                          </div>
+                        </div>
+                      )}
+
+                      {formData.actualDelayMinutes && (
+                        <div className="bg-white rounded p-3 border">
+                          <p className="text-sm text-gray-600 mb-1">Actual Flight Data:</p>
+                          <p className="font-medium">
+                            Delay: {Math.round(formData.actualDelayMinutes / 60 * 10) / 10} hours
+                          </p>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+                <h4 className="font-medium text-blue-900 mb-2">What happens next?</h4>
+                <ul className="text-sm text-blue-800 space-y-1">
+                  <li>• Your claim will be filed with the airline within 48 hours</li>
+                  <li>• You'll receive email updates at every step</li>
+                  <li>• We'll handle all paperwork and follow-up</li>
+                  <li>• If verification failed, we'll manually review your case</li>
+                </ul>
+              </div>
+            </div>
+          )}
+
+          {/* Step 4: Documentation */}
+          {currentStep === 4 && (
             <div className="space-y-8">
+              {/* Document Upload Guidance */}
+              <div className="bg-blue-50 border border-blue-200 rounded-lg p-6">
+                <h3 className="text-lg font-semibold text-blue-900 mb-4">Document Upload Guide</h3>
+                <div className="grid md:grid-cols-2 gap-6">
+                  <div>
+                    <h4 className="font-medium text-blue-900 mb-2">Boarding Pass Requirements</h4>
+                    <ul className="text-sm text-blue-800 space-y-1 mb-3">
+                      <li>• Must show flight number, date, and passenger name</li>
+                      <li>• Must show departure and arrival airports</li>
+                      <li>• Can be digital (PDF) or photo of physical pass</li>
+                      <li>• Must be readable and not blurry</li>
+                    </ul>
+                    <div className="bg-white rounded p-3 border">
+                      <p className="text-xs text-gray-600 mb-1">Example boarding pass should show:</p>
+                      <p className="text-sm font-medium">Flight: AA1234 • Date: 15 Jan 2024 • Name: John Doe</p>
+                      <p className="text-sm font-medium">Route: JFK → LAX</p>
+                    </div>
+                  </div>
+                  <div>
+                    <h4 className="font-medium text-blue-900 mb-2">Delay/Cancellation Proof</h4>
+                    <ul className="text-sm text-blue-800 space-y-1 mb-3">
+                      <li>• Screenshots of airline app/website</li>
+                      <li>• Email notifications from airline</li>
+                      <li>• Airport departure board photos</li>
+                      <li>• Must show flight number, date, and status</li>
+                    </ul>
+                    <div className="bg-white rounded p-3 border">
+                      <p className="text-xs text-gray-600 mb-1">Example proof should show:</p>
+                      <p className="text-sm font-medium">Flight AA1234 • Delayed 4h 15m • 15 Jan 2024</p>
+                      <p className="text-sm font-medium">Status: "Delayed" or "Cancelled"</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
               {/* Boarding Pass Upload */}
               <div>
                 <Label className="text-sm font-medium">
@@ -741,8 +950,8 @@ export default function ClaimSubmissionForm() {
             </div>
           )}
 
-          {/* Step 4: Review */}
-          {currentStep === 4 && (
+          {/* Step 5: Review */}
+          {currentStep === 5 && (
             <div className="space-y-6">
               <div className="bg-gray-50 rounded-lg p-6">
                 <h3 className="text-lg font-semibold mb-4">Review Your Claim</h3>
@@ -798,8 +1007,8 @@ export default function ClaimSubmissionForm() {
             </div>
           )}
 
-          {/* Step 5: Payment */}
-          {currentStep === 5 && (
+          {/* Step 6: Payment */}
+          {currentStep === 6 && (
             <div>
               {isCreatingPaymentIntent ? (
                 <div className="flex items-center justify-center min-h-[300px]">

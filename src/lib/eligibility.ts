@@ -1,6 +1,8 @@
-/**
- * Flight eligibility checker based on EU261 and US DOT regulations
- */
+import { calculateFlightDistanceCached } from './distance-calculator';
+import { getAirlineRegulations, normalizeAirlineName } from './airlines';
+import { analyzeExtraordinaryCircumstances } from './extraordinary-circumstances';
+
+import { getDistanceBetweenAirports } from './airports';
 
 export interface FlightDetails {
   flightNumber: string;
@@ -10,6 +12,11 @@ export interface FlightDetails {
   arrivalAirport: string;
   delayDuration: string;
   delayReason?: string;
+  // New fields for cancellation support
+  disruptionType?: 'delay' | 'cancellation';
+  noticeGiven?: string; // "< 7 days", "7-14 days", "> 14 days"
+  alternativeOffered?: boolean;
+  alternativeTiming?: string; // departure time difference
 }
 
 export interface EligibilityResult {
@@ -24,10 +31,20 @@ export interface EligibilityResult {
 /**
  * Check if a flight is eligible for compensation
  */
-export function checkEligibility(flight: FlightDetails): EligibilityResult {
+export async function checkEligibility(
+  flight: FlightDetails
+): Promise<EligibilityResult> {
+  const disruptionType = flight.disruptionType || 'delay';
+
+  // Handle cancellations differently
+  if (disruptionType === 'cancellation') {
+    return await checkCancellationEligibility(flight);
+  }
+
+  // Handle delays (existing logic)
   const delayHours = parseDelayHours(flight.delayDuration);
 
-  // Basic validation
+  // Basic validation for delays
   if (delayHours < 3) {
     return {
       eligible: false,
@@ -42,19 +59,19 @@ export function checkEligibility(flight: FlightDetails): EligibilityResult {
   // Check if it's a UK flight (UK CAA regulations apply)
   const isUKFlight = isUKCoveredFlight(flight);
   if (isUKFlight) {
-    return checkUKCAAEligibility(flight, delayHours);
+    return await checkUKCAAEligibility(flight, delayHours);
   }
 
   // Check if it's an EU flight (EU261 applies)
   const isEUFlight = isEUCoveredFlight(flight);
   if (isEUFlight) {
-    return checkEU261Eligibility(flight, delayHours);
+    return await checkEU261Eligibility(flight, delayHours);
   }
 
   // Check if it's a US flight (DOT regulations)
   const isUSFlightResult = isUSFlight(flight);
   if (isUSFlightResult) {
-    return checkDOTEligibility(flight, delayHours);
+    return await checkDOTEligibility(flight, delayHours);
   }
 
   // Not covered by major regulations
@@ -70,14 +87,286 @@ export function checkEligibility(flight: FlightDetails): EligibilityResult {
 }
 
 /**
+ * Check cancellation eligibility based on regulations
+ */
+async function checkCancellationEligibility(
+  flight: FlightDetails
+): Promise<EligibilityResult> {
+  // Check if it's a UK flight (UK CAA regulations apply)
+  const isUKFlight = isUKCoveredFlight(flight);
+  if (isUKFlight) {
+    return await checkUKCAACancellationEligibility(flight);
+  }
+
+  // Check if it's an EU flight (EU261 applies)
+  const isEUFlight = isEUCoveredFlight(flight);
+  if (isEUFlight) {
+    return await checkEU261CancellationEligibility(flight);
+  }
+
+  // Check if it's a US flight (DOT regulations)
+  const isUSFlightResult = isUSFlight(flight);
+  if (isUSFlightResult) {
+    return await checkDOTCancellationEligibility(flight);
+  }
+
+  // Not covered by major regulations
+  return {
+    eligible: false,
+    amount: '€0',
+    confidence: 80,
+    message:
+      'This flight may not be covered by major compensation regulations. We provide assistance services only and cannot guarantee eligibility.',
+    regulation: 'Unknown',
+    reason: 'Route not covered by EU261, UK CAA, or US DOT',
+  };
+}
+
+/**
+ * Check UK CAA cancellation eligibility
+ */
+async function checkUKCAACancellationEligibility(
+  flight: FlightDetails
+): Promise<EligibilityResult> {
+  // Check notice period
+  const noticeGiven = flight.noticeGiven;
+  if (!noticeGiven || noticeGiven === '> 14 days') {
+    return {
+      eligible: false,
+      amount: '£0',
+      confidence: 90,
+      message:
+        'Cancellation with more than 14 days notice does not qualify for compensation',
+      regulation: 'UK CAA',
+      reason: 'Insufficient notice period',
+    };
+  }
+
+  // Check for extraordinary circumstances using enhanced NLP
+  const isExtraordinary = await isExtraordinaryCircumstance(
+    flight.delayReason,
+    {
+      flightNumber: flight.flightNumber,
+      airline: flight.airline,
+      departureAirport: flight.departureAirport,
+      arrivalAirport: flight.arrivalAirport,
+      delayDuration: flight.delayDuration,
+    }
+  );
+
+  if (isExtraordinary) {
+    return {
+      eligible: false,
+      amount: '£0',
+      confidence: 90,
+      message: 'Compensation not available due to extraordinary circumstances',
+      regulation: 'UK CAA',
+      reason: 'Extraordinary circumstances (weather, security, etc.)',
+    };
+  }
+
+  // Calculate compensation based on distance
+  const distanceResult = calculateFlightDistanceCached(
+    flight.departureAirport,
+    flight.arrivalAirport
+  );
+  const distance = distanceResult.isValid ? distanceResult.distanceKm : 1000;
+  let amount = '£0';
+
+  if (distance <= 1500) {
+    amount = '£250';
+  } else if (distance <= 3500) {
+    amount = '£400';
+  } else {
+    amount = '£520';
+  }
+
+  // Check if alternative flight was offered
+  if (flight.alternativeOffered && flight.alternativeTiming) {
+    const alternativeHours = parseAlternativeTiming(flight.alternativeTiming);
+
+    if (alternativeHours <= 1) {
+      // 50% compensation if alternative within 1 hour
+      const baseAmount = parseFloat(amount.replace('£', ''));
+      amount = `£${Math.round(baseAmount * 0.5)}`;
+    } else if (alternativeHours <= 2) {
+      // No compensation if alternative within 2 hours
+      amount = '£0';
+      return {
+        eligible: false,
+        amount,
+        confidence: 90,
+        message:
+          'Alternative flight offered within 2 hours - no compensation required',
+        regulation: 'UK CAA',
+        reason: 'Alternative flight timing',
+      };
+    }
+  }
+
+  return {
+    eligible: true,
+    amount,
+    confidence: 85,
+    message: `You're likely entitled to ${amount} compensation under UK CAA regulations for cancellation`,
+    regulation: 'UK CAA',
+    reason: `Flight cancelled with ${noticeGiven} notice, distance ${distance}km`,
+  };
+}
+
+/**
+ * Check EU261 cancellation eligibility
+ */
+async function checkEU261CancellationEligibility(
+  flight: FlightDetails
+): Promise<EligibilityResult> {
+  // Check notice period
+  const noticeGiven = flight.noticeGiven;
+  if (!noticeGiven || noticeGiven === '> 14 days') {
+    return {
+      eligible: false,
+      amount: '€0',
+      confidence: 90,
+      message:
+        'Cancellation with more than 14 days notice does not qualify for compensation',
+      regulation: 'EU261',
+      reason: 'Insufficient notice period',
+    };
+  }
+
+  // Check for extraordinary circumstances using enhanced NLP
+  const isExtraordinary = await isExtraordinaryCircumstance(
+    flight.delayReason,
+    {
+      flightNumber: flight.flightNumber,
+      airline: flight.airline,
+      departureAirport: flight.departureAirport,
+      arrivalAirport: flight.arrivalAirport,
+      delayDuration: flight.delayDuration,
+    }
+  );
+
+  if (isExtraordinary) {
+    return {
+      eligible: false,
+      amount: '€0',
+      confidence: 90,
+      message: 'Compensation not available due to extraordinary circumstances',
+      regulation: 'EU261',
+      reason: 'Extraordinary circumstances (weather, security, etc.)',
+    };
+  }
+
+  // Calculate compensation based on distance
+  const distanceResult = calculateFlightDistanceCached(
+    flight.departureAirport,
+    flight.arrivalAirport
+  );
+  const distance = distanceResult.isValid ? distanceResult.distanceKm : 1000;
+  let amount = '€0';
+
+  if (distance <= 1500) {
+    amount = '€250';
+  } else if (distance <= 3500) {
+    amount = '€400';
+  } else {
+    amount = '€600';
+  }
+
+  // Check if alternative flight was offered
+  if (flight.alternativeOffered && flight.alternativeTiming) {
+    const alternativeHours = parseAlternativeTiming(flight.alternativeTiming);
+
+    if (alternativeHours <= 1) {
+      // 50% compensation if alternative within 1 hour
+      const baseAmount = parseFloat(amount.replace('€', ''));
+      amount = `€${Math.round(baseAmount * 0.5)}`;
+    } else if (alternativeHours <= 2) {
+      // No compensation if alternative within 2 hours
+      amount = '€0';
+      return {
+        eligible: false,
+        amount,
+        confidence: 90,
+        message:
+          'Alternative flight offered within 2 hours - no compensation required',
+        regulation: 'EU261',
+        reason: 'Alternative flight timing',
+      };
+    }
+  }
+
+  return {
+    eligible: true,
+    amount,
+    confidence: 85,
+    message: `You're likely entitled to ${amount} compensation under EU261 for cancellation`,
+    regulation: 'EU261',
+    reason: `Flight cancelled with ${noticeGiven} notice, distance ${distance}km`,
+  };
+}
+
+/**
+ * Check US DOT cancellation eligibility
+ */
+async function checkDOTCancellationEligibility(
+  flight: FlightDetails
+): Promise<EligibilityResult> {
+  // US DOT doesn't mandate compensation for cancellations
+  return {
+    eligible: true,
+    amount: 'Varies by airline',
+    confidence: 60,
+    message:
+      'US DOT does not mandate compensation for cancellations, but the airline may offer assistance',
+    regulation: 'US DOT',
+    reason: 'Check with airline for cancellation policy',
+  };
+}
+
+/**
+ * Parse alternative flight timing from string
+ */
+function parseAlternativeTiming(timing: string): number {
+  // Handle formats like "1 hour later", "2 hours later", "30 minutes later"
+  const lowerTiming = timing.toLowerCase();
+
+  const hoursMatch = lowerTiming.match(/(\d+(?:\.\d+)?)\s*hours?/);
+  const minutesMatch = lowerTiming.match(/(\d+(?:\.\d+)?)\s*minutes?/);
+
+  let totalHours = 0;
+
+  if (hoursMatch) {
+    totalHours += parseFloat(hoursMatch[1]);
+  }
+
+  if (minutesMatch) {
+    totalHours += parseFloat(minutesMatch[1]) / 60;
+  }
+
+  return totalHours;
+}
+
+/**
  * Check UK CAA eligibility (similar to EU261)
  */
-function checkUKCAAEligibility(
+async function checkUKCAAEligibility(
   flight: FlightDetails,
   delayHours: number
-): EligibilityResult {
-  // Check for extraordinary circumstances
-  if (isExtraordinaryCircumstance(flight.delayReason)) {
+): Promise<EligibilityResult> {
+  // Check for extraordinary circumstances using enhanced NLP
+  const isExtraordinary = await isExtraordinaryCircumstance(
+    flight.delayReason,
+    {
+      flightNumber: flight.flightNumber,
+      airline: flight.airline,
+      departureAirport: flight.departureAirport,
+      arrivalAirport: flight.arrivalAirport,
+      delayDuration: flight.delayDuration,
+    }
+  );
+
+  if (isExtraordinary) {
     return {
       eligible: false,
       amount: '£0',
@@ -89,10 +378,11 @@ function checkUKCAAEligibility(
   }
 
   // Calculate compensation based on distance (same as EU261)
-  const distance = calculateFlightDistance(
+  const distanceResult = calculateFlightDistanceCached(
     flight.departureAirport,
     flight.arrivalAirport
   );
+  const distance = distanceResult.isValid ? distanceResult.distanceKm : 1000;
   let amount = '£0';
 
   if (distance <= 1500) {
@@ -163,12 +453,23 @@ function isUKCoveredFlight(flight: FlightDetails): boolean {
 /**
  * Check EU261 eligibility
  */
-function checkEU261Eligibility(
+async function checkEU261Eligibility(
   flight: FlightDetails,
   delayHours: number
-): EligibilityResult {
-  // Check for extraordinary circumstances
-  if (isExtraordinaryCircumstance(flight.delayReason)) {
+): Promise<EligibilityResult> {
+  // Check for extraordinary circumstances using enhanced NLP
+  const isExtraordinary = await isExtraordinaryCircumstance(
+    flight.delayReason,
+    {
+      flightNumber: flight.flightNumber,
+      airline: flight.airline,
+      departureAirport: flight.departureAirport,
+      arrivalAirport: flight.arrivalAirport,
+      delayDuration: flight.delayDuration,
+    }
+  );
+
+  if (isExtraordinary) {
     return {
       eligible: false,
       amount: '€0',
@@ -180,10 +481,11 @@ function checkEU261Eligibility(
   }
 
   // Calculate compensation based on distance
-  const distance = calculateFlightDistance(
+  const distanceResult = calculateFlightDistanceCached(
     flight.departureAirport,
     flight.arrivalAirport
   );
+  const distance = distanceResult.isValid ? distanceResult.distanceKm : 1000;
   let amount = '€0';
 
   if (distance <= 1500) {
@@ -207,10 +509,10 @@ function checkEU261Eligibility(
 /**
  * Check US DOT eligibility
  */
-function checkDOTEligibility(
+async function checkDOTEligibility(
   flight: FlightDetails,
   delayHours: number
-): EligibilityResult {
+): Promise<EligibilityResult> {
   // US DOT doesn't mandate compensation, but airlines may offer it
   if (delayHours >= 4) {
     return {
@@ -377,11 +679,31 @@ function isUSFlight(flight: FlightDetails): boolean {
 }
 
 /**
- * Check if delay reason is extraordinary circumstance
+ * Check if delay reason is extraordinary circumstance using enhanced NLP
  */
-function isExtraordinaryCircumstance(reason?: string): boolean {
+async function isExtraordinaryCircumstance(
+  reason?: string,
+  additionalContext?: any
+): Promise<boolean> {
   if (!reason) return false;
 
+  try {
+    const analysis = await analyzeExtraordinaryCircumstances(
+      reason,
+      additionalContext
+    );
+    return analysis.isExtraordinary;
+  } catch (error) {
+    console.error('Error analyzing extraordinary circumstances:', error);
+    // Fallback to simple keyword detection
+    return fallbackExtraordinaryDetection(reason);
+  }
+}
+
+/**
+ * Fallback keyword-based detection for extraordinary circumstances
+ */
+function fallbackExtraordinaryDetection(reason: string): boolean {
   const extraordinaryReasons = [
     'weather',
     'storm',
@@ -412,79 +734,21 @@ function isExtraordinaryCircumstance(reason?: string): boolean {
 }
 
 /**
- * Calculate approximate flight distance between airports
- * This is a simplified calculation - in production, use a proper airport database
+ * Calculate flight distance between airports using Haversine formula
+ * @param departure IATA code of departure airport
+ * @param arrival IATA code of arrival airport
+ * @returns Distance in kilometers, or 1000km fallback if airports not found
  */
 function calculateFlightDistance(departure: string, arrival: string): number {
-  // Simplified distance calculation based on common routes
-  // In production, use Haversine formula with actual coordinates
+  const distance = getDistanceBetweenAirports(departure, arrival);
 
-  const routeDistances: Record<string, number> = {
-    'LHR-CDG': 344,
-    'LHR-FRA': 646,
-    'LHR-AMS': 357,
-    'LHR-MAD': 1253,
-    'LHR-FCO': 1432,
-    'LHR-BCN': 1135,
-    'LHR-MUC': 920,
-    'LHR-ZUR': 777,
-    'LHR-VIE': 1235,
-    'LHR-CPH': 955,
-    'LHR-ARN': 1455,
-    'LHR-OSL': 1150,
-    'LHR-HEL': 1830,
-    'LHR-ATH': 2380,
-    'LHR-WAW': 1445,
-    'LHR-LIS': 1580,
-    'LHR-BRU': 320,
-    'JFK-LHR': 5566,
-    'JFK-CDG': 5840,
-    'JFK-FRA': 6200,
-    'JFK-AMS': 5850,
-    'LAX-LHR': 8800,
-    'LAX-CDG': 9100,
-    'LAX-FRA': 9500,
-    'SFO-LHR': 8600,
-    'SFO-CDG': 8900,
-    'SFO-FRA': 9300,
-    'JFK-LAX': 3944,
-    'JFK-SFO': 4150,
-    'LAX-SFO': 337,
-    'JFK-MIA': 1090,
-    'JFK-ORD': 740,
-    'LAX-ORD': 1744,
-    'JFK-DFW': 1388,
-    'LAX-DFW': 1233,
-    'JFK-DEN': 1626,
-    'LAX-DEN': 860,
-    'JFK-SEA': 2420,
-    'LAX-SEA': 954,
-    'JFK-LAS': 2240,
-    'LAX-LAS': 236,
-    'JFK-ATL': 760,
-    'LAX-ATL': 1940,
-    'JFK-BOS': 190,
-    'LAX-BOS': 2610,
-    'JFK-PHX': 2140,
-    'LAX-PHX': 370,
-    'JFK-IAH': 1410,
-    'LAX-IAH': 1370,
-    'JFK-MCO': 945,
-    'LAX-MCO': 2140,
-    'JFK-DTW': 504,
-    'LAX-DTW': 1950,
-    'JFK-MSP': 1020,
-    'LAX-MSP': 1530,
-    'JFK-PHL': 95,
-    'LAX-PHL': 2400,
-    'JFK-LGA': 8,
-    'LAX-LGA': 2450,
-  };
+  if (distance === null) {
+    // Fallback for airports not in database
+    console.warn(`Airport not found in database: ${departure} or ${arrival}`);
+    return 1000; // Default to 1000km if unknown
+  }
 
-  const route = `${departure.toUpperCase()}-${arrival.toUpperCase()}`;
-  const reverseRoute = `${arrival.toUpperCase()}-${departure.toUpperCase()}`;
-
-  return routeDistances[route] || routeDistances[reverseRoute] || 1000; // Default to 1000km if unknown
+  return distance;
 }
 
 /**

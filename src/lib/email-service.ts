@@ -876,6 +876,284 @@ The RefundFinder Team
 This email was sent regarding claim {{claimId}}
     `,
   },
+
+  claimValidatedNotification: {
+    subject: 'Claim Validated - {{claimId}}',
+    html: `
+      <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+        <h2 style="color: #00D9B5;">Claim Validated</h2>
+        <p>Dear {{userName}},</p>
+        <p>Great news! We've verified your documents and your claim is ready for filing.</p>
+        
+        <div style="background-color: #f8f9fa; padding: 20px; border-radius: 8px; margin: 20px 0;">
+          <h3>Claim Details:</h3>
+          <ul>
+            <li><strong>Claim ID:</strong> {{claimId}}</li>
+            <li><strong>Flight:</strong> {{flightNumber}} ({{airline}})</li>
+            <li><strong>Date:</strong> {{departureDate}}</li>
+            <li><strong>Route:</strong> {{departureAirport}} → {{arrivalAirport}}</li>
+            <li><strong>Delay:</strong> {{delayDuration}}</li>
+          </ul>
+        </div>
+
+        <h3>What Happens Next:</h3>
+        <ol>
+          <li>We'll file your claim with {{airline}} within 48 hours</li>
+          <li>You'll receive confirmation once it's filed</li>
+          <li>We'll handle all follow-ups with the airline</li>
+        </ol>
+
+        <p>No action needed from you - we'll take care of everything!</p>
+        
+        <hr style="margin: 30px 0;">
+        <p style="font-size: 12px; color: #666;">
+          RefundFinder - Flight Delay Compensation Assistance<br>
+          <a href="mailto:support@refundfinder.com">support@refundfinder.com</a>
+        </p>
+      </div>
+    `,
+    text: `
+Claim Validated - {{claimId}}
+
+Dear {{userName}},
+
+Great news! We've verified your documents and your claim is ready for filing.
+
+Claim Details:
+- Claim ID: {{claimId}}
+- Flight: {{flightNumber}} ({{airline}})
+- Date: {{departureDate}}
+- Route: {{departureAirport}} → {{arrivalAirport}}
+- Delay: {{delayDuration}}
+
+What Happens Next:
+1. We'll file your claim with {{airline}} within 48 hours
+2. You'll receive confirmation once it's filed
+3. We'll handle all follow-ups with the airline
+
+No action needed from you - we'll take care of everything!
+
+---
+RefundFinder - Flight Delay Compensation Assistance
+support@refundfinder.com
+    `,
+  },
+
+  airlineRespondedNotification: {
+    subject: 'Update from {{airline}} - {{claimId}}',
+    html: `
+      <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+        <h2 style="color: #00D9B5;">Airline Response Received</h2>
+        <p>Dear {{userName}},</p>
+        <p>{{airline}} has responded to your compensation claim.</p>
+        
+        <div style="background-color: #f8f9fa; padding: 20px; border-radius: 8px; margin: 20px 0;">
+          <h3>Claim Details:</h3>
+          <ul>
+            <li><strong>Claim ID:</strong> {{claimId}}</li>
+            <li><strong>Flight:</strong> {{flightNumber}} ({{airline}})</li>
+            <li><strong>Airline Reference:</strong> {{airlineReference}}</li>
+          </ul>
+        </div>
+
+        <div style="background-color: #e8f5e8; padding: 15px; border-radius: 8px; margin: 20px 0;">
+          <h3>Airline Response:</h3>
+          <p>{{responseMessage}}</p>
+        </div>
+
+        {{#if nextSteps}}
+        <h3>Next Steps:</h3>
+        <ol>
+          {{#each nextSteps}}
+          <li>{{this}}</li>
+          {{/each}}
+        </ol>
+        {{/if}}
+
+        <p>We'll continue to monitor your claim and keep you updated on any further developments.</p>
+        
+        <hr style="margin: 30px 0;">
+        <p style="font-size: 12px; color: #666;">
+          RefundFinder - Flight Delay Compensation Assistance<br>
+          <a href="mailto:support@refundfinder.com">support@refundfinder.com</a>
+        </p>
+      </div>
+    `,
+    text: `
+Update from {{airline}} - {{claimId}}
+
+Dear {{userName}},
+
+{{airline}} has responded to your compensation claim.
+
+Claim Details:
+- Claim ID: {{claimId}}
+- Flight: {{flightNumber}} ({{airline}})
+- Airline Reference: {{airlineReference}}
+
+Airline Response:
+{{responseMessage}}
+
+{{#if nextSteps}}
+Next Steps:
+{{#each nextSteps}}
+- {{this}}
+{{/each}}
+{{/if}}
+
+We'll continue to monitor your claim and keep you updated on any further developments.
+
+---
+RefundFinder - Flight Delay Compensation Assistance
+support@refundfinder.com
+    `,
+  },
+
+  claimApprovedNotification: {
+    subject: '🎉 Claim Approved! - {{claimId}}',
+    html: `
+      <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+        <h2 style="color: #16a34a;">Claim Approved!</h2>
+        <p>Dear {{userName}},</p>
+        <p>Excellent news! {{airline}} has approved your compensation claim.</p>
+        
+        <div style="background-color: #dcfce7; padding: 20px; border-radius: 8px; margin: 20px 0; border-left: 4px solid #16a34a;">
+          <h3>Compensation Details:</h3>
+          <ul>
+            <li><strong>Claim ID:</strong> {{claimId}}</li>
+            <li><strong>Flight:</strong> {{flightNumber}} ({{airline}})</li>
+            <li><strong>Compensation Amount:</strong> {{compensationAmount}}</li>
+            <li><strong>Airline Reference:</strong> {{airlineReference}}</li>
+            <li><strong>Expected Payment:</strong> {{expectedPaymentTime}}</li>
+          </ul>
+        </div>
+
+        <h3>What Happens Next:</h3>
+        <ol>
+          <li>{{airline}} will process your compensation payment</li>
+          <li>You should receive payment within {{expectedPaymentTime}}</li>
+          <li>Payment will be sent directly to your original payment method</li>
+          <li>You'll receive confirmation from {{airline}} when payment is processed</li>
+        </ol>
+
+        <p><strong>Congratulations!</strong> You've successfully claimed your flight delay compensation.</p>
+        
+        <hr style="margin: 30px 0;">
+        <p style="font-size: 12px; color: #666;">
+          RefundFinder - Flight Delay Compensation Assistance<br>
+          <a href="mailto:support@refundfinder.com">support@refundfinder.com</a>
+        </p>
+      </div>
+    `,
+    text: `
+🎉 Claim Approved! - {{claimId}}
+
+Dear {{userName}},
+
+Excellent news! {{airline}} has approved your compensation claim.
+
+Compensation Details:
+- Claim ID: {{claimId}}
+- Flight: {{flightNumber}} ({{airline}})
+- Compensation Amount: {{compensationAmount}}
+- Airline Reference: {{airlineReference}}
+- Expected Payment: {{expectedPaymentTime}}
+
+What Happens Next:
+1. {{airline}} will process your compensation payment
+2. You should receive payment within {{expectedPaymentTime}}
+3. Payment will be sent directly to your original payment method
+4. You'll receive confirmation from {{airline}} when payment is processed
+
+Congratulations! You've successfully claimed your flight delay compensation.
+
+---
+RefundFinder - Flight Delay Compensation Assistance
+support@refundfinder.com
+    `,
+  },
+
+  claimRejectedNotification: {
+    subject: 'Claim Update - {{claimId}}',
+    html: `
+      <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+        <h2 style="color: #dc2626;">Claim Decision</h2>
+        <p>Dear {{userName}},</p>
+        <p>{{airline}} has reviewed your compensation claim and unfortunately, it was not approved.</p>
+        
+        <div style="background-color: #f8f9fa; padding: 20px; border-radius: 8px; margin: 20px 0;">
+          <h3>Claim Details:</h3>
+          <ul>
+            <li><strong>Claim ID:</strong> {{claimId}}</li>
+            <li><strong>Flight:</strong> {{flightNumber}} ({{airline}})</li>
+            <li><strong>Decision:</strong> Not Approved</li>
+          </ul>
+        </div>
+
+        <div style="background-color: #fef2f2; padding: 15px; border-radius: 8px; margin: 20px 0; border-left: 4px solid #dc2626;">
+          <h3>Reason for Rejection:</h3>
+          <p>{{rejectionReason}}</p>
+        </div>
+
+        {{#if appealOptions}}
+        <h3>Appeal Options:</h3>
+        <ol>
+          {{#each appealOptions}}
+          <li>{{this}}</li>
+          {{/each}}
+        </ol>
+        {{/if}}
+
+        {{#if refundProcessed}}
+        <div style="background-color: #dcfce7; padding: 15px; border-radius: 8px; margin: 20px 0;">
+          <h3>Refund Processed</h3>
+          <p>We've automatically processed a full refund of your service fee. You should see this in your account within 5-7 business days.</p>
+        </div>
+        {{/if}}
+
+        <p>We're sorry this claim wasn't successful. If you have any questions, please don't hesitate to contact us.</p>
+        
+        <hr style="margin: 30px 0;">
+        <p style="font-size: 12px; color: #666;">
+          RefundFinder - Flight Delay Compensation Assistance<br>
+          <a href="mailto:support@refundfinder.com">support@refundfinder.com</a>
+        </p>
+      </div>
+    `,
+    text: `
+Claim Update - {{claimId}}
+
+Dear {{userName}},
+
+{{airline}} has reviewed your compensation claim and unfortunately, it was not approved.
+
+Claim Details:
+- Claim ID: {{claimId}}
+- Flight: {{flightNumber}} ({{airline}})
+- Decision: Not Approved
+
+Reason for Rejection:
+{{rejectionReason}}
+
+{{#if appealOptions}}
+Appeal Options:
+{{#each appealOptions}}
+- {{this}}
+{{/each}}
+{{/if}}
+
+{{#if refundProcessed}}
+Refund Processed:
+We've automatically processed a full refund of your service fee. You should see this in your account within 5-7 business days.
+{{/if}}
+
+We're sorry this claim wasn't successful. If you have any questions, please don't hesitate to contact us.
+
+---
+RefundFinder - Flight Delay Compensation Assistance
+support@refundfinder.com
+    `,
+  },
 };
 
 // Helper functions for common email operations
@@ -1043,6 +1321,92 @@ export async function sendAdminOverdueAlert(
   return emailService.sendEmail({
     to: adminEmail,
     template: emailTemplates.adminOverdueAlert,
+    variables,
+  });
+}
+
+// Enhanced status update email functions
+export async function sendClaimValidatedNotification(
+  email: string,
+  claimData: any
+): Promise<EmailResult> {
+  const variables = {
+    userName: claimData.firstName || email.split('@')[0],
+    claimId: claimData.claimId,
+    flightNumber: claimData.flightNumber,
+    airline: claimData.airline,
+    departureDate: claimData.departureDate,
+    departureAirport: claimData.departureAirport,
+    arrivalAirport: claimData.arrivalAirport,
+    delayDuration: claimData.delayDuration,
+  };
+
+  return emailService.sendEmail({
+    to: email,
+    template: emailTemplates.claimValidatedNotification,
+    variables,
+  });
+}
+
+export async function sendAirlineRespondedNotification(
+  email: string,
+  claimData: any
+): Promise<EmailResult> {
+  const variables = {
+    userName: claimData.firstName || email.split('@')[0],
+    claimId: claimData.claimId,
+    flightNumber: claimData.flightNumber,
+    airline: claimData.airline,
+    airlineReference: claimData.airlineReference,
+    responseMessage: claimData.responseMessage,
+    nextSteps: claimData.nextSteps || [],
+  };
+
+  return emailService.sendEmail({
+    to: email,
+    template: emailTemplates.airlineRespondedNotification,
+    variables,
+  });
+}
+
+export async function sendClaimApprovedNotification(
+  email: string,
+  claimData: any
+): Promise<EmailResult> {
+  const variables = {
+    userName: claimData.firstName || email.split('@')[0],
+    claimId: claimData.claimId,
+    flightNumber: claimData.flightNumber,
+    airline: claimData.airline,
+    compensationAmount: claimData.compensationAmount,
+    airlineReference: claimData.airlineReference,
+    expectedPaymentTime: claimData.expectedPaymentTime || '2-4 weeks',
+  };
+
+  return emailService.sendEmail({
+    to: email,
+    template: emailTemplates.claimApprovedNotification,
+    variables,
+  });
+}
+
+export async function sendClaimRejectedNotification(
+  email: string,
+  claimData: any
+): Promise<EmailResult> {
+  const variables = {
+    userName: claimData.firstName || email.split('@')[0],
+    claimId: claimData.claimId,
+    flightNumber: claimData.flightNumber,
+    airline: claimData.airline,
+    rejectionReason: claimData.rejectionReason,
+    appealOptions: claimData.appealOptions || [],
+    refundProcessed: claimData.refundProcessed || false,
+  };
+
+  return emailService.sendEmail({
+    to: email,
+    template: emailTemplates.claimRejectedNotification,
     variables,
   });
 }

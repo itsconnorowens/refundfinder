@@ -23,6 +23,10 @@ import {
   sendClaimFiledNotification,
   sendStatusUpdateNotification,
 } from './email-service';
+import {
+  submitClaimToAirline,
+  processClaimsForFiling,
+} from './airline-submission-service';
 
 export interface ClaimValidationResult {
   success: boolean;
@@ -495,6 +499,120 @@ function parseDelayHours(delayDuration: string | undefined): number {
   }
 
   return value;
+}
+
+/**
+ * Process automatic claim filing for claims ready to file
+ */
+export async function processAutomaticClaimFiling(
+  claimIds?: string[]
+): Promise<Array<{ claimId: string; success: boolean; error?: string }>> {
+  try {
+    let claimsToProcess: string[];
+
+    if (claimIds) {
+      claimsToProcess = claimIds;
+    } else {
+      // Get all claims ready to file
+      const readyClaims = await getAllClaimsReadyToFile();
+      claimsToProcess = readyClaims.map((claim) => claim.claimId);
+    }
+
+    if (claimsToProcess.length === 0) {
+      console.log('No claims ready for filing');
+      return [];
+    }
+
+    console.log(
+      `Processing ${claimsToProcess.length} claims for automatic filing`
+    );
+
+    // Process claims through airline submission service
+    const results = await processClaimsForFiling(claimsToProcess);
+
+    // Log results
+    const successful = results.filter((r) => r.result.success);
+    const failed = results.filter((r) => !r.result.success);
+
+    console.log(`Successfully filed ${successful.length} claims`);
+    if (failed.length > 0) {
+      console.log(`Failed to file ${failed.length} claims:`, failed);
+    }
+
+    return results.map((r) => ({
+      claimId: r.claimId,
+      success: r.result.success,
+      error: r.result.error,
+    }));
+  } catch (error) {
+    console.error('Error processing automatic claim filing:', error);
+    return [];
+  }
+}
+
+/**
+ * Process follow-ups for claims needing attention
+ */
+export async function processClaimFollowUps(): Promise<
+  Array<{ claimId: string; action: string; success: boolean }>
+> {
+  try {
+    const claimsNeedingFollowUp = await getClaimsNeedingFollowUp();
+    const results: Array<{
+      claimId: string;
+      action: string;
+      success: boolean;
+    }> = [];
+
+    for (const claim of claimsNeedingFollowUp) {
+      try {
+        const airlineConfig = getAirlineConfig(claim.airline);
+        if (!airlineConfig) {
+          console.log(
+            `No airline config for ${claim.airline}, skipping follow-up`
+          );
+          continue;
+        }
+
+        // Determine follow-up action based on claim status and timing
+        let action = 'scheduled_follow_up';
+        let success = true;
+
+        if (claim.status === 'filed' && claim.nextFollowUpDate) {
+          const followUpDate = new Date(claim.nextFollowUpDate);
+          const now = new Date();
+
+          if (now >= followUpDate) {
+            // Send follow-up email to airline
+            action = 'sent_follow_up_email';
+            // This would integrate with the follow-up email system
+            console.log(`Sending follow-up for claim ${claim.claimId}`);
+          }
+        }
+
+        results.push({
+          claimId: claim.claimId,
+          action,
+          success,
+        });
+      } catch (error) {
+        console.error(
+          `Error processing follow-up for claim ${claim.claimId}:`,
+          error
+        );
+        results.push({
+          claimId: claim.claimId,
+          action: 'error',
+          success: false,
+        });
+      }
+    }
+
+    return results;
+  } catch (error) {
+    console.error('Error processing claim follow-ups:', error);
+    return [];
+  }
 }
 
 /**

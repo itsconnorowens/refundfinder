@@ -1,0 +1,6002 @@
+[
+  {
+    "code": "YEG",
+    "name": "Edmonton International Airport",
+    "city": "Edmonton",
+    "country": "Canada",
+    "region": "North America",
+    "latitude": 53.3097,
+    "longitude": -113.58,
+    "timezone": "America/Edmonton"
+  },
+  {
+    "code": "YHZ",
+    "name": "Halifax / Stanfield International Airport",
+    "city": "Halifax",
+    "country": "Canada",
+    "region": "North America",
+    "latitude": 44.8808,
+    "longitude": -63.5086,
+    "timezone": "America/Halifax"
+  },
+  {
+    "code": "YOW",
+    "name": "Ottawa Macdonald-Cartier International Airport",
+    "city": "Ottawa",
+    "country": "Canada",
+    "region": "North America",
+    "latitude": 45.3225,
+    "longitude": -75.6692,
+    "timezone": "America/Toronto"
+  },
+  {
+    "code": "YUL",
+    "name": "Montreal / Pierre Elliott Trudeau International Airport",
+    "city": "Montreal",
+    "country": "Canada",
+    "region": "North America",
+    "latitude": 45.4706,
+    "longitude": -73.7408,
+    "timezone": "America/Toronto"
+  },
+  {
+    "code": "YVR",
+    "name": "Vancouver International Airport",
+    "city": "Vancouver",
+    "country": "Canada",
+    "region": "North America",
+    "latitude": 49.1939,
+    "longitude": -123.184,
+    "timezone": "America/Vancouver"
+  },
+  {
+    "code": "YWG",
+    "name": "Winnipeg / James Armstrong Richardson International Airport",
+    "city": "Winnipeg",
+    "country": "Canada",
+    "region": "North America",
+    "latitude": 49.91,
+    "longitude": -97.2399,
+    "timezone": "America/Winnipeg"
+  },
+  {
+    "code": "YYC",
+    "name": "Calgary International Airport",
+    "city": "Calgary",
+    "country": "Canada",
+    "region": "North America",
+    "latitude": 51.1139,
+    "longitude": -114.02,
+    "timezone": "America/Edmonton"
+  },
+  {
+    "code": "YYZ",
+    "name": "Lester B. Pearson International Airport",
+    "city": "Toronto",
+    "country": "Canada",
+    "region": "North America",
+    "latitude": 43.6772,
+    "longitude": -79.6306,
+    "timezone": "America/Toronto"
+  },
+  {
+    "code": "ALG",
+    "name": "Houari Boumediene Airport",
+    "city": "Algier",
+    "country": "Algeria",
+    "region": "Africa",
+    "latitude": 36.691,
+    "longitude": 3.2154,
+    "timezone": "Africa/Algiers"
+  },
+  {
+    "code": "LOS",
+    "name": "Murtala Muhammed International Airport",
+    "city": "Lagos",
+    "country": "Nigeria",
+    "region": "Africa",
+    "latitude": 6.5774,
+    "longitude": 3.3212,
+    "timezone": "Africa/Lagos"
+  },
+  {
+    "code": "TUN",
+    "name": "Tunis Carthage International Airport",
+    "city": "Tunis",
+    "country": "Tunisia",
+    "region": "Africa",
+    "latitude": 36.851,
+    "longitude": 10.2272,
+    "timezone": "Africa/Tunis"
+  },
+  {
+    "code": "BRU",
+    "name": "Brussels Airport",
+    "city": "Brussels",
+    "country": "Belgium",
+    "region": "Europe",
+    "latitude": 50.9014,
+    "longitude": 4.4844,
+    "timezone": "Europe/Brussels"
+  },
+  {
+    "code": "FRA",
+    "name": "Frankfurt am Main Airport",
+    "city": "Frankfurt",
+    "country": "Germany",
+    "region": "Europe",
+    "latitude": 50.0333,
+    "longitude": 8.5706,
+    "timezone": "Europe/Berlin"
+  },
+  {
+    "code": "MUC",
+    "name": "Munich Airport",
+    "city": "Munich",
+    "country": "Germany",
+    "region": "Europe",
+    "latitude": 48.3538,
+    "longitude": 11.7861,
+    "timezone": "Europe/Berlin"
+  },
+  {
+    "code": "HEL",
+    "name": "Helsinki Vantaa Airport",
+    "city": "Helsinki",
+    "country": "Finland",
+    "region": "Europe",
+    "latitude": 60.3172,
+    "longitude": 24.9633,
+    "timezone": "Europe/Helsinki"
+  },
+  {
+    "code": "BFS",
+    "name": "Belfast International Airport",
+    "city": "Belfast",
+    "country": "United Kingdom",
+    "region": "Europe",
+    "latitude": 54.6575,
+    "longitude": -6.2158,
+    "timezone": "Europe/London"
+  },
+  {
+    "code": "BHX",
+    "name": "Birmingham International Airport",
+    "city": "Birmingham",
+    "country": "United Kingdom",
+    "region": "Europe",
+    "latitude": 52.4539,
+    "longitude": -1.748,
+    "timezone": "Europe/London"
+  },
+  {
+    "code": "MAN",
+    "name": "Manchester Airport",
+    "city": "Manchester",
+    "country": "United Kingdom",
+    "region": "Europe",
+    "latitude": 53.3537,
+    "longitude": -2.275,
+    "timezone": "Europe/London"
+  },
+  {
+    "code": "BRS",
+    "name": "Bristol Airport",
+    "city": "Bristol",
+    "country": "United Kingdom",
+    "region": "Europe",
+    "latitude": 51.3827,
+    "longitude": -2.7191,
+    "timezone": "Europe/London"
+  },
+  {
+    "code": "LTN",
+    "name": "London Luton Airport",
+    "city": "London",
+    "country": "United Kingdom",
+    "region": "Europe",
+    "latitude": 51.8747,
+    "longitude": -0.3683,
+    "timezone": "Europe/London"
+  },
+  {
+    "code": "LGW",
+    "name": "London Gatwick Airport",
+    "city": "London",
+    "country": "United Kingdom",
+    "region": "Europe",
+    "latitude": 51.1481,
+    "longitude": -0.1903,
+    "timezone": "Europe/London"
+  },
+  {
+    "code": "LHR",
+    "name": "London Heathrow Airport",
+    "city": "London",
+    "country": "United Kingdom",
+    "region": "Europe",
+    "latitude": 51.4706,
+    "longitude": -0.4619,
+    "timezone": "Europe/London"
+  },
+  {
+    "code": "NCL",
+    "name": "Newcastle Airport",
+    "city": "Newcastle",
+    "country": "United Kingdom",
+    "region": "Europe",
+    "latitude": 55.0375,
+    "longitude": -1.6917,
+    "timezone": "Europe/London"
+  },
+  {
+    "code": "GLA",
+    "name": "Glasgow International Airport",
+    "city": "Glasgow",
+    "country": "United Kingdom",
+    "region": "Europe",
+    "latitude": 55.8719,
+    "longitude": -4.4331,
+    "timezone": "Europe/London"
+  },
+  {
+    "code": "EDI",
+    "name": "Edinburgh Airport",
+    "city": "Edinburgh",
+    "country": "United Kingdom",
+    "region": "Europe",
+    "latitude": 55.95,
+    "longitude": -3.3725,
+    "timezone": "Europe/London"
+  },
+  {
+    "code": "STN",
+    "name": "London Stansted Airport",
+    "city": "London",
+    "country": "United Kingdom",
+    "region": "Europe",
+    "latitude": 51.885,
+    "longitude": 0.235,
+    "timezone": "Europe/London"
+  },
+  {
+    "code": "AMS",
+    "name": "Amsterdam Airport Schiphol",
+    "city": "Amsterdam",
+    "country": "Netherlands",
+    "region": "Europe",
+    "latitude": 52.3086,
+    "longitude": 4.7639,
+    "timezone": "Europe/Amsterdam"
+  },
+  {
+    "code": "DUB",
+    "name": "Dublin Airport",
+    "city": "Dublin",
+    "country": "Ireland",
+    "region": "Europe",
+    "latitude": 53.4213,
+    "longitude": -6.2701,
+    "timezone": "Europe/Dublin"
+  },
+  {
+    "code": "CPH",
+    "name": "Copenhagen Kastrup Airport",
+    "city": "Copenhagen",
+    "country": "Denmark",
+    "region": "Europe",
+    "latitude": 55.6179,
+    "longitude": 12.656,
+    "timezone": "Europe/Copenhagen"
+  },
+  {
+    "code": "OSL",
+    "name": "Oslo Lufthavn",
+    "city": "Oslo",
+    "country": "Norway",
+    "region": "Europe",
+    "latitude": 60.121,
+    "longitude": 11.0502,
+    "timezone": "Europe/Oslo"
+  },
+  {
+    "code": "WAW",
+    "name": "Warsaw Chopin Airport",
+    "city": "Warsaw",
+    "country": "Poland",
+    "region": "Europe",
+    "latitude": 52.1657,
+    "longitude": 20.9671,
+    "timezone": "Europe/Warsaw"
+  },
+  {
+    "code": "ARN",
+    "name": "Stockholm-Arlanda Airport",
+    "city": "Stockholm",
+    "country": "Sweden",
+    "region": "Europe",
+    "latitude": 59.6519,
+    "longitude": 17.9186,
+    "timezone": "Europe/Stockholm"
+  },
+  {
+    "code": "CPT",
+    "name": "Cape Town International Airport",
+    "city": "Cape Town",
+    "country": "South Africa",
+    "region": "Africa",
+    "latitude": -33.9648,
+    "longitude": 18.6017,
+    "timezone": "Africa/Johannesburg"
+  },
+  {
+    "code": "JNB",
+    "name": "OR Tambo International Airport",
+    "city": "Johannesburg",
+    "country": "South Africa",
+    "region": "Africa",
+    "latitude": -26.1392,
+    "longitude": 28.246,
+    "timezone": "Africa/Johannesburg"
+  },
+  {
+    "code": "CMN",
+    "name": "Mohammed V International Airport",
+    "city": "Casablanca",
+    "country": "Morocco",
+    "region": "Africa",
+    "latitude": 33.3675,
+    "longitude": -7.59,
+    "timezone": "Africa/Casablanca"
+  },
+  {
+    "code": "ADD",
+    "name": "Addis Ababa Bole International Airport",
+    "city": "Addis Ababa",
+    "country": "Ethiopia",
+    "region": "Africa",
+    "latitude": 8.9779,
+    "longitude": 38.7993,
+    "timezone": "Africa/Addis_Ababa"
+  },
+  {
+    "code": "CAI",
+    "name": "Cairo International Airport",
+    "city": "Cairo",
+    "country": "Egypt",
+    "region": "Africa",
+    "latitude": 30.1219,
+    "longitude": 31.4056,
+    "timezone": "Africa/Cairo"
+  },
+  {
+    "code": "DAR",
+    "name": "Julius Nyerere International Airport",
+    "city": "Dar Es Salaam",
+    "country": "Tanzania",
+    "region": "Africa",
+    "latitude": -6.8781,
+    "longitude": 39.2026,
+    "timezone": "Africa/Dar_es_Salaam"
+  },
+  {
+    "code": "BCN",
+    "name": "Barcelona International Airport",
+    "city": "Barcelona",
+    "country": "Spain",
+    "region": "Europe",
+    "latitude": 41.2971,
+    "longitude": 2.0785,
+    "timezone": "Europe/Madrid"
+  },
+  {
+    "code": "MAD",
+    "name": "Adolfo Suárez Madrid–Barajas Airport",
+    "city": "Madrid",
+    "country": "Spain",
+    "region": "Europe",
+    "latitude": 40.4719,
+    "longitude": -3.5626,
+    "timezone": "Europe/Madrid"
+  },
+  {
+    "code": "CDG",
+    "name": "Charles de Gaulle International Airport",
+    "city": "Paris",
+    "country": "France",
+    "region": "Europe",
+    "latitude": 49.0128,
+    "longitude": 2.55,
+    "timezone": "Europe/Paris"
+  },
+  {
+    "code": "FCO",
+    "name": "Leonardo da Vinci–Fiumicino Airport",
+    "city": "Rome",
+    "country": "Italy",
+    "region": "Europe",
+    "latitude": 41.8003,
+    "longitude": 12.2389,
+    "timezone": "Europe/Rome"
+  },
+  {
+    "code": "TLV",
+    "name": "Ben Gurion International Airport",
+    "city": "Tel-aviv",
+    "country": "Israel",
+    "region": "Middle East",
+    "latitude": 32.0114,
+    "longitude": 34.8867,
+    "timezone": "Asia/Jerusalem"
+  },
+  {
+    "code": "VIE",
+    "name": "Vienna International Airport",
+    "city": "Vienna",
+    "country": "Austria",
+    "region": "Europe",
+    "latitude": 48.1103,
+    "longitude": 16.5697,
+    "timezone": "Europe/Vienna"
+  },
+  {
+    "code": "LIS",
+    "name": "Humberto Delgado Airport (Lisbon Portela Airport)",
+    "city": "Lisbon",
+    "country": "Portugal",
+    "region": "Europe",
+    "latitude": 38.7813,
+    "longitude": -9.1359,
+    "timezone": "Europe/Lisbon"
+  },
+  {
+    "code": "BAH",
+    "name": "Bahrain International Airport",
+    "city": "Bahrain",
+    "country": "Bahrain",
+    "region": "Middle East",
+    "latitude": 26.2708,
+    "longitude": 50.6336,
+    "timezone": "Asia/Bahrain"
+  },
+  {
+    "code": "JED",
+    "name": "King Abdulaziz International Airport",
+    "city": "Jeddah",
+    "country": "Saudi Arabia",
+    "region": "Middle East",
+    "latitude": 21.6796,
+    "longitude": 39.1565,
+    "timezone": "Asia/Riyadh"
+  },
+  {
+    "code": "RUH",
+    "name": "King Khaled International Airport",
+    "city": "Riyadh",
+    "country": "Saudi Arabia",
+    "region": "Middle East",
+    "latitude": 24.9576,
+    "longitude": 46.6988,
+    "timezone": "Asia/Riyadh"
+  },
+  {
+    "code": "KWI",
+    "name": "Kuwait International Airport",
+    "city": "Kuwait",
+    "country": "Kuwait",
+    "region": "Middle East",
+    "latitude": 29.2266,
+    "longitude": 47.9689,
+    "timezone": "Asia/Kuwait"
+  },
+  {
+    "code": "AUH",
+    "name": "Abu Dhabi International Airport",
+    "city": "Abu Dhabi",
+    "country": "United Arab Emirates",
+    "region": "Other",
+    "latitude": 24.433,
+    "longitude": 54.6511,
+    "timezone": "Asia/Dubai"
+  },
+  {
+    "code": "DXB",
+    "name": "Dubai International Airport",
+    "city": "Dubai",
+    "country": "United Arab Emirates",
+    "region": "Other",
+    "latitude": 25.2528,
+    "longitude": 55.3644,
+    "timezone": "Asia/Dubai"
+  },
+  {
+    "code": "TPE",
+    "name": "Taiwan Taoyuan International Airport",
+    "city": "Taipei",
+    "country": "Taiwan",
+    "region": "Asia",
+    "latitude": 25.0777,
+    "longitude": 121.233,
+    "timezone": "Asia/Taipei"
+  },
+  {
+    "code": "NRT",
+    "name": "Narita International Airport",
+    "city": "Tokyo",
+    "country": "Japan",
+    "region": "Asia",
+    "latitude": 35.7647,
+    "longitude": 140.386,
+    "timezone": "Asia/Tokyo"
+  },
+  {
+    "code": "HND",
+    "name": "Tokyo Haneda International Airport",
+    "city": "Tokyo",
+    "country": "Japan",
+    "region": "Asia",
+    "latitude": 35.5523,
+    "longitude": 139.78,
+    "timezone": "Asia/Tokyo"
+  },
+  {
+    "code": "GMP",
+    "name": "Gimpo International Airport",
+    "city": "Seoul",
+    "country": "South Korea",
+    "region": "Asia",
+    "latitude": 37.5583,
+    "longitude": 126.791,
+    "timezone": "Asia/Seoul"
+  },
+  {
+    "code": "MNL",
+    "name": "Ninoy Aquino International Airport",
+    "city": "Manila",
+    "country": "Philippines",
+    "region": "Asia",
+    "latitude": 14.5086,
+    "longitude": 121.02,
+    "timezone": "Asia/Manila"
+  },
+  {
+    "code": "BSB",
+    "name": "Presidente Juscelino Kubistschek International Airport",
+    "city": "Brasilia",
+    "country": "Brazil",
+    "region": "South America",
+    "latitude": -15.8692,
+    "longitude": -47.9208,
+    "timezone": "America/Sao_Paulo"
+  },
+  {
+    "code": "GIG",
+    "name": "Rio Galeão – Tom Jobim International Airport",
+    "city": "Rio De Janeiro",
+    "country": "Brazil",
+    "region": "South America",
+    "latitude": -22.81,
+    "longitude": -43.2506,
+    "timezone": "America/Sao_Paulo"
+  },
+  {
+    "code": "GRU",
+    "name": "Guarulhos - Governador André Franco Montoro International Airport",
+    "city": "Sao Paulo",
+    "country": "Brazil",
+    "region": "South America",
+    "latitude": -23.4356,
+    "longitude": -46.4731,
+    "timezone": "America/Sao_Paulo"
+  },
+  {
+    "code": "SCL",
+    "name": "Comodoro Arturo Merino Benítez International Airport",
+    "city": "Santiago",
+    "country": "Chile",
+    "region": "South America",
+    "latitude": -33.393,
+    "longitude": -70.7858,
+    "timezone": "America/Santiago"
+  },
+  {
+    "code": "UIO",
+    "name": "Mariscal Sucre International Airport",
+    "city": "Quito",
+    "country": "Ecuador",
+    "region": "South America",
+    "latitude": -0.1292,
+    "longitude": -78.3575,
+    "timezone": "America/Guayaquil"
+  },
+  {
+    "code": "BOG",
+    "name": "El Dorado International Airport",
+    "city": "Bogota",
+    "country": "Colombia",
+    "region": "South America",
+    "latitude": 4.7016,
+    "longitude": -74.1469,
+    "timezone": "America/Bogota"
+  },
+  {
+    "code": "LIM",
+    "name": "Jorge Chávez International Airport",
+    "city": "Lima",
+    "country": "Peru",
+    "region": "South America",
+    "latitude": -12.0219,
+    "longitude": -77.1143,
+    "timezone": "America/Lima"
+  },
+  {
+    "code": "CCS",
+    "name": "Simón Bolívar International Airport",
+    "city": "Caracas",
+    "country": "Venezuela",
+    "region": "South America",
+    "latitude": 10.6012,
+    "longitude": -66.9912,
+    "timezone": "America/Caracas"
+  },
+  {
+    "code": "BOM",
+    "name": "Chhatrapati Shivaji International Airport",
+    "city": "Mumbai",
+    "country": "India",
+    "region": "Asia",
+    "latitude": 19.0887,
+    "longitude": 72.8679,
+    "timezone": "Asia/Calcutta"
+  },
+  {
+    "code": "GOI",
+    "name": "Dabolim Airport",
+    "city": "Goa",
+    "country": "India",
+    "region": "Asia",
+    "latitude": 15.3808,
+    "longitude": 73.8314,
+    "timezone": "Asia/Calcutta"
+  },
+  {
+    "code": "PNQ",
+    "name": "Pune Airport",
+    "city": "Pune",
+    "country": "India",
+    "region": "Asia",
+    "latitude": 18.5821,
+    "longitude": 73.9197,
+    "timezone": "Asia/Calcutta"
+  },
+  {
+    "code": "CCU",
+    "name": "Netaji Subhash Chandra Bose International Airport",
+    "city": "Kolkata",
+    "country": "India",
+    "region": "Asia",
+    "latitude": 22.6547,
+    "longitude": 88.4467,
+    "timezone": "Asia/Calcutta"
+  },
+  {
+    "code": "HKG",
+    "name": "Hong Kong International Airport",
+    "city": "Hong Kong",
+    "country": "Hong Kong",
+    "region": "Asia",
+    "latitude": 22.3089,
+    "longitude": 113.915,
+    "timezone": "Asia/Hong_Kong"
+  },
+  {
+    "code": "DEL",
+    "name": "Indira Gandhi International Airport",
+    "city": "Delhi",
+    "country": "India",
+    "region": "Asia",
+    "latitude": 28.5665,
+    "longitude": 77.1031,
+    "timezone": "Asia/Calcutta"
+  },
+  {
+    "code": "BLR",
+    "name": "Kempegowda International Airport",
+    "city": "Bangalore",
+    "country": "India",
+    "region": "Asia",
+    "latitude": 13.1979,
+    "longitude": 77.7063,
+    "timezone": "Asia/Calcutta"
+  },
+  {
+    "code": "COK",
+    "name": "Cochin International Airport",
+    "city": "Kochi",
+    "country": "India",
+    "region": "Asia",
+    "latitude": 10.152,
+    "longitude": 76.4019,
+    "timezone": "Asia/Calcutta"
+  },
+  {
+    "code": "MAA",
+    "name": "Chennai International Airport",
+    "city": "Madras",
+    "country": "India",
+    "region": "Asia",
+    "latitude": 12.99,
+    "longitude": 80.1693,
+    "timezone": "Asia/Calcutta"
+  },
+  {
+    "code": "DMK",
+    "name": "Don Mueang International Airport",
+    "city": "Bangkok",
+    "country": "Thailand",
+    "region": "Asia",
+    "latitude": 13.9126,
+    "longitude": 100.607,
+    "timezone": "Asia/Bangkok"
+  },
+  {
+    "code": "CGK",
+    "name": "Soekarno-Hatta International Airport",
+    "city": "Jakarta",
+    "country": "Indonesia",
+    "region": "Asia",
+    "latitude": -6.1256,
+    "longitude": 106.656,
+    "timezone": "Asia/Jakarta"
+  },
+  {
+    "code": "KUL",
+    "name": "Kuala Lumpur International Airport",
+    "city": "Kuala Lumpur",
+    "country": "Malaysia",
+    "region": "Asia",
+    "latitude": 2.7456,
+    "longitude": 101.71,
+    "timezone": "Asia/Kuala_Lumpur"
+  },
+  {
+    "code": "SIN",
+    "name": "Singapore Changi Airport",
+    "city": "Singapore",
+    "country": "Singapore",
+    "region": "Asia",
+    "latitude": 1.3502,
+    "longitude": 103.994,
+    "timezone": "Asia/Singapore"
+  },
+  {
+    "code": "BNE",
+    "name": "Brisbane International Airport",
+    "city": "Brisbane",
+    "country": "Australia",
+    "region": "Oceania",
+    "latitude": -27.3842,
+    "longitude": 153.117,
+    "timezone": "Australia/Brisbane"
+  },
+  {
+    "code": "OOL",
+    "name": "Gold Coast Airport",
+    "city": "Coolangatta",
+    "country": "Australia",
+    "region": "Oceania",
+    "latitude": -28.1644,
+    "longitude": 153.505,
+    "timezone": "Australia/Brisbane"
+  },
+  {
+    "code": "CNS",
+    "name": "Cairns International Airport",
+    "city": "Cairns",
+    "country": "Australia",
+    "region": "Oceania",
+    "latitude": -16.8858,
+    "longitude": 145.755,
+    "timezone": "Australia/Brisbane"
+  },
+  {
+    "code": "MEL",
+    "name": "Melbourne International Airport",
+    "city": "Melbourne",
+    "country": "Australia",
+    "region": "Oceania",
+    "latitude": -37.6733,
+    "longitude": 144.843,
+    "timezone": "Australia/Hobart"
+  },
+  {
+    "code": "ADL",
+    "name": "Adelaide International Airport",
+    "city": "Adelaide",
+    "country": "Australia",
+    "region": "Oceania",
+    "latitude": -34.945,
+    "longitude": 138.531,
+    "timezone": "Australia/Adelaide"
+  },
+  {
+    "code": "PER",
+    "name": "Perth International Airport",
+    "city": "Perth",
+    "country": "Australia",
+    "region": "Oceania",
+    "latitude": -31.9403,
+    "longitude": 115.967,
+    "timezone": "Australia/Perth"
+  },
+  {
+    "code": "SYD",
+    "name": "Sydney Kingsford Smith International Airport",
+    "city": "Sydney",
+    "country": "Australia",
+    "region": "Oceania",
+    "latitude": -33.9461,
+    "longitude": 151.177,
+    "timezone": "Australia/Sydney"
+  },
+  {
+    "code": "PEK",
+    "name": "Beijing Capital International Airport",
+    "city": "Beijing",
+    "country": "China",
+    "region": "Asia",
+    "latitude": 40.0801,
+    "longitude": 116.585,
+    "timezone": "Asia/Shanghai"
+  },
+  {
+    "code": "TSN",
+    "name": "Tianjin Binhai International Airport",
+    "city": "Tianjin",
+    "country": "China",
+    "region": "Asia",
+    "latitude": 39.1244,
+    "longitude": 117.346,
+    "timezone": "Asia/Shanghai"
+  },
+  {
+    "code": "CAN",
+    "name": "Guangzhou Baiyun International Airport",
+    "city": "Guangzhou",
+    "country": "China",
+    "region": "Asia",
+    "latitude": 23.3924,
+    "longitude": 113.299,
+    "timezone": "Asia/Shanghai"
+  },
+  {
+    "code": "SZX",
+    "name": "Shenzhen Bao'an International Airport",
+    "city": "Shenzhen",
+    "country": "China",
+    "region": "Asia",
+    "latitude": 22.6393,
+    "longitude": 113.811,
+    "timezone": "Asia/Shanghai"
+  },
+  {
+    "code": "XIY",
+    "name": "Xi'an Xianyang International Airport",
+    "city": "Xi'an",
+    "country": "China",
+    "region": "Asia",
+    "latitude": 34.4471,
+    "longitude": 108.752,
+    "timezone": "Asia/Shanghai"
+  },
+  {
+    "code": "KMG",
+    "name": "Kunming Changshui International Airport",
+    "city": "Kunming",
+    "country": "China",
+    "region": "Asia",
+    "latitude": 25.1019,
+    "longitude": 102.9292,
+    "timezone": "Asia/Shanghai"
+  },
+  {
+    "code": "HGH",
+    "name": "Hangzhou Xiaoshan International Airport",
+    "city": "Hangzhou",
+    "country": "China",
+    "region": "Asia",
+    "latitude": 30.2295,
+    "longitude": 120.434,
+    "timezone": "Asia/Shanghai"
+  },
+  {
+    "code": "NKG",
+    "name": "Nanjing Lukou Airport",
+    "city": "Nanjing",
+    "country": "China",
+    "region": "Asia",
+    "latitude": 31.742,
+    "longitude": 118.862,
+    "timezone": "Asia/Shanghai"
+  },
+  {
+    "code": "CTU",
+    "name": "Chengdu Shuangliu International Airport",
+    "city": "Chengdu",
+    "country": "China",
+    "region": "Asia",
+    "latitude": 30.5785,
+    "longitude": 103.947,
+    "timezone": "Asia/Shanghai"
+  },
+  {
+    "code": "PVG",
+    "name": "Shanghai Pudong International Airport",
+    "city": "Shanghai",
+    "country": "China",
+    "region": "Asia",
+    "latitude": 31.1434,
+    "longitude": 121.805,
+    "timezone": "Asia/Shanghai"
+  },
+  {
+    "code": "BOS",
+    "name": "General Edward Lawrence Logan International Airport",
+    "city": "Boston",
+    "country": "United States",
+    "region": "North America",
+    "latitude": 42.3643,
+    "longitude": -71.0052,
+    "timezone": "America/New_York"
+  },
+  {
+    "code": "PHX",
+    "name": "Phoenix Sky Harbor International Airport",
+    "city": "Phoenix",
+    "country": "United States",
+    "region": "North America",
+    "latitude": 33.4343,
+    "longitude": -112.012,
+    "timezone": "America/Phoenix"
+  },
+  {
+    "code": "SFO",
+    "name": "San Francisco International Airport",
+    "city": "San Francisco",
+    "country": "United States",
+    "region": "North America",
+    "latitude": 37.619,
+    "longitude": -122.375,
+    "timezone": "America/Los_Angeles"
+  },
+  {
+    "code": "LAX",
+    "name": "Los Angeles International Airport",
+    "city": "Los Angeles",
+    "country": "United States",
+    "region": "North America",
+    "latitude": 33.9425,
+    "longitude": -118.408,
+    "timezone": "America/Los_Angeles"
+  },
+  {
+    "code": "CLE",
+    "name": "Cleveland Hopkins International Airport",
+    "city": "Cleveland",
+    "country": "United States",
+    "region": "North America",
+    "latitude": 41.4117,
+    "longitude": -81.8498,
+    "timezone": "America/New_York"
+  },
+  {
+    "code": "CVG",
+    "name": "Cincinnati Northern Kentucky International Airport",
+    "city": "Cincinnati",
+    "country": "United States",
+    "region": "North America",
+    "latitude": 39.0488,
+    "longitude": -84.6678,
+    "timezone": "America/New_York"
+  },
+  {
+    "code": "EWR",
+    "name": "Newark Liberty International Airport",
+    "city": "Newark",
+    "country": "United States",
+    "region": "North America",
+    "latitude": 40.6925,
+    "longitude": -74.1687,
+    "timezone": "America/New_York"
+  },
+  {
+    "code": "DCA",
+    "name": "Ronald Reagan Washington National Airport",
+    "city": "Washington",
+    "country": "United States",
+    "region": "North America",
+    "latitude": 38.8521,
+    "longitude": -77.0377,
+    "timezone": "America/New_York"
+  },
+  {
+    "code": "SLC",
+    "name": "Salt Lake City International Airport",
+    "city": "Salt Lake City",
+    "country": "United States",
+    "region": "North America",
+    "latitude": 40.7884,
+    "longitude": -111.978,
+    "timezone": "America/Denver"
+  },
+  {
+    "code": "IAH",
+    "name": "George Bush Intercontinental Houston Airport",
+    "city": "Houston",
+    "country": "United States",
+    "region": "North America",
+    "latitude": 29.9844,
+    "longitude": -95.3414,
+    "timezone": "America/Chicago"
+  },
+  {
+    "code": "MIA",
+    "name": "Miami International Airport",
+    "city": "Miami",
+    "country": "United States",
+    "region": "North America",
+    "latitude": 25.7932,
+    "longitude": -80.2906,
+    "timezone": "America/New_York"
+  },
+  {
+    "code": "SEA",
+    "name": "Seattle Tacoma International Airport",
+    "city": "Seattle",
+    "country": "United States",
+    "region": "North America",
+    "latitude": 47.449,
+    "longitude": -122.309,
+    "timezone": "America/Los_Angeles"
+  },
+  {
+    "code": "IND",
+    "name": "Indianapolis International Airport",
+    "city": "Indianapolis",
+    "country": "United States",
+    "region": "North America",
+    "latitude": 39.7173,
+    "longitude": -86.2944,
+    "timezone": "America/New_York"
+  },
+  {
+    "code": "DTW",
+    "name": "Detroit Metropolitan Wayne County Airport",
+    "city": "Detroit",
+    "country": "United States",
+    "region": "North America",
+    "latitude": 42.2124,
+    "longitude": -83.3534,
+    "timezone": "America/New_York"
+  },
+  {
+    "code": "DFW",
+    "name": "Dallas Fort Worth International Airport",
+    "city": "Dallas-Fort Worth",
+    "country": "United States",
+    "region": "North America",
+    "latitude": 32.8968,
+    "longitude": -97.038,
+    "timezone": "America/Chicago"
+  },
+  {
+    "code": "STL",
+    "name": "St Louis Lambert International Airport",
+    "city": "St. Louis",
+    "country": "United States",
+    "region": "North America",
+    "latitude": 38.7487,
+    "longitude": -90.37,
+    "timezone": "America/Chicago"
+  },
+  {
+    "code": "ATL",
+    "name": "Hartsfield Jackson Atlanta International Airport",
+    "city": "Atlanta",
+    "country": "United States",
+    "region": "North America",
+    "latitude": 33.6367,
+    "longitude": -84.4281,
+    "timezone": "America/New_York"
+  },
+  {
+    "code": "LGA",
+    "name": "La Guardia Airport",
+    "city": "New York",
+    "country": "United States",
+    "region": "North America",
+    "latitude": 40.7772,
+    "longitude": -73.8726,
+    "timezone": "America/New_York"
+  },
+  {
+    "code": "PDX",
+    "name": "Portland International Airport",
+    "city": "Portland",
+    "country": "United States",
+    "region": "North America",
+    "latitude": 45.5887,
+    "longitude": -122.598,
+    "timezone": "America/Los_Angeles"
+  },
+  {
+    "code": "HNL",
+    "name": "Daniel K Inouye International Airport",
+    "city": "Honolulu",
+    "country": "United States",
+    "region": "North America",
+    "latitude": 21.3206,
+    "longitude": -157.9242,
+    "timezone": "Pacific/Honolulu"
+  },
+  {
+    "code": "SAN",
+    "name": "San Diego International Airport",
+    "city": "San Diego",
+    "country": "United States",
+    "region": "North America",
+    "latitude": 32.7336,
+    "longitude": -117.19,
+    "timezone": "America/Los_Angeles"
+  },
+  {
+    "code": "MDW",
+    "name": "Chicago Midway International Airport",
+    "city": "Chicago",
+    "country": "United States",
+    "region": "North America",
+    "latitude": 41.786,
+    "longitude": -87.7524,
+    "timezone": "America/Chicago"
+  },
+  {
+    "code": "DEN",
+    "name": "Denver International Airport",
+    "city": "Denver",
+    "country": "United States",
+    "region": "North America",
+    "latitude": 39.8617,
+    "longitude": -104.673,
+    "timezone": "America/Denver"
+  },
+  {
+    "code": "PHL",
+    "name": "Philadelphia International Airport",
+    "city": "Philadelphia",
+    "country": "United States",
+    "region": "North America",
+    "latitude": 39.8719,
+    "longitude": -75.2411,
+    "timezone": "America/New_York"
+  },
+  {
+    "code": "JFK",
+    "name": "John F Kennedy International Airport",
+    "city": "New York",
+    "country": "United States",
+    "region": "North America",
+    "latitude": 40.6398,
+    "longitude": -73.7789,
+    "timezone": "America/New_York"
+  },
+  {
+    "code": "ORD",
+    "name": "Chicago O'Hare International Airport",
+    "city": "Chicago",
+    "country": "United States",
+    "region": "North America",
+    "latitude": 41.9786,
+    "longitude": -87.9048,
+    "timezone": "America/Chicago"
+  },
+  {
+    "code": "BWI",
+    "name": "Baltimore/Washington International Thurgood Marshall Airport",
+    "city": "Baltimore",
+    "country": "United States",
+    "region": "North America",
+    "latitude": 39.1754,
+    "longitude": -76.6683,
+    "timezone": "America/New_York"
+  },
+  {
+    "code": "MSP",
+    "name": "Minneapolis-St Paul International/Wold-Chamberlain Airport",
+    "city": "Minneapolis",
+    "country": "United States",
+    "region": "North America",
+    "latitude": 44.882,
+    "longitude": -93.2218,
+    "timezone": "America/Chicago"
+  },
+  {
+    "code": "LAS",
+    "name": "McCarran International Airport",
+    "city": "Las Vegas",
+    "country": "United States",
+    "region": "North America",
+    "latitude": 36.0801,
+    "longitude": -115.152,
+    "timezone": "America/Los_Angeles"
+  },
+  {
+    "code": "MCO",
+    "name": "Orlando International Airport",
+    "city": "Orlando",
+    "country": "United States",
+    "region": "North America",
+    "latitude": 28.4294,
+    "longitude": -81.309,
+    "timezone": "America/New_York"
+  },
+  {
+    "code": "BKK",
+    "name": "Suvarnabhumi Airport",
+    "city": "Bangkok",
+    "country": "Thailand",
+    "region": "Asia",
+    "latitude": 13.6811,
+    "longitude": 100.747,
+    "timezone": "Asia/Bangkok"
+  },
+  {
+    "code": "ICN",
+    "name": "Incheon International Airport",
+    "city": "Seoul",
+    "country": "South Korea",
+    "region": "Asia",
+    "latitude": 37.4691,
+    "longitude": 126.451,
+    "timezone": "Asia/Seoul"
+  },
+  {
+    "code": "ATH",
+    "name": "Eleftherios Venizelos International Airport",
+    "city": "Athens",
+    "country": "Greece",
+    "region": "Europe",
+    "latitude": 37.9364,
+    "longitude": 23.9445,
+    "timezone": "Europe/Athens"
+  },
+  {
+    "code": "EZE",
+    "name": "Ministro Pistarini International Airport",
+    "city": "Buenos Aires",
+    "country": "Argentina",
+    "region": "South America",
+    "latitude": -34.8222,
+    "longitude": -58.5358,
+    "timezone": "America/Buenos_Aires"
+  },
+  {
+    "code": "KIX",
+    "name": "Kansai International Airport",
+    "city": "Osaka",
+    "country": "Japan",
+    "region": "Asia",
+    "latitude": 34.4273,
+    "longitude": 135.244,
+    "timezone": "Asia/Tokyo"
+  },
+  {
+    "code": "DRW",
+    "name": "Darwin International Airport",
+    "city": "Darwin",
+    "country": "Australia",
+    "region": "Oceania",
+    "latitude": -12.4147,
+    "longitude": 130.877,
+    "timezone": "Australia/Darwin"
+  },
+  {
+    "code": "NBO",
+    "name": "Jomo Kenyatta International Airport",
+    "city": "Nairobi",
+    "country": "Kenya",
+    "region": "Africa",
+    "latitude": -1.3192,
+    "longitude": 36.9278,
+    "timezone": "Africa/Nairobi"
+  },
+  {
+    "code": "SAW",
+    "name": "Sabiha Gökçen International Airport",
+    "city": "Istanbul",
+    "country": "Turkey",
+    "region": "Middle East",
+    "latitude": 40.8986,
+    "longitude": 29.3092,
+    "timezone": "Europe/Istanbul"
+  },
+  {
+    "code": "DOH",
+    "name": "Hamad International Airport",
+    "city": "Doha",
+    "country": "Qatar",
+    "region": "Middle East",
+    "latitude": 25.2731,
+    "longitude": 51.6081,
+    "timezone": "UTC"
+  },
+  {
+    "code": "HYD",
+    "name": "Rajiv Gandhi International Airport",
+    "city": "Hyderabad",
+    "country": "India",
+    "region": "Asia",
+    "latitude": 17.2313,
+    "longitude": 78.4299,
+    "timezone": "Asia/Kolkata"
+  },
+  {
+    "code": "IST",
+    "name": "Istanbul Airport",
+    "city": "Istanbul",
+    "country": "Turkey",
+    "region": "Middle East",
+    "latitude": 41.2753,
+    "longitude": 28.7519,
+    "timezone": "UTC"
+  },
+  {
+    "code": "ANR",
+    "name": "Antwerp International Airport (Deurne)",
+    "city": "Antwerp",
+    "country": "Belgium",
+    "region": "Europe",
+    "latitude": 51.1894,
+    "longitude": 4.4603,
+    "timezone": "Europe/Brussels"
+  },
+  {
+    "code": "CRL",
+    "name": "Brussels South Charleroi Airport",
+    "city": "Charleroi",
+    "country": "Belgium",
+    "region": "Europe",
+    "latitude": 50.4592,
+    "longitude": 4.4538,
+    "timezone": "Europe/Brussels"
+  },
+  {
+    "code": "KJK",
+    "name": "Wevelgem Airport",
+    "city": "Kortrijk-vevelgem",
+    "country": "Belgium",
+    "region": "Europe",
+    "latitude": 50.8172,
+    "longitude": 3.2047,
+    "timezone": "Europe/Brussels"
+  },
+  {
+    "code": "LGG",
+    "name": "Liège Airport",
+    "city": "Liege",
+    "country": "Belgium",
+    "region": "Europe",
+    "latitude": 50.6374,
+    "longitude": 5.4432,
+    "timezone": "Europe/Brussels"
+  },
+  {
+    "code": "OST",
+    "name": "Ostend-Bruges International Airport",
+    "city": "Ostend",
+    "country": "Belgium",
+    "region": "Europe",
+    "latitude": 51.1989,
+    "longitude": 2.8622,
+    "timezone": "Europe/Brussels"
+  },
+  {
+    "code": "OBL",
+    "name": "Zoersel (Oostmalle) Airfield",
+    "city": "Zoersel",
+    "country": "Belgium",
+    "region": "Europe",
+    "latitude": 51.2647,
+    "longitude": 4.7533,
+    "timezone": "Europe/Brussels"
+  },
+  {
+    "code": "AOC",
+    "name": "Altenburg-Nobitz Airport",
+    "city": "Altenburg",
+    "country": "Germany",
+    "region": "Europe",
+    "latitude": 50.9819,
+    "longitude": 12.5064,
+    "timezone": "Europe/Berlin"
+  },
+  {
+    "code": "IES",
+    "name": "Riesa-Göhlis Airport",
+    "city": "Riesa",
+    "country": "Germany",
+    "region": "Europe",
+    "latitude": 51.2936,
+    "longitude": 13.3561,
+    "timezone": "Europe/Berlin"
+  },
+  {
+    "code": "REB",
+    "name": "Rechlin-Lärz Airport",
+    "city": "Rechlin-laerz",
+    "country": "Germany",
+    "region": "Europe",
+    "latitude": 53.3064,
+    "longitude": 12.7522,
+    "timezone": "Europe/Berlin"
+  },
+  {
+    "code": "QXH",
+    "name": "Schönhagen Airport",
+    "city": "Schoenhagen",
+    "country": "Germany",
+    "region": "Europe",
+    "latitude": 52.2036,
+    "longitude": 13.1564,
+    "timezone": "Europe/Berlin"
+  },
+  {
+    "code": "BBH",
+    "name": "Barth Airport",
+    "city": "Barth",
+    "country": "Germany",
+    "region": "Europe",
+    "latitude": 54.3383,
+    "longitude": 12.7105,
+    "timezone": "Europe/Berlin"
+  },
+  {
+    "code": "ZMG",
+    "name": "Magdeburg City Airport",
+    "city": "Magdeburg",
+    "country": "Germany",
+    "region": "Europe",
+    "latitude": 52.0736,
+    "longitude": 11.6264,
+    "timezone": "Europe/Berlin"
+  },
+  {
+    "code": "CBU",
+    "name": "Cottbus-Drewitz Airport",
+    "city": "Cottbus",
+    "country": "Germany",
+    "region": "Europe",
+    "latitude": 51.8894,
+    "longitude": 14.5319,
+    "timezone": "Europe/Berlin"
+  },
+  {
+    "code": "SXF",
+    "name": "Berlin-Schönefeld Airport",
+    "city": "Berlin",
+    "country": "Germany",
+    "region": "Europe",
+    "latitude": 52.38,
+    "longitude": 13.5225,
+    "timezone": "Europe/Berlin"
+  },
+  {
+    "code": "DRS",
+    "name": "Dresden Airport",
+    "city": "Dresden",
+    "country": "Germany",
+    "region": "Europe",
+    "latitude": 51.1328,
+    "longitude": 13.7672,
+    "timezone": "Europe/Berlin"
+  },
+  {
+    "code": "ERF",
+    "name": "Erfurt Airport",
+    "city": "Erfurt",
+    "country": "Germany",
+    "region": "Europe",
+    "latitude": 50.9798,
+    "longitude": 10.9581,
+    "timezone": "Europe/Berlin"
+  },
+  {
+    "code": "FMO",
+    "name": "Münster Osnabrück Airport",
+    "city": "Munster",
+    "country": "Germany",
+    "region": "Europe",
+    "latitude": 52.1346,
+    "longitude": 7.6848,
+    "timezone": "Europe/Berlin"
+  },
+  {
+    "code": "HAM",
+    "name": "Hamburg Airport",
+    "city": "Hamburg",
+    "country": "Germany",
+    "region": "Europe",
+    "latitude": 53.6304,
+    "longitude": 9.9882,
+    "timezone": "Europe/Berlin"
+  },
+  {
+    "code": "THF",
+    "name": "Berlin-Tempelhof International Airport",
+    "city": "Berlin",
+    "country": "Germany",
+    "region": "Europe",
+    "latitude": 52.473,
+    "longitude": 13.4039,
+    "timezone": "Europe/Berlin"
+  },
+  {
+    "code": "CGN",
+    "name": "Cologne Bonn Airport",
+    "city": "Cologne",
+    "country": "Germany",
+    "region": "Europe",
+    "latitude": 50.8659,
+    "longitude": 7.1427,
+    "timezone": "Europe/Berlin"
+  },
+  {
+    "code": "DUS",
+    "name": "Düsseldorf Airport",
+    "city": "Duesseldorf",
+    "country": "Germany",
+    "region": "Europe",
+    "latitude": 51.2895,
+    "longitude": 6.7668,
+    "timezone": "Europe/Berlin"
+  },
+  {
+    "code": "NUE",
+    "name": "Nuremberg Airport",
+    "city": "Nuernberg",
+    "country": "Germany",
+    "region": "Europe",
+    "latitude": 49.4987,
+    "longitude": 11.0781,
+    "timezone": "Europe/Berlin"
+  },
+  {
+    "code": "LEJ",
+    "name": "Leipzig/Halle Airport",
+    "city": "Leipzig",
+    "country": "Germany",
+    "region": "Europe",
+    "latitude": 51.4239,
+    "longitude": 12.2364,
+    "timezone": "Europe/Berlin"
+  },
+  {
+    "code": "SCN",
+    "name": "Saarbrücken Airport",
+    "city": "Saarbruecken",
+    "country": "Germany",
+    "region": "Europe",
+    "latitude": 49.2146,
+    "longitude": 7.1095,
+    "timezone": "Europe/Berlin"
+  },
+  {
+    "code": "STR",
+    "name": "Stuttgart Airport",
+    "city": "Stuttgart",
+    "country": "Germany",
+    "region": "Europe",
+    "latitude": 48.6899,
+    "longitude": 9.222,
+    "timezone": "Europe/Berlin"
+  },
+  {
+    "code": "TXL",
+    "name": "Berlin-Tegel Airport",
+    "city": "Berlin",
+    "country": "Germany",
+    "region": "Europe",
+    "latitude": 52.5597,
+    "longitude": 13.2877,
+    "timezone": "Europe/Berlin"
+  },
+  {
+    "code": "HAJ",
+    "name": "Hannover Airport",
+    "city": "Hannover",
+    "country": "Germany",
+    "region": "Europe",
+    "latitude": 52.4611,
+    "longitude": 9.6851,
+    "timezone": "Europe/Berlin"
+  },
+  {
+    "code": "BRE",
+    "name": "Bremen Airport",
+    "city": "Bremen",
+    "country": "Germany",
+    "region": "Europe",
+    "latitude": 53.0475,
+    "longitude": 8.7867,
+    "timezone": "Europe/Berlin"
+  },
+  {
+    "code": "QEF",
+    "name": "Frankfurt-Egelsbach Airport",
+    "city": "Egelsbach",
+    "country": "Germany",
+    "region": "Europe",
+    "latitude": 49.96,
+    "longitude": 8.6458,
+    "timezone": "Europe/Berlin"
+  },
+  {
+    "code": "HHN",
+    "name": "Frankfurt-Hahn Airport",
+    "city": "Hahn",
+    "country": "Germany",
+    "region": "Europe",
+    "latitude": 49.9487,
+    "longitude": 7.2639,
+    "timezone": "Europe/Berlin"
+  },
+  {
+    "code": "MHG",
+    "name": "Mannheim-City Airport",
+    "city": "Mannheim",
+    "country": "Germany",
+    "region": "Europe",
+    "latitude": 49.4731,
+    "longitude": 8.5142,
+    "timezone": "Europe/Berlin"
+  },
+  {
+    "code": "EIB",
+    "name": "Eisenach-Kindel Airport",
+    "city": "Eisenach",
+    "country": "Germany",
+    "region": "Europe",
+    "latitude": 50.9916,
+    "longitude": 10.4797,
+    "timezone": "Europe/Berlin"
+  },
+  {
+    "code": "SGE",
+    "name": "Siegerland Airport",
+    "city": "Siegerland",
+    "country": "Germany",
+    "region": "Europe",
+    "latitude": 50.7077,
+    "longitude": 8.083,
+    "timezone": "Europe/Berlin"
+  },
+  {
+    "code": "XFW",
+    "name": "Hamburg-Finkenwerder Airport",
+    "city": "Hamburg",
+    "country": "Germany",
+    "region": "Europe",
+    "latitude": 53.5353,
+    "longitude": 9.8356,
+    "timezone": "Europe/Berlin"
+  },
+  {
+    "code": "KEL",
+    "name": "Kiel-Holtenau Airport",
+    "city": "Kiel",
+    "country": "Germany",
+    "region": "Europe",
+    "latitude": 54.3794,
+    "longitude": 10.1453,
+    "timezone": "Europe/Berlin"
+  },
+  {
+    "code": "LBC",
+    "name": "Lübeck Blankensee Airport",
+    "city": "Luebeck",
+    "country": "Germany",
+    "region": "Europe",
+    "latitude": 53.8054,
+    "longitude": 10.7192,
+    "timezone": "Europe/Berlin"
+  },
+  {
+    "code": "ESS",
+    "name": "Essen Mulheim Airport",
+    "city": "Essen",
+    "country": "Germany",
+    "region": "Europe",
+    "latitude": 51.4023,
+    "longitude": 6.9373,
+    "timezone": "Europe/Berlin"
+  },
+  {
+    "code": "BFE",
+    "name": "Bielefeld Airport",
+    "city": "Bielefeld",
+    "country": "Germany",
+    "region": "Europe",
+    "latitude": 51.9647,
+    "longitude": 8.5444,
+    "timezone": "Europe/Berlin"
+  },
+  {
+    "code": "MGL",
+    "name": "Mönchengladbach Airport",
+    "city": "Moenchengladbach",
+    "country": "Germany",
+    "region": "Europe",
+    "latitude": 51.2303,
+    "longitude": 6.5044,
+    "timezone": "Europe/Berlin"
+  },
+  {
+    "code": "PAD",
+    "name": "Paderborn Lippstadt Airport",
+    "city": "Paderborn",
+    "country": "Germany",
+    "region": "Europe",
+    "latitude": 51.6141,
+    "longitude": 8.6163,
+    "timezone": "Europe/Berlin"
+  },
+  {
+    "code": "DTM",
+    "name": "Dortmund Airport",
+    "city": "Dortmund",
+    "country": "Germany",
+    "region": "Europe",
+    "latitude": 51.5183,
+    "longitude": 7.6122,
+    "timezone": "Europe/Berlin"
+  },
+  {
+    "code": "AGB",
+    "name": "Augsburg Airport",
+    "city": "Augsburg",
+    "country": "Germany",
+    "region": "Europe",
+    "latitude": 48.4253,
+    "longitude": 10.9317,
+    "timezone": "Europe/Berlin"
+  },
+  {
+    "code": "OBF",
+    "name": "Oberpfaffenhofen Airport",
+    "city": "Oberpfaffenhofen",
+    "country": "Germany",
+    "region": "Europe",
+    "latitude": 48.0814,
+    "longitude": 11.2831,
+    "timezone": "Europe/Berlin"
+  },
+  {
+    "code": "RBM",
+    "name": "Straubing Airport",
+    "city": "Straubing",
+    "country": "Germany",
+    "region": "Europe",
+    "latitude": 48.9008,
+    "longitude": 12.5167,
+    "timezone": "Europe/Berlin"
+  },
+  {
+    "code": "FDH",
+    "name": "Friedrichshafen Airport",
+    "city": "Friedrichshafen",
+    "country": "Germany",
+    "region": "Europe",
+    "latitude": 47.6713,
+    "longitude": 9.5115,
+    "timezone": "Europe/Berlin"
+  },
+  {
+    "code": "SZW",
+    "name": "Schwerin Parchim Airport",
+    "city": "Parchim",
+    "country": "Germany",
+    "region": "Europe",
+    "latitude": 53.427,
+    "longitude": 11.7834,
+    "timezone": "Europe/Berlin"
+  },
+  {
+    "code": "BYU",
+    "name": "Bayreuth Airport",
+    "city": "Bayreuth",
+    "country": "Germany",
+    "region": "Europe",
+    "latitude": 49.985,
+    "longitude": 11.64,
+    "timezone": "Europe/Berlin"
+  },
+  {
+    "code": "URD",
+    "name": "Burg Feuerstein Airport",
+    "city": "Burg Feuerstein",
+    "country": "Germany",
+    "region": "Europe",
+    "latitude": 49.7942,
+    "longitude": 11.1336,
+    "timezone": "Europe/Berlin"
+  },
+  {
+    "code": "HOQ",
+    "name": "Hof-Plauen Airport",
+    "city": "Hof",
+    "country": "Germany",
+    "region": "Europe",
+    "latitude": 50.2886,
+    "longitude": 11.8564,
+    "timezone": "Europe/Berlin"
+  },
+  {
+    "code": "ZQW",
+    "name": "Zweibrücken Airport",
+    "city": "Zweibruecken",
+    "country": "Germany",
+    "region": "Europe",
+    "latitude": 49.2094,
+    "longitude": 7.4006,
+    "timezone": "Europe/Berlin"
+  },
+  {
+    "code": "ZQL",
+    "name": "Donaueschingen-Villingen Airport",
+    "city": "Donaueschingen",
+    "country": "Germany",
+    "region": "Europe",
+    "latitude": 47.9733,
+    "longitude": 8.5222,
+    "timezone": "Europe/Berlin"
+  },
+  {
+    "code": "BWE",
+    "name": "Braunschweig-Wolfsburg Airport",
+    "city": "Braunschweig",
+    "country": "Germany",
+    "region": "Europe",
+    "latitude": 52.3192,
+    "longitude": 10.5561,
+    "timezone": "Europe/Berlin"
+  },
+  {
+    "code": "KSF",
+    "name": "Kassel-Calden Airport",
+    "city": "Kassel",
+    "country": "Germany",
+    "region": "Europe",
+    "latitude": 51.4173,
+    "longitude": 9.385,
+    "timezone": "Europe/Berlin"
+  },
+  {
+    "code": "BRV",
+    "name": "Bremerhaven Airport",
+    "city": "Bremerhaven",
+    "country": "Germany",
+    "region": "Europe",
+    "latitude": 53.5069,
+    "longitude": 8.5728,
+    "timezone": "Europe/Berlin"
+  },
+  {
+    "code": "EME",
+    "name": "Emden Airport",
+    "city": "Emden",
+    "country": "Germany",
+    "region": "Europe",
+    "latitude": 53.3911,
+    "longitude": 7.2275,
+    "timezone": "Europe/Berlin"
+  },
+  {
+    "code": "WVN",
+    "name": "Wilhelmshaven-Mariensiel Airport",
+    "city": "Wilhelmshaven",
+    "country": "Germany",
+    "region": "Europe",
+    "latitude": 53.5022,
+    "longitude": 8.0522,
+    "timezone": "Europe/Berlin"
+  },
+  {
+    "code": "BMK",
+    "name": "Borkum Airport",
+    "city": "Borkum",
+    "country": "Germany",
+    "region": "Europe",
+    "latitude": 53.5964,
+    "longitude": 6.7092,
+    "timezone": "Europe/Berlin"
+  },
+  {
+    "code": "NRD",
+    "name": "Norderney Airport",
+    "city": "Norderney",
+    "country": "Germany",
+    "region": "Europe",
+    "latitude": 53.7069,
+    "longitude": 7.23,
+    "timezone": "Europe/Berlin"
+  },
+  {
+    "code": "FLF",
+    "name": "Flensburg-Schäferhaus Airport",
+    "city": "Flensburg",
+    "country": "Germany",
+    "region": "Europe",
+    "latitude": 54.7733,
+    "longitude": 9.3789,
+    "timezone": "Europe/Berlin"
+  },
+  {
+    "code": "GWT",
+    "name": "Westerland Sylt Airport",
+    "city": "Westerland",
+    "country": "Germany",
+    "region": "Europe",
+    "latitude": 54.9132,
+    "longitude": 8.3405,
+    "timezone": "Europe/Berlin"
+  },
+  {
+    "code": "KDL",
+    "name": "Kärdla Airport",
+    "city": "Kardla",
+    "country": "Estonia",
+    "region": "Europe",
+    "latitude": 58.9908,
+    "longitude": 22.8307,
+    "timezone": "Europe/Tallinn"
+  },
+  {
+    "code": "URE",
+    "name": "Kuressaare Airport",
+    "city": "Kuressaare",
+    "country": "Estonia",
+    "region": "Europe",
+    "latitude": 58.2299,
+    "longitude": 22.5095,
+    "timezone": "Europe/Tallinn"
+  },
+  {
+    "code": "EPU",
+    "name": "Pärnu Airport",
+    "city": "Parnu",
+    "country": "Estonia",
+    "region": "Europe",
+    "latitude": 58.419,
+    "longitude": 24.4728,
+    "timezone": "Europe/Tallinn"
+  },
+  {
+    "code": "TLL",
+    "name": "Lennart Meri Tallinn Airport",
+    "city": "Tallinn-ulemiste International",
+    "country": "Estonia",
+    "region": "Europe",
+    "latitude": 59.4133,
+    "longitude": 24.8328,
+    "timezone": "Europe/Tallinn"
+  },
+  {
+    "code": "TAY",
+    "name": "Tartu Airport",
+    "city": "Tartu",
+    "country": "Estonia",
+    "region": "Europe",
+    "latitude": 58.3075,
+    "longitude": 26.6904,
+    "timezone": "Europe/Tallinn"
+  },
+  {
+    "code": "ENF",
+    "name": "Enontekio Airport",
+    "city": "Enontekio",
+    "country": "Finland",
+    "region": "Europe",
+    "latitude": 68.3626,
+    "longitude": 23.4243,
+    "timezone": "Europe/Helsinki"
+  },
+  {
+    "code": "KEV",
+    "name": "Halli Airport",
+    "city": "Halli",
+    "country": "Finland",
+    "region": "Europe",
+    "latitude": 61.856,
+    "longitude": 24.7867,
+    "timezone": "Europe/Helsinki"
+  },
+  {
+    "code": "HEM",
+    "name": "Helsinki Malmi Airport",
+    "city": "Helsinki",
+    "country": "Finland",
+    "region": "Europe",
+    "latitude": 60.2546,
+    "longitude": 25.0428,
+    "timezone": "Europe/Helsinki"
+  },
+  {
+    "code": "HYV",
+    "name": "Hyvinkää Airfield",
+    "city": "Hyvinkaa",
+    "country": "Finland",
+    "region": "Europe",
+    "latitude": 60.6544,
+    "longitude": 24.8811,
+    "timezone": "Europe/Helsinki"
+  },
+  {
+    "code": "KTQ",
+    "name": "Kitee Airport",
+    "city": "Kitee",
+    "country": "Finland",
+    "region": "Europe",
+    "latitude": 62.1661,
+    "longitude": 30.0736,
+    "timezone": "Europe/Helsinki"
+  },
+  {
+    "code": "IVL",
+    "name": "Ivalo Airport",
+    "city": "Ivalo",
+    "country": "Finland",
+    "region": "Europe",
+    "latitude": 68.6073,
+    "longitude": 27.4053,
+    "timezone": "Europe/Helsinki"
+  },
+  {
+    "code": "JOE",
+    "name": "Joensuu Airport",
+    "city": "Joensuu",
+    "country": "Finland",
+    "region": "Europe",
+    "latitude": 62.6629,
+    "longitude": 29.6075,
+    "timezone": "Europe/Helsinki"
+  },
+  {
+    "code": "JYV",
+    "name": "Jyvaskyla Airport",
+    "city": "Jyvaskyla",
+    "country": "Finland",
+    "region": "Europe",
+    "latitude": 62.3995,
+    "longitude": 25.6783,
+    "timezone": "Europe/Helsinki"
+  },
+  {
+    "code": "KAU",
+    "name": "Kauhava Airport",
+    "city": "Kauhava",
+    "country": "Finland",
+    "region": "Europe",
+    "latitude": 63.1271,
+    "longitude": 23.0514,
+    "timezone": "Europe/Helsinki"
+  },
+  {
+    "code": "KEM",
+    "name": "Kemi-Tornio Airport",
+    "city": "Kemi",
+    "country": "Finland",
+    "region": "Europe",
+    "latitude": 65.7787,
+    "longitude": 24.5821,
+    "timezone": "Europe/Helsinki"
+  },
+  {
+    "code": "KAJ",
+    "name": "Kajaani Airport",
+    "city": "Kajaani",
+    "country": "Finland",
+    "region": "Europe",
+    "latitude": 64.2855,
+    "longitude": 27.6924,
+    "timezone": "Europe/Helsinki"
+  },
+  {
+    "code": "KHJ",
+    "name": "Kauhajoki Airport",
+    "city": "Kauhajoki",
+    "country": "Finland",
+    "region": "Europe",
+    "latitude": 62.4625,
+    "longitude": 22.3931,
+    "timezone": "Europe/Helsinki"
+  },
+  {
+    "code": "KOK",
+    "name": "Kokkola-Pietarsaari Airport",
+    "city": "Kruunupyy",
+    "country": "Finland",
+    "region": "Europe",
+    "latitude": 63.7212,
+    "longitude": 23.1431,
+    "timezone": "Europe/Helsinki"
+  },
+  {
+    "code": "KAO",
+    "name": "Kuusamo Airport",
+    "city": "Kuusamo",
+    "country": "Finland",
+    "region": "Europe",
+    "latitude": 65.9876,
+    "longitude": 29.2394,
+    "timezone": "Europe/Helsinki"
+  },
+  {
+    "code": "KTT",
+    "name": "Kittilä Airport",
+    "city": "Kittila",
+    "country": "Finland",
+    "region": "Europe",
+    "latitude": 67.701,
+    "longitude": 24.8468,
+    "timezone": "Europe/Helsinki"
+  },
+  {
+    "code": "KUO",
+    "name": "Kuopio Airport",
+    "city": "Kuopio",
+    "country": "Finland",
+    "region": "Europe",
+    "latitude": 63.0071,
+    "longitude": 27.7978,
+    "timezone": "Europe/Helsinki"
+  },
+  {
+    "code": "QLF",
+    "name": "Lahti Vesivehmaa Airport",
+    "city": "Vesivehmaa",
+    "country": "Finland",
+    "region": "Europe",
+    "latitude": 61.1442,
+    "longitude": 25.6935,
+    "timezone": "Europe/Helsinki"
+  },
+  {
+    "code": "LPP",
+    "name": "Lappeenranta Airport",
+    "city": "Lappeenranta",
+    "country": "Finland",
+    "region": "Europe",
+    "latitude": 61.0446,
+    "longitude": 28.1447,
+    "timezone": "Europe/Helsinki"
+  },
+  {
+    "code": "MHQ",
+    "name": "Mariehamn Airport",
+    "city": "Mariehamn",
+    "country": "Finland",
+    "region": "Europe",
+    "latitude": 60.1222,
+    "longitude": 19.8982,
+    "timezone": "Europe/Mariehamn"
+  },
+  {
+    "code": "MIK",
+    "name": "Mikkeli Airport",
+    "city": "Mikkeli",
+    "country": "Finland",
+    "region": "Europe",
+    "latitude": 61.6866,
+    "longitude": 27.2018,
+    "timezone": "Europe/Helsinki"
+  },
+  {
+    "code": "OUL",
+    "name": "Oulu Airport",
+    "city": "Oulu",
+    "country": "Finland",
+    "region": "Europe",
+    "latitude": 64.9301,
+    "longitude": 25.3546,
+    "timezone": "Europe/Helsinki"
+  },
+  {
+    "code": "POR",
+    "name": "Pori Airport",
+    "city": "Pori",
+    "country": "Finland",
+    "region": "Europe",
+    "latitude": 61.4617,
+    "longitude": 21.8,
+    "timezone": "Europe/Helsinki"
+  },
+  {
+    "code": "RVN",
+    "name": "Rovaniemi Airport",
+    "city": "Rovaniemi",
+    "country": "Finland",
+    "region": "Europe",
+    "latitude": 66.5648,
+    "longitude": 25.8304,
+    "timezone": "Europe/Helsinki"
+  },
+  {
+    "code": "SVL",
+    "name": "Savonlinna Airport",
+    "city": "Savonlinna",
+    "country": "Finland",
+    "region": "Europe",
+    "latitude": 61.9431,
+    "longitude": 28.9451,
+    "timezone": "Europe/Helsinki"
+  },
+  {
+    "code": "SOT",
+    "name": "Sodankyla Airport",
+    "city": "Sodankyla",
+    "country": "Finland",
+    "region": "Europe",
+    "latitude": 67.395,
+    "longitude": 26.6191,
+    "timezone": "Europe/Helsinki"
+  },
+  {
+    "code": "TMP",
+    "name": "Tampere-Pirkkala Airport",
+    "city": "Tampere",
+    "country": "Finland",
+    "region": "Europe",
+    "latitude": 61.4141,
+    "longitude": 23.6044,
+    "timezone": "Europe/Helsinki"
+  },
+  {
+    "code": "TKU",
+    "name": "Turku Airport",
+    "city": "Turku",
+    "country": "Finland",
+    "region": "Europe",
+    "latitude": 60.5141,
+    "longitude": 22.2628,
+    "timezone": "Europe/Helsinki"
+  },
+  {
+    "code": "UTI",
+    "name": "Utti Air Base",
+    "city": "Utti",
+    "country": "Finland",
+    "region": "Europe",
+    "latitude": 60.8964,
+    "longitude": 26.9384,
+    "timezone": "Europe/Helsinki"
+  },
+  {
+    "code": "VAA",
+    "name": "Vaasa Airport",
+    "city": "Vaasa",
+    "country": "Finland",
+    "region": "Europe",
+    "latitude": 63.0507,
+    "longitude": 21.7622,
+    "timezone": "Europe/Helsinki"
+  },
+  {
+    "code": "VRK",
+    "name": "Varkaus Airport",
+    "city": "Varkaus",
+    "country": "Finland",
+    "region": "Europe",
+    "latitude": 62.1711,
+    "longitude": 27.8686,
+    "timezone": "Europe/Helsinki"
+  },
+  {
+    "code": "YLI",
+    "name": "Ylivieska Airfield",
+    "city": "Ylivieska-raudaskyla",
+    "country": "Finland",
+    "region": "Europe",
+    "latitude": 64.0547,
+    "longitude": 24.7253,
+    "timezone": "Europe/Helsinki"
+  },
+  {
+    "code": "ENK",
+    "name": "St Angelo Airport",
+    "city": "Enniskillen",
+    "country": "United Kingdom",
+    "region": "Europe",
+    "latitude": 54.3989,
+    "longitude": -7.6517,
+    "timezone": "Europe/London"
+  },
+  {
+    "code": "BHD",
+    "name": "George Best Belfast City Airport",
+    "city": "Belfast",
+    "country": "United Kingdom",
+    "region": "Europe",
+    "latitude": 54.6181,
+    "longitude": -5.8725,
+    "timezone": "Europe/London"
+  },
+  {
+    "code": "LDY",
+    "name": "City of Derry Airport",
+    "city": "Londonderry",
+    "country": "United Kingdom",
+    "region": "Europe",
+    "latitude": 55.0428,
+    "longitude": -7.1611,
+    "timezone": "Europe/London"
+  },
+  {
+    "code": "CVT",
+    "name": "Coventry Airport",
+    "city": "Coventry",
+    "country": "United Kingdom",
+    "region": "Europe",
+    "latitude": 52.3697,
+    "longitude": -1.4797,
+    "timezone": "Europe/London"
+  },
+  {
+    "code": "GLO",
+    "name": "Gloucestershire Airport",
+    "city": "Golouchestershire",
+    "country": "United Kingdom",
+    "region": "Europe",
+    "latitude": 51.8942,
+    "longitude": -2.1672,
+    "timezone": "Europe/London"
+  },
+  {
+    "code": "GBA",
+    "name": "Cotswold Airport",
+    "city": "Pailton",
+    "country": "United Kingdom",
+    "region": "Europe",
+    "latitude": 51.6681,
+    "longitude": -2.0569,
+    "timezone": "Europe/London"
+  },
+  {
+    "code": "NQY",
+    "name": "Newquay Cornwall Airport",
+    "city": "Newquai",
+    "country": "United Kingdom",
+    "region": "Europe",
+    "latitude": 50.4406,
+    "longitude": -4.9954,
+    "timezone": "Europe/London"
+  },
+  {
+    "code": "LYE",
+    "name": "RAF Lyneham",
+    "city": "Lyneham",
+    "country": "United Kingdom",
+    "region": "Europe",
+    "latitude": 51.5051,
+    "longitude": -1.9934,
+    "timezone": "Europe/London"
+  },
+  {
+    "code": "YEO",
+    "name": "RNAS Yeovilton",
+    "city": "Yeovilton",
+    "country": "United Kingdom",
+    "region": "Europe",
+    "latitude": 51.0094,
+    "longitude": -2.6388,
+    "timezone": "Europe/London"
+  },
+  {
+    "code": "HAW",
+    "name": "Haverfordwest Airport",
+    "city": "Haverfordwest",
+    "country": "United Kingdom",
+    "region": "Europe",
+    "latitude": 51.8331,
+    "longitude": -4.9611,
+    "timezone": "Europe/London"
+  },
+  {
+    "code": "CWL",
+    "name": "Cardiff International Airport",
+    "city": "Cardiff",
+    "country": "United Kingdom",
+    "region": "Europe",
+    "latitude": 51.3967,
+    "longitude": -3.3433,
+    "timezone": "Europe/London"
+  },
+  {
+    "code": "SWS",
+    "name": "Swansea Airport",
+    "city": "Swansea",
+    "country": "United Kingdom",
+    "region": "Europe",
+    "latitude": 51.6053,
+    "longitude": -4.0678,
+    "timezone": "Europe/London"
+  },
+  {
+    "code": "LPL",
+    "name": "Liverpool John Lennon Airport",
+    "city": "Liverpool",
+    "country": "United Kingdom",
+    "region": "Europe",
+    "latitude": 53.3336,
+    "longitude": -2.8497,
+    "timezone": "Europe/London"
+  },
+  {
+    "code": "PLH",
+    "name": "Plymouth City Airport",
+    "city": "Plymouth",
+    "country": "United Kingdom",
+    "region": "Europe",
+    "latitude": 50.4228,
+    "longitude": -4.1058,
+    "timezone": "Europe/London"
+  },
+  {
+    "code": "BOH",
+    "name": "Bournemouth Airport",
+    "city": "Bournemouth",
+    "country": "United Kingdom",
+    "region": "Europe",
+    "latitude": 50.78,
+    "longitude": -1.8425,
+    "timezone": "Europe/London"
+  },
+  {
+    "code": "SOU",
+    "name": "Southampton Airport",
+    "city": "Southampton",
+    "country": "United Kingdom",
+    "region": "Europe",
+    "latitude": 50.9503,
+    "longitude": -1.3568,
+    "timezone": "Europe/London"
+  },
+  {
+    "code": "QLA",
+    "name": "Lasham Airport",
+    "city": "Lasham",
+    "country": "United Kingdom",
+    "region": "Europe",
+    "latitude": 51.1872,
+    "longitude": -1.0335,
+    "timezone": "Europe/London"
+  },
+  {
+    "code": "ESH",
+    "name": "Shoreham Airport",
+    "city": "Shoreham By Sea",
+    "country": "United Kingdom",
+    "region": "Europe",
+    "latitude": 50.8356,
+    "longitude": -0.2972,
+    "timezone": "Europe/London"
+  },
+  {
+    "code": "BQH",
+    "name": "London Biggin Hill Airport",
+    "city": "Biggin Hill",
+    "country": "United Kingdom",
+    "region": "Europe",
+    "latitude": 51.3308,
+    "longitude": 0.0325,
+    "timezone": "Europe/London"
+  },
+  {
+    "code": "LCY",
+    "name": "London City Airport",
+    "city": "London",
+    "country": "United Kingdom",
+    "region": "Europe",
+    "latitude": 51.5053,
+    "longitude": 0.0553,
+    "timezone": "Europe/London"
+  },
+  {
+    "code": "FAB",
+    "name": "Farnborough Airport",
+    "city": "Farnborough",
+    "country": "United Kingdom",
+    "region": "Europe",
+    "latitude": 51.2758,
+    "longitude": -0.7763,
+    "timezone": "Europe/London"
+  },
+  {
+    "code": "BBS",
+    "name": "Blackbushe Airport",
+    "city": "Blackbushe",
+    "country": "United Kingdom",
+    "region": "Europe",
+    "latitude": 51.3239,
+    "longitude": -0.8475,
+    "timezone": "Europe/London"
+  },
+  {
+    "code": "SEN",
+    "name": "Southend Airport",
+    "city": "Southend",
+    "country": "United Kingdom",
+    "region": "Europe",
+    "latitude": 51.5714,
+    "longitude": 0.6956,
+    "timezone": "Europe/London"
+  },
+  {
+    "code": "LYX",
+    "name": "Lydd Airport",
+    "city": "Lydd",
+    "country": "United Kingdom",
+    "region": "Europe",
+    "latitude": 50.9561,
+    "longitude": 0.9392,
+    "timezone": "Europe/London"
+  },
+  {
+    "code": "MSE",
+    "name": "Kent International Airport",
+    "city": "Manston",
+    "country": "United Kingdom",
+    "region": "Europe",
+    "latitude": 51.3422,
+    "longitude": 1.3461,
+    "timezone": "Europe/London"
+  },
+  {
+    "code": "CAX",
+    "name": "Carlisle Airport",
+    "city": "Carlisle",
+    "country": "United Kingdom",
+    "region": "Europe",
+    "latitude": 54.9375,
+    "longitude": -2.8092,
+    "timezone": "Europe/London"
+  },
+  {
+    "code": "BLK",
+    "name": "Blackpool International Airport",
+    "city": "Blackpool",
+    "country": "United Kingdom",
+    "region": "Europe",
+    "latitude": 53.7717,
+    "longitude": -3.0286,
+    "timezone": "Europe/London"
+  },
+  {
+    "code": "HUY",
+    "name": "Humberside Airport",
+    "city": "Humberside",
+    "country": "United Kingdom",
+    "region": "Europe",
+    "latitude": 53.5744,
+    "longitude": -0.3508,
+    "timezone": "Europe/London"
+  },
+  {
+    "code": "BWF",
+    "name": "Barrow Walney Island Airport",
+    "city": "Barrow Island",
+    "country": "United Kingdom",
+    "region": "Europe",
+    "latitude": 54.1286,
+    "longitude": -3.2675,
+    "timezone": "Europe/London"
+  },
+  {
+    "code": "LBA",
+    "name": "Leeds Bradford Airport",
+    "city": "Leeds",
+    "country": "United Kingdom",
+    "region": "Europe",
+    "latitude": 53.8659,
+    "longitude": -1.6606,
+    "timezone": "Europe/London"
+  },
+  {
+    "code": "WRT",
+    "name": "Warton Airport",
+    "city": "Warton",
+    "country": "United Kingdom",
+    "region": "Europe",
+    "latitude": 53.7451,
+    "longitude": -2.8831,
+    "timezone": "Europe/London"
+  },
+  {
+    "code": "CEG",
+    "name": "Hawarden Airport",
+    "city": "Hawarden",
+    "country": "United Kingdom",
+    "region": "Europe",
+    "latitude": 53.1781,
+    "longitude": -2.9778,
+    "timezone": "Europe/London"
+  },
+  {
+    "code": "MME",
+    "name": "Durham Tees Valley Airport",
+    "city": "Teesside",
+    "country": "United Kingdom",
+    "region": "Europe",
+    "latitude": 54.5092,
+    "longitude": -1.4294,
+    "timezone": "Europe/London"
+  },
+  {
+    "code": "EMA",
+    "name": "East Midlands Airport",
+    "city": "East Midlands",
+    "country": "United Kingdom",
+    "region": "Europe",
+    "latitude": 52.8311,
+    "longitude": -1.3281,
+    "timezone": "Europe/London"
+  },
+  {
+    "code": "KOI",
+    "name": "Kirkwall Airport",
+    "city": "Kirkwall",
+    "country": "United Kingdom",
+    "region": "Europe",
+    "latitude": 58.9578,
+    "longitude": -2.905,
+    "timezone": "Europe/London"
+  },
+  {
+    "code": "LSI",
+    "name": "Sumburgh Airport",
+    "city": "Sumburgh",
+    "country": "United Kingdom",
+    "region": "Europe",
+    "latitude": 59.8789,
+    "longitude": -1.2956,
+    "timezone": "Europe/London"
+  },
+  {
+    "code": "WIC",
+    "name": "Wick Airport",
+    "city": "Wick",
+    "country": "United Kingdom",
+    "region": "Europe",
+    "latitude": 58.4589,
+    "longitude": -3.0931,
+    "timezone": "Europe/London"
+  },
+  {
+    "code": "ABZ",
+    "name": "Aberdeen Dyce Airport",
+    "city": "Aberdeen",
+    "country": "United Kingdom",
+    "region": "Europe",
+    "latitude": 57.2019,
+    "longitude": -2.1978,
+    "timezone": "Europe/London"
+  },
+  {
+    "code": "INV",
+    "name": "Inverness Airport",
+    "city": "Inverness",
+    "country": "United Kingdom",
+    "region": "Europe",
+    "latitude": 57.5425,
+    "longitude": -4.0475,
+    "timezone": "Europe/London"
+  },
+  {
+    "code": "ILY",
+    "name": "Islay Airport",
+    "city": "Islay",
+    "country": "United Kingdom",
+    "region": "Europe",
+    "latitude": 55.6819,
+    "longitude": -6.2567,
+    "timezone": "Europe/London"
+  },
+  {
+    "code": "PIK",
+    "name": "Glasgow Prestwick Airport",
+    "city": "Prestwick",
+    "country": "United Kingdom",
+    "region": "Europe",
+    "latitude": 55.5094,
+    "longitude": -4.5867,
+    "timezone": "Europe/London"
+  },
+  {
+    "code": "BEB",
+    "name": "Benbecula Airport",
+    "city": "Benbecula",
+    "country": "United Kingdom",
+    "region": "Europe",
+    "latitude": 57.4811,
+    "longitude": -7.3628,
+    "timezone": "Europe/London"
+  },
+  {
+    "code": "SCS",
+    "name": "Scatsta Airport",
+    "city": "Scatsta",
+    "country": "United Kingdom",
+    "region": "Europe",
+    "latitude": 60.4328,
+    "longitude": -1.2961,
+    "timezone": "Europe/London"
+  },
+  {
+    "code": "DND",
+    "name": "Dundee Airport",
+    "city": "Dundee",
+    "country": "United Kingdom",
+    "region": "Europe",
+    "latitude": 56.4525,
+    "longitude": -3.0258,
+    "timezone": "Europe/London"
+  },
+  {
+    "code": "SYY",
+    "name": "Stornoway Airport",
+    "city": "Stornoway",
+    "country": "United Kingdom",
+    "region": "Europe",
+    "latitude": 58.2156,
+    "longitude": -6.3311,
+    "timezone": "Europe/London"
+  },
+  {
+    "code": "TRE",
+    "name": "Tiree Airport",
+    "city": "Tiree",
+    "country": "United Kingdom",
+    "region": "Europe",
+    "latitude": 56.4992,
+    "longitude": -6.8692,
+    "timezone": "Europe/London"
+  },
+  {
+    "code": "ADX",
+    "name": "RAF Leuchars",
+    "city": "Leuchars",
+    "country": "United Kingdom",
+    "region": "Europe",
+    "latitude": 56.3729,
+    "longitude": -2.8684,
+    "timezone": "Europe/London"
+  },
+  {
+    "code": "LMO",
+    "name": "RAF Lossiemouth",
+    "city": "Lossiemouth",
+    "country": "United Kingdom",
+    "region": "Europe",
+    "latitude": 57.7052,
+    "longitude": -3.3392,
+    "timezone": "Europe/London"
+  },
+  {
+    "code": "CBG",
+    "name": "Cambridge Airport",
+    "city": "Cambridge",
+    "country": "United Kingdom",
+    "region": "Europe",
+    "latitude": 52.205,
+    "longitude": 0.175,
+    "timezone": "Europe/London"
+  },
+  {
+    "code": "NWI",
+    "name": "Norwich International Airport",
+    "city": "Norwich",
+    "country": "United Kingdom",
+    "region": "Europe",
+    "latitude": 52.6758,
+    "longitude": 1.2828,
+    "timezone": "Europe/London"
+  },
+  {
+    "code": "EXT",
+    "name": "Exeter International Airport",
+    "city": "Exeter",
+    "country": "United Kingdom",
+    "region": "Europe",
+    "latitude": 50.7344,
+    "longitude": -3.4139,
+    "timezone": "Europe/London"
+  },
+  {
+    "code": "FZO",
+    "name": "Bristol Filton Airport",
+    "city": "Bristol",
+    "country": "United Kingdom",
+    "region": "Europe",
+    "latitude": 51.5194,
+    "longitude": -2.5908,
+    "timezone": "Europe/London"
+  },
+  {
+    "code": "OXF",
+    "name": "Oxford (Kidlington) Airport",
+    "city": "Oxford",
+    "country": "United Kingdom",
+    "region": "Europe",
+    "latitude": 51.8369,
+    "longitude": -1.32,
+    "timezone": "Europe/London"
+  },
+  {
+    "code": "BEX",
+    "name": "RAF Benson",
+    "city": "Benson",
+    "country": "United Kingdom",
+    "region": "Europe",
+    "latitude": 51.6164,
+    "longitude": -1.0958,
+    "timezone": "Europe/London"
+  },
+  {
+    "code": "LKZ",
+    "name": "RAF Lakenheath",
+    "city": "Lakenheath",
+    "country": "United Kingdom",
+    "region": "Europe",
+    "latitude": 52.4093,
+    "longitude": 0.561,
+    "timezone": "Europe/London"
+  },
+  {
+    "code": "MHZ",
+    "name": "RAF Mildenhall",
+    "city": "Mildenhall",
+    "country": "United Kingdom",
+    "region": "Europe",
+    "latitude": 52.3619,
+    "longitude": 0.4864,
+    "timezone": "Europe/London"
+  },
+  {
+    "code": "QUY",
+    "name": "RAF Wyton",
+    "city": "Wyton",
+    "country": "United Kingdom",
+    "region": "Europe",
+    "latitude": 52.3572,
+    "longitude": -0.1078,
+    "timezone": "Europe/London"
+  },
+  {
+    "code": "FFD",
+    "name": "RAF Fairford",
+    "city": "Fairford",
+    "country": "United Kingdom",
+    "region": "Europe",
+    "latitude": 51.6822,
+    "longitude": -1.79,
+    "timezone": "Europe/London"
+  },
+  {
+    "code": "BZZ",
+    "name": "RAF Brize Norton",
+    "city": "Brize Norton",
+    "country": "United Kingdom",
+    "region": "Europe",
+    "latitude": 51.75,
+    "longitude": -1.5836,
+    "timezone": "Europe/London"
+  },
+  {
+    "code": "ODH",
+    "name": "RAF Odiham",
+    "city": "Odiham",
+    "country": "United Kingdom",
+    "region": "Europe",
+    "latitude": 51.2341,
+    "longitude": -0.9428,
+    "timezone": "Europe/London"
+  },
+  {
+    "code": "NHT",
+    "name": "RAF Northolt",
+    "city": "Northolt",
+    "country": "United Kingdom",
+    "region": "Europe",
+    "latitude": 51.553,
+    "longitude": -0.4182,
+    "timezone": "Europe/London"
+  },
+  {
+    "code": "QCY",
+    "name": "RAF Coningsby",
+    "city": "Coningsby",
+    "country": "United Kingdom",
+    "region": "Europe",
+    "latitude": 53.093,
+    "longitude": -0.166,
+    "timezone": "Europe/London"
+  },
+  {
+    "code": "BEQ",
+    "name": "RAF Honington",
+    "city": "Honington",
+    "country": "United Kingdom",
+    "region": "Europe",
+    "latitude": 52.3426,
+    "longitude": 0.7729,
+    "timezone": "Europe/London"
+  },
+  {
+    "code": "SQZ",
+    "name": "RAF Scampton",
+    "city": "Scampton",
+    "country": "United Kingdom",
+    "region": "Europe",
+    "latitude": 53.3078,
+    "longitude": -0.5508,
+    "timezone": "Europe/London"
+  },
+  {
+    "code": "HRT",
+    "name": "RAF Linton-On-Ouse",
+    "city": "Linton-on-ouse",
+    "country": "United Kingdom",
+    "region": "Europe",
+    "latitude": 54.0489,
+    "longitude": -1.2528,
+    "timezone": "Europe/London"
+  },
+  {
+    "code": "WTN",
+    "name": "RAF Waddington",
+    "city": "Waddington",
+    "country": "United Kingdom",
+    "region": "Europe",
+    "latitude": 53.1662,
+    "longitude": -0.5238,
+    "timezone": "Europe/London"
+  },
+  {
+    "code": "KNF",
+    "name": "RAF Marham",
+    "city": "Marham",
+    "country": "United Kingdom",
+    "region": "Europe",
+    "latitude": 52.6484,
+    "longitude": 0.5507,
+    "timezone": "Europe/London"
+  },
+  {
+    "code": "MST",
+    "name": "Maastricht Aachen Airport",
+    "city": "Maastricht",
+    "country": "Netherlands",
+    "region": "Europe",
+    "latitude": 50.9117,
+    "longitude": 5.7701,
+    "timezone": "Europe/Amsterdam"
+  },
+  {
+    "code": "EIN",
+    "name": "Eindhoven Airport",
+    "city": "Eindhoven",
+    "country": "Netherlands",
+    "region": "Europe",
+    "latitude": 51.4501,
+    "longitude": 5.3745,
+    "timezone": "Europe/Amsterdam"
+  },
+  {
+    "code": "GRQ",
+    "name": "Eelde Airport",
+    "city": "Groningen",
+    "country": "Netherlands",
+    "region": "Europe",
+    "latitude": 53.1197,
+    "longitude": 6.5794,
+    "timezone": "Europe/Amsterdam"
+  },
+  {
+    "code": "GLZ",
+    "name": "Gilze Rijen Air Base",
+    "city": "Gilze-rijen",
+    "country": "Netherlands",
+    "region": "Europe",
+    "latitude": 51.5674,
+    "longitude": 4.9318,
+    "timezone": "Europe/Amsterdam"
+  },
+  {
+    "code": "DHR",
+    "name": "De Kooy Airport",
+    "city": "De Kooy",
+    "country": "Netherlands",
+    "region": "Europe",
+    "latitude": 52.9234,
+    "longitude": 4.7806,
+    "timezone": "Europe/Amsterdam"
+  },
+  {
+    "code": "LEY",
+    "name": "Lelystad Airport",
+    "city": "Lelystad",
+    "country": "Netherlands",
+    "region": "Europe",
+    "latitude": 52.4603,
+    "longitude": 5.5272,
+    "timezone": "Europe/Amsterdam"
+  },
+  {
+    "code": "LWR",
+    "name": "Leeuwarden Air Base",
+    "city": "Leeuwarden",
+    "country": "Netherlands",
+    "region": "Europe",
+    "latitude": 53.2286,
+    "longitude": 5.7606,
+    "timezone": "Europe/Amsterdam"
+  },
+  {
+    "code": "RTM",
+    "name": "Rotterdam The Hague Airport",
+    "city": "Rotterdam",
+    "country": "Netherlands",
+    "region": "Europe",
+    "latitude": 51.9569,
+    "longitude": 4.4372,
+    "timezone": "Europe/Amsterdam"
+  },
+  {
+    "code": "UTC",
+    "name": "Soesterberg Air Base",
+    "city": "Soesterberg",
+    "country": "Netherlands",
+    "region": "Europe",
+    "latitude": 52.1273,
+    "longitude": 5.2762,
+    "timezone": "Europe/Amsterdam"
+  },
+  {
+    "code": "ENS",
+    "name": "Twente Airport",
+    "city": "Enschede",
+    "country": "Netherlands",
+    "region": "Europe",
+    "latitude": 52.2758,
+    "longitude": 6.8892,
+    "timezone": "Europe/Amsterdam"
+  },
+  {
+    "code": "LID",
+    "name": "Valkenburg Naval Air Base",
+    "city": "Valkenburg",
+    "country": "Netherlands",
+    "region": "Europe",
+    "latitude": 52.1661,
+    "longitude": 4.4179,
+    "timezone": "Europe/Amsterdam"
+  },
+  {
+    "code": "WOE",
+    "name": "Woensdrecht Air Base",
+    "city": "Woensdrecht",
+    "country": "Netherlands",
+    "region": "Europe",
+    "latitude": 51.4491,
+    "longitude": 4.342,
+    "timezone": "Europe/Amsterdam"
+  },
+  {
+    "code": "ORK",
+    "name": "Cork Airport",
+    "city": "Cork",
+    "country": "Ireland",
+    "region": "Europe",
+    "latitude": 51.8413,
+    "longitude": -8.4911,
+    "timezone": "Europe/Dublin"
+  },
+  {
+    "code": "GWY",
+    "name": "Galway Airport",
+    "city": "Galway",
+    "country": "Ireland",
+    "region": "Europe",
+    "latitude": 53.3002,
+    "longitude": -8.9416,
+    "timezone": "Europe/Dublin"
+  },
+  {
+    "code": "NOC",
+    "name": "Ireland West Knock Airport",
+    "city": "Connaught",
+    "country": "Ireland",
+    "region": "Europe",
+    "latitude": 53.9103,
+    "longitude": -8.8185,
+    "timezone": "Europe/Dublin"
+  },
+  {
+    "code": "KIR",
+    "name": "Kerry Airport",
+    "city": "Kerry",
+    "country": "Ireland",
+    "region": "Europe",
+    "latitude": 52.1809,
+    "longitude": -9.5238,
+    "timezone": "Europe/Dublin"
+  },
+  {
+    "code": "SNN",
+    "name": "Shannon Airport",
+    "city": "Shannon",
+    "country": "Ireland",
+    "region": "Europe",
+    "latitude": 52.702,
+    "longitude": -8.9248,
+    "timezone": "Europe/Dublin"
+  },
+  {
+    "code": "SXL",
+    "name": "Sligo Airport",
+    "city": "Sligo",
+    "country": "Ireland",
+    "region": "Europe",
+    "latitude": 54.2802,
+    "longitude": -8.5992,
+    "timezone": "Europe/Dublin"
+  },
+  {
+    "code": "WAT",
+    "name": "Waterford Airport",
+    "city": "Waterford",
+    "country": "Ireland",
+    "region": "Europe",
+    "latitude": 52.1872,
+    "longitude": -7.087,
+    "timezone": "Europe/Dublin"
+  },
+  {
+    "code": "AAR",
+    "name": "Aarhus Airport",
+    "city": "Aarhus",
+    "country": "Denmark",
+    "region": "Europe",
+    "latitude": 56.3,
+    "longitude": 10.619,
+    "timezone": "Europe/Copenhagen"
+  },
+  {
+    "code": "BLL",
+    "name": "Billund Airport",
+    "city": "Billund",
+    "country": "Denmark",
+    "region": "Europe",
+    "latitude": 55.7403,
+    "longitude": 9.1518,
+    "timezone": "Europe/Copenhagen"
+  },
+  {
+    "code": "EBJ",
+    "name": "Esbjerg Airport",
+    "city": "Esbjerg",
+    "country": "Denmark",
+    "region": "Europe",
+    "latitude": 55.5259,
+    "longitude": 8.5534,
+    "timezone": "Europe/Copenhagen"
+  },
+  {
+    "code": "KRP",
+    "name": "Karup Airport",
+    "city": "Karup",
+    "country": "Denmark",
+    "region": "Europe",
+    "latitude": 56.2975,
+    "longitude": 9.1246,
+    "timezone": "Europe/Copenhagen"
+  },
+  {
+    "code": "BYR",
+    "name": "Læsø Airport",
+    "city": "Laeso",
+    "country": "Denmark",
+    "region": "Europe",
+    "latitude": 57.2772,
+    "longitude": 11.0001,
+    "timezone": "Europe/Copenhagen"
+  },
+  {
+    "code": "MRW",
+    "name": "Lolland Falster Maribo Airport",
+    "city": "Maribo",
+    "country": "Denmark",
+    "region": "Europe",
+    "latitude": 54.6993,
+    "longitude": 11.4401,
+    "timezone": "Europe/Copenhagen"
+  },
+  {
+    "code": "ODE",
+    "name": "Odense Airport",
+    "city": "Odense",
+    "country": "Denmark",
+    "region": "Europe",
+    "latitude": 55.4767,
+    "longitude": 10.3309,
+    "timezone": "Europe/Copenhagen"
+  },
+  {
+    "code": "RKE",
+    "name": "Copenhagen Roskilde Airport",
+    "city": "Copenhagen",
+    "country": "Denmark",
+    "region": "Europe",
+    "latitude": 55.5856,
+    "longitude": 12.1314,
+    "timezone": "Europe/Copenhagen"
+  },
+  {
+    "code": "RNN",
+    "name": "Bornholm Airport",
+    "city": "Ronne",
+    "country": "Denmark",
+    "region": "Europe",
+    "latitude": 55.0633,
+    "longitude": 14.7596,
+    "timezone": "Europe/Copenhagen"
+  },
+  {
+    "code": "SGD",
+    "name": "Sønderborg Airport",
+    "city": "Soenderborg",
+    "country": "Denmark",
+    "region": "Europe",
+    "latitude": 54.9644,
+    "longitude": 9.7917,
+    "timezone": "Europe/Copenhagen"
+  },
+  {
+    "code": "SKS",
+    "name": "Skrydstrup Air Base",
+    "city": "Skrydstrup",
+    "country": "Denmark",
+    "region": "Europe",
+    "latitude": 55.221,
+    "longitude": 9.267,
+    "timezone": "Europe/Copenhagen"
+  },
+  {
+    "code": "SQW",
+    "name": "Skive Airport",
+    "city": "Skive",
+    "country": "Denmark",
+    "region": "Europe",
+    "latitude": 56.5502,
+    "longitude": 9.173,
+    "timezone": "Europe/Copenhagen"
+  },
+  {
+    "code": "TED",
+    "name": "Thisted Airport",
+    "city": "Thisted",
+    "country": "Denmark",
+    "region": "Europe",
+    "latitude": 57.0688,
+    "longitude": 8.7052,
+    "timezone": "Europe/Copenhagen"
+  },
+  {
+    "code": "STA",
+    "name": "Stauning Airport",
+    "city": "Stauning",
+    "country": "Denmark",
+    "region": "Europe",
+    "latitude": 55.9901,
+    "longitude": 8.3539,
+    "timezone": "Europe/Copenhagen"
+  },
+  {
+    "code": "AAL",
+    "name": "Aalborg Airport",
+    "city": "Aalborg",
+    "country": "Denmark",
+    "region": "Europe",
+    "latitude": 57.0928,
+    "longitude": 9.8492,
+    "timezone": "Europe/Copenhagen"
+  },
+  {
+    "code": "LUX",
+    "name": "Luxembourg-Findel International Airport",
+    "city": "Luxemburg",
+    "country": "Luxembourg",
+    "region": "Europe",
+    "latitude": 49.6233,
+    "longitude": 6.2044,
+    "timezone": "Europe/Luxembourg"
+  },
+  {
+    "code": "AES",
+    "name": "Ålesund Airport",
+    "city": "Alesund",
+    "country": "Norway",
+    "region": "Europe",
+    "latitude": 62.5625,
+    "longitude": 6.1197,
+    "timezone": "Europe/Oslo"
+  },
+  {
+    "code": "ANX",
+    "name": "Andøya Airport",
+    "city": "Andoya",
+    "country": "Norway",
+    "region": "Europe",
+    "latitude": 69.2925,
+    "longitude": 16.1442,
+    "timezone": "Europe/Oslo"
+  },
+  {
+    "code": "ALF",
+    "name": "Alta Airport",
+    "city": "Alta",
+    "country": "Norway",
+    "region": "Europe",
+    "latitude": 69.9761,
+    "longitude": 23.3717,
+    "timezone": "Europe/Oslo"
+  },
+  {
+    "code": "BNN",
+    "name": "Brønnøysund Airport",
+    "city": "Bronnoysund",
+    "country": "Norway",
+    "region": "Europe",
+    "latitude": 65.4611,
+    "longitude": 12.2175,
+    "timezone": "Europe/Oslo"
+  },
+  {
+    "code": "BOO",
+    "name": "Bodø Airport",
+    "city": "Bodo",
+    "country": "Norway",
+    "region": "Europe",
+    "latitude": 67.2692,
+    "longitude": 14.3653,
+    "timezone": "Europe/Oslo"
+  },
+  {
+    "code": "BGO",
+    "name": "Bergen Airport Flesland",
+    "city": "Bergen",
+    "country": "Norway",
+    "region": "Europe",
+    "latitude": 60.2934,
+    "longitude": 5.2181,
+    "timezone": "Europe/Oslo"
+  },
+  {
+    "code": "BJF",
+    "name": "Båtsfjord Airport",
+    "city": "Batsfjord",
+    "country": "Norway",
+    "region": "Europe",
+    "latitude": 70.6005,
+    "longitude": 29.6914,
+    "timezone": "Europe/Oslo"
+  },
+  {
+    "code": "KRS",
+    "name": "Kristiansand Airport",
+    "city": "Kristiansand",
+    "country": "Norway",
+    "region": "Europe",
+    "latitude": 58.2042,
+    "longitude": 8.0854,
+    "timezone": "Europe/Oslo"
+  },
+  {
+    "code": "DLD",
+    "name": "Geilo Airport Dagali",
+    "city": "Geilo",
+    "country": "Norway",
+    "region": "Europe",
+    "latitude": 60.4173,
+    "longitude": 8.5183,
+    "timezone": "Europe/Oslo"
+  },
+  {
+    "code": "BDU",
+    "name": "Bardufoss Airport",
+    "city": "Bardufoss",
+    "country": "Norway",
+    "region": "Europe",
+    "latitude": 69.0558,
+    "longitude": 18.5404,
+    "timezone": "Europe/Oslo"
+  },
+  {
+    "code": "VDB",
+    "name": "Leirin Airport",
+    "city": "Fagernes",
+    "country": "Norway",
+    "region": "Europe",
+    "latitude": 61.0156,
+    "longitude": 9.2881,
+    "timezone": "Europe/Oslo"
+  },
+  {
+    "code": "FRO",
+    "name": "Florø Airport",
+    "city": "Floro",
+    "country": "Norway",
+    "region": "Europe",
+    "latitude": 61.5836,
+    "longitude": 5.0247,
+    "timezone": "Europe/Oslo"
+  },
+  {
+    "code": "HAU",
+    "name": "Haugesund Airport",
+    "city": "Haugesund",
+    "country": "Norway",
+    "region": "Europe",
+    "latitude": 59.3453,
+    "longitude": 5.2084,
+    "timezone": "Europe/Oslo"
+  },
+  {
+    "code": "HAA",
+    "name": "Hasvik Airport",
+    "city": "Hasvik",
+    "country": "Norway",
+    "region": "Europe",
+    "latitude": 70.4867,
+    "longitude": 22.1397,
+    "timezone": "Europe/Oslo"
+  },
+  {
+    "code": "KSU",
+    "name": "Kristiansund Airport (Kvernberget)",
+    "city": "Kristiansund",
+    "country": "Norway",
+    "region": "Europe",
+    "latitude": 63.1118,
+    "longitude": 7.8245,
+    "timezone": "Europe/Oslo"
+  },
+  {
+    "code": "KKN",
+    "name": "Kirkenes Airport (Høybuktmoen)",
+    "city": "Kirkenes",
+    "country": "Norway",
+    "region": "Europe",
+    "latitude": 69.7258,
+    "longitude": 29.8913,
+    "timezone": "Europe/Oslo"
+  },
+  {
+    "code": "FAN",
+    "name": "Lista Airport",
+    "city": "Farsund",
+    "country": "Norway",
+    "region": "Europe",
+    "latitude": 58.0995,
+    "longitude": 6.626,
+    "timezone": "Europe/Oslo"
+  },
+  {
+    "code": "MOL",
+    "name": "Molde Airport",
+    "city": "Molde",
+    "country": "Norway",
+    "region": "Europe",
+    "latitude": 62.7447,
+    "longitude": 7.2625,
+    "timezone": "Europe/Oslo"
+  },
+  {
+    "code": "MJF",
+    "name": "Mosjøen Airport (Kjærstad)",
+    "city": "Mosjoen",
+    "country": "Norway",
+    "region": "Europe",
+    "latitude": 65.784,
+    "longitude": 13.2149,
+    "timezone": "Europe/Oslo"
+  },
+  {
+    "code": "LKL",
+    "name": "Banak Airport",
+    "city": "Lakselv",
+    "country": "Norway",
+    "region": "Europe",
+    "latitude": 70.0688,
+    "longitude": 24.9735,
+    "timezone": "Europe/Oslo"
+  },
+  {
+    "code": "NTB",
+    "name": "Notodden Airport",
+    "city": "Notodden",
+    "country": "Norway",
+    "region": "Europe",
+    "latitude": 59.5657,
+    "longitude": 9.2122,
+    "timezone": "Europe/Oslo"
+  },
+  {
+    "code": "OLA",
+    "name": "Ørland Airport",
+    "city": "Orland",
+    "country": "Norway",
+    "region": "Europe",
+    "latitude": 63.6989,
+    "longitude": 9.604,
+    "timezone": "Europe/Oslo"
+  },
+  {
+    "code": "RRS",
+    "name": "Røros Airport",
+    "city": "Roros",
+    "country": "Norway",
+    "region": "Europe",
+    "latitude": 62.5784,
+    "longitude": 11.3423,
+    "timezone": "Europe/Oslo"
+  },
+  {
+    "code": "SKE",
+    "name": "Skien Airport",
+    "city": "Skien",
+    "country": "Norway",
+    "region": "Europe",
+    "latitude": 59.185,
+    "longitude": 9.5669,
+    "timezone": "Europe/Oslo"
+  },
+  {
+    "code": "SRP",
+    "name": "Stord Airport",
+    "city": "Stord",
+    "country": "Norway",
+    "region": "Europe",
+    "latitude": 59.7919,
+    "longitude": 5.3408,
+    "timezone": "Europe/Oslo"
+  },
+  {
+    "code": "SSJ",
+    "name": "Sandnessjøen Airport (Stokka)",
+    "city": "Sandnessjoen",
+    "country": "Norway",
+    "region": "Europe",
+    "latitude": 65.9568,
+    "longitude": 12.4689,
+    "timezone": "Europe/Oslo"
+  },
+  {
+    "code": "TRD",
+    "name": "Trondheim Airport Værnes",
+    "city": "Trondheim",
+    "country": "Norway",
+    "region": "Europe",
+    "latitude": 63.4578,
+    "longitude": 10.924,
+    "timezone": "Europe/Oslo"
+  },
+  {
+    "code": "SVG",
+    "name": "Stavanger Airport Sola",
+    "city": "Stavanger",
+    "country": "Norway",
+    "region": "Europe",
+    "latitude": 58.8767,
+    "longitude": 5.6378,
+    "timezone": "Europe/Oslo"
+  },
+  {
+    "code": "GDN",
+    "name": "Gdańsk Lech Wałęsa Airport",
+    "city": "Gdansk",
+    "country": "Poland",
+    "region": "Europe",
+    "latitude": 54.3776,
+    "longitude": 18.4662,
+    "timezone": "Europe/Warsaw"
+  },
+  {
+    "code": "KRK",
+    "name": "Kraków John Paul II International Airport",
+    "city": "Krakow",
+    "country": "Poland",
+    "region": "Europe",
+    "latitude": 50.0777,
+    "longitude": 19.7848,
+    "timezone": "Europe/Warsaw"
+  },
+  {
+    "code": "KTW",
+    "name": "Katowice International Airport",
+    "city": "Katowice",
+    "country": "Poland",
+    "region": "Europe",
+    "latitude": 50.4743,
+    "longitude": 19.08,
+    "timezone": "Europe/Warsaw"
+  },
+  {
+    "code": "POZ",
+    "name": "Poznań-Ławica Airport",
+    "city": "Poznan",
+    "country": "Poland",
+    "region": "Europe",
+    "latitude": 52.421,
+    "longitude": 16.8263,
+    "timezone": "Europe/Warsaw"
+  },
+  {
+    "code": "RZE",
+    "name": "Rzeszów-Jasionka Airport",
+    "city": "Rzeszow",
+    "country": "Poland",
+    "region": "Europe",
+    "latitude": 50.11,
+    "longitude": 22.019,
+    "timezone": "Europe/Warsaw"
+  },
+  {
+    "code": "SZZ",
+    "name": "Szczecin-Goleniów Solidarność Airport",
+    "city": "Szczecin",
+    "country": "Poland",
+    "region": "Europe",
+    "latitude": 53.5847,
+    "longitude": 14.9022,
+    "timezone": "Europe/Warsaw"
+  },
+  {
+    "code": "OSP",
+    "name": "Redzikowo Air Base",
+    "city": "Slupsk",
+    "country": "Poland",
+    "region": "Europe",
+    "latitude": 54.4789,
+    "longitude": 17.1075,
+    "timezone": "Europe/Warsaw"
+  },
+  {
+    "code": "WRO",
+    "name": "Copernicus Wrocław Airport",
+    "city": "Wroclaw",
+    "country": "Poland",
+    "region": "Europe",
+    "latitude": 51.1027,
+    "longitude": 16.8858,
+    "timezone": "Europe/Warsaw"
+  },
+  {
+    "code": "IEG",
+    "name": "Zielona Góra-Babimost Airport",
+    "city": "Zielona Gora",
+    "country": "Poland",
+    "region": "Europe",
+    "latitude": 52.1385,
+    "longitude": 15.7986,
+    "timezone": "Europe/Warsaw"
+  },
+  {
+    "code": "RNB",
+    "name": "Ronneby Airport",
+    "city": "Ronneby",
+    "country": "Sweden",
+    "region": "Europe",
+    "latitude": 56.2667,
+    "longitude": 15.265,
+    "timezone": "Europe/Stockholm"
+  },
+  {
+    "code": "GOT",
+    "name": "Gothenburg-Landvetter Airport",
+    "city": "Gothenborg",
+    "country": "Sweden",
+    "region": "Europe",
+    "latitude": 57.6628,
+    "longitude": 12.2798,
+    "timezone": "Europe/Stockholm"
+  },
+  {
+    "code": "JKG",
+    "name": "Jönköping Airport",
+    "city": "Joenkoeping",
+    "country": "Sweden",
+    "region": "Europe",
+    "latitude": 57.7576,
+    "longitude": 14.0687,
+    "timezone": "Europe/Stockholm"
+  },
+  {
+    "code": "LDK",
+    "name": "Lidköping-Hovby Airport",
+    "city": "Lidkoping",
+    "country": "Sweden",
+    "region": "Europe",
+    "latitude": 58.4655,
+    "longitude": 13.1744,
+    "timezone": "Europe/Stockholm"
+  },
+  {
+    "code": "GSE",
+    "name": "Gothenburg City Airport",
+    "city": "Gothenborg",
+    "country": "Sweden",
+    "region": "Europe",
+    "latitude": 57.7747,
+    "longitude": 11.8704,
+    "timezone": "Europe/Stockholm"
+  },
+  {
+    "code": "KVB",
+    "name": "Skövde Airport",
+    "city": "Skovde",
+    "country": "Sweden",
+    "region": "Europe",
+    "latitude": 58.4564,
+    "longitude": 13.9727,
+    "timezone": "Europe/Stockholm"
+  },
+  {
+    "code": "THN",
+    "name": "Trollhättan-Vänersborg Airport",
+    "city": "Trollhattan",
+    "country": "Sweden",
+    "region": "Europe",
+    "latitude": 58.3181,
+    "longitude": 12.345,
+    "timezone": "Europe/Stockholm"
+  },
+  {
+    "code": "KSK",
+    "name": "Karlskoga Airport",
+    "city": "Karlskoga",
+    "country": "Sweden",
+    "region": "Europe",
+    "latitude": 59.3459,
+    "longitude": 14.4959,
+    "timezone": "Europe/Stockholm"
+  },
+  {
+    "code": "MXX",
+    "name": "Mora Airport",
+    "city": "Mora",
+    "country": "Sweden",
+    "region": "Europe",
+    "latitude": 60.9579,
+    "longitude": 14.5114,
+    "timezone": "Europe/Stockholm"
+  },
+  {
+    "code": "NYO",
+    "name": "Stockholm Skavsta Airport",
+    "city": "Stockholm",
+    "country": "Sweden",
+    "region": "Europe",
+    "latitude": 58.7886,
+    "longitude": 16.9122,
+    "timezone": "Europe/Stockholm"
+  },
+  {
+    "code": "KID",
+    "name": "Kristianstad Airport",
+    "city": "Kristianstad",
+    "country": "Sweden",
+    "region": "Europe",
+    "latitude": 55.9217,
+    "longitude": 14.0855,
+    "timezone": "Europe/Stockholm"
+  },
+  {
+    "code": "OSK",
+    "name": "Oskarshamn Airport",
+    "city": "Oskarshamn",
+    "country": "Sweden",
+    "region": "Europe",
+    "latitude": 57.3505,
+    "longitude": 16.498,
+    "timezone": "Europe/Stockholm"
+  },
+  {
+    "code": "KLR",
+    "name": "Kalmar Airport",
+    "city": "Kalkmar",
+    "country": "Sweden",
+    "region": "Europe",
+    "latitude": 56.6855,
+    "longitude": 16.2876,
+    "timezone": "Europe/Stockholm"
+  },
+  {
+    "code": "MMX",
+    "name": "Malmö Sturup Airport",
+    "city": "Malmoe",
+    "country": "Sweden",
+    "region": "Europe",
+    "latitude": 55.5363,
+    "longitude": 13.3762,
+    "timezone": "Europe/Stockholm"
+  },
+  {
+    "code": "HAD",
+    "name": "Halmstad Airport",
+    "city": "Halmstad",
+    "country": "Sweden",
+    "region": "Europe",
+    "latitude": 56.6911,
+    "longitude": 12.8202,
+    "timezone": "Europe/Stockholm"
+  },
+  {
+    "code": "VXO",
+    "name": "Växjö Kronoberg Airport",
+    "city": "Vaxjo",
+    "country": "Sweden",
+    "region": "Europe",
+    "latitude": 56.9291,
+    "longitude": 14.728,
+    "timezone": "Europe/Stockholm"
+  },
+  {
+    "code": "EVG",
+    "name": "Sveg Airport",
+    "city": "Sveg",
+    "country": "Sweden",
+    "region": "Europe",
+    "latitude": 62.0478,
+    "longitude": 14.4229,
+    "timezone": "Europe/Stockholm"
+  },
+  {
+    "code": "GEV",
+    "name": "Gällivare Airport",
+    "city": "Gallivare",
+    "country": "Sweden",
+    "region": "Europe",
+    "latitude": 67.1324,
+    "longitude": 20.8146,
+    "timezone": "Europe/Stockholm"
+  },
+  {
+    "code": "HUV",
+    "name": "Hudiksvall Airport",
+    "city": "Hudiksvall",
+    "country": "Sweden",
+    "region": "Europe",
+    "latitude": 61.7681,
+    "longitude": 17.0807,
+    "timezone": "Europe/Stockholm"
+  },
+  {
+    "code": "KRF",
+    "name": "Kramfors Sollefteå Airport",
+    "city": "Kramfors",
+    "country": "Sweden",
+    "region": "Europe",
+    "latitude": 63.0486,
+    "longitude": 17.7689,
+    "timezone": "Europe/Stockholm"
+  },
+  {
+    "code": "LYC",
+    "name": "Lycksele Airport",
+    "city": "Lycksele",
+    "country": "Sweden",
+    "region": "Europe",
+    "latitude": 64.5483,
+    "longitude": 18.7162,
+    "timezone": "Europe/Stockholm"
+  },
+  {
+    "code": "SDL",
+    "name": "Sundsvall-Härnösand Airport",
+    "city": "Sundsvall",
+    "country": "Sweden",
+    "region": "Europe",
+    "latitude": 62.5281,
+    "longitude": 17.4439,
+    "timezone": "Europe/Stockholm"
+  },
+  {
+    "code": "OER",
+    "name": "Örnsköldsvik Airport",
+    "city": "Ornskoldsvik",
+    "country": "Sweden",
+    "region": "Europe",
+    "latitude": 63.4083,
+    "longitude": 18.99,
+    "timezone": "Europe/Stockholm"
+  },
+  {
+    "code": "KRN",
+    "name": "Kiruna Airport",
+    "city": "Kiruna",
+    "country": "Sweden",
+    "region": "Europe",
+    "latitude": 67.822,
+    "longitude": 20.3368,
+    "timezone": "Europe/Stockholm"
+  },
+  {
+    "code": "SFT",
+    "name": "Skellefteå Airport",
+    "city": "Skelleftea",
+    "country": "Sweden",
+    "region": "Europe",
+    "latitude": 64.6248,
+    "longitude": 21.0769,
+    "timezone": "Europe/Stockholm"
+  },
+  {
+    "code": "UME",
+    "name": "Umeå Airport",
+    "city": "Umea",
+    "country": "Sweden",
+    "region": "Europe",
+    "latitude": 63.7918,
+    "longitude": 20.2828,
+    "timezone": "Europe/Stockholm"
+  },
+  {
+    "code": "VHM",
+    "name": "Vilhelmina Airport",
+    "city": "Vilhelmina",
+    "country": "Sweden",
+    "region": "Europe",
+    "latitude": 64.5791,
+    "longitude": 16.8336,
+    "timezone": "Europe/Stockholm"
+  },
+  {
+    "code": "AJR",
+    "name": "Arvidsjaur Airport",
+    "city": "Arvidsjaur",
+    "country": "Sweden",
+    "region": "Europe",
+    "latitude": 65.5903,
+    "longitude": 19.2819,
+    "timezone": "Europe/Stockholm"
+  },
+  {
+    "code": "ORB",
+    "name": "Örebro Airport",
+    "city": "Orebro",
+    "country": "Sweden",
+    "region": "Europe",
+    "latitude": 59.2237,
+    "longitude": 15.038,
+    "timezone": "Europe/Stockholm"
+  },
+  {
+    "code": "VST",
+    "name": "Stockholm Västerås Airport",
+    "city": "Vasteras",
+    "country": "Sweden",
+    "region": "Europe",
+    "latitude": 59.5894,
+    "longitude": 16.6336,
+    "timezone": "Europe/Stockholm"
+  },
+  {
+    "code": "LLA",
+    "name": "Luleå Airport",
+    "city": "Lulea",
+    "country": "Sweden",
+    "region": "Europe",
+    "latitude": 65.5438,
+    "longitude": 22.122,
+    "timezone": "Europe/Stockholm"
+  },
+  {
+    "code": "BMA",
+    "name": "Stockholm-Bromma Airport",
+    "city": "Stockholm",
+    "country": "Sweden",
+    "region": "Europe",
+    "latitude": 59.3544,
+    "longitude": 17.9417,
+    "timezone": "Europe/Stockholm"
+  },
+  {
+    "code": "BLE",
+    "name": "Borlange Airport",
+    "city": "Borlange",
+    "country": "Sweden",
+    "region": "Europe",
+    "latitude": 60.422,
+    "longitude": 15.5152,
+    "timezone": "Europe/Stockholm"
+  },
+  {
+    "code": "HLF",
+    "name": "Hultsfred Airport",
+    "city": "Hultsfred",
+    "country": "Sweden",
+    "region": "Europe",
+    "latitude": 57.5258,
+    "longitude": 15.8233,
+    "timezone": "Europe/Stockholm"
+  },
+  {
+    "code": "GVX",
+    "name": "Gävle Sandviken Airport",
+    "city": "Gavle",
+    "country": "Sweden",
+    "region": "Europe",
+    "latitude": 60.5933,
+    "longitude": 16.9514,
+    "timezone": "Europe/Stockholm"
+  },
+  {
+    "code": "LPI",
+    "name": "Linköping City Airport",
+    "city": "Linkoeping",
+    "country": "Sweden",
+    "region": "Europe",
+    "latitude": 58.4062,
+    "longitude": 15.6805,
+    "timezone": "Europe/Stockholm"
+  },
+  {
+    "code": "NRK",
+    "name": "Norrköping Airport",
+    "city": "Norrkoeping",
+    "country": "Sweden",
+    "region": "Europe",
+    "latitude": 58.5863,
+    "longitude": 16.2506,
+    "timezone": "Europe/Stockholm"
+  },
+  {
+    "code": "EKT",
+    "name": "Eskilstuna Airport",
+    "city": "Eskilstuna",
+    "country": "Sweden",
+    "region": "Europe",
+    "latitude": 59.3511,
+    "longitude": 16.7084,
+    "timezone": "Europe/Stockholm"
+  },
+  {
+    "code": "VBY",
+    "name": "Visby Airport",
+    "city": "Visby",
+    "country": "Sweden",
+    "region": "Europe",
+    "latitude": 57.6628,
+    "longitude": 18.3462,
+    "timezone": "Europe/Stockholm"
+  },
+  {
+    "code": "SPM",
+    "name": "Spangdahlem Air Base",
+    "city": "Spangdahlem",
+    "country": "Germany",
+    "region": "Europe",
+    "latitude": 49.9727,
+    "longitude": 6.6925,
+    "timezone": "Europe/Berlin"
+  },
+  {
+    "code": "RMS",
+    "name": "Ramstein Air Base",
+    "city": "Ramstein",
+    "country": "Germany",
+    "region": "Europe",
+    "latitude": 49.4369,
+    "longitude": 7.6003,
+    "timezone": "Europe/Berlin"
+  },
+  {
+    "code": "GHF",
+    "name": "[Duplicate] Giebelstadt Army Air Field",
+    "city": "Giebelstadt",
+    "country": "Germany",
+    "region": "Europe",
+    "latitude": 49.6481,
+    "longitude": 9.9665,
+    "timezone": "Europe/Berlin"
+  },
+  {
+    "code": "ZCN",
+    "name": "Celle Airport",
+    "city": "Celle",
+    "country": "Germany",
+    "region": "Europe",
+    "latitude": 52.5912,
+    "longitude": 10.0221,
+    "timezone": "Europe/Berlin"
+  },
+  {
+    "code": "FRZ",
+    "name": "Fritzlar Airport",
+    "city": "Fritzlar",
+    "country": "Germany",
+    "region": "Europe",
+    "latitude": 51.1146,
+    "longitude": 9.286,
+    "timezone": "Europe/Berlin"
+  },
+  {
+    "code": "ZNF",
+    "name": "Hanau Army Air Field",
+    "city": "Hanau",
+    "country": "Germany",
+    "region": "Europe",
+    "latitude": 50.1692,
+    "longitude": 8.9616,
+    "timezone": "Europe/Berlin"
+  },
+  {
+    "code": "KZG",
+    "name": "Flugplatz Kitzingen",
+    "city": "Kitzingen",
+    "country": "Germany",
+    "region": "Europe",
+    "latitude": 49.7431,
+    "longitude": 10.2006,
+    "timezone": "Europe/Berlin"
+  },
+  {
+    "code": "FCN",
+    "name": "Nordholz Naval Airbase",
+    "city": "Nordholz",
+    "country": "Germany",
+    "region": "Europe",
+    "latitude": 53.7677,
+    "longitude": 8.6585,
+    "timezone": "Europe/Berlin"
+  },
+  {
+    "code": "GKE",
+    "name": "Geilenkirchen Air Base",
+    "city": "Geilenkirchen",
+    "country": "Germany",
+    "region": "Europe",
+    "latitude": 50.9608,
+    "longitude": 6.0424,
+    "timezone": "Europe/Berlin"
+  },
+  {
+    "code": "RLG",
+    "name": "Rostock-Laage Airport",
+    "city": "Laage",
+    "country": "Germany",
+    "region": "Europe",
+    "latitude": 53.9182,
+    "longitude": 12.2783,
+    "timezone": "Europe/Berlin"
+  },
+  {
+    "code": "WBG",
+    "name": "Schleswig Air Base",
+    "city": "Schleswig",
+    "country": "Germany",
+    "region": "Europe",
+    "latitude": 54.4593,
+    "longitude": 9.5163,
+    "timezone": "Europe/Berlin"
+  },
+  {
+    "code": "WIE",
+    "name": "Wiesbaden Army Airfield",
+    "city": "Wiesbaden",
+    "country": "Germany",
+    "region": "Europe",
+    "latitude": 50.0498,
+    "longitude": 8.3254,
+    "timezone": "Europe/Berlin"
+  },
+  {
+    "code": "FEL",
+    "name": "Fürstenfeldbruck Air Base",
+    "city": "Fuerstenfeldbruck",
+    "country": "Germany",
+    "region": "Europe",
+    "latitude": 48.2056,
+    "longitude": 11.2669,
+    "timezone": "Europe/Berlin"
+  },
+  {
+    "code": "IGS",
+    "name": "Ingolstadt Manching Airport",
+    "city": "Ingolstadt",
+    "country": "Germany",
+    "region": "Europe",
+    "latitude": 48.7157,
+    "longitude": 11.534,
+    "timezone": "Europe/Berlin"
+  },
+  {
+    "code": "GUT",
+    "name": "Gütersloh Air Base",
+    "city": "Guetersloh",
+    "country": "Germany",
+    "region": "Europe",
+    "latitude": 51.9228,
+    "longitude": 8.3063,
+    "timezone": "Europe/Berlin"
+  },
+  {
+    "code": "FUE",
+    "name": "Fuerteventura Airport",
+    "city": "Fuerteventura",
+    "country": "Spain",
+    "region": "Europe",
+    "latitude": 28.4527,
+    "longitude": -13.8638,
+    "timezone": "Atlantic/Canary"
+  },
+  {
+    "code": "VDE",
+    "name": "Hierro Airport",
+    "city": "Hierro",
+    "country": "Spain",
+    "region": "Europe",
+    "latitude": 27.8148,
+    "longitude": -17.8871,
+    "timezone": "Atlantic/Canary"
+  },
+  {
+    "code": "SPC",
+    "name": "La Palma Airport",
+    "city": "Santa Cruz De La Palma",
+    "country": "Spain",
+    "region": "Europe",
+    "latitude": 28.6265,
+    "longitude": -17.7556,
+    "timezone": "Atlantic/Canary"
+  },
+  {
+    "code": "LPA",
+    "name": "Gran Canaria Airport",
+    "city": "Gran Canaria",
+    "country": "Spain",
+    "region": "Europe",
+    "latitude": 27.9319,
+    "longitude": -15.3866,
+    "timezone": "Atlantic/Canary"
+  },
+  {
+    "code": "ACE",
+    "name": "Lanzarote Airport",
+    "city": "Arrecife",
+    "country": "Spain",
+    "region": "Europe",
+    "latitude": 28.9455,
+    "longitude": -13.6052,
+    "timezone": "Atlantic/Canary"
+  },
+  {
+    "code": "TFS",
+    "name": "Tenerife South Airport",
+    "city": "Tenerife",
+    "country": "Spain",
+    "region": "Europe",
+    "latitude": 28.0445,
+    "longitude": -16.5725,
+    "timezone": "Atlantic/Canary"
+  },
+  {
+    "code": "TFN",
+    "name": "Tenerife Norte Airport",
+    "city": "Tenerife",
+    "country": "Spain",
+    "region": "Europe",
+    "latitude": 28.4827,
+    "longitude": -16.3415,
+    "timezone": "Atlantic/Canary"
+  },
+  {
+    "code": "MLN",
+    "name": "Melilla Airport",
+    "city": "Melilla",
+    "country": "Spain",
+    "region": "Europe",
+    "latitude": 35.2798,
+    "longitude": -2.9563,
+    "timezone": "Europe/Madrid"
+  },
+  {
+    "code": "BOJ",
+    "name": "Burgas Airport",
+    "city": "Bourgas",
+    "country": "Bulgaria",
+    "region": "Europe",
+    "latitude": 42.5696,
+    "longitude": 27.5152,
+    "timezone": "Europe/Sofia"
+  },
+  {
+    "code": "GOZ",
+    "name": "Gorna Oryahovitsa Airport",
+    "city": "Gorna Orechovica",
+    "country": "Bulgaria",
+    "region": "Europe",
+    "latitude": 43.1514,
+    "longitude": 25.7129,
+    "timezone": "Europe/Sofia"
+  },
+  {
+    "code": "PDV",
+    "name": "Plovdiv International Airport",
+    "city": "Plovdiv",
+    "country": "Bulgaria",
+    "region": "Europe",
+    "latitude": 42.0678,
+    "longitude": 24.8508,
+    "timezone": "Europe/Sofia"
+  },
+  {
+    "code": "SOF",
+    "name": "Sofia Airport",
+    "city": "Sofia",
+    "country": "Bulgaria",
+    "region": "Europe",
+    "latitude": 42.6967,
+    "longitude": 23.4114,
+    "timezone": "Europe/Sofia"
+  },
+  {
+    "code": "SZR",
+    "name": "Stara Zagora Airport",
+    "city": "Stara Zagora",
+    "country": "Bulgaria",
+    "region": "Europe",
+    "latitude": 42.3767,
+    "longitude": 25.655,
+    "timezone": "Europe/Sofia"
+  },
+  {
+    "code": "VAR",
+    "name": "Varna Airport",
+    "city": "Varna",
+    "country": "Bulgaria",
+    "region": "Europe",
+    "latitude": 43.2321,
+    "longitude": 27.8251,
+    "timezone": "Europe/Sofia"
+  },
+  {
+    "code": "LCA",
+    "name": "Larnaca International Airport",
+    "city": "Larnaca",
+    "country": "Cyprus",
+    "region": "Europe",
+    "latitude": 34.8751,
+    "longitude": 33.6249,
+    "timezone": "Asia/Nicosia"
+  },
+  {
+    "code": "PFO",
+    "name": "Paphos International Airport",
+    "city": "Paphos",
+    "country": "Cyprus",
+    "region": "Europe",
+    "latitude": 34.718,
+    "longitude": 32.4857,
+    "timezone": "Asia/Nicosia"
+  },
+  {
+    "code": "AKT",
+    "name": "RAF Akrotiri",
+    "city": "Akrotiri",
+    "country": "Cyprus",
+    "region": "Europe",
+    "latitude": 34.5904,
+    "longitude": 32.9879,
+    "timezone": "Europe/London"
+  },
+  {
+    "code": "DBV",
+    "name": "Dubrovnik Airport",
+    "city": "Dubrovnik",
+    "country": "Croatia",
+    "region": "Europe",
+    "latitude": 42.5614,
+    "longitude": 18.2682,
+    "timezone": "Europe/Zagreb"
+  },
+  {
+    "code": "OSI",
+    "name": "Osijek Airport",
+    "city": "Osijek",
+    "country": "Croatia",
+    "region": "Europe",
+    "latitude": 45.4627,
+    "longitude": 18.8102,
+    "timezone": "Europe/Zagreb"
+  },
+  {
+    "code": "PUY",
+    "name": "Pula Airport",
+    "city": "Pula",
+    "country": "Croatia",
+    "region": "Europe",
+    "latitude": 44.8935,
+    "longitude": 13.9222,
+    "timezone": "Europe/Zagreb"
+  },
+  {
+    "code": "RJK",
+    "name": "Rijeka Airport",
+    "city": "Rijeka",
+    "country": "Croatia",
+    "region": "Europe",
+    "latitude": 45.2169,
+    "longitude": 14.5703,
+    "timezone": "Europe/Zagreb"
+  },
+  {
+    "code": "SPU",
+    "name": "Split Airport",
+    "city": "Split",
+    "country": "Croatia",
+    "region": "Europe",
+    "latitude": 43.5389,
+    "longitude": 16.298,
+    "timezone": "Europe/Zagreb"
+  },
+  {
+    "code": "ZAG",
+    "name": "Zagreb Airport",
+    "city": "Zagreb",
+    "country": "Croatia",
+    "region": "Europe",
+    "latitude": 45.7429,
+    "longitude": 16.0688,
+    "timezone": "Europe/Zagreb"
+  },
+  {
+    "code": "ZAD",
+    "name": "Zadar Airport",
+    "city": "Zadar",
+    "country": "Croatia",
+    "region": "Europe",
+    "latitude": 44.1083,
+    "longitude": 15.3467,
+    "timezone": "Europe/Zagreb"
+  },
+  {
+    "code": "ABC",
+    "name": "Albacete-Los Llanos Airport",
+    "city": "Albacete",
+    "country": "Spain",
+    "region": "Europe",
+    "latitude": 38.9485,
+    "longitude": -1.8635,
+    "timezone": "Europe/Madrid"
+  },
+  {
+    "code": "ALC",
+    "name": "Alicante International Airport",
+    "city": "Alicante",
+    "country": "Spain",
+    "region": "Europe",
+    "latitude": 38.2822,
+    "longitude": -0.5582,
+    "timezone": "Europe/Madrid"
+  },
+  {
+    "code": "LEI",
+    "name": "Almería International Airport",
+    "city": "Almeria",
+    "country": "Spain",
+    "region": "Europe",
+    "latitude": 36.8439,
+    "longitude": -2.3701,
+    "timezone": "Europe/Madrid"
+  },
+  {
+    "code": "OVD",
+    "name": "Asturias Airport",
+    "city": "Aviles",
+    "country": "Spain",
+    "region": "Europe",
+    "latitude": 43.5636,
+    "longitude": -6.0346,
+    "timezone": "Europe/Madrid"
+  },
+  {
+    "code": "ODB",
+    "name": "Córdoba Airport",
+    "city": "Cordoba",
+    "country": "Spain",
+    "region": "Europe",
+    "latitude": 37.842,
+    "longitude": -4.8489,
+    "timezone": "Europe/Madrid"
+  },
+  {
+    "code": "BIO",
+    "name": "Bilbao Airport",
+    "city": "Bilbao",
+    "country": "Spain",
+    "region": "Europe",
+    "latitude": 43.3011,
+    "longitude": -2.9106,
+    "timezone": "Europe/Madrid"
+  },
+  {
+    "code": "BJZ",
+    "name": "Badajoz Airport",
+    "city": "Badajoz",
+    "country": "Spain",
+    "region": "Europe",
+    "latitude": 38.8913,
+    "longitude": -6.8213,
+    "timezone": "Europe/Madrid"
+  },
+  {
+    "code": "LCG",
+    "name": "A Coruña Airport",
+    "city": "La Coruna",
+    "country": "Spain",
+    "region": "Europe",
+    "latitude": 43.3021,
+    "longitude": -8.3773,
+    "timezone": "Europe/Madrid"
+  },
+  {
+    "code": "GRO",
+    "name": "Girona Airport",
+    "city": "Gerona",
+    "country": "Spain",
+    "region": "Europe",
+    "latitude": 41.901,
+    "longitude": 2.7606,
+    "timezone": "Europe/Madrid"
+  },
+  {
+    "code": "GRX",
+    "name": "Federico Garcia Lorca Airport",
+    "city": "Granada",
+    "country": "Spain",
+    "region": "Europe",
+    "latitude": 37.1887,
+    "longitude": -3.7774,
+    "timezone": "Europe/Madrid"
+  },
+  {
+    "code": "IBZ",
+    "name": "Ibiza Airport",
+    "city": "Ibiza",
+    "country": "Spain",
+    "region": "Europe",
+    "latitude": 38.8729,
+    "longitude": 1.3731,
+    "timezone": "Europe/Madrid"
+  },
+  {
+    "code": "XRY",
+    "name": "Jerez Airport",
+    "city": "Jerez",
+    "country": "Spain",
+    "region": "Europe",
+    "latitude": 36.7446,
+    "longitude": -6.0601,
+    "timezone": "Europe/Madrid"
+  },
+  {
+    "code": "MJV",
+    "name": "San Javier Airport",
+    "city": "Murcia",
+    "country": "Spain",
+    "region": "Europe",
+    "latitude": 37.775,
+    "longitude": -0.8124,
+    "timezone": "Europe/Madrid"
+  },
+  {
+    "code": "AGP",
+    "name": "Málaga Airport",
+    "city": "Malaga",
+    "country": "Spain",
+    "region": "Europe",
+    "latitude": 36.6749,
+    "longitude": -4.4991,
+    "timezone": "Europe/Madrid"
+  },
+  {
+    "code": "MAH",
+    "name": "Menorca Airport",
+    "city": "Menorca",
+    "country": "Spain",
+    "region": "Europe",
+    "latitude": 39.8626,
+    "longitude": 4.2186,
+    "timezone": "Europe/Madrid"
+  },
+  {
+    "code": "OZP",
+    "name": "Moron Air Base",
+    "city": "Sevilla",
+    "country": "Spain",
+    "region": "Europe",
+    "latitude": 37.1749,
+    "longitude": -5.6159,
+    "timezone": "Europe/Madrid"
+  },
+  {
+    "code": "PNA",
+    "name": "Pamplona Airport",
+    "city": "Pamplona",
+    "country": "Spain",
+    "region": "Europe",
+    "latitude": 42.77,
+    "longitude": -1.6463,
+    "timezone": "Europe/Madrid"
+  },
+  {
+    "code": "REU",
+    "name": "Reus Air Base",
+    "city": "Reus",
+    "country": "Spain",
+    "region": "Europe",
+    "latitude": 41.1474,
+    "longitude": 1.1672,
+    "timezone": "Europe/Madrid"
+  },
+  {
+    "code": "ROZ",
+    "name": "Rota Naval Station Airport",
+    "city": "Rota",
+    "country": "Spain",
+    "region": "Europe",
+    "latitude": 36.6452,
+    "longitude": -6.3495,
+    "timezone": "Europe/Madrid"
+  },
+  {
+    "code": "SLM",
+    "name": "Salamanca Airport",
+    "city": "Salamanca",
+    "country": "Spain",
+    "region": "Europe",
+    "latitude": 40.9521,
+    "longitude": -5.502,
+    "timezone": "Europe/Madrid"
+  },
+  {
+    "code": "EAS",
+    "name": "San Sebastian Airport",
+    "city": "San Sebastian",
+    "country": "Spain",
+    "region": "Europe",
+    "latitude": 43.3565,
+    "longitude": -1.7906,
+    "timezone": "Europe/Madrid"
+  },
+  {
+    "code": "SCQ",
+    "name": "Santiago de Compostela Airport",
+    "city": "Santiago",
+    "country": "Spain",
+    "region": "Europe",
+    "latitude": 42.8963,
+    "longitude": -8.4151,
+    "timezone": "Europe/Madrid"
+  },
+  {
+    "code": "LEU",
+    "name": "Pirineus - la Seu d'Urgel Airport",
+    "city": "Seo De Urgel",
+    "country": "Spain",
+    "region": "Europe",
+    "latitude": 42.3386,
+    "longitude": 1.4092,
+    "timezone": "Europe/Madrid"
+  },
+  {
+    "code": "TOJ",
+    "name": "Torrejón Airport",
+    "city": "Madrid",
+    "country": "Spain",
+    "region": "Europe",
+    "latitude": 40.4967,
+    "longitude": -3.4459,
+    "timezone": "Europe/Madrid"
+  },
+  {
+    "code": "VLC",
+    "name": "Valencia Airport",
+    "city": "Valencia",
+    "country": "Spain",
+    "region": "Europe",
+    "latitude": 39.4893,
+    "longitude": -0.4816,
+    "timezone": "Europe/Madrid"
+  },
+  {
+    "code": "VLL",
+    "name": "Valladolid Airport",
+    "city": "Valladolid",
+    "country": "Spain",
+    "region": "Europe",
+    "latitude": 41.7061,
+    "longitude": -4.8519,
+    "timezone": "Europe/Madrid"
+  },
+  {
+    "code": "VIT",
+    "name": "Vitoria/Foronda Airport",
+    "city": "Vitoria",
+    "country": "Spain",
+    "region": "Europe",
+    "latitude": 42.8828,
+    "longitude": -2.7245,
+    "timezone": "Europe/Madrid"
+  },
+  {
+    "code": "VGO",
+    "name": "Vigo Airport",
+    "city": "Vigo",
+    "country": "Spain",
+    "region": "Europe",
+    "latitude": 42.2318,
+    "longitude": -8.6268,
+    "timezone": "Europe/Madrid"
+  },
+  {
+    "code": "SDR",
+    "name": "Santander Airport",
+    "city": "Santander",
+    "country": "Spain",
+    "region": "Europe",
+    "latitude": 43.4271,
+    "longitude": -3.82,
+    "timezone": "Europe/Madrid"
+  },
+  {
+    "code": "ZAZ",
+    "name": "Zaragoza Air Base",
+    "city": "Zaragoza",
+    "country": "Spain",
+    "region": "Europe",
+    "latitude": 41.6662,
+    "longitude": -1.0416,
+    "timezone": "Europe/Madrid"
+  },
+  {
+    "code": "SVQ",
+    "name": "Sevilla Airport",
+    "city": "Sevilla",
+    "country": "Spain",
+    "region": "Europe",
+    "latitude": 37.418,
+    "longitude": -5.8931,
+    "timezone": "Europe/Madrid"
+  },
+  {
+    "code": "CQF",
+    "name": "Calais-Dunkerque Airport",
+    "city": "Calais",
+    "country": "France",
+    "region": "Europe",
+    "latitude": 50.9621,
+    "longitude": 1.9548,
+    "timezone": "Europe/Paris"
+  },
+  {
+    "code": "BYF",
+    "name": "Albert-Bray Airport",
+    "city": "Albert",
+    "country": "France",
+    "region": "Europe",
+    "latitude": 49.9715,
+    "longitude": 2.6977,
+    "timezone": "Europe/Paris"
+  },
+  {
+    "code": "LTQ",
+    "name": "Le Touquet-Côte d'Opale Airport",
+    "city": "Le Tourquet",
+    "country": "France",
+    "region": "Europe",
+    "latitude": 50.5174,
+    "longitude": 1.6206,
+    "timezone": "Europe/Paris"
+  },
+  {
+    "code": "XVS",
+    "name": "Valenciennes-Denain Airport",
+    "city": "Valenciennes",
+    "country": "France",
+    "region": "Europe",
+    "latitude": 50.3258,
+    "longitude": 3.4613,
+    "timezone": "Europe/Paris"
+  },
+  {
+    "code": "AGF",
+    "name": "Agen-La Garenne Airport",
+    "city": "Agen",
+    "country": "France",
+    "region": "Europe",
+    "latitude": 44.1747,
+    "longitude": 0.5906,
+    "timezone": "Europe/Paris"
+  },
+  {
+    "code": "BOD",
+    "name": "Bordeaux-Mérignac Airport",
+    "city": "Bordeaux",
+    "country": "France",
+    "region": "Europe",
+    "latitude": 44.8283,
+    "longitude": -0.7156,
+    "timezone": "Europe/Paris"
+  },
+  {
+    "code": "EGC",
+    "name": "Bergerac-Roumanière Airport",
+    "city": "Bergerac",
+    "country": "France",
+    "region": "Europe",
+    "latitude": 44.8253,
+    "longitude": 0.5186,
+    "timezone": "Europe/Paris"
+  },
+  {
+    "code": "CNG",
+    "name": "Cognac-Châteaubernard (BA 709) Air Base",
+    "city": "Cognac",
+    "country": "France",
+    "region": "Europe",
+    "latitude": 45.6583,
+    "longitude": -0.3175,
+    "timezone": "Europe/Paris"
+  },
+  {
+    "code": "PIS",
+    "name": "Poitiers-Biard Airport",
+    "city": "Poitiers",
+    "country": "France",
+    "region": "Europe",
+    "latitude": 46.5877,
+    "longitude": 0.3067,
+    "timezone": "Europe/Paris"
+  },
+  {
+    "code": "MCU",
+    "name": "Montluçon-Guéret Airport",
+    "city": "Montlucon-gueret",
+    "country": "France",
+    "region": "Europe",
+    "latitude": 46.2226,
+    "longitude": 2.364,
+    "timezone": "Europe/Paris"
+  },
+  {
+    "code": "LIG",
+    "name": "Limoges Airport",
+    "city": "Limoges",
+    "country": "France",
+    "region": "Europe",
+    "latitude": 45.8628,
+    "longitude": 1.1794,
+    "timezone": "Europe/Paris"
+  },
+  {
+    "code": "NIT",
+    "name": "Niort-Souché Airport",
+    "city": "Niort",
+    "country": "France",
+    "region": "Europe",
+    "latitude": 46.3135,
+    "longitude": -0.3945,
+    "timezone": "Europe/Paris"
+  },
+  {
+    "code": "TLS",
+    "name": "Toulouse-Blagnac Airport",
+    "city": "Toulouse",
+    "country": "France",
+    "region": "Europe",
+    "latitude": 43.6291,
+    "longitude": 1.3638,
+    "timezone": "Europe/Paris"
+  },
+  {
+    "code": "PUF",
+    "name": "Pau Pyrénées Airport",
+    "city": "Pau",
+    "country": "France",
+    "region": "Europe",
+    "latitude": 43.38,
+    "longitude": -0.4186,
+    "timezone": "Europe/Paris"
+  },
+  {
+    "code": "LDE",
+    "name": "Tarbes-Lourdes-Pyrénées Airport",
+    "city": "Tarbes",
+    "country": "France",
+    "region": "Europe",
+    "latitude": 43.1787,
+    "longitude": -0.0064,
+    "timezone": "Europe/Paris"
+  },
+  {
+    "code": "ANG",
+    "name": "Angoulême-Brie-Champniers Airport",
+    "city": "Angouleme",
+    "country": "France",
+    "region": "Europe",
+    "latitude": 45.7292,
+    "longitude": 0.2215,
+    "timezone": "Europe/Paris"
+  },
+  {
+    "code": "BVE",
+    "name": "Brive Souillac Airport",
+    "city": "Brive",
+    "country": "France",
+    "region": "Europe",
+    "latitude": 45.0397,
+    "longitude": 1.4856,
+    "timezone": "Europe/Paris"
+  },
+  {
+    "code": "PGX",
+    "name": "Périgueux-Bassillac Airport",
+    "city": "Perigueux",
+    "country": "France",
+    "region": "Europe",
+    "latitude": 45.1981,
+    "longitude": 0.8156,
+    "timezone": "Europe/Paris"
+  },
+  {
+    "code": "BIQ",
+    "name": "Biarritz-Anglet-Bayonne Airport",
+    "city": "Biarritz-bayonne",
+    "country": "France",
+    "region": "Europe",
+    "latitude": 43.4683,
+    "longitude": -1.5311,
+    "timezone": "Europe/Paris"
+  },
+  {
+    "code": "ZAO",
+    "name": "Cahors-Lalbenque Airport",
+    "city": "Cahors",
+    "country": "France",
+    "region": "Europe",
+    "latitude": 44.3514,
+    "longitude": 1.4753,
+    "timezone": "Europe/Paris"
+  },
+  {
+    "code": "LBI",
+    "name": "Albi-Le Séquestre Airport",
+    "city": "Albi",
+    "country": "France",
+    "region": "Europe",
+    "latitude": 43.9139,
+    "longitude": 2.1131,
+    "timezone": "Europe/Paris"
+  },
+  {
+    "code": "DCM",
+    "name": "Castres-Mazamet Airport",
+    "city": "Castres",
+    "country": "France",
+    "region": "Europe",
+    "latitude": 43.5563,
+    "longitude": 2.2892,
+    "timezone": "Europe/Paris"
+  },
+  {
+    "code": "RDZ",
+    "name": "Rodez-Marcillac Airport",
+    "city": "Rodez",
+    "country": "France",
+    "region": "Europe",
+    "latitude": 44.4079,
+    "longitude": 2.4827,
+    "timezone": "Europe/Paris"
+  },
+  {
+    "code": "RYN",
+    "name": "Royan-Médis Airport",
+    "city": "Royan",
+    "country": "France",
+    "region": "Europe",
+    "latitude": 45.6281,
+    "longitude": -0.9725,
+    "timezone": "Europe/Paris"
+  },
+  {
+    "code": "XMW",
+    "name": "Montauban Airport",
+    "city": "Montauban",
+    "country": "France",
+    "region": "Europe",
+    "latitude": 44.0257,
+    "longitude": 1.378,
+    "timezone": "Europe/Paris"
+  },
+  {
+    "code": "RCO",
+    "name": "Rochefort-Saint-Agnant (BA 721) Airport",
+    "city": "Rochefort",
+    "country": "France",
+    "region": "Europe",
+    "latitude": 45.8878,
+    "longitude": -0.9831,
+    "timezone": "Europe/Paris"
+  },
+  {
+    "code": "CMR",
+    "name": "Colmar-Houssen Airport",
+    "city": "Colmar",
+    "country": "France",
+    "region": "Europe",
+    "latitude": 48.1099,
+    "longitude": 7.359,
+    "timezone": "Europe/Paris"
+  },
+  {
+    "code": "DLE",
+    "name": "Dole-Tavaux Airport",
+    "city": "Dole",
+    "country": "France",
+    "region": "Europe",
+    "latitude": 47.0427,
+    "longitude": 5.4351,
+    "timezone": "Europe/Paris"
+  },
+  {
+    "code": "OBS",
+    "name": "Aubenas-Ardèche Méridional Airport",
+    "city": "Aubenas-vals-lanas",
+    "country": "France",
+    "region": "Europe",
+    "latitude": 44.5442,
+    "longitude": 4.3722,
+    "timezone": "Europe/Paris"
+  },
+  {
+    "code": "LPY",
+    "name": "Le Puy-Loudes Airport",
+    "city": "Le Puy",
+    "country": "France",
+    "region": "Europe",
+    "latitude": 45.0807,
+    "longitude": 3.7629,
+    "timezone": "Europe/Paris"
+  },
+  {
+    "code": "ETZ",
+    "name": "Metz-Nancy-Lorraine Airport",
+    "city": "Metz",
+    "country": "France",
+    "region": "Europe",
+    "latitude": 48.9821,
+    "longitude": 6.2513,
+    "timezone": "Europe/Paris"
+  },
+  {
+    "code": "BIA",
+    "name": "Bastia-Poretta Airport",
+    "city": "Bastia",
+    "country": "France",
+    "region": "Europe",
+    "latitude": 42.5527,
+    "longitude": 9.4837,
+    "timezone": "Europe/Paris"
+  },
+  {
+    "code": "CLY",
+    "name": "Calvi-Sainte-Catherine Airport",
+    "city": "Calvi",
+    "country": "France",
+    "region": "Europe",
+    "latitude": 42.5244,
+    "longitude": 8.7931,
+    "timezone": "Europe/Paris"
+  },
+  {
+    "code": "FSC",
+    "name": "Figari Sud-Corse Airport",
+    "city": "Figari",
+    "country": "France",
+    "region": "Europe",
+    "latitude": 41.5006,
+    "longitude": 9.0978,
+    "timezone": "Europe/Paris"
+  },
+  {
+    "code": "AJA",
+    "name": "Ajaccio-Napoléon Bonaparte Airport",
+    "city": "Ajaccio",
+    "country": "France",
+    "region": "Europe",
+    "latitude": 41.9236,
+    "longitude": 8.8029,
+    "timezone": "Europe/Paris"
+  },
+  {
+    "code": "PRP",
+    "name": "Propriano Airport",
+    "city": "Propriano",
+    "country": "France",
+    "region": "Europe",
+    "latitude": 41.6606,
+    "longitude": 8.8897,
+    "timezone": "Europe/Paris"
+  },
+  {
+    "code": "SOZ",
+    "name": "Solenzara (BA 126) Air Base",
+    "city": "Solenzara",
+    "country": "France",
+    "region": "Europe",
+    "latitude": 41.9244,
+    "longitude": 9.406,
+    "timezone": "Europe/Paris"
+  },
+  {
+    "code": "AUF",
+    "name": "Auxerre-Branches Airport",
+    "city": "Auxerre",
+    "country": "France",
+    "region": "Europe",
+    "latitude": 47.8502,
+    "longitude": 3.4971,
+    "timezone": "Europe/Paris"
+  },
+  {
+    "code": "CMF",
+    "name": "Chambéry-Savoie Airport",
+    "city": "Chambery",
+    "country": "France",
+    "region": "Europe",
+    "latitude": 45.6381,
+    "longitude": 5.8802,
+    "timezone": "Europe/Paris"
+  },
+  {
+    "code": "CFE",
+    "name": "Clermont-Ferrand Auvergne Airport",
+    "city": "Clermont-Ferrand",
+    "country": "France",
+    "region": "Europe",
+    "latitude": 45.7867,
+    "longitude": 3.1692,
+    "timezone": "Europe/Paris"
+  },
+  {
+    "code": "BOU",
+    "name": "Bourges Airport",
+    "city": "Bourges",
+    "country": "France",
+    "region": "Europe",
+    "latitude": 47.0581,
+    "longitude": 2.3703,
+    "timezone": "Europe/Paris"
+  },
+  {
+    "code": "QNJ",
+    "name": "Annemasse Airport",
+    "city": "Annemasse",
+    "country": "France",
+    "region": "Europe",
+    "latitude": 46.192,
+    "longitude": 6.2684,
+    "timezone": "Europe/Paris"
+  },
+  {
+    "code": "LYS",
+    "name": "Lyon Saint-Exupéry Airport",
+    "city": "Lyon",
+    "country": "France",
+    "region": "Europe",
+    "latitude": 45.7256,
+    "longitude": 5.0811,
+    "timezone": "Europe/Paris"
+  },
+  {
+    "code": "SYT",
+    "name": "Saint-Yan Airport",
+    "city": "St.-yan",
+    "country": "France",
+    "region": "Europe",
+    "latitude": 46.4125,
+    "longitude": 4.0133,
+    "timezone": "Europe/Paris"
+  },
+  {
+    "code": "RNE",
+    "name": "Roanne-Renaison Airport",
+    "city": "Roanne",
+    "country": "France",
+    "region": "Europe",
+    "latitude": 46.0583,
+    "longitude": 4.0014,
+    "timezone": "Europe/Paris"
+  },
+  {
+    "code": "NCY",
+    "name": "Annecy-Haute-Savoie-Mont Blanc Airport",
+    "city": "Annecy",
+    "country": "France",
+    "region": "Europe",
+    "latitude": 45.9308,
+    "longitude": 6.1064,
+    "timezone": "Europe/Paris"
+  },
+  {
+    "code": "GNB",
+    "name": "Grenoble-Isère Airport",
+    "city": "Grenoble",
+    "country": "France",
+    "region": "Europe",
+    "latitude": 45.3629,
+    "longitude": 5.3294,
+    "timezone": "Europe/Paris"
+  },
+  {
+    "code": "VAF",
+    "name": "Valence-Chabeuil Airport",
+    "city": "Valence",
+    "country": "France",
+    "region": "Europe",
+    "latitude": 44.9216,
+    "longitude": 4.9699,
+    "timezone": "Europe/Paris"
+  },
+  {
+    "code": "VHY",
+    "name": "Vichy-Charmeil Airport",
+    "city": "Vichy",
+    "country": "France",
+    "region": "Europe",
+    "latitude": 46.1697,
+    "longitude": 3.4037,
+    "timezone": "Europe/Paris"
+  },
+  {
+    "code": "AUR",
+    "name": "Aurillac Airport",
+    "city": "Aurillac",
+    "country": "France",
+    "region": "Europe",
+    "latitude": 44.8914,
+    "longitude": 2.4219,
+    "timezone": "Europe/Paris"
+  },
+  {
+    "code": "CHR",
+    "name": "Châteauroux-Déols Marcel Dassault Airport",
+    "city": "Chateauroux",
+    "country": "France",
+    "region": "Europe",
+    "latitude": 46.8603,
+    "longitude": 1.7211,
+    "timezone": "Europe/Paris"
+  },
+  {
+    "code": "LYN",
+    "name": "Lyon-Bron Airport",
+    "city": "Lyon",
+    "country": "France",
+    "region": "Europe",
+    "latitude": 45.7272,
+    "longitude": 4.9443,
+    "timezone": "Europe/Paris"
+  },
+  {
+    "code": "CEQ",
+    "name": "Cannes-Mandelieu Airport",
+    "city": "Cannes",
+    "country": "France",
+    "region": "Europe",
+    "latitude": 43.542,
+    "longitude": 6.9535,
+    "timezone": "Europe/Paris"
+  },
+  {
+    "code": "EBU",
+    "name": "Saint-Étienne-Bouthéon Airport",
+    "city": "St-Etienne",
+    "country": "France",
+    "region": "Europe",
+    "latitude": 45.5406,
+    "longitude": 4.2964,
+    "timezone": "Europe/Paris"
+  },
+  {
+    "code": "CCF",
+    "name": "Carcassonne Airport",
+    "city": "Carcassonne",
+    "country": "France",
+    "region": "Europe",
+    "latitude": 43.216,
+    "longitude": 2.3063,
+    "timezone": "Europe/Paris"
+  },
+  {
+    "code": "MRS",
+    "name": "Marseille Provence Airport",
+    "city": "Marseille",
+    "country": "France",
+    "region": "Europe",
+    "latitude": 43.4393,
+    "longitude": 5.2214,
+    "timezone": "Europe/Paris"
+  },
+  {
+    "code": "NCE",
+    "name": "Nice-Côte d'Azur Airport",
+    "city": "Nice",
+    "country": "France",
+    "region": "Europe",
+    "latitude": 43.6584,
+    "longitude": 7.2159,
+    "timezone": "Europe/Paris"
+  },
+  {
+    "code": "XOG",
+    "name": "Orange-Caritat (BA 115) Air Base",
+    "city": "Orange",
+    "country": "France",
+    "region": "Europe",
+    "latitude": 44.1405,
+    "longitude": 4.8667,
+    "timezone": "Europe/Paris"
+  },
+  {
+    "code": "PGF",
+    "name": "Perpignan-Rivesaltes (Llabanère) Airport",
+    "city": "Perpignan",
+    "country": "France",
+    "region": "Europe",
+    "latitude": 42.7404,
+    "longitude": 2.8707,
+    "timezone": "Europe/Paris"
+  },
+  {
+    "code": "CTT",
+    "name": "Le Castellet Airport",
+    "city": "Le Castellet",
+    "country": "France",
+    "region": "Europe",
+    "latitude": 43.2525,
+    "longitude": 5.7852,
+    "timezone": "Europe/Paris"
+  },
+  {
+    "code": "MPL",
+    "name": "Montpellier-Méditerranée Airport",
+    "city": "Montpellier",
+    "country": "France",
+    "region": "Europe",
+    "latitude": 43.5762,
+    "longitude": 3.963,
+    "timezone": "Europe/Paris"
+  },
+  {
+    "code": "BZR",
+    "name": "Béziers-Vias Airport",
+    "city": "Beziers",
+    "country": "France",
+    "region": "Europe",
+    "latitude": 43.3235,
+    "longitude": 3.3539,
+    "timezone": "Europe/Paris"
+  },
+  {
+    "code": "AVN",
+    "name": "Avignon-Caumont Airport",
+    "city": "Avignon",
+    "country": "France",
+    "region": "Europe",
+    "latitude": 43.9073,
+    "longitude": 4.9018,
+    "timezone": "Europe/Paris"
+  },
+  {
+    "code": "MEN",
+    "name": "Mende-Brenoux Airfield",
+    "city": "Mende",
+    "country": "France",
+    "region": "Europe",
+    "latitude": 44.5021,
+    "longitude": 3.5328,
+    "timezone": "Europe/Paris"
+  },
+  {
+    "code": "BVA",
+    "name": "Paris Beauvais Tillé Airport",
+    "city": "Beauvais",
+    "country": "France",
+    "region": "Europe",
+    "latitude": 49.4544,
+    "longitude": 2.1128,
+    "timezone": "Europe/Paris"
+  },
+  {
+    "code": "EVX",
+    "name": "Évreux-Fauville (BA 105) Air Base",
+    "city": "Evreux",
+    "country": "France",
+    "region": "Europe",
+    "latitude": 49.0287,
+    "longitude": 1.2199,
+    "timezone": "Europe/Paris"
+  },
+  {
+    "code": "LEH",
+    "name": "Le Havre Octeville Airport",
+    "city": "Le Havre",
+    "country": "France",
+    "region": "Europe",
+    "latitude": 49.5339,
+    "longitude": 0.0881,
+    "timezone": "Europe/Paris"
+  },
+  {
+    "code": "XAB",
+    "name": "Abbeville",
+    "city": "Abbeville",
+    "country": "France",
+    "region": "Europe",
+    "latitude": 50.1435,
+    "longitude": 1.8319,
+    "timezone": "Europe/Paris"
+  },
+  {
+    "code": "ORE",
+    "name": "Orléans-Bricy (BA 123) Air Base",
+    "city": "Orleans",
+    "country": "France",
+    "region": "Europe",
+    "latitude": 47.9878,
+    "longitude": 1.7606,
+    "timezone": "Europe/Paris"
+  },
+  {
+    "code": "XCR",
+    "name": "Châlons-Vatry Airport",
+    "city": "Chalons",
+    "country": "France",
+    "region": "Europe",
+    "latitude": 48.7733,
+    "longitude": 4.2061,
+    "timezone": "Europe/Paris"
+  },
+  {
+    "code": "URO",
+    "name": "Rouen Airport",
+    "city": "Rouen",
+    "country": "France",
+    "region": "Europe",
+    "latitude": 49.3842,
+    "longitude": 1.1748,
+    "timezone": "Europe/Paris"
+  },
+  {
+    "code": "TUF",
+    "name": "Tours-Val-de-Loire Airport",
+    "city": "Tours",
+    "country": "France",
+    "region": "Europe",
+    "latitude": 47.4322,
+    "longitude": 0.7276,
+    "timezone": "Europe/Paris"
+  },
+  {
+    "code": "CET",
+    "name": "Cholet Le Pontreau Airport",
+    "city": "Cholet",
+    "country": "France",
+    "region": "Europe",
+    "latitude": 47.0821,
+    "longitude": -0.8771,
+    "timezone": "Europe/Paris"
+  },
+  {
+    "code": "LVA",
+    "name": "Laval-Entrammes Airport",
+    "city": "Laval",
+    "country": "France",
+    "region": "Europe",
+    "latitude": 48.0314,
+    "longitude": -0.743,
+    "timezone": "Europe/Paris"
+  },
+  {
+    "code": "LBG",
+    "name": "Paris-Le Bourget Airport",
+    "city": "Paris",
+    "country": "France",
+    "region": "Europe",
+    "latitude": 48.9694,
+    "longitude": 2.4414,
+    "timezone": "Europe/Paris"
+  },
+  {
+    "code": "CSF",
+    "name": "Creil Air Base",
+    "city": "Creil",
+    "country": "France",
+    "region": "Europe",
+    "latitude": 49.2535,
+    "longitude": 2.5191,
+    "timezone": "Europe/Paris"
+  },
+  {
+    "code": "TNF",
+    "name": "Toussus-le-Noble Airport",
+    "city": "Toussous-le-noble",
+    "country": "France",
+    "region": "Europe",
+    "latitude": 48.7519,
+    "longitude": 2.1062,
+    "timezone": "Europe/Paris"
+  },
+  {
+    "code": "ORY",
+    "name": "Paris-Orly Airport",
+    "city": "Paris",
+    "country": "France",
+    "region": "Europe",
+    "latitude": 48.7233,
+    "longitude": 2.3794,
+    "timezone": "Europe/Paris"
+  },
+  {
+    "code": "POX",
+    "name": "Pontoise - Cormeilles-en-Vexin Airport",
+    "city": "Pontoise",
+    "country": "France",
+    "region": "Europe",
+    "latitude": 49.0967,
+    "longitude": 2.0408,
+    "timezone": "Europe/Paris"
+  },
+  {
+    "code": "VIY",
+    "name": "Villacoublay-Vélizy (BA 107) Air Base",
+    "city": "Villacoublay",
+    "country": "France",
+    "region": "Europe",
+    "latitude": 48.7742,
+    "longitude": 2.1917,
+    "timezone": "Europe/Paris"
+  },
+  {
+    "code": "NVS",
+    "name": "Nevers-Fourchambault Airport",
+    "city": "Nevers",
+    "country": "France",
+    "region": "Europe",
+    "latitude": 47.0026,
+    "longitude": 3.1133,
+    "timezone": "Europe/Paris"
+  },
+  {
+    "code": "XME",
+    "name": "Maubeuge-Élesmes Airport",
+    "city": "Maubeuge",
+    "country": "France",
+    "region": "Europe",
+    "latitude": 50.3105,
+    "longitude": 4.0331,
+    "timezone": "Europe/Paris"
+  },
+  {
+    "code": "LIL",
+    "name": "Lille-Lesquin Airport",
+    "city": "Lille",
+    "country": "France",
+    "region": "Europe",
+    "latitude": 50.5633,
+    "longitude": 3.0869,
+    "timezone": "Europe/Paris"
+  },
+  {
+    "code": "HZB",
+    "name": "Merville-Calonne Airport",
+    "city": "Merville",
+    "country": "France",
+    "region": "Europe",
+    "latitude": 50.6184,
+    "longitude": 2.6422,
+    "timezone": "Europe/Paris"
+  },
+  {
+    "code": "XCZ",
+    "name": "Charleville-Mézières Airport",
+    "city": "Charleville",
+    "country": "France",
+    "region": "Europe",
+    "latitude": 49.7839,
+    "longitude": 4.6471,
+    "timezone": "Europe/Paris"
+  },
+  {
+    "code": "BES",
+    "name": "Brest Bretagne Airport",
+    "city": "Brest",
+    "country": "France",
+    "region": "Europe",
+    "latitude": 48.4479,
+    "longitude": -4.4185,
+    "timezone": "Europe/Paris"
+  },
+  {
+    "code": "CER",
+    "name": "Cherbourg-Maupertus Airport",
+    "city": "Cherbourg",
+    "country": "France",
+    "region": "Europe",
+    "latitude": 49.6501,
+    "longitude": -1.4703,
+    "timezone": "Europe/Paris"
+  },
+  {
+    "code": "DNR",
+    "name": "Dinard-Pleurtuit-Saint-Malo Airport",
+    "city": "Dinard",
+    "country": "France",
+    "region": "Europe",
+    "latitude": 48.5877,
+    "longitude": -2.08,
+    "timezone": "Europe/Paris"
+  },
+  {
+    "code": "LBY",
+    "name": "La Baule-Escoublac Airport",
+    "city": "La Baule",
+    "country": "France",
+    "region": "Europe",
+    "latitude": 47.2894,
+    "longitude": -2.3464,
+    "timezone": "Europe/Paris"
+  },
+  {
+    "code": "GFR",
+    "name": "Granville Airport",
+    "city": "Granville",
+    "country": "France",
+    "region": "Europe",
+    "latitude": 48.8831,
+    "longitude": -1.5642,
+    "timezone": "Europe/Paris"
+  },
+  {
+    "code": "DOL",
+    "name": "Deauville-Saint-Gatien Airport",
+    "city": "Deauville",
+    "country": "France",
+    "region": "Europe",
+    "latitude": 49.3653,
+    "longitude": 0.1543,
+    "timezone": "Europe/Paris"
+  },
+  {
+    "code": "LRT",
+    "name": "Lorient South Brittany (Bretagne Sud) Airport",
+    "city": "Lorient",
+    "country": "France",
+    "region": "Europe",
+    "latitude": 47.7606,
+    "longitude": -3.44,
+    "timezone": "Europe/Paris"
+  },
+  {
+    "code": "EDM",
+    "name": "La Roche-sur-Yon Airport",
+    "city": "La Roche-sur-yon",
+    "country": "France",
+    "region": "Europe",
+    "latitude": 46.7019,
+    "longitude": -1.3786,
+    "timezone": "Europe/Paris"
+  },
+  {
+    "code": "LDV",
+    "name": "Landivisiau Air Base",
+    "city": "Landivisiau",
+    "country": "France",
+    "region": "Europe",
+    "latitude": 48.5303,
+    "longitude": -4.1516,
+    "timezone": "Europe/Paris"
+  },
+  {
+    "code": "CFR",
+    "name": "Caen-Carpiquet Airport",
+    "city": "Caen",
+    "country": "France",
+    "region": "Europe",
+    "latitude": 49.1733,
+    "longitude": -0.45,
+    "timezone": "Europe/Paris"
+  },
+  {
+    "code": "LME",
+    "name": "Le Mans-Arnage Airport",
+    "city": "Le Mans",
+    "country": "France",
+    "region": "Europe",
+    "latitude": 47.9486,
+    "longitude": 0.2017,
+    "timezone": "Europe/Paris"
+  },
+  {
+    "code": "RNS",
+    "name": "Rennes-Saint-Jacques Airport",
+    "city": "Rennes",
+    "country": "France",
+    "region": "Europe",
+    "latitude": 48.0695,
+    "longitude": -1.7348,
+    "timezone": "Europe/Paris"
+  },
+  {
+    "code": "LAI",
+    "name": "Lannion-Côte de Granit Airport",
+    "city": "Lannion",
+    "country": "France",
+    "region": "Europe",
+    "latitude": 48.7544,
+    "longitude": -3.4717,
+    "timezone": "Europe/Paris"
+  },
+  {
+    "code": "UIP",
+    "name": "Quimper-Cornouaille Airport",
+    "city": "Quimper",
+    "country": "France",
+    "region": "Europe",
+    "latitude": 47.975,
+    "longitude": -4.1678,
+    "timezone": "Europe/Paris"
+  },
+  {
+    "code": "NTE",
+    "name": "Nantes Atlantique Airport",
+    "city": "Nantes",
+    "country": "France",
+    "region": "Europe",
+    "latitude": 47.1532,
+    "longitude": -1.6107,
+    "timezone": "Europe/Paris"
+  },
+  {
+    "code": "SBK",
+    "name": "Saint-Brieuc-Armor Airport",
+    "city": "St.-brieuc Armor",
+    "country": "France",
+    "region": "Europe",
+    "latitude": 48.5378,
+    "longitude": -2.8544,
+    "timezone": "Europe/Paris"
+  },
+  {
+    "code": "MXN",
+    "name": "Morlaix-Ploujean Airport",
+    "city": "Morlaix",
+    "country": "France",
+    "region": "Europe",
+    "latitude": 48.6032,
+    "longitude": -3.8158,
+    "timezone": "Europe/Paris"
+  },
+  {
+    "code": "VNE",
+    "name": "Vannes-Meucon Airport",
+    "city": "Vannes",
+    "country": "France",
+    "region": "Europe",
+    "latitude": 47.7233,
+    "longitude": -2.7186,
+    "timezone": "Europe/Paris"
+  },
+  {
+    "code": "SNR",
+    "name": "Saint-Nazaire-Montoir Airport",
+    "city": "St.-nazaire",
+    "country": "France",
+    "region": "Europe",
+    "latitude": 47.3106,
+    "longitude": -2.1567,
+    "timezone": "Europe/Paris"
+  },
+  {
+    "code": "BSL",
+    "name": "EuroAirport Basel-Mulhouse-Freiburg Airport",
+    "city": "Mulhouse",
+    "country": "France",
+    "region": "Europe",
+    "latitude": 47.59,
+    "longitude": 7.5292,
+    "timezone": "Europe/Paris"
+  },
+  {
+    "code": "DIJ",
+    "name": "Dijon-Bourgogne Airport",
+    "city": "Dijon",
+    "country": "France",
+    "region": "Europe",
+    "latitude": 47.2689,
+    "longitude": 5.09,
+    "timezone": "Europe/Paris"
+  },
+  {
+    "code": "MZM",
+    "name": "Metz-Frescaty (BA 128) Air Base",
+    "city": "Metz",
+    "country": "France",
+    "region": "Europe",
+    "latitude": 49.0717,
+    "longitude": 6.1317,
+    "timezone": "Europe/Paris"
+  },
+  {
+    "code": "EPL",
+    "name": "Épinal-Mirecourt Airport",
+    "city": "Epinal",
+    "country": "France",
+    "region": "Europe",
+    "latitude": 48.325,
+    "longitude": 6.07,
+    "timezone": "Europe/Paris"
+  },
+  {
+    "code": "ENC",
+    "name": "Nancy-Essey Airport",
+    "city": "Nancy",
+    "country": "France",
+    "region": "Europe",
+    "latitude": 48.6921,
+    "longitude": 6.2305,
+    "timezone": "Europe/Paris"
+  },
+  {
+    "code": "RHE",
+    "name": "Reims-Champagne (BA 112) Air Base",
+    "city": "Reims",
+    "country": "France",
+    "region": "Europe",
+    "latitude": 49.31,
+    "longitude": 4.05,
+    "timezone": "Europe/Paris"
+  },
+  {
+    "code": "SXB",
+    "name": "Strasbourg Airport",
+    "city": "Strasbourg",
+    "country": "France",
+    "region": "Europe",
+    "latitude": 48.5383,
+    "longitude": 7.6282,
+    "timezone": "Europe/Paris"
+  },
+  {
+    "code": "TLN",
+    "name": "Toulon-Hyères Airport",
+    "city": "Hyeres",
+    "country": "France",
+    "region": "Europe",
+    "latitude": 43.0973,
+    "longitude": 6.146,
+    "timezone": "Europe/Paris"
+  },
+  {
+    "code": "FNI",
+    "name": "Nîmes-Arles-Camargue Airport",
+    "city": "Nimes",
+    "country": "France",
+    "region": "Europe",
+    "latitude": 43.7574,
+    "longitude": 4.4163,
+    "timezone": "Europe/Paris"
+  },
+  {
+    "code": "PYR",
+    "name": "Andravida Air Base",
+    "city": "Andravida",
+    "country": "Greece",
+    "region": "Europe",
+    "latitude": 37.9207,
+    "longitude": 21.2926,
+    "timezone": "Europe/Athens"
+  },
+  {
+    "code": "AGQ",
+    "name": "Agrinion Air Base",
+    "city": "Agrinion",
+    "country": "Greece",
+    "region": "Europe",
+    "latitude": 38.602,
+    "longitude": 21.3512,
+    "timezone": "Europe/Athens"
+  },
+  {
+    "code": "AXD",
+    "name": "Dimokritos Airport",
+    "city": "Alexandroupolis",
+    "country": "Greece",
+    "region": "Europe",
+    "latitude": 40.8559,
+    "longitude": 25.9563,
+    "timezone": "Europe/Athens"
+  },
+  {
+    "code": "VOL",
+    "name": "Nea Anchialos Airport",
+    "city": "Nea Anghialos",
+    "country": "Greece",
+    "region": "Europe",
+    "latitude": 39.2196,
+    "longitude": 22.7943,
+    "timezone": "Europe/Athens"
+  },
+  {
+    "code": "JKH",
+    "name": "Chios Island National Airport",
+    "city": "Chios",
+    "country": "Greece",
+    "region": "Europe",
+    "latitude": 38.3432,
+    "longitude": 26.1406,
+    "timezone": "Europe/Athens"
+  },
+  {
+    "code": "IOA",
+    "name": "Ioannina Airport",
+    "city": "Ioannina",
+    "country": "Greece",
+    "region": "Europe",
+    "latitude": 39.6964,
+    "longitude": 20.8225,
+    "timezone": "Europe/Athens"
+  },
+  {
+    "code": "HER",
+    "name": "Heraklion International Nikos Kazantzakis Airport",
+    "city": "Heraklion",
+    "country": "Greece",
+    "region": "Europe",
+    "latitude": 35.3397,
+    "longitude": 25.1803,
+    "timezone": "Europe/Athens"
+  },
+  {
+    "code": "KSO",
+    "name": "Kastoria National Airport",
+    "city": "Kastoria",
+    "country": "Greece",
+    "region": "Europe",
+    "latitude": 40.4463,
+    "longitude": 21.2822,
+    "timezone": "Europe/Athens"
+  }
+]

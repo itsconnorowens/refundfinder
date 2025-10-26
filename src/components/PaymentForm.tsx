@@ -86,14 +86,58 @@ function PaymentFormContent({ onSuccess, onCancel }: PaymentFormProps) {
         <p className="text-gray-600">Secure payment processing by Stripe</p>
       </div>
 
-      <div className="bg-green-50 border border-green-200 rounded-lg p-4 mb-6">
-        <div className="flex items-center">
-          <svg className="h-5 w-5 text-green-400 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-          </svg>
-          <div>
-            <p className="text-green-800 font-medium">Success Fee: $49</p>
-            <p className="text-green-700 text-sm">Only charged if we win your case</p>
+      {/* Enhanced Trust Signals */}
+      <div className="mb-6 space-y-4">
+        <div className="bg-green-50 border border-green-200 rounded-lg p-4">
+          <div className="flex items-center mb-2">
+            <div className="w-6 h-6 bg-green-500 rounded-full flex items-center justify-center mr-2">
+              <span className="text-white text-xs font-bold">✓</span>
+            </div>
+            <h4 className="font-semibold text-green-900">100% Money-Back Guarantee</h4>
+          </div>
+          <p className="text-sm text-green-800">
+            If we can't file your claim successfully, you'll receive a full automatic refund
+          </p>
+        </div>
+
+        <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+          <h4 className="font-medium text-blue-900 mb-2">What You're Paying For</h4>
+          <ul className="text-sm text-blue-800 space-y-1">
+            <li className="flex items-center">
+              <span className="text-green-600 mr-2">✓</span>
+              Claim filing with airline
+            </li>
+            <li className="flex items-center">
+              <span className="text-green-600 mr-2">✓</span>
+              All paperwork handled
+            </li>
+            <li className="flex items-center">
+              <span className="text-green-600 mr-2">✓</span>
+              Email updates at every step
+            </li>
+            <li className="flex items-center">
+              <span className="text-green-600 mr-2">✓</span>
+              Expert review of your case
+            </li>
+            <li className="flex items-center">
+              <span className="text-green-600 mr-2">✓</span>
+              Follow-up with airline if needed
+            </li>
+          </ul>
+        </div>
+
+        <div className="flex items-center justify-center space-x-6 text-sm text-gray-600">
+          <div className="flex items-center">
+            <span className="text-green-600 mr-1">🔒</span>
+            Secure payment via Stripe
+          </div>
+          <div className="flex items-center">
+            <span className="text-blue-600 mr-1">✉️</span>
+            Confirmation email sent immediately
+          </div>
+          <div className="flex items-center">
+            <span className="text-orange-600 mr-1">⚡</span>
+            Claim filed within 48 hours
           </div>
         </div>
       </div>

@@ -110,7 +110,7 @@ export async function POST(request: NextRequest) {
 
     // Check eligibility
     console.log('🔍 Checking eligibility...');
-    const result = checkEligibility(flightDetails);
+    const result = await checkEligibility(flightDetails);
     console.log('📊 Eligibility result:', JSON.stringify(result, null, 2));
 
     // Store check in Airtable
