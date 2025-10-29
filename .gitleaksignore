@@ -6,6 +6,7 @@
 .env.local:generic-api-key:6
 .env.local:generic-api-key:11
 .env.local:airtable-api-key:12
+.env.local:generic-api-key:15
 .env.local:generic-api-key:18
 .claude/settings.local.json:generic-api-key:11
 .claude/settings.local.json:airtable-api-key:11
