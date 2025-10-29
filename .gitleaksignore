@@ -11,3 +11,6 @@ PAYMENT_QUICK_START.md:generic-api-key:11
 # E2E test files with mock/test secrets
 e2e/automated-claim-system.spec.ts:generic-api-key:68
 
+# Next.js build artifacts - auto-generated internal keys (not real secrets)
+.next/**
+
