@@ -5,7 +5,7 @@ test.describe('Admin Dashboard E2E Tests', () => {
     // Set up environment variables for testing
     await page.addInitScript(() => {
       process.env.ADMIN_PASSWORD = 'test-admin-password';
-      process.env.ADMIN_EMAIL = 'admin@refundfinder.com';
+      process.env.ADMIN_EMAIL = 'admin@flghtly.com';
     });
   });
 
@@ -271,7 +271,7 @@ test.describe('Admin Dashboard E2E Tests', () => {
 
       // Fill in filing details
       await page.fill('input[name="airlineReference"]', 'BA-REF-123');
-      await page.fill('input[name="filedBy"]', 'admin@refundfinder.com');
+      await page.fill('input[name="filedBy"]', 'admin@flghtly.com');
       await page.selectOption('select[name="filingMethod"]', 'web_form');
 
       // Submit filing

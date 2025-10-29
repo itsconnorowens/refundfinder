@@ -1,4 +1,4 @@
-ClientCompass references have been completely removed from the refundfinder project:
+ClientCompass references have been completely removed from the flghtly project:
 
 1. Updated memory-bank/project-path to remove clientcompass reference
 2. Created validation script at scripts/validate-project-path.js

@@ -46,7 +46,7 @@ export class URLValidator {
         method: 'HEAD',
         signal: AbortSignal.timeout(10000), // 10 second timeout
         headers: {
-          'User-Agent': 'Mozilla/5.0 (compatible; RefundFinder/1.0)',
+          'User-Agent': 'Mozilla/5.0 (compatible; Flghtly/1.0)',
         },
       });
 

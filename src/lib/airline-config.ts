@@ -3452,8 +3452,8 @@ ${claimData.firstName} ${claimData.lastName}
 ${claimData.email}
 
 ---
-This claim is being processed by RefundFinder on behalf of the passenger.
-For any questions, please contact: support@refundfinder.com
+This claim is being processed by Flghtly on behalf of the passenger.
+For any questions, please contact: support@flghtly.com
 `;
 }
 

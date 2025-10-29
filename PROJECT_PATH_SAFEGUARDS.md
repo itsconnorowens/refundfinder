@@ -5,8 +5,8 @@ This document outlines the safeguards in place to prevent confusion between diff
 ## The Problem
 
 Previously, there was confusion between:
-- ❌ `/Users/connorowens/Desktop/clientcompass/refundfinder` (incorrect)
-- ✅ `/Users/connorowens/Desktop/refundfinder` (correct)
+- ❌ `/Users/connorowens/Desktop/clientcompass/flghtly` (incorrect)
+- ✅ `/Users/connorowens/Desktop/flghtly` (correct)
 
 This led to commands being run in the wrong directory and potential data loss or confusion.
 
@@ -15,7 +15,7 @@ This led to commands being run in the wrong directory and potential data loss or
 ### 1. Path Validation Script
 
 A validation script has been created at `scripts/validate-project-path.js` that:
-- Verifies we're in the correct project directory (`refundfinder`)
+- Verifies we're in the correct project directory (`flghtly`)
 - Checks the absolute path matches expectations
 - Validates the presence of `package.json`
 - Confirms the package name matches the project
@@ -47,13 +47,13 @@ npm run validate-path
 ### If You're in the Wrong Directory
 If the validation fails, navigate to the correct directory:
 ```bash
-cd /Users/connorowens/Desktop/refundfinder
+cd /Users/connorowens/Desktop/flghtly
 ```
 
 ### IDE Configuration
 Make sure your IDE/editor is opened to the correct directory:
-- ✅ `/Users/connorowens/Desktop/refundfinder`
-- ❌ `/Users/connorowens/Desktop/clientcompass/refundfinder`
+- ✅ `/Users/connorowens/Desktop/flghtly`
+- ❌ `/Users/connorowens/Desktop/clientcompass/flghtly`
 
 ## Prevention
 
@@ -68,7 +68,7 @@ To prevent this issue in the future:
 
 The correct project structure is:
 ```
-/Users/connorowens/Desktop/refundfinder/
+/Users/connorowens/Desktop/flghtly/
 ├── src/
 ├── scripts/
 │   └── validate-project-path.js
@@ -81,6 +81,6 @@ The correct project structure is:
 
 If you encounter path-related issues:
 1. Run `npm run validate-path` to check your current location
-2. Verify you're in `/Users/connorowens/Desktop/refundfinder`
-3. Check that `package.json` exists and contains `"name": "refundfinder"`
+2. Verify you're in `/Users/connorowens/Desktop/flghtly`
+3. Check that `package.json` exists and contains `"name": "flghtly"`
 4. Ensure no hardcoded paths reference the old `clientcompass` directory

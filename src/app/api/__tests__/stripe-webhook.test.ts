@@ -90,17 +90,21 @@ describe('Stripe Webhook Integration Tests', () => {
     // Set up environment variables
     process.env.STRIPE_SECRET_KEY = 'sk_test_mock_key';
     process.env.STRIPE_WEBHOOK_SECRET = 'whsec_test_secret';
-    process.env.ADMIN_EMAIL = 'admin@refundfinder.com';
+    process.env.ADMIN_EMAIL = 'admin@flghtly.com';
   });
 
   describe('POST /api/webhooks/stripe', () => {
     it('should process successful payment and prepare claim', async () => {
       const { POST } = await import('../webhooks/stripe/route');
-      const { getClaimByClaimId, updateClaim } = await import('../../../lib/airtable');
+      const { getClaimByClaimId, updateClaim } = await import(
+        '../../../lib/airtable'
+      );
       const { processAutomaticClaimPreparation } = await import(
         '../../../lib/claim-filing-service'
       );
-      const { sendAdminReadyToFileAlert } = await import('../../../lib/email-service');
+      const { sendAdminReadyToFileAlert } = await import(
+        '../../../lib/email-service'
+      );
 
       // Mock Stripe webhook verification
       mockConstructEvent.mockReturnValue(mockStripeEvent);
@@ -136,30 +140,32 @@ describe('Stripe Webhook Integration Tests', () => {
       // Verify automatic preparation was triggered
       expect(processAutomaticClaimPreparation).toHaveBeenCalledWith('CLM001');
 
-             // Verify admin alert was sent
-             expect(sendAdminReadyToFileAlert).toHaveBeenCalledWith(
-               'admin@refundfinder.com',
-               {
-                 claims: [
-                   {
-                     claimId: 'CLM001',
-                     firstName: 'John',
-                     lastName: 'Doe',
-                     flightNumber: 'BA123',
-                     airline: 'British Airways',
-                     departureDate: '2024-01-15',
-                     departureAirport: 'LHR',
-                     arrivalAirport: 'CDG',
-                     delayDuration: '3 hours',
-                   },
-                 ],
-               }
-             );
+      // Verify admin alert was sent
+      expect(sendAdminReadyToFileAlert).toHaveBeenCalledWith(
+        'admin@flghtly.com',
+        {
+          claims: [
+            {
+              claimId: 'CLM001',
+              firstName: 'John',
+              lastName: 'Doe',
+              flightNumber: 'BA123',
+              airline: 'British Airways',
+              departureDate: '2024-01-15',
+              departureAirport: 'LHR',
+              arrivalAirport: 'CDG',
+              delayDuration: '3 hours',
+            },
+          ],
+        }
+      );
     });
 
     it('should handle payment_intent.succeeded event', async () => {
       const { POST } = await import('../webhooks/stripe/route');
-      const { getClaimByClaimId, updateClaim } = await import('../../../lib/airtable');
+      const { getClaimByClaimId, updateClaim } = await import(
+        '../../../lib/airtable'
+      );
 
       mockConstructEvent.mockReturnValue(mockStripeEvent);
 
@@ -243,7 +249,9 @@ describe('Stripe Webhook Integration Tests', () => {
 
     it('should handle claim update failure', async () => {
       const { POST } = await import('../webhooks/stripe/route');
-      const { getClaimByClaimId, updateClaim } = await import('../../../lib/airtable');
+      const { getClaimByClaimId, updateClaim } = await import(
+        '../../../lib/airtable'
+      );
 
       mockConstructEvent.mockReturnValue(mockStripeEvent);
 
@@ -270,7 +278,9 @@ describe('Stripe Webhook Integration Tests', () => {
 
     it('should handle automatic preparation failure gracefully', async () => {
       const { POST } = await import('../webhooks/stripe/route');
-      const { getClaimByClaimId, updateClaim } = await import('../../../lib/airtable');
+      const { getClaimByClaimId, updateClaim } = await import(
+        '../../../lib/airtable'
+      );
       const { processAutomaticClaimPreparation } = await import(
         '../../../lib/claim-filing-service'
       );
@@ -302,11 +312,15 @@ describe('Stripe Webhook Integration Tests', () => {
 
     it('should handle admin email sending failure gracefully', async () => {
       const { POST } = await import('../webhooks/stripe/route');
-      const { getClaimByClaimId, updateClaim } = await import('../../../lib/airtable');
+      const { getClaimByClaimId, updateClaim } = await import(
+        '../../../lib/airtable'
+      );
       const { processAutomaticClaimPreparation } = await import(
         '../../../lib/claim-filing-service'
       );
-      const { sendAdminReadyToFileAlert } = await import('../../../lib/email-service');
+      const { sendAdminReadyToFileAlert } = await import(
+        '../../../lib/email-service'
+      );
 
       mockConstructEvent.mockReturnValue(mockStripeEvent);
 
@@ -338,7 +352,9 @@ describe('Stripe Webhook Integration Tests', () => {
 
     it('should handle missing admin email configuration', async () => {
       const { POST } = await import('../webhooks/stripe/route');
-      const { getClaimByClaimId, updateClaim } = await import('../../../lib/airtable');
+      const { getClaimByClaimId, updateClaim } = await import(
+        '../../../lib/airtable'
+      );
       const { processAutomaticClaimPreparation } = await import(
         '../../../lib/claim-filing-service'
       );
@@ -395,11 +411,11 @@ describe('Stripe Webhook Integration Tests', () => {
       expect(data.error).toContain('Invalid signature');
     });
 
-           it('should handle missing webhook secret', async () => {
-             // This test is complex due to module caching issues
-             // For now, we'll skip it and focus on the core functionality
-             expect(true).toBe(true);
-           });
+    it('should handle missing webhook secret', async () => {
+      // This test is complex due to module caching issues
+      // For now, we'll skip it and focus on the core functionality
+      expect(true).toBe(true);
+    });
 
     it('should handle malformed request body', async () => {
       const { POST } = await import('../webhooks/stripe/route');
@@ -424,7 +440,9 @@ describe('Stripe Webhook Integration Tests', () => {
 
     it('should handle different payment amounts correctly', async () => {
       const { POST } = await import('../webhooks/stripe/route');
-      const { getClaimByClaimId, updateClaim } = await import('../../../lib/airtable');
+      const { getClaimByClaimId, updateClaim } = await import(
+        '../../../lib/airtable'
+      );
 
       mockConstructEvent.mockReturnValue({
         ...mockStripeEvent,

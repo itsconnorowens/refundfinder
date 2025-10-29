@@ -186,7 +186,7 @@ async function sendAdminFollowUpAlert(adminEmail: string, data: any) {
         
         <hr style="margin: 30px 0;">
         <p style="font-size: 12px; color: #666;">
-          RefundFinder Admin Dashboard<br>
+          Flghtly Admin Dashboard<br>
           Generated: ${new Date().toLocaleString()}
         </p>
       </div>
@@ -224,7 +224,7 @@ Action Required:
 View all claims: /admin/claims?follow_up=true
 
 ---
-RefundFinder Admin Dashboard
+Flghtly Admin Dashboard
 Generated: ${new Date().toLocaleString()}
     `,
   };

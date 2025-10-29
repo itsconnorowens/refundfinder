@@ -40,7 +40,7 @@ export default function Home() {
                     <PlaneIcon size={20} className="text-white" />
                   </div>
                   <div>
-                    <h1 className="text-xl font-bold text-gray-900">RefundFinder</h1>
+                    <h1 className="text-xl font-bold text-gray-900">Flghtly</h1>
                     <p className="text-xs text-gray-500 -mt-1">Flight Compensation</p>
                   </div>
                 </div>
@@ -224,7 +224,7 @@ export default function Home() {
                 </div>
               </div>
               <p className="text-gray-700 mb-4">
-                "My flight was delayed 4 hours due to technical issues. RefundFinder handled everything and I got €400 compensation within 3 weeks!"
+                "My flight was delayed 4 hours due to technical issues. Flghtly handled everything and I got €400 compensation within 3 weeks!"
               </p>
               <div className="flex justify-between items-center">
                 <span className="text-green-600 font-semibold">€400 recovered</span>
@@ -407,7 +407,7 @@ export default function Home() {
               </h3>
               <div className="text-yellow-700 text-sm space-y-2">
                 <p>
-                  <strong>Service Nature:</strong> RefundFinder provides assistance services only. We are not a law firm and do not provide legal advice or representation.
+                  <strong>Service Nature:</strong> Flghtly provides assistance services only. We are not a law firm and do not provide legal advice or representation.
                 </p>
                 <p>
                   <strong>Eligibility:</strong> Compensation eligibility depends on various factors including flight route, delay duration, and circumstances. We provide initial assessments, but final determination rests with the airline.
@@ -478,7 +478,7 @@ export default function Home() {
       <footer className="bg-gray-900 text-white py-12">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center">
-            <h3 className="text-2xl font-bold mb-4">✈️ RefundFinder</h3>
+            <h3 className="text-2xl font-bold mb-4">✈️ Flghtly</h3>
             <p className="text-gray-400 mb-6">Get the compensation you deserve for flight delays and cancellations</p>
             <div className="flex flex-wrap justify-center gap-6 mb-6">
               <a 
@@ -507,7 +507,7 @@ export default function Home() {
               </a>
             </div>
             <div className="text-sm text-gray-500">
-              © 2024 RefundFinder. All rights reserved.
+              © 2024 Flghtly. All rights reserved.
             </div>
           </div>
         </div>

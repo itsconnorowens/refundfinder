@@ -210,17 +210,17 @@ export default function GDPRCompliancePage() {
             <div className="grid md:grid-cols-3 gap-4">
               <div className="bg-slate-700 rounded-lg p-4">
                 <h3 className="font-semibold text-white mb-2">Privacy Team</h3>
-                <p className="text-slate-300 text-sm">privacy@refundfinder.com</p>
+                <p className="text-slate-300 text-sm">privacy@flghtly.com</p>
                 <p className="text-slate-400 text-xs">General privacy inquiries</p>
               </div>
               <div className="bg-slate-700 rounded-lg p-4">
                 <h3 className="font-semibold text-white mb-2">Data Protection Officer</h3>
-                <p className="text-slate-300 text-sm">dpo@refundfinder.com</p>
+                <p className="text-slate-300 text-sm">dpo@flghtly.com</p>
                 <p className="text-slate-400 text-xs">Data protection matters</p>
               </div>
               <div className="bg-slate-700 rounded-lg p-4">
                 <h3 className="font-semibold text-white mb-2">EU Representative</h3>
-                <p className="text-slate-300 text-sm">eu-representative@refundfinder.com</p>
+                <p className="text-slate-300 text-sm">eu-representative@flghtly.com</p>
                 <p className="text-slate-400 text-xs">EU data protection authority liaison</p>
               </div>
             </div>

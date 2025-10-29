@@ -1,12 +1,24 @@
 import sgMail from '@sendgrid/mail';
+import { Resend } from 'resend';
 
 // Initialize SendGrid
-const apiKey = process.env.SENDGRID_API_KEY;
-if (apiKey) {
-  sgMail.setApiKey(apiKey);
+const sendGridApiKey = process.env.SENDGRID_API_KEY;
+if (sendGridApiKey) {
+  sgMail.setApiKey(sendGridApiKey);
 } else {
   console.warn(
-    'SendGrid API key not configured. Email sending will be disabled.'
+    'SendGrid API key not configured. SendGrid email sending will be disabled.'
+  );
+}
+
+// Initialize Resend
+const resendApiKey = process.env.RESEND_API_KEY;
+let resend: Resend | null = null;
+if (resendApiKey) {
+  resend = new Resend(resendApiKey);
+} else {
+  console.warn(
+    'Resend API key not configured. Resend email sending will be disabled.'
   );
 }
 
@@ -123,15 +135,15 @@ export function getPaymentConfirmationTemplate(
               <p><strong>Important:</strong> We'll email you with every update. No action needed from you - we handle everything!</p>
               
               <div style="text-align: center; margin: 30px 0;">
-                <a href="mailto:support@refundfinder.com?subject=Claim ${data.claimId}" class="button">
+                <a href="mailto:support@flghtly.com?subject=Claim ${data.claimId}" class="button">
                   Contact Support
                 </a>
               </div>
             </div>
             
             <div class="footer">
-              <p>Questions? Reply to this email or contact us at support@refundfinder.com</p>
-              <p>RefundFinder - We fight for your flight delay compensation</p>
+              <p>Questions? Reply to this email or contact us at support@flghtly.com</p>
+              <p>Flghtly - We fight for your flight delay compensation</p>
             </div>
           </div>
         </body>
@@ -160,9 +172,9 @@ WHAT HAPPENS NEXT:
 
 Important: We'll email you with every update. No action needed from you - we handle everything!
 
-Questions? Contact us at support@refundfinder.com
+Questions? Contact us at support@flghtly.com
 
-RefundFinder - We fight for your flight delay compensation
+Flghtly - We fight for your flight delay compensation
     `,
   };
 }
@@ -240,8 +252,8 @@ export function getStatusUpdateTemplate(data: StatusUpdateData): EmailTemplate {
             </div>
             
             <div class="footer">
-              <p>Questions? Reply to this email or contact us at support@refundfinder.com</p>
-              <p>RefundFinder - We fight for your flight delay compensation</p>
+              <p>Questions? Reply to this email or contact us at support@flghtly.com</p>
+              <p>Flghtly - We fight for your flight delay compensation</p>
             </div>
           </div>
         </body>
@@ -263,9 +275,9 @@ ${data.nextSteps ? `NEXT STEPS:\n${data.nextSteps}\n` : ''}
 
 We'll continue to keep you updated on any changes to your claim.
 
-Questions? Contact us at support@refundfinder.com
+Questions? Contact us at support@flghtly.com
 
-RefundFinder - We fight for your flight delay compensation
+Flghtly - We fight for your flight delay compensation
     `,
   };
 }
@@ -276,10 +288,10 @@ RefundFinder - We fight for your flight delay compensation
 export async function sendEmail(
   to: string,
   template: EmailTemplate,
-  fromEmail: string = 'noreply@refundfinder.com',
-  fromName: string = 'RefundFinder'
+  fromEmail: string = 'noreply@flghtly.com',
+  fromName: string = 'Flghtly'
 ): Promise<boolean> {
-  if (!apiKey) {
+  if (!sendGridApiKey) {
     console.warn('SendGrid not configured. Email not sent.');
     return false;
   }

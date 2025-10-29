@@ -24,14 +24,14 @@ export default function TermsPage() {
             <section>
               <h2 className="text-xl font-semibold text-white mb-3">1. Acceptance of Terms</h2>
               <p>
-                By accessing and using RefundFinder ("the Service"), you accept and agree to be bound by the terms and provision of this agreement. If you do not agree to abide by the above, please do not use this service.
+                By accessing and using Flghtly ("the Service"), you accept and agree to be bound by the terms and provision of this agreement. If you do not agree to abide by the above, please do not use this service.
               </p>
             </section>
 
             <section>
               <h2 className="text-xl font-semibold text-white mb-3">2. Description of Service</h2>
               <p>
-                RefundFinder is a service that provides <strong>assistance</strong> to passengers in claiming compensation for flight delays and cancellations under EU Regulation 261/2004, UK CAA regulations, and other applicable consumer protection laws. We assist in the preparation and submission of compensation claims to airlines on behalf of passengers. <strong>We do not provide legal advice or representation.</strong>
+                Flghtly is a service that provides <strong>assistance</strong> to passengers in claiming compensation for flight delays and cancellations under EU Regulation 261/2004, UK CAA regulations, and other applicable consumer protection laws. We assist in the preparation and submission of compensation claims to airlines on behalf of passengers. <strong>We do not provide legal advice or representation.</strong>
               </p>
               <p className="mt-3 text-yellow-400">
                 <strong>Important:</strong> This service is provided for informational and assistance purposes only. We are not a law firm and do not provide legal advice. For legal advice regarding your specific situation, please consult with a qualified attorney.
@@ -160,9 +160,9 @@ export default function TermsPage() {
                 If you have any questions about these Terms of Service, please contact us at:
               </p>
               <div className="bg-slate-700 rounded-lg p-4 mt-3">
-                <p><strong>Email:</strong> legal@refundfinder.com</p>
-                <p><strong>Support:</strong> support@refundfinder.com</p>
-                <p><strong>EU Representative:</strong> eu-representative@refundfinder.com</p>
+                <p><strong>Email:</strong> legal@flghtly.com</p>
+                <p><strong>Support:</strong> support@flghtly.com</p>
+                <p><strong>EU Representative:</strong> eu-representative@flghtly.com</p>
               </div>
             </section>
           </CardContent>

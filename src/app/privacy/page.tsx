@@ -118,7 +118,7 @@ export default function PrivacyPage() {
                 <li><strong>Withdraw Consent:</strong> Withdraw consent for data processing</li>
               </ul>
               <p className="mt-3">
-                <strong>How to Exercise Your Rights:</strong> Contact us at privacy@refundfinder.com with your request. We will respond within 30 days (or 1 month for UK residents).
+                <strong>How to Exercise Your Rights:</strong> Contact us at privacy@flghtly.com with your request. We will respond within 30 days (or 1 month for UK residents).
               </p>
               <p className="mt-3">
                 <strong>Right to Complain:</strong> You have the right to lodge a complaint with your local data protection authority if you believe we have not handled your data properly.
@@ -186,7 +186,7 @@ export default function PrivacyPage() {
                 As a US-based company processing personal data of EU residents, we have appointed an EU Representative to act as our point of contact for EU data protection matters:
               </p>
               <div className="bg-slate-700 rounded-lg p-4 mt-3">
-                <p><strong>EU Representative:</strong> eu-representative@refundfinder.com</p>
+                <p><strong>EU Representative:</strong> eu-representative@flghtly.com</p>
                 <p><strong>Purpose:</strong> To liaise with EU data protection authorities and data subjects</p>
                 <p><strong>Response Time:</strong> We will respond to EU Representative inquiries within 72 hours</p>
               </div>
@@ -198,10 +198,10 @@ export default function PrivacyPage() {
                 If you have any questions about this Privacy Policy or our data practices, please contact us:
               </p>
               <div className="bg-slate-700 rounded-lg p-4 mt-3">
-                <p><strong>Email:</strong> privacy@refundfinder.com</p>
-                <p><strong>Support:</strong> support@refundfinder.com</p>
-                <p><strong>Data Protection Officer:</strong> dpo@refundfinder.com</p>
-                <p><strong>EU Representative:</strong> eu-representative@refundfinder.com</p>
+                <p><strong>Email:</strong> privacy@flghtly.com</p>
+                <p><strong>Support:</strong> support@flghtly.com</p>
+                <p><strong>Data Protection Officer:</strong> dpo@flghtly.com</p>
+                <p><strong>EU Representative:</strong> eu-representative@flghtly.com</p>
               </div>
             </section>
           </CardContent>

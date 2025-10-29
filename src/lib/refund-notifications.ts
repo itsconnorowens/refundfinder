@@ -73,12 +73,12 @@ const REFUND_TEMPLATES: RefundNotificationTemplates = {
           
           <div style="background: #0f172a; padding: 15px; border-radius: 8px; margin: 20px 0;">
             <p style="color: #94a3b8; font-size: 14px; margin: 0;">
-              <strong>Need help?</strong> Reply to this email or contact us at support@refundfinder.com
+              <strong>Need help?</strong> Reply to this email or contact us at support@flghtly.com
             </p>
           </div>
           
           <p style="color: #94a3b8; font-size: 14px; margin: 20px 0 0 0;">
-            Thank you for using RefundFinder. We apologize that we couldn't successfully process your claim this time.
+            Thank you for using Flghtly. We apologize that we couldn't successfully process your claim this time.
           </p>
         </div>
       </div>
@@ -98,9 +98,9 @@ const REFUND_TEMPLATES: RefundNotificationTemplates = {
       
       The refund has been processed through Stripe and should appear in your account within ${data.estimatedRefundTime}.
       
-      Need help? Contact us at support@refundfinder.com
-      
-      Thank you for using RefundFinder.
+      Need help? Contact us at support@flghtly.com
+
+      Thank you for using Flghtly.
     `,
   }),
 
@@ -133,7 +133,7 @@ const REFUND_TEMPLATES: RefundNotificationTemplates = {
           
           <div style="background: #0f172a; padding: 15px; border-radius: 8px; margin: 20px 0;">
             <p style="color: #94a3b8; font-size: 14px; margin: 0;">
-              <strong>Need help?</strong> Reply to this email or contact us at support@refundfinder.com
+              <strong>Need help?</strong> Reply to this email or contact us at support@flghtly.com
             </p>
           </div>
         </div>
@@ -154,7 +154,7 @@ const REFUND_TEMPLATES: RefundNotificationTemplates = {
       
       The refund has been processed and should appear in your account within ${data.estimatedRefundTime}.
       
-      Need help? Contact us at support@refundfinder.com
+      Need help? Contact us at support@flghtly.com
     `,
   }),
 
@@ -186,7 +186,7 @@ const REFUND_TEMPLATES: RefundNotificationTemplates = {
           
           <div style="background: #0f172a; padding: 15px; border-radius: 8px; margin: 20px 0;">
             <p style="color: #94a3b8; font-size: 14px; margin: 0;">
-              <strong>Need help?</strong> Reply to this email or contact us at support@refundfinder.com
+              <strong>Need help?</strong> Reply to this email or contact us at support@flghtly.com
             </p>
           </div>
         </div>
@@ -206,7 +206,7 @@ const REFUND_TEMPLATES: RefundNotificationTemplates = {
       
       If you have any questions about this refund or need assistance with future claims, please don't hesitate to contact us.
       
-      Need help? Contact us at support@refundfinder.com
+      Need help? Contact us at support@flghtly.com
     `,
   }),
 };
@@ -227,7 +227,7 @@ export async function sendRefundNotification(
     const template = REFUND_TEMPLATES[type](data);
 
     const result = await resend.emails.send({
-      from: 'RefundFinder <noreply@refundfinder.com>',
+      from: 'Flghtly <noreply@flghtly.com>',
       to: [data.customerEmail],
       subject: template.subject,
       html: template.html,

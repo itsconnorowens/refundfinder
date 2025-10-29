@@ -1,4 +1,4 @@
-# RefundFinder - Flight Delay Compensation Platform
+# Flghtly - Flight Delay Compensation Platform
 
 A Next.js application that helps users check their eligibility for flight delay compensation and submit claims. Built with TypeScript, Tailwind CSS, and integrated with Airtable, Stripe, and Claude AI.
 

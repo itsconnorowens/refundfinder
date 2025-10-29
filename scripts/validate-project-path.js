@@ -10,8 +10,8 @@
 const path = require('path');
 const fs = require('fs');
 
-const EXPECTED_PROJECT_NAME = 'refundfinder';
-const EXPECTED_PROJECT_PATH = '/Users/connorowens/Desktop/refundfinder';
+const EXPECTED_PROJECT_NAME = 'flghtly';
+const EXPECTED_PROJECT_PATH = '/Users/connorowens/Desktop/flghtly';
 
 function validateProjectPath() {
   const currentPath = process.cwd();

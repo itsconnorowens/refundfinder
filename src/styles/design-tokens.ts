@@ -1,4 +1,4 @@
-// Design Token System for RefundFinder
+// Design Token System for Flghtly
 // Provides consistent spacing, colors, typography, shadows, and borders
 
 export const spacing = {

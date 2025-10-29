@@ -18,7 +18,7 @@ export const testimonials: Testimonial[] = [
     amount: '€600',
     timeline: '3 weeks',
     quote:
-      'RefundFinder handled everything while I focused on work. Got my €600 in 3 weeks!',
+      'Flghtly handled everything while I focused on work. Got my €600 in 3 weeks!',
     verified: true,
   },
   {
@@ -29,7 +29,7 @@ export const testimonials: Testimonial[] = [
     amount: '€400',
     timeline: '4 weeks',
     quote:
-      'After my 5-hour delay, I thought claiming was too complicated. RefundFinder made it effortless.',
+      'After my 5-hour delay, I thought claiming was too complicated. Flghtly made it effortless.',
     verified: true,
   },
   {
@@ -40,7 +40,7 @@ export const testimonials: Testimonial[] = [
     amount: '€250',
     timeline: '2 weeks',
     quote:
-      'Family trip ruined by delays, but RefundFinder turned it around. Quick and professional service.',
+      'Family trip ruined by delays, but Flghtly turned it around. Quick and professional service.',
     verified: true,
   },
   {
@@ -62,7 +62,7 @@ export const testimonials: Testimonial[] = [
     amount: '€600',
     timeline: '5 weeks',
     quote:
-      "As a frequent flyer, I've tried other services. RefundFinder is by far the most transparent and reliable.",
+      "As a frequent flyer, I've tried other services. Flghtly is by far the most transparent and reliable.",
     verified: true,
   },
 ];

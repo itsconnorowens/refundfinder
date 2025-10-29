@@ -28,9 +28,9 @@ export interface GDPRComplianceConfig {
 
 export const GDPR_CONFIG: GDPRComplianceConfig = {
   dataRetentionDays: 90,
-  euRepresentativeEmail: 'eu-representative@refundfinder.com',
-  dpoEmail: 'dpo@refundfinder.com',
-  privacyEmail: 'privacy@refundfinder.com',
+  euRepresentativeEmail: 'eu-representative@flghtly.com',
+  dpoEmail: 'dpo@flghtly.com',
+  privacyEmail: 'privacy@flghtly.com',
   maxResponseTimeDays: 30,
 };
 

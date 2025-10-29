@@ -1,7 +1,7 @@
 # Data Schema and Airtable Testing Report
 
 ## Overview
-This report documents the comprehensive testing of the data schema and Airtable integration for the RefundFinder application. The testing covers data validation, schema compliance, error handling, and edge cases.
+This report documents the comprehensive testing of the data schema and Airtable integration for the Flghtly application. The testing covers data validation, schema compliance, error handling, and edge cases.
 
 ## Test Coverage
 

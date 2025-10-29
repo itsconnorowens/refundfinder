@@ -249,7 +249,7 @@ A session is successful when:
 ## 📚 Reference Documents
 
 ### Key Documents to Check
-1. `refundfinder_prd.md` - Approved scope
+1. `flghtly_prd.md` - Approved scope
 2. `PROCESS_GUIDELINES.md` - This document
 3. Any approved plans in TODO list
 

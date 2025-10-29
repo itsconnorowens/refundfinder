@@ -69,7 +69,7 @@ export default function HeroExamplePage() {
       <section className="bg-slate-900 py-16 md:py-24">
         <div className="container mx-auto px-4">
           <h2 className="text-3xl md:text-4xl font-bold text-white text-center mb-12">
-            Why Choose RefundFinder?
+            Why Choose Flghtly?
           </h2>
 
           <div className="grid md:grid-cols-3 gap-8">

@@ -68,7 +68,7 @@ curl -X POST http://localhost:3000/api/test-email \
 
 ### Payment Confirmation Template
 - **Subject**: "Payment Confirmed - Claim {claimId}"
-- **Design**: Professional, branded with RefundFinder colors
+- **Design**: Professional, branded with Flghtly colors
 - **Sections**:
   - Success confirmation
   - Claim details table

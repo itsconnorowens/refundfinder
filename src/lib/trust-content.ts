@@ -23,7 +23,7 @@ export interface TrustContent {
 
 export interface ComparisonFeature {
   feature: string;
-  refundfinder: string;
+  flghtly: string;
   competitors: string;
 }
 
@@ -74,22 +74,22 @@ export const comparisonData = {
   features: [
     {
       feature: 'Fee',
-      refundfinder: '$49 flat',
+      flghtly: '$49 flat',
       competitors: '25-35% commission',
     },
     {
       feature: 'Filing Time',
-      refundfinder: '48 hours',
+      flghtly: '48 hours',
       competitors: '1-2 weeks',
     },
     {
       feature: 'Refund Guarantee',
-      refundfinder: '100% automatic',
+      flghtly: '100% automatic',
       competitors: 'Limited/None',
     },
     {
       feature: 'Transparency',
-      refundfinder: 'Full upfront',
+      flghtly: 'Full upfront',
       competitors: 'Hidden terms',
     },
   ],

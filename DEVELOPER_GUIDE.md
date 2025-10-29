@@ -1,4 +1,4 @@
-# 👨‍💻 Developer Guide - RefundFinder
+# 👨‍💻 Developer Guide - Flghtly
 
 ## 🚀 **Quick Start**
 
@@ -11,7 +11,7 @@
 ```bash
 # Clone repository
 git clone <repository-url>
-cd refundfinder
+cd flghtly
 
 # Install dependencies
 npm install
@@ -238,7 +238,7 @@ AIRTABLE_BASE_ID=
 ## 🆘 **Getting Help**
 
 ### Team Channels
-- **Slack**: #refundfinder-dev
+- **Slack**: #flghtly-dev
 - **Email**: dev-team@company.com
 
 ### Escalation Process

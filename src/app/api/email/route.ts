@@ -33,8 +33,8 @@ export async function GET(request: NextRequest) {
           to: 'test@example.com',
           template: {
             subject: 'Test Email',
-            html: '<p>This is a test email from RefundFinder.</p>',
-            text: 'This is a test email from RefundFinder.',
+            html: '<p>This is a test email from Flghtly.</p>',
+            text: 'This is a test email from Flghtly.',
           },
         });
 

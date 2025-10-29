@@ -78,8 +78,8 @@ Please provide:
 We look forward to your prompt response.
 
 Best regards,
-RefundFinder Support Team
-support@refundfinder.com
+Flghtly Support Team
+support@flghtly.com
 
 ---
 This follow-up is being sent on behalf of the passenger as part of our compensation assistance service.
@@ -108,8 +108,8 @@ Please provide:
 We appreciate your attention to this matter.
 
 Best regards,
-RefundFinder Support Team
-support@refundfinder.com
+Flghtly Support Team
+support@flghtly.com
 
 ---
 This reminder is being sent on behalf of the passenger as part of our compensation assistance service.
@@ -143,8 +143,8 @@ Please provide immediate:
 We hope to resolve this matter amicably and look forward to your urgent response.
 
 Best regards,
-RefundFinder Support Team
-support@refundfinder.com
+Flghtly Support Team
+support@flghtly.com
 
 ---
 This escalation notice is being sent on behalf of the passenger as part of our compensation assistance service.
@@ -177,8 +177,8 @@ If you wish to resolve this matter before regulatory action, please respond with
 This is our final attempt to resolve this matter directly.
 
 Best regards,
-RefundFinder Support Team
-support@refundfinder.com
+Flghtly Support Team
+support@flghtly.com
 
 ---
 This final notice is being sent on behalf of the passenger as part of our compensation assistance service.

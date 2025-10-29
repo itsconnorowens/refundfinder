@@ -2,8 +2,8 @@ import { MetadataRoute } from 'next';
 
 export default function manifest(): MetadataRoute.Manifest {
   return {
-    name: 'RefundFinder',
-    short_name: 'Refund',
+    name: 'Flghtly',
+    short_name: 'Flghtly',
     description: 'Get flight delay compensation instantly',
     start_url: '/',
     display: 'standalone',

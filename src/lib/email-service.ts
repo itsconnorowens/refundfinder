@@ -60,8 +60,8 @@ class EmailService {
       fallbacks.push({
         provider: 'resend',
         apiKey: process.env.RESEND_API_KEY,
-        fromEmail: process.env.RESEND_FROM_EMAIL || 'noreply@refundfinder.com',
-        fromName: 'RefundFinder',
+        fromEmail: process.env.RESEND_FROM_EMAIL || 'claims@flghtly.com',
+        fromName: 'Flghtly',
       });
     }
 
@@ -70,9 +70,8 @@ class EmailService {
       fallbacks.push({
         provider: 'sendgrid',
         apiKey: process.env.SENDGRID_API_KEY,
-        fromEmail:
-          process.env.SENDGRID_FROM_EMAIL || 'noreply@refundfinder.com',
-        fromName: 'RefundFinder',
+        fromEmail: process.env.SENDGRID_FROM_EMAIL || 'noreply@flghtly.com',
+        fromName: 'Flghtly',
       });
     }
 
@@ -93,16 +92,16 @@ class EmailService {
             pass: process.env.SMTP_PASS,
           },
         },
-        fromEmail: process.env.SMTP_FROM_EMAIL || 'noreply@refundfinder.com',
-        fromName: 'RefundFinder',
+        fromEmail: process.env.SMTP_FROM_EMAIL || 'claims@flghtly.com',
+        fromName: 'Flghtly',
       });
     }
 
     // Always add console as final fallback
     fallbacks.push({
       provider: 'console',
-      fromEmail: 'noreply@refundfinder.com',
-      fromName: 'RefundFinder',
+      fromEmail: 'claims@flghtly.com',
+      fromName: 'Flghtly',
     });
 
     return fallbacks;
@@ -169,8 +168,8 @@ class EmailService {
     const msg = {
       to: emailData.to,
       from: {
-        email: provider.fromEmail || 'noreply@refundfinder.com',
-        name: provider.fromName || 'RefundFinder',
+        email: provider.fromEmail || 'noreply@flghtly.com',
+        name: provider.fromName || 'Flghtly',
       },
       subject: template.subject,
       text: template.text,
@@ -202,7 +201,7 @@ class EmailService {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        from: `${provider.fromName || 'RefundFinder'} <${provider.fromEmail || 'noreply@refundfinder.com'}>`,
+        from: `${provider.fromName || 'Flghtly'} <${provider.fromEmail || 'noreply@flghtly.com'}>`,
         to: [emailData.to],
         subject: template.subject,
         html: template.html,
@@ -242,7 +241,7 @@ class EmailService {
     });
 
     const mailOptions = {
-      from: `${provider.fromName || 'RefundFinder'} <${provider.fromEmail || 'noreply@refundfinder.com'}>`,
+      from: `${provider.fromName || 'Flghtly'} <${provider.fromEmail || 'noreply@refundfinder.com'}>`,
       to: emailData.to,
       subject: template.subject,
       text: template.text,
@@ -268,7 +267,7 @@ class EmailService {
     console.log('='.repeat(80));
     console.log(`To: ${emailData.to}`);
     console.log(
-      `From: ${provider.fromName || 'RefundFinder'} <${provider.fromEmail || 'noreply@refundfinder.com'}>`
+      `From: ${provider.fromName || 'Flghtly'} <${provider.fromEmail || 'noreply@flghtly.com'}>`
     );
     console.log(`Subject: ${template.subject}`);
     console.log('-'.repeat(40));
@@ -322,14 +321,22 @@ class EmailService {
 
 // Initialize email service based on environment
 function createEmailService(): EmailService {
+  // Default to Resend if no provider specified and RESEND_API_KEY is available
   const primaryProvider =
-    (process.env.EMAIL_PROVIDER as EmailConfig['provider']) || 'console';
+    (process.env.EMAIL_PROVIDER as EmailConfig['provider']) ||
+    (process.env.RESEND_API_KEY ? 'resend' : 'console');
 
   const config: EmailConfig = {
     provider: primaryProvider,
-    apiKey: process.env.SENDGRID_API_KEY || process.env.RESEND_API_KEY,
-    fromEmail: process.env.FROM_EMAIL || 'noreply@refundfinder.com',
-    fromName: process.env.FROM_NAME || 'RefundFinder',
+    apiKey:
+      primaryProvider === 'resend'
+        ? process.env.RESEND_API_KEY
+        : process.env.SENDGRID_API_KEY,
+    fromEmail:
+      process.env.RESEND_FROM_EMAIL ||
+      process.env.FROM_EMAIL ||
+      'claims@flghtly.com',
+    fromName: process.env.FROM_NAME || 'Flghtly',
   };
 
   return new EmailService(config);
@@ -364,12 +371,12 @@ export const emailTemplates = {
           {{/each}}
         </ol>
 
-        <p>If you have any questions, please contact us at <a href="mailto:privacy@refundfinder.com">privacy@refundfinder.com</a>.</p>
+        <p>If you have any questions, please contact us at <a href="mailto:privacy@flghtly.com">privacy@flghtly.com</a>.</p>
         
         <hr style="margin: 30px 0;">
         <p style="font-size: 12px; color: #666;">
           This email was sent regarding your GDPR data subject rights request. 
-          RefundFinder - Flight Delay Compensation Assistance
+          Flghtly - Flight Delay Compensation Assistance
         </p>
       </div>
     `,
@@ -391,11 +398,11 @@ Next Steps:
 - {{this}}
 {{/each}}
 
-If you have any questions, please contact us at privacy@refundfinder.com.
+If you have any questions, please contact us at privacy@flghtly.com.
 
 ---
 This email was sent regarding your GDPR data subject rights request.
-RefundFinder - Flight Delay Compensation Assistance
+Flghtly - Flight Delay Compensation Assistance
     `,
   },
 
@@ -405,7 +412,7 @@ RefundFinder - Flight Delay Compensation Assistance
       <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
         <h2 style="color: #00D9B5;">Claim Submitted Successfully</h2>
         <p>Dear {{userName}},</p>
-        <p>Thank you for using RefundFinder! We have successfully submitted your compensation claim.</p>
+        <p>Thank you for using Flghtly! We have successfully submitted your compensation claim.</p>
         
         <div style="background-color: #f8f9fa; padding: 20px; border-radius: 8px; margin: 20px 0;">
           <h3>Claim Details:</h3>
@@ -431,7 +438,7 @@ RefundFinder - Flight Delay Compensation Assistance
         
         <hr style="margin: 30px 0;">
         <p style="font-size: 12px; color: #666;">
-          RefundFinder - Flight Delay Compensation Assistance<br>
+          Flghtly - Flight Delay Compensation Assistance<br>
           <a href="mailto:support@refundfinder.com">support@refundfinder.com</a>
         </p>
       </div>
@@ -441,7 +448,7 @@ Claim Submitted Successfully
 
 Dear {{userName}},
 
-Thank you for using RefundFinder! We have successfully submitted your compensation claim.
+Thank you for using Flghtly! We have successfully submitted your compensation claim.
 
 Claim Details:
 - Flight: {{flightNumber}} ({{airline}})
@@ -460,7 +467,7 @@ What Happens Next:
 Important: We provide assistance services only. We are not a law firm and do not provide legal advice.
 
 ---
-RefundFinder - Flight Delay Compensation Assistance
+Flghtly - Flight Delay Compensation Assistance
 support@refundfinder.com
     `,
   },
@@ -498,7 +505,7 @@ support@refundfinder.com
         
         <hr style="margin: 30px 0;">
         <p style="font-size: 12px; color: #666;">
-          RefundFinder - Flight Delay Compensation Assistance<br>
+          Flghtly - Flight Delay Compensation Assistance<br>
           <a href="mailto:support@refundfinder.com">support@refundfinder.com</a>
         </p>
       </div>
@@ -528,7 +535,7 @@ What Happens Next:
 Important: We'll handle all follow-ups with {{airline}} on your behalf. You don't need to take any further action.
 
 ---
-RefundFinder - Flight Delay Compensation Assistance
+Flghtly - Flight Delay Compensation Assistance
 support@refundfinder.com
     `,
   },
@@ -563,7 +570,7 @@ support@refundfinder.com
         
         <hr style="margin: 30px 0;">
         <p style="font-size: 12px; color: #666;">
-          RefundFinder - Flight Delay Compensation Assistance<br>
+          Flghtly - Flight Delay Compensation Assistance<br>
           <a href="mailto:support@refundfinder.com">support@refundfinder.com</a>
         </p>
       </div>
@@ -590,7 +597,7 @@ Next Steps:
 We'll keep you informed of any developments. Thank you for your patience!
 
 ---
-RefundFinder - Flight Delay Compensation Assistance
+Flghtly - Flight Delay Compensation Assistance
 support@refundfinder.com
     `,
   },
@@ -632,7 +639,7 @@ support@refundfinder.com
         
         <hr style="margin: 30px 0;">
         <p style="font-size: 12px; color: #666;">
-          RefundFinder - Flight Delay Compensation Assistance<br>
+          Flghtly - Flight Delay Compensation Assistance<br>
           <a href="mailto:support@refundfinder.com">support@refundfinder.com</a>
         </p>
       </div>
@@ -664,7 +671,7 @@ Next Steps:
 We'll continue to monitor your claim and keep you updated on any further developments.
 
 ---
-RefundFinder - Flight Delay Compensation Assistance
+Flghtly - Flight Delay Compensation Assistance
 support@refundfinder.com
     `,
   },
@@ -703,7 +710,7 @@ support@refundfinder.com
         
         <hr style="margin: 30px 0;">
         <p style="font-size: 12px; color: #666;">
-          RefundFinder Admin Dashboard<br>
+          Flghtly Admin Dashboard<br>
           Generated: {{timestamp}}
         </p>
       </div>
@@ -731,7 +738,7 @@ Action Required:
 View all ready claims: /admin/claims?status=ready_to_file
 
 ---
-RefundFinder Admin Dashboard
+Flghtly Admin Dashboard
 Generated: {{timestamp}}
     `,
   },
@@ -770,7 +777,7 @@ Generated: {{timestamp}}
         
         <hr style="margin: 30px 0;">
         <p style="font-size: 12px; color: #666;">
-          RefundFinder Admin Dashboard<br>
+          Flghtly Admin Dashboard<br>
           Generated: {{timestamp}}
         </p>
       </div>
@@ -798,7 +805,7 @@ Immediate Action Required:
 View all overdue claims: /admin/claims?overdue=true
 
 ---
-RefundFinder Admin Dashboard
+Flghtly Admin Dashboard
 Generated: {{timestamp}}
     `,
   },
@@ -842,12 +849,12 @@ Generated: {{timestamp}}
             <p><strong>Processed Date:</strong> {{refundDate}}</p>
         </div>
         
-        <p>Thank you for using RefundFinder. We're glad we could help you get the compensation you deserve!</p>
+        <p>Thank you for using Flghtly. We're glad we could help you get the compensation you deserve!</p>
         
         <p>If you have any questions about this refund, please don't hesitate to contact our support team.</p>
         
         <div class="footer">
-            <p>Best regards,<br>The RefundFinder Team</p>
+            <p>Best regards,<br>The Flghtly Team</p>
             <p>This email was sent regarding claim {{claimId}}</p>
         </div>
     </div>
@@ -866,12 +873,12 @@ Refund Details:
 - Refund Reason: {{refundReason}}
 - Processed Date: {{refundDate}}
 
-Thank you for using RefundFinder. We're glad we could help you get the compensation you deserve!
+Thank you for using Flghtly. We're glad we could help you get the compensation you deserve!
 
 If you have any questions about this refund, please don't hesitate to contact our support team.
 
 Best regards,
-The RefundFinder Team
+The Flghtly Team
 
 This email was sent regarding claim {{claimId}}
     `,
@@ -907,7 +914,7 @@ This email was sent regarding claim {{claimId}}
         
         <hr style="margin: 30px 0;">
         <p style="font-size: 12px; color: #666;">
-          RefundFinder - Flight Delay Compensation Assistance<br>
+          Flghtly - Flight Delay Compensation Assistance<br>
           <a href="mailto:support@refundfinder.com">support@refundfinder.com</a>
         </p>
       </div>
@@ -934,7 +941,7 @@ What Happens Next:
 No action needed from you - we'll take care of everything!
 
 ---
-RefundFinder - Flight Delay Compensation Assistance
+Flghtly - Flight Delay Compensation Assistance
 support@refundfinder.com
     `,
   },
@@ -974,7 +981,7 @@ support@refundfinder.com
         
         <hr style="margin: 30px 0;">
         <p style="font-size: 12px; color: #666;">
-          RefundFinder - Flight Delay Compensation Assistance<br>
+          Flghtly - Flight Delay Compensation Assistance<br>
           <a href="mailto:support@refundfinder.com">support@refundfinder.com</a>
         </p>
       </div>
@@ -1004,7 +1011,7 @@ Next Steps:
 We'll continue to monitor your claim and keep you updated on any further developments.
 
 ---
-RefundFinder - Flight Delay Compensation Assistance
+Flghtly - Flight Delay Compensation Assistance
 support@refundfinder.com
     `,
   },
@@ -1040,7 +1047,7 @@ support@refundfinder.com
         
         <hr style="margin: 30px 0;">
         <p style="font-size: 12px; color: #666;">
-          RefundFinder - Flight Delay Compensation Assistance<br>
+          Flghtly - Flight Delay Compensation Assistance<br>
           <a href="mailto:support@refundfinder.com">support@refundfinder.com</a>
         </p>
       </div>
@@ -1068,7 +1075,7 @@ What Happens Next:
 Congratulations! You've successfully claimed your flight delay compensation.
 
 ---
-RefundFinder - Flight Delay Compensation Assistance
+Flghtly - Flight Delay Compensation Assistance
 support@refundfinder.com
     `,
   },
@@ -1115,7 +1122,7 @@ support@refundfinder.com
         
         <hr style="margin: 30px 0;">
         <p style="font-size: 12px; color: #666;">
-          RefundFinder - Flight Delay Compensation Assistance<br>
+          Flghtly - Flight Delay Compensation Assistance<br>
           <a href="mailto:support@refundfinder.com">support@refundfinder.com</a>
         </p>
       </div>
@@ -1150,7 +1157,7 @@ We've automatically processed a full refund of your service fee. You should see 
 We're sorry this claim wasn't successful. If you have any questions, please don't hesitate to contact us.
 
 ---
-RefundFinder - Flight Delay Compensation Assistance
+Flghtly - Flight Delay Compensation Assistance
 support@refundfinder.com
     `,
   },

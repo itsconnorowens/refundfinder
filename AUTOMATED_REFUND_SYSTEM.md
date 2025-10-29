@@ -1,6 +1,6 @@
 # Automated Refund System
 
-This document describes the comprehensive automated refund system implemented for RefundFinder, including monitoring, analytics, and customer notifications.
+This document describes the comprehensive automated refund system implemented for Flghtly, including monitoring, analytics, and customer notifications.
 
 ## Overview
 
@@ -290,7 +290,7 @@ curl -X POST https://your-domain.com/api/cron/process-automatic-refunds \
 ## Support
 
 For technical support or questions about the automated refund system:
-- Email: support@refundfinder.com
+- Email: support@flghtly.com
 - Documentation: [Internal Wiki]
 - Code Repository: [GitHub Repository]
 

@@ -1,4 +1,4 @@
-const CACHE_NAME = 'refundfinder-v1';
+const CACHE_NAME = 'flghtly-v1';
 const RUNTIME_CACHE = 'runtime-cache';
 
 // Install event - cache critical assets
@@ -146,7 +146,7 @@ self.addEventListener('push', (event) => {
   console.log('[Service Worker] Push notification received');
   
   const data = event.data?.json() || {};
-  const title = data.title || 'RefundFinder';
+  const title = data.title || 'Flghtly';
   const options = {
     body: data.body || 'You have a new update',
     icon: '/icon-192.png',

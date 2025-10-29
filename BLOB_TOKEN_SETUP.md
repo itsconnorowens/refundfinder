@@ -7,7 +7,7 @@
 ## Step 2: Create a Blob Store
 1. Click **"Create Store"**
 2. Choose **"Blob"** as the store type
-3. Give it a name (e.g., "refundfinder-files")
+3. Give it a name (e.g., "flghtly-files")
 4. Select your preferred region
 5. Click **"Create"**
 

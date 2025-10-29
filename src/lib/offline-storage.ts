@@ -18,7 +18,7 @@ class OfflineDatabase extends Dexie {
   claims!: Table<OfflineClaim>;
 
   constructor() {
-    super('RefundFinderDB');
+    super('FlghtlyDB');
     this.version(1).stores({
       claims: '++id, claimId, status, createdAt',
     });

@@ -44,7 +44,7 @@ function AdminLoginForm() {
           Admin Login
         </h2>
         <p className="mt-2 text-center text-sm text-gray-600">
-          RefundFinder Admin Dashboard
+          Flghtly Admin Dashboard
         </p>
       </div>
 
@@ -92,7 +92,7 @@ function AdminLoginForm() {
                 <div className="w-full border-t border-gray-300" />
               </div>
               <div className="relative flex justify-center text-sm">
-                <span className="px-2 bg-white text-gray-500">RefundFinder Admin</span>
+                <span className="px-2 bg-white text-gray-500">Flghtly Admin</span>
               </div>
             </div>
           </div>

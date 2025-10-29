@@ -12,7 +12,7 @@ export function TrustSection({ className = "" }: TrustSectionProps) {
       <div className="container mx-auto px-5 sm:px-10 lg:px-15">
         <div className="text-center mb-16">
           <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">
-            Why Trust RefundFinder?
+            Why Trust Flghtly?
           </h2>
           <p className="text-xl text-slate-400">
             We're committed to transparency, security, and your success
@@ -125,7 +125,7 @@ export function TrustSection({ className = "" }: TrustSectionProps) {
                   <thead>
                     <tr className="border-b border-slate-700">
                       <th className="text-left p-4 text-white font-semibold">Feature</th>
-                      <th className="text-center p-4 text-[#00D9B5] font-semibold">RefundFinder</th>
+                      <th className="text-center p-4 text-[#00D9B5] font-semibold">Flghtly</th>
                       <th className="text-center p-4 text-slate-400 font-semibold">Typical Competitors</th>
                     </tr>
                   </thead>
@@ -133,7 +133,7 @@ export function TrustSection({ className = "" }: TrustSectionProps) {
                     {comparisonData.features.map((feature: ComparisonFeature, index: number) => (
                       <tr key={index} className="border-b border-slate-700 last:border-b-0">
                         <td className="p-4 text-slate-300">{feature.feature}</td>
-                        <td className="p-4 text-center text-[#00D9B5] font-medium">{feature.refundfinder}</td>
+                        <td className="p-4 text-center text-[#00D9B5] font-medium">{feature.flghtly}</td>
                         <td className="p-4 text-center text-slate-400">{feature.competitors}</td>
                       </tr>
                     ))}

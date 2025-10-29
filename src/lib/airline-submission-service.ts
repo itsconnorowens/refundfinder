@@ -319,8 +319,8 @@ async function sendAirlineClaimEmail(
           <div style="background-color: #f8f9fa; padding: 20px; border-radius: 8px; margin: 20px 0;">
             ${emailData.body.replace(/\n/g, '<br>')}
           </div>
-          <p><strong>Note:</strong> This claim is being processed by RefundFinder on behalf of the passenger.</p>
-          <p>For any questions, please contact: support@refundfinder.com</p>
+          <p><strong>Note:</strong> This claim is being processed by Flghtly on behalf of the passenger.</p>
+          <p>For any questions, please contact: support@flghtly.com</p>
         </div>
       `,
       text: emailData.body,

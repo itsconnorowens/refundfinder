@@ -50,14 +50,16 @@ describe('Cron Job Integration Tests', () => {
 
     // Set up environment variables
     process.env.CRON_SECRET = 'test-cron-secret';
-    process.env.ADMIN_EMAIL = 'admin@refundfinder.com';
+    process.env.ADMIN_EMAIL = 'admin@flghtly.com';
   });
 
   describe('POST /api/cron/check-follow-ups', () => {
     it('should process overdue claims and send alerts', async () => {
       const { POST } = await import('../cron/check-follow-ups/route');
       const { getOverdueClaims } = await import('../../../lib/airtable');
-      const { sendAdminOverdueAlert } = await import('../../../lib/email-service');
+      const { sendAdminOverdueAlert } = await import(
+        '../../../lib/email-service'
+      );
 
       (getOverdueClaims as Mock).mockResolvedValue([mockOverdueClaim]);
       (sendAdminOverdueAlert as Mock).mockResolvedValue(true);
@@ -81,28 +83,27 @@ describe('Cron Job Integration Tests', () => {
       expect(data.results.overdueClaims).toBe(1);
       expect(data.results.alertsSent).toBe(1);
 
-      expect(sendAdminOverdueAlert).toHaveBeenCalledWith(
-        'admin@refundfinder.com',
-        {
-          claims: [
-            {
-              claimId: 'CLM001',
-              firstName: 'John',
-              lastName: 'Doe',
-              flightNumber: 'BA123',
-              airline: 'British Airways',
-              departureDate: '2024-01-15',
-              submittedAt: '2024-01-10T10:00:00Z',
-              status: 'ready_to_file',
-            },
-          ],
-        }
-      );
+      expect(sendAdminOverdueAlert).toHaveBeenCalledWith('admin@flghtly.com', {
+        claims: [
+          {
+            claimId: 'CLM001',
+            firstName: 'John',
+            lastName: 'Doe',
+            flightNumber: 'BA123',
+            airline: 'British Airways',
+            departureDate: '2024-01-15',
+            submittedAt: '2024-01-10T10:00:00Z',
+            status: 'ready_to_file',
+          },
+        ],
+      });
     });
 
     it('should process follow-up claims and send alerts', async () => {
       const { POST } = await import('../cron/check-follow-ups/route');
-      const { getClaimsNeedingFollowUp, getOverdueClaims } = await import('../../../lib/airtable');
+      const { getClaimsNeedingFollowUp, getOverdueClaims } = await import(
+        '../../../lib/airtable'
+      );
       const { emailService } = await import('../../../lib/email-service');
 
       (getClaimsNeedingFollowUp as Mock).mockResolvedValue([mockFollowUpClaim]);
@@ -129,7 +130,7 @@ describe('Cron Job Integration Tests', () => {
 
       expect(emailService.sendEmail).toHaveBeenCalledWith(
         expect.objectContaining({
-          to: 'admin@refundfinder.com',
+          to: 'admin@flghtly.com',
           template: expect.objectContaining({
             subject: expect.stringContaining('Follow-up Required'),
           }),
@@ -285,7 +286,9 @@ describe('Cron Job Integration Tests', () => {
     it('should handle email sending failures gracefully', async () => {
       const { POST } = await import('../cron/check-follow-ups/route');
       const { getOverdueClaims } = await import('../../../lib/airtable');
-      const { sendAdminOverdueAlert } = await import('../../../lib/email-service');
+      const { sendAdminOverdueAlert } = await import(
+        '../../../lib/email-service'
+      );
 
       (getOverdueClaims as Mock).mockResolvedValue([mockOverdueClaim]);
       (sendAdminOverdueAlert as Mock).mockRejectedValue(
@@ -308,7 +311,9 @@ describe('Cron Job Integration Tests', () => {
       expect(response.status).toBe(200);
       expect(data.success).toBe(true);
       expect(data.results.errors).toHaveLength(1);
-      expect(data.results.errors[0]).toContain('Failed to check overdue claims');
+      expect(data.results.errors[0]).toContain(
+        'Failed to check overdue claims'
+      );
     });
 
     it('should handle database errors gracefully', async () => {
@@ -335,12 +340,16 @@ describe('Cron Job Integration Tests', () => {
       expect(response.status).toBe(200);
       expect(data.success).toBe(true);
       expect(data.results.errors).toHaveLength(1);
-      expect(data.results.errors[0]).toContain('Failed to check overdue claims');
+      expect(data.results.errors[0]).toContain(
+        'Failed to check overdue claims'
+      );
     });
 
     it('should group follow-up claims by airline', async () => {
       const { POST } = await import('../cron/check-follow-ups/route');
-      const { getClaimsNeedingFollowUp, getOverdueClaims } = await import('../../../lib/airtable');
+      const { getClaimsNeedingFollowUp, getOverdueClaims } = await import(
+        '../../../lib/airtable'
+      );
       const { emailService } = await import('../../../lib/email-service');
 
       const multipleClaims = [
@@ -396,7 +405,7 @@ describe('Cron Job Integration Tests', () => {
 
       expect(emailService.sendEmail).toHaveBeenCalledWith(
         expect.objectContaining({
-          to: 'admin@refundfinder.com',
+          to: 'admin@flghtly.com',
           template: expect.objectContaining({
             subject: expect.stringContaining('Follow-up Required'),
           }),
@@ -406,8 +415,12 @@ describe('Cron Job Integration Tests', () => {
 
     it('should calculate days overdue correctly', async () => {
       const { POST } = await import('../cron/check-follow-ups/route');
-      const { getOverdueClaims, getClaimsNeedingFollowUp } = await import('../../../lib/airtable');
-      const { sendAdminOverdueAlert } = await import('../../../lib/email-service');
+      const { getOverdueClaims, getClaimsNeedingFollowUp } = await import(
+        '../../../lib/airtable'
+      );
+      const { sendAdminOverdueAlert } = await import(
+        '../../../lib/email-service'
+      );
 
       const oldClaim = {
         ...mockOverdueClaim,
@@ -437,24 +450,20 @@ describe('Cron Job Integration Tests', () => {
       expect(response.status).toBe(200);
       expect(data.success).toBe(true);
 
-      expect(sendAdminOverdueAlert).toHaveBeenCalledWith(
-        'admin@refundfinder.com',
-        {
-          claims: [
-            {
-              claimId: 'CLM001',
-              firstName: 'John',
-              lastName: 'Doe',
-              flightNumber: 'BA123',
-              airline: 'British Airways',
-              departureDate: '2024-01-15',
-              submittedAt: '2024-01-01T10:00:00Z',
-              status: 'ready_to_file',
-            },
-          ],
-        }
-      );
-
+      expect(sendAdminOverdueAlert).toHaveBeenCalledWith('admin@flghtly.com', {
+        claims: [
+          {
+            claimId: 'CLM001',
+            firstName: 'John',
+            lastName: 'Doe',
+            flightNumber: 'BA123',
+            airline: 'British Airways',
+            departureDate: '2024-01-15',
+            submittedAt: '2024-01-01T10:00:00Z',
+            status: 'ready_to_file',
+          },
+        ],
+      });
     });
   });
 

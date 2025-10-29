@@ -6,9 +6,9 @@ export default function Footer() {
           <div>
             <div className="flex items-center space-x-2 mb-4">
               <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center">
-                <span className="text-white font-bold text-sm">RF</span>
+                <span className="text-white font-bold text-sm">F</span>
               </div>
-              <h3 className="text-xl font-bold">RefundFinder</h3>
+              <h3 className="text-xl font-bold">Flghtly</h3>
             </div>
             <p className="text-gray-400">
               Find and claim your refunds effortlessly.
@@ -44,7 +44,7 @@ export default function Footer() {
         </div>
         
         <div className="border-t border-gray-800 mt-8 pt-8 text-center text-gray-400">
-          <p>&copy; 2024 RefundFinder. All rights reserved.</p>
+          <p>&copy; 2024 Flghtly. All rights reserved.</p>
         </div>
       </div>
     </footer>

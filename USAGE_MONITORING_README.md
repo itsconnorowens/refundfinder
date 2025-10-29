@@ -279,4 +279,4 @@ curl -X POST http://localhost:3000/api/usage \
 
 ## 📝 License
 
-This usage monitoring system is part of the RefundFinder application and follows the same license terms.
+This usage monitoring system is part of the Flghtly application and follows the same license terms.
