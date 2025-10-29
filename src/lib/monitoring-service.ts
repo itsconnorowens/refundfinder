@@ -4,6 +4,7 @@
  */
 
 import { ClaimRecord, updateClaim, getClaimByClaimId } from './airtable';
+import { sendNotification, NotificationChannel } from './notification-service';
 
 export interface EmailTrackingEvent {
   messageId: string;
@@ -102,15 +103,27 @@ export async function createSystemAlert(
       ...alert,
     };
 
-    // In a real implementation, this would be stored in a database
-    // For now, we'll log it and could integrate with external monitoring services
-    console.warn('SYSTEM ALERT:', newAlert);
+    // Determine notification channels based on severity
+    const channels: NotificationChannel[] = ['console'];
 
-    // Could integrate with Slack, PagerDuty, or other alerting systems here
-    if (alert.severity === 'critical') {
-      // Send immediate notification
-      console.error('CRITICAL ALERT:', newAlert);
+    if (alert.severity === 'critical' || alert.severity === 'high') {
+      channels.push('slack', 'email');
+    } else if (alert.severity === 'medium') {
+      channels.push('slack');
     }
+
+    // Send notification
+    await sendNotification({
+      title: alert.title,
+      message: alert.message,
+      severity: alert.severity,
+      channel: channels,
+      metadata: {
+        'Alert ID': alertId,
+        'Alert Type': alert.type,
+        'Timestamp': alert.timestamp,
+      },
+    });
 
     return alertId;
   } catch (error) {

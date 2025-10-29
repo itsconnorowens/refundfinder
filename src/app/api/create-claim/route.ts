@@ -1,6 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createClaim, createPayment } from '@/lib/airtable';
 import { retrievePaymentIntent } from '@/lib/stripe-server';
+import { captureError, setUser, addBreadcrumb, captureMessage } from '@/lib/error-tracking';
+import { trackServerEvent, identifyServerUser } from '@/lib/posthog';
+import { notifyNewClaim } from '@/lib/notification-service';
+import { sendClaimConfirmationEmail } from '@/lib/email-service';
+import { generateClaimId } from '@/lib/claim-id';
+import { logger } from '@/lib/logger';
 
 export async function POST(request: NextRequest) {
   try {
@@ -76,12 +82,13 @@ export async function POST(request: NextRequest) {
       }
     }
 
-    // Verify payment was successful
+    // Verify payment was successful first
     let paymentIntent;
     try {
       paymentIntent = await retrievePaymentIntent(paymentIntentId);
 
       if (paymentIntent.status !== 'succeeded') {
+        logger.warn('Payment not completed', { paymentIntentId, email });
         return NextResponse.json(
           {
             error:
@@ -90,18 +97,44 @@ export async function POST(request: NextRequest) {
           { status: 400 }
         );
       }
+
+      logger.info('Payment verified successfully', { paymentIntentId, amount: paymentIntent.amount });
     } catch (error) {
-      console.error('Error verifying payment:', error);
+      logger.error('Error verifying payment', error as Error, { paymentIntentId, email });
+      captureError(error, {
+        level: 'error',
+        tags: { operation: 'verify_payment', paymentIntentId },
+        extra: { email },
+      });
       return NextResponse.json(
         { error: 'Failed to verify payment. Please contact support.' },
         { status: 400 }
       );
     }
 
-    // Generate claim ID
+    // Get claim ID from Stripe payment intent metadata (generated during payment intent creation)
+    const claimId = paymentIntent.metadata.claimId || generateClaimId();
     const timestamp = Date.now();
-    const claimId = `claim-${timestamp}`;
     const paymentId = `payment-${timestamp}`;
+
+    logger.info('Creating new claim', { claimId, email, airline, flightNumber });
+
+    // Set user context for error tracking
+    setUser({
+      email,
+      name: `${firstName} ${lastName}`,
+      id: claimId,
+    });
+
+    // Identify user in PostHog
+    identifyServerUser(email, {
+      firstName,
+      lastName,
+      email,
+      claimId,
+    });
+
+    addBreadcrumb('Generating claim ID', 'claim', { claimId, paymentId });
 
     const estimatedCompensation = calculateEstimatedCompensation(
       departureAirport,
@@ -111,6 +144,7 @@ export async function POST(request: NextRequest) {
 
     // Create payment record in Airtable
     try {
+      addBreadcrumb('Creating payment record', 'payment', { paymentId, claimId });
       await createPayment({
         paymentId,
         stripePaymentIntentId: paymentIntent.id,
@@ -122,13 +156,20 @@ export async function POST(request: NextRequest) {
         createdAt: new Date().toISOString(),
         succeededAt: new Date().toISOString(),
       });
+      logger.info('Payment record created', { paymentId, claimId, amount: paymentIntent.amount });
     } catch (error) {
-      console.error('Error creating payment record:', error);
+      logger.error('Error creating payment record', error as Error, { paymentId, claimId, email, amount: paymentIntent.amount });
+      captureError(error, {
+        level: 'error',
+        tags: { operation: 'create_payment', paymentId, claimId },
+        extra: { email, amount: paymentIntent.amount },
+      });
       // Continue even if Airtable fails - we have the payment in Stripe
     }
 
     // Create claim record in Airtable
     try {
+      addBreadcrumb('Creating claim record', 'claim', { claimId, airline, flightNumber });
       await createClaim({
         claimId,
         firstName,
@@ -148,12 +189,102 @@ export async function POST(request: NextRequest) {
         boardingPassUrl,
         delayProofUrl,
       });
+
+      // Track successful claim creation
+      captureMessage('Claim created successfully', {
+        level: 'info',
+        tags: {
+          operation: 'create_claim',
+          airline,
+          claimId,
+          status: 'submitted'
+        },
+        extra: {
+          email,
+          flightNumber,
+          estimatedCompensation
+        },
+      });
+
+      // Track claim submission in PostHog
+      trackServerEvent(email, 'claim_submitted', {
+        claimId,
+        airline,
+        flightNumber,
+        departureAirport,
+        arrivalAirport,
+        delayDuration,
+        estimatedCompensation,
+        paymentAmount: paymentIntent.amount / 100, // Convert cents to dollars
+        status: 'submitted',
+      });
+
+      // Send real-time notification for new claim
+      await notifyNewClaim({
+        claimId,
+        email,
+        airline,
+        flightNumber,
+        estimatedCompensation,
+      });
+
+      logger.info('Claim created successfully', { claimId, airline, flightNumber, estimatedCompensation });
     } catch (error) {
-      console.error('Error creating claim record:', error);
+      logger.error('Error creating claim record', error as Error, { claimId, email, airline, flightNumber });
+      captureError(error, {
+        level: 'error',
+        tags: { operation: 'create_claim', claimId },
+        extra: { email, airline, flightNumber },
+      });
       // Continue even if Airtable fails
     }
 
-    // TODO: Send confirmation email
+    // Send confirmation email (don't fail claim if email fails)
+    try {
+      addBreadcrumb('Sending confirmation email', 'email', { email, claimId });
+      const emailResult = await sendClaimConfirmationEmail({
+        email: email,
+        firstName: firstName,
+        claimId: claimId,
+        flightNumber: flightNumber,
+        airline: airline,
+        departureDate: departureDate,
+        departureAirport: departureAirport,
+        arrivalAirport: arrivalAirport,
+        delayDuration: delayDuration,
+        estimatedCompensation: estimatedCompensation,
+      });
+
+      if (emailResult.success) {
+        logger.info(`Confirmation email sent successfully via ${emailResult.provider}`, {
+          messageId: emailResult.messageId,
+          claimId,
+          email,
+          provider: emailResult.provider
+        });
+        captureMessage('Confirmation email sent', {
+          level: 'info',
+          tags: { operation: 'send_email', provider: emailResult.provider, claimId },
+          extra: { email, messageId: emailResult.messageId },
+        });
+      } else {
+        logger.warn('Failed to send confirmation email', { error: emailResult.error, claimId, email });
+        captureError(new Error(emailResult.error || 'Email send failed'), {
+          level: 'warning',
+          tags: { operation: 'send_email', claimId },
+          extra: { email },
+        });
+      }
+    } catch (emailError) {
+      logger.error('Failed to send confirmation email', emailError as Error, { claimId, email });
+      captureError(emailError, {
+        level: 'warning',
+        tags: { operation: 'send_email', claimId },
+        extra: { email },
+      });
+      // Log but don't fail the claim
+    }
+
     // TODO: Queue claim for processing
 
     return NextResponse.json({
@@ -167,7 +298,18 @@ export async function POST(request: NextRequest) {
         "If we're unable to file your claim successfully, you'll receive a 100% refund automatically.",
     });
   } catch (error) {
-    console.error('Error processing claim:', error);
+    logger.error('Error processing claim', error as Error, {
+      url: request.url,
+      method: request.method,
+    });
+    captureError(error, {
+      level: 'fatal',
+      tags: { operation: 'process_claim' },
+      extra: {
+        url: request.url,
+        method: request.method,
+      },
+    });
     return NextResponse.json(
       { error: 'Internal server error' },
       { status: 500 }

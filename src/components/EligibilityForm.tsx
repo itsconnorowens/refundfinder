@@ -8,6 +8,12 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import FlightPathsAnimation from './FlightPathsAnimation';
 import AirlineAutocomplete from './AirlineAutocomplete';
+import {
+  validateFlightNumber,
+  validateAirportCode,
+  validateFlightDate,
+  validateDelayDuration
+} from '@/lib/validation';
 
 interface EligibilityFormData {
   // Option 1: Email paste
@@ -40,10 +46,44 @@ export function EligibilityForm() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string>('');
   const [parsedFlight, setParsedFlight] = useState<Partial<EligibilityFormData> | null>(null);
+  const [fieldErrors, setFieldErrors] = useState<{ [key: string]: string }>({});
+  const [fieldValid, setFieldValid] = useState<{ [key: string]: boolean }>({});
 
   const handleInputChange = (field: keyof EligibilityFormData, value: string) => {
     setFormData(prev => ({ ...prev, [field]: value }));
     setError('');
+    // Clear field error when user types
+    if (fieldErrors[field]) {
+      setFieldErrors(prev => ({ ...prev, [field]: '' }));
+    }
+  };
+
+  const validateField = (field: keyof EligibilityFormData, value: string) => {
+    let result: { valid: boolean; error?: string; normalized?: string } = { valid: true };
+
+    switch (field) {
+      case 'flightNumber':
+        result = validateFlightNumber(value);
+        break;
+      case 'departureAirport':
+      case 'arrivalAirport':
+        result = validateAirportCode(value);
+        break;
+      case 'departureDate':
+        result = validateFlightDate(value);
+        break;
+      case 'delayDuration':
+        result = validateDelayDuration(value);
+        // If normalized value is different, update form data
+        if (result.normalized && result.normalized !== value) {
+          setFormData(prev => ({ ...prev, [field]: result.normalized || value }));
+        }
+        break;
+    }
+
+    setFieldErrors(prev => ({ ...prev, [field]: result.error || '' }));
+    setFieldValid(prev => ({ ...prev, [field]: result.valid }));
+    return result.valid;
   };
 
   const handleEmailParse = async () => {
@@ -100,17 +140,35 @@ export function EligibilityForm() {
   };
 
   const handleCheckEligibility = async () => {
-    // Validate required fields with better error messages
-    const missingFields = [];
-    if (!formData.flightNumber?.trim()) missingFields.push('Flight Number');
-    if (!formData.airline?.trim()) missingFields.push('Airline');
-    if (!formData.departureDate?.trim()) missingFields.push('Departure Date');
-    if (!formData.departureAirport?.trim()) missingFields.push('Departure Airport');
-    if (!formData.arrivalAirport?.trim()) missingFields.push('Arrival Airport');
-    if (!formData.delayDuration?.trim()) missingFields.push('Delay Duration');
-    
-    if (missingFields.length > 0) {
-      setError(`Please fill in: ${missingFields.join(', ')}`);
+    // Validate all fields with comprehensive validation
+    const fieldsToValidate: (keyof EligibilityFormData)[] = [
+      'flightNumber',
+      'departureDate',
+      'departureAirport',
+      'arrivalAirport',
+      'delayDuration'
+    ];
+
+    let hasErrors = false;
+    const newFieldErrors: { [key: string]: string } = {};
+
+    // Validate each field
+    for (const field of fieldsToValidate) {
+      const isValid = validateField(field, formData[field]);
+      if (!isValid) {
+        hasErrors = true;
+      }
+    }
+
+    // Check airline separately (it's not in validation functions)
+    if (!formData.airline?.trim()) {
+      newFieldErrors.airline = 'Airline is required';
+      setFieldErrors(prev => ({ ...prev, airline: 'Airline is required' }));
+      hasErrors = true;
+    }
+
+    if (hasErrors) {
+      setError('Please correct the errors above before continuing');
       return;
     }
 
@@ -258,13 +316,24 @@ export function EligibilityForm() {
                         <Label htmlFor="flightNumber" className="text-sm font-medium text-white">
                           Flight Number *
                         </Label>
-                        <Input
-                          id="flightNumber"
-                          value={formData.flightNumber}
-                          onChange={(e) => handleInputChange('flightNumber', e.target.value)}
-                          placeholder="e.g., BA123"
-                          className="mt-1 bg-slate-800/50 border-slate-700 text-white placeholder-slate-500 focus:border-[#00D9B5]"
-                        />
+                        <div className="relative">
+                          <Input
+                            id="flightNumber"
+                            value={formData.flightNumber}
+                            onChange={(e) => handleInputChange('flightNumber', e.target.value)}
+                            onBlur={(e) => validateField('flightNumber', e.target.value)}
+                            placeholder="e.g., BA123"
+                            className={`mt-1 bg-slate-800/50 border-slate-700 text-white placeholder-slate-500 focus:border-[#00D9B5] ${
+                              fieldErrors.flightNumber ? 'border-red-500' : fieldValid.flightNumber ? 'border-green-500' : ''
+                            }`}
+                          />
+                          {fieldValid.flightNumber && !fieldErrors.flightNumber && (
+                            <span className="absolute right-3 top-1/2 -translate-y-1/2 text-green-500">✓</span>
+                          )}
+                        </div>
+                        {fieldErrors.flightNumber && (
+                          <p className="text-red-400 text-sm mt-1">{fieldErrors.flightNumber}</p>
+                        )}
                       </div>
                       
                       <div>
@@ -281,52 +350,98 @@ export function EligibilityForm() {
                         <Label htmlFor="departureDate" className="text-sm font-medium text-white">
                           Departure Date *
                         </Label>
-                        <Input
-                          id="departureDate"
-                          type="date"
-                          value={formData.departureDate}
-                          onChange={(e) => handleInputChange('departureDate', e.target.value)}
-                          className="mt-1 bg-slate-800/50 border-slate-700 text-white focus:border-[#00D9B5]"
-                        />
+                        <div className="relative">
+                          <Input
+                            id="departureDate"
+                            type="date"
+                            value={formData.departureDate}
+                            onChange={(e) => handleInputChange('departureDate', e.target.value)}
+                            onBlur={(e) => validateField('departureDate', e.target.value)}
+                            className={`mt-1 bg-slate-800/50 border-slate-700 text-white focus:border-[#00D9B5] ${
+                              fieldErrors.departureDate ? 'border-red-500' : fieldValid.departureDate ? 'border-green-500' : ''
+                            }`}
+                          />
+                          {fieldValid.departureDate && !fieldErrors.departureDate && (
+                            <span className="absolute right-3 top-1/2 -translate-y-1/2 text-green-500">✓</span>
+                          )}
+                        </div>
+                        {fieldErrors.departureDate && (
+                          <p className="text-red-400 text-sm mt-1">{fieldErrors.departureDate}</p>
+                        )}
                       </div>
                       
                       <div>
                         <Label htmlFor="delayDuration" className="text-sm font-medium text-white">
                           Delay Duration *
                         </Label>
-                        <Input
-                          id="delayDuration"
-                          value={formData.delayDuration}
-                          onChange={(e) => handleInputChange('delayDuration', e.target.value)}
-                          placeholder="e.g., 4 hours"
-                          className="mt-1 bg-slate-800/50 border-slate-700 text-white placeholder-slate-500 focus:border-[#00D9B5]"
-                        />
+                        <div className="relative">
+                          <Input
+                            id="delayDuration"
+                            value={formData.delayDuration}
+                            onChange={(e) => handleInputChange('delayDuration', e.target.value)}
+                            onBlur={(e) => validateField('delayDuration', e.target.value)}
+                            placeholder="e.g., 4 hours"
+                            className={`mt-1 bg-slate-800/50 border-slate-700 text-white placeholder-slate-500 focus:border-[#00D9B5] ${
+                              fieldErrors.delayDuration ? 'border-red-500' : fieldValid.delayDuration ? 'border-green-500' : ''
+                            }`}
+                          />
+                          {fieldValid.delayDuration && !fieldErrors.delayDuration && (
+                            <span className="absolute right-3 top-1/2 -translate-y-1/2 text-green-500">✓</span>
+                          )}
+                        </div>
+                        {fieldErrors.delayDuration && (
+                          <p className="text-red-400 text-sm mt-1">{fieldErrors.delayDuration}</p>
+                        )}
                       </div>
                       
                       <div>
                         <Label htmlFor="departureAirport" className="text-sm font-medium text-white">
                           Departure Airport *
                         </Label>
-                        <Input
-                          id="departureAirport"
-                          value={formData.departureAirport}
-                          onChange={(e) => handleInputChange('departureAirport', e.target.value.toUpperCase())}
-                          placeholder="e.g., LHR"
-                          className="mt-1 bg-slate-800/50 border-slate-700 text-white placeholder-slate-500 focus:border-[#00D9B5]"
-                        />
+                        <div className="relative">
+                          <Input
+                            id="departureAirport"
+                            value={formData.departureAirport}
+                            onChange={(e) => handleInputChange('departureAirport', e.target.value.toUpperCase())}
+                            onBlur={(e) => validateField('departureAirport', e.target.value)}
+                            placeholder="e.g., LHR"
+                            maxLength={3}
+                            className={`mt-1 bg-slate-800/50 border-slate-700 text-white placeholder-slate-500 focus:border-[#00D9B5] ${
+                              fieldErrors.departureAirport ? 'border-red-500' : fieldValid.departureAirport ? 'border-green-500' : ''
+                            }`}
+                          />
+                          {fieldValid.departureAirport && !fieldErrors.departureAirport && (
+                            <span className="absolute right-3 top-1/2 -translate-y-1/2 text-green-500">✓</span>
+                          )}
+                        </div>
+                        {fieldErrors.departureAirport && (
+                          <p className="text-red-400 text-sm mt-1">{fieldErrors.departureAirport}</p>
+                        )}
                       </div>
                       
                       <div>
                         <Label htmlFor="arrivalAirport" className="text-sm font-medium text-white">
                           Arrival Airport *
                         </Label>
-                        <Input
-                          id="arrivalAirport"
-                          value={formData.arrivalAirport}
-                          onChange={(e) => handleInputChange('arrivalAirport', e.target.value.toUpperCase())}
-                          placeholder="e.g., JFK"
-                          className="mt-1 bg-slate-800/50 border-slate-700 text-white placeholder-slate-500 focus:border-[#00D9B5]"
-                        />
+                        <div className="relative">
+                          <Input
+                            id="arrivalAirport"
+                            value={formData.arrivalAirport}
+                            onChange={(e) => handleInputChange('arrivalAirport', e.target.value.toUpperCase())}
+                            onBlur={(e) => validateField('arrivalAirport', e.target.value)}
+                            placeholder="e.g., JFK"
+                            maxLength={3}
+                            className={`mt-1 bg-slate-800/50 border-slate-700 text-white placeholder-slate-500 focus:border-[#00D9B5] ${
+                              fieldErrors.arrivalAirport ? 'border-red-500' : fieldValid.arrivalAirport ? 'border-green-500' : ''
+                            }`}
+                          />
+                          {fieldValid.arrivalAirport && !fieldErrors.arrivalAirport && (
+                            <span className="absolute right-3 top-1/2 -translate-y-1/2 text-green-500">✓</span>
+                          )}
+                        </div>
+                        {fieldErrors.arrivalAirport && (
+                          <p className="text-red-400 text-sm mt-1">{fieldErrors.arrivalAirport}</p>
+                        )}
                       </div>
                     </div>
 

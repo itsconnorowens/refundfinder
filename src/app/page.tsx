@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import FlightLookupForm from '../components/FlightLookupForm';
 import EmailParsingForm from '../components/EmailParsingForm';
@@ -13,11 +13,13 @@ import { Avatar } from '../components/Avatar';
 import { TrustBadges } from '../components/TrustBadges';
 import { TrustMetrics } from '../components/TrustMetrics';
 import { StepIcon } from '../components/icons';
+import { MobileMenu } from '../components/MobileMenu';
 
 export default function Home() {
   const [activeTab, setActiveTab] = useState<'flight' | 'email'>('flight');
   const [results, setResults] = useState<CheckEligibilityResponse | null>(null);
   const [loading, setLoading] = useState(false);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   const handleResults = (response: CheckEligibilityResponse) => {
     setResults(response);
@@ -26,6 +28,18 @@ export default function Home() {
   const handleLoading = (isLoading: boolean) => {
     setLoading(isLoading);
   };
+
+  // Handle keyboard events (Escape to close menu)
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape' && mobileMenuOpen) {
+        setMobileMenuOpen(false);
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [mobileMenuOpen]);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
@@ -58,7 +72,11 @@ export default function Home() {
               </div>
             </div>
             <div className="md:hidden">
-              <button className="text-gray-600 hover:text-gray-900 p-2">
+              <button
+                onClick={() => setMobileMenuOpen(true)}
+                className="text-gray-600 hover:text-gray-900 p-3"
+                aria-label="Open menu"
+              >
                 <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
                 </svg>
@@ -67,6 +85,9 @@ export default function Home() {
           </div>
         </div>
       </header>
+
+      {/* Mobile Menu */}
+      <MobileMenu isOpen={mobileMenuOpen} onClose={() => setMobileMenuOpen(false)} />
 
       {/* Hero Section with Animation */}
       <section className="relative py-12 overflow-hidden">

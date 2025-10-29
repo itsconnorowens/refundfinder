@@ -366,16 +366,14 @@ export const emailTemplates = {
 
         <h3>Next Steps:</h3>
         <ol>
-          {{#each nextSteps}}
-          <li>{{this}}</li>
-          {{/each}}
+          {{nextStepsHtml}}
         </ol>
 
         <p>If you have any questions, please contact us at <a href="mailto:privacy@flghtly.com">privacy@flghtly.com</a>.</p>
-        
+
         <hr style="margin: 30px 0;">
         <p style="font-size: 12px; color: #666;">
-          This email was sent regarding your GDPR data subject rights request. 
+          This email was sent regarding your GDPR data subject rights request.
           Flghtly - Flight Delay Compensation Assistance
         </p>
       </div>
@@ -394,9 +392,7 @@ Request Details:
 - Response Time: 30 days
 
 Next Steps:
-{{#each nextSteps}}
-- {{this}}
-{{/each}}
+{{nextStepsText}}
 
 If you have any questions, please contact us at privacy@flghtly.com.
 
@@ -418,7 +414,7 @@ Flghtly - Flight Delay Compensation Assistance
           <h3>Claim Details:</h3>
           <ul>
             <li><strong>Flight:</strong> {{flightNumber}} ({{airline}})</li>
-            <li><li><strong>Date:</strong> {{flightDate}}</li>
+            <li><strong>Date:</strong> {{flightDate}}</li>
             <li><strong>Route:</strong> {{departureAirport}} → {{arrivalAirport}}</li>
             <li><strong>Delay:</strong> {{delayDuration}}</li>
             <li><strong>Estimated Compensation:</strong> {{estimatedAmount}}</li>
@@ -626,14 +622,7 @@ claims@flghtly.com
           <p>{{updateMessage}}</p>
         </div>
 
-        {{#if nextSteps}}
-        <h3>Next Steps:</h3>
-        <ol>
-          {{#each nextSteps}}
-          <li>{{this}}</li>
-          {{/each}}
-        </ol>
-        {{/if}}
+        {{nextStepsSection}}
 
         <p>We'll continue to monitor your claim and keep you updated on any further developments.</p>
         
@@ -661,12 +650,7 @@ Claim Details:
 Update Message:
 {{updateMessage}}
 
-{{#if nextSteps}}
-Next Steps:
-{{#each nextSteps}}
-- {{this}}
-{{/each}}
-{{/if}}
+{{nextStepsSectionText}}
 
 We'll continue to monitor your claim and keep you updated on any further developments.
 
@@ -686,15 +670,7 @@ claims@flghtly.com
         <div style="background-color: #fff3cd; padding: 20px; border-radius: 8px; margin: 20px 0; border-left: 4px solid #ffc107;">
           <h3>Ready to File Claims:</h3>
           <ul>
-            {{#each claims}}
-            <li>
-              <strong>{{claimId}}</strong> - {{firstName}} {{lastName}}<br>
-              Flight: {{flightNumber}} ({{airline}}) - {{departureDate}}<br>
-              Route: {{departureAirport}} → {{arrivalAirport}}<br>
-              Delay: {{delayDuration}}<br>
-              <a href="/admin/claims/{{claimId}}" style="color: #00D9B5;">View Details</a>
-            </li>
-            {{/each}}
+            {{claimsListHtml}}
           </ul>
         </div>
 
@@ -721,13 +697,7 @@ Admin Alert: Claims Ready to File
 You have {{count}} claim(s) ready for filing with airlines.
 
 Ready to File Claims:
-{{#each claims}}
-- {{claimId}} - {{firstName}} {{lastName}}
-  Flight: {{flightNumber}} ({{airline}}) - {{departureDate}}
-  Route: {{departureAirport}} → {{arrivalAirport}}
-  Delay: {{delayDuration}}
-  View: /admin/claims/{{claimId}}
-{{/each}}
+{{claimsListText}}
 
 Action Required:
 1. Review each claim and generated submission materials
@@ -753,15 +723,7 @@ Generated: {{timestamp}}
         <div style="background-color: #f8d7da; padding: 20px; border-radius: 8px; margin: 20px 0; border-left: 4px solid #dc3545;">
           <h3>Overdue Claims:</h3>
           <ul>
-            {{#each claims}}
-            <li>
-              <strong>{{claimId}}</strong> - {{firstName}} {{lastName}}<br>
-              Flight: {{flightNumber}} ({{airline}}) - {{departureDate}}<br>
-              Submitted: {{submittedAt}} ({{daysOverdue}} days ago)<br>
-              Current Status: {{status}}<br>
-              <a href="/admin/claims/{{claimId}}" style="color: #dc3545; font-weight: bold;">URGENT: File Now</a>
-            </li>
-            {{/each}}
+            {{overdueClaimsListHtml}}
           </ul>
         </div>
 
@@ -788,13 +750,7 @@ URGENT: Overdue Claims Alert
 You have {{count}} claim(s) past the 48-hour filing deadline!
 
 Overdue Claims:
-{{#each claims}}
-- {{claimId}} - {{firstName}} {{lastName}}
-  Flight: {{flightNumber}} ({{airline}}) - {{departureDate}}
-  Submitted: {{submittedAt}} ({{daysOverdue}} days ago)
-  Current Status: {{status}}
-  URGENT: File Now - /admin/claims/{{claimId}}
-{{/each}}
+{{overdueClaimsListText}}
 
 Immediate Action Required:
 1. File these claims immediately to meet our 48-hour promise
@@ -968,14 +924,7 @@ claims@flghtly.com
           <p>{{responseMessage}}</p>
         </div>
 
-        {{#if nextSteps}}
-        <h3>Next Steps:</h3>
-        <ol>
-          {{#each nextSteps}}
-          <li>{{this}}</li>
-          {{/each}}
-        </ol>
-        {{/if}}
+        {{nextStepsSection}}
 
         <p>We'll continue to monitor your claim and keep you updated on any further developments.</p>
         
@@ -1001,12 +950,7 @@ Claim Details:
 Airline Response:
 {{responseMessage}}
 
-{{#if nextSteps}}
-Next Steps:
-{{#each nextSteps}}
-- {{this}}
-{{/each}}
-{{/if}}
+{{nextStepsSectionText}}
 
 We'll continue to monitor your claim and keep you updated on any further developments.
 
@@ -1102,21 +1046,9 @@ claims@flghtly.com
           <p>{{rejectionReason}}</p>
         </div>
 
-        {{#if appealOptions}}
-        <h3>Appeal Options:</h3>
-        <ol>
-          {{#each appealOptions}}
-          <li>{{this}}</li>
-          {{/each}}
-        </ol>
-        {{/if}}
+        {{appealOptionsSection}}
 
-        {{#if refundProcessed}}
-        <div style="background-color: #dcfce7; padding: 15px; border-radius: 8px; margin: 20px 0;">
-          <h3>Refund Processed</h3>
-          <p>We've automatically processed a full refund of your service fee. You should see this in your account within 5-7 business days.</p>
-        </div>
-        {{/if}}
+        {{refundProcessedSection}}
 
         <p>We're sorry this claim wasn't successful. If you have any questions, please don't hesitate to contact us.</p>
         
@@ -1142,17 +1074,9 @@ Claim Details:
 Reason for Rejection:
 {{rejectionReason}}
 
-{{#if appealOptions}}
-Appeal Options:
-{{#each appealOptions}}
-- {{this}}
-{{/each}}
-{{/if}}
+{{appealOptionsSectionText}}
 
-{{#if refundProcessed}}
-Refund Processed:
-We've automatically processed a full refund of your service fee. You should see this in your account within 5-7 business days.
-{{/if}}
+{{refundProcessedSectionText}}
 
 We're sorry this claim wasn't successful. If you have any questions, please don't hesitate to contact us.
 
@@ -1168,12 +1092,17 @@ export async function sendGDPRConfirmation(
   email: string,
   requestData: any
 ): Promise<EmailResult> {
+  const nextStepsArray = requestData.nextSteps || [];
+  const nextStepsHtml = nextStepsArray.map((step: string) => `<li>${step}</li>`).join('');
+  const nextStepsText = nextStepsArray.map((step: string) => `- ${step}`).join('\n');
+
   const variables = {
     userName: email.split('@')[0],
     requestType: requestData.type,
     requestId: requestData.requestId,
     requestDate: new Date().toLocaleDateString(),
-    nextSteps: requestData.nextSteps.join('\n'),
+    nextStepsHtml,
+    nextStepsText,
   };
 
   return emailService.sendEmail({
@@ -1200,6 +1129,37 @@ export async function sendClaimConfirmation(
 
   return emailService.sendEmail({
     to: email,
+    template: emailTemplates.claimConfirmation,
+    variables,
+  });
+}
+
+export async function sendClaimConfirmationEmail(data: {
+  email: string;
+  firstName: string;
+  claimId: string;
+  flightNumber: string;
+  airline: string;
+  departureDate: string;
+  departureAirport: string;
+  arrivalAirport: string;
+  delayDuration: string;
+  estimatedCompensation: string;
+}): Promise<EmailResult> {
+  const variables = {
+    userName: data.firstName,
+    flightNumber: data.flightNumber,
+    airline: data.airline,
+    flightDate: data.departureDate,
+    departureAirport: data.departureAirport,
+    arrivalAirport: data.arrivalAirport,
+    delayDuration: data.delayDuration,
+    estimatedAmount: data.estimatedCompensation,
+    claimId: data.claimId,
+  };
+
+  return emailService.sendEmail({
+    to: data.email,
     template: emailTemplates.claimConfirmation,
     variables,
   });
@@ -1273,6 +1233,14 @@ export async function sendStatusUpdateNotification(
   email: string,
   claimData: any
 ): Promise<EmailResult> {
+  const nextStepsArray = claimData.nextSteps || [];
+  const nextStepsSection = nextStepsArray.length > 0
+    ? `<h3>Next Steps:</h3><ol>${nextStepsArray.map((step: string) => `<li>${step}</li>`).join('')}</ol>`
+    : '';
+  const nextStepsSectionText = nextStepsArray.length > 0
+    ? `Next Steps:\n${nextStepsArray.map((step: string) => `- ${step}`).join('\n')}`
+    : '';
+
   const variables = {
     userName: claimData.firstName || email.split('@')[0],
     claimId: claimData.claimId,
@@ -1282,7 +1250,8 @@ export async function sendStatusUpdateNotification(
     previousStatus: claimData.previousStatus,
     updateDate: new Date().toLocaleDateString(),
     updateMessage: claimData.updateMessage,
-    nextSteps: claimData.nextSteps || [],
+    nextStepsSection,
+    nextStepsSectionText,
   };
 
   return emailService.sendEmail({
@@ -1296,9 +1265,29 @@ export async function sendAdminReadyToFileAlert(
   adminEmail: string,
   claimsData: any
 ): Promise<EmailResult> {
+  const claimsArray = claimsData.claims || [];
+  const claimsListHtml = claimsArray.map((claim: any) => `
+    <li>
+      <strong>${claim.claimId}</strong> - ${claim.firstName} ${claim.lastName}<br>
+      Flight: ${claim.flightNumber} (${claim.airline}) - ${claim.departureDate}<br>
+      Route: ${claim.departureAirport} → ${claim.arrivalAirport}<br>
+      Delay: ${claim.delayDuration}<br>
+      <a href="/admin/claims/${claim.claimId}" style="color: #00D9B5;">View Details</a>
+    </li>
+  `).join('');
+
+  const claimsListText = claimsArray.map((claim: any) => `
+- ${claim.claimId} - ${claim.firstName} ${claim.lastName}
+  Flight: ${claim.flightNumber} (${claim.airline}) - ${claim.departureDate}
+  Route: ${claim.departureAirport} → ${claim.arrivalAirport}
+  Delay: ${claim.delayDuration}
+  View: /admin/claims/${claim.claimId}
+  `).join('\n');
+
   const variables = {
-    count: claimsData.claims.length,
-    claims: claimsData.claims,
+    count: claimsArray.length,
+    claimsListHtml,
+    claimsListText,
     timestamp: new Date().toLocaleString(),
   };
 
@@ -1313,15 +1302,37 @@ export async function sendAdminOverdueAlert(
   adminEmail: string,
   claimsData: any
 ): Promise<EmailResult> {
+  const claimsArray = claimsData.claims || [];
+  const enrichedClaims = claimsArray.map((claim: any) => ({
+    ...claim,
+    daysOverdue: Math.floor(
+      (Date.now() - new Date(claim.submittedAt).getTime()) /
+        (1000 * 60 * 60 * 24)
+    ),
+  }));
+
+  const overdueClaimsListHtml = enrichedClaims.map((claim: any) => `
+    <li>
+      <strong>${claim.claimId}</strong> - ${claim.firstName} ${claim.lastName}<br>
+      Flight: ${claim.flightNumber} (${claim.airline}) - ${claim.departureDate}<br>
+      Submitted: ${claim.submittedAt} (${claim.daysOverdue} days ago)<br>
+      Current Status: ${claim.status}<br>
+      <a href="/admin/claims/${claim.claimId}" style="color: #dc3545; font-weight: bold;">URGENT: File Now</a>
+    </li>
+  `).join('');
+
+  const overdueClaimsListText = enrichedClaims.map((claim: any) => `
+- ${claim.claimId} - ${claim.firstName} ${claim.lastName}
+  Flight: ${claim.flightNumber} (${claim.airline}) - ${claim.departureDate}
+  Submitted: ${claim.submittedAt} (${claim.daysOverdue} days ago)
+  Current Status: ${claim.status}
+  URGENT: File Now - /admin/claims/${claim.claimId}
+  `).join('\n');
+
   const variables = {
-    count: claimsData.claims.length,
-    claims: claimsData.claims.map((claim: any) => ({
-      ...claim,
-      daysOverdue: Math.floor(
-        (Date.now() - new Date(claim.submittedAt).getTime()) /
-          (1000 * 60 * 60 * 24)
-      ),
-    })),
+    count: enrichedClaims.length,
+    overdueClaimsListHtml,
+    overdueClaimsListText,
     timestamp: new Date().toLocaleString(),
   };
 
@@ -1359,6 +1370,14 @@ export async function sendAirlineRespondedNotification(
   email: string,
   claimData: any
 ): Promise<EmailResult> {
+  const nextStepsArray = claimData.nextSteps || [];
+  const nextStepsSection = nextStepsArray.length > 0
+    ? `<h3>Next Steps:</h3><ol>${nextStepsArray.map((step: string) => `<li>${step}</li>`).join('')}</ol>`
+    : '';
+  const nextStepsSectionText = nextStepsArray.length > 0
+    ? `Next Steps:\n${nextStepsArray.map((step: string) => `- ${step}`).join('\n')}`
+    : '';
+
   const variables = {
     userName: claimData.firstName || email.split('@')[0],
     claimId: claimData.claimId,
@@ -1366,7 +1385,8 @@ export async function sendAirlineRespondedNotification(
     airline: claimData.airline,
     airlineReference: claimData.airlineReference,
     responseMessage: claimData.responseMessage,
-    nextSteps: claimData.nextSteps || [],
+    nextStepsSection,
+    nextStepsSectionText,
   };
 
   return emailService.sendEmail({
@@ -1401,14 +1421,35 @@ export async function sendClaimRejectedNotification(
   email: string,
   claimData: any
 ): Promise<EmailResult> {
+  const appealOptionsArray = claimData.appealOptions || [];
+  const appealOptionsSection = appealOptionsArray.length > 0
+    ? `<h3>Appeal Options:</h3><ol>${appealOptionsArray.map((option: string) => `<li>${option}</li>`).join('')}</ol>`
+    : '';
+  const appealOptionsSectionText = appealOptionsArray.length > 0
+    ? `Appeal Options:\n${appealOptionsArray.map((option: string) => `- ${option}`).join('\n')}`
+    : '';
+
+  const refundProcessed = claimData.refundProcessed || false;
+  const refundProcessedSection = refundProcessed
+    ? `<div style="background-color: #dcfce7; padding: 15px; border-radius: 8px; margin: 20px 0;">
+         <h3>Refund Processed</h3>
+         <p>We've automatically processed a full refund of your service fee. You should see this in your account within 5-7 business days.</p>
+       </div>`
+    : '';
+  const refundProcessedSectionText = refundProcessed
+    ? `Refund Processed:\nWe've automatically processed a full refund of your service fee. You should see this in your account within 5-7 business days.`
+    : '';
+
   const variables = {
     userName: claimData.firstName || email.split('@')[0],
     claimId: claimData.claimId,
     flightNumber: claimData.flightNumber,
     airline: claimData.airline,
     rejectionReason: claimData.rejectionReason,
-    appealOptions: claimData.appealOptions || [],
-    refundProcessed: claimData.refundProcessed || false,
+    appealOptionsSection,
+    appealOptionsSectionText,
+    refundProcessedSection,
+    refundProcessedSectionText,
   };
 
   return emailService.sendEmail({

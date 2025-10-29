@@ -4,6 +4,7 @@ import { useState, useRef } from 'react';
 import { Camera, Upload, X, FileText, Check } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
+import { showError } from '@/lib/toast';
 
 interface MobileFileUploadProps {
   onFileUploaded: (file: File, url: string) => void;
@@ -36,7 +37,7 @@ export function MobileFileUpload({
   const handleFile = async (file: File) => {
     // Validate file size
     if (file.size > maxSize) {
-      alert(`File size must be less than ${(maxSize / 1024 / 1024).toFixed(1)}MB`);
+      showError(`File size must be less than ${(maxSize / 1024 / 1024).toFixed(1)}MB`);
       return;
     }
 
@@ -71,7 +72,7 @@ export function MobileFileUpload({
       onFileUploaded(file, result.url);
     } catch (error) {
       console.error('Upload error:', error);
-      alert('Upload failed. Please try again.');
+      showError('Upload failed. Please try again.');
     } finally {
       setIsUploading(false);
     }

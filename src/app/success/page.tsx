@@ -6,31 +6,42 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { CheckCircle, Mail, Clock, DollarSign, Plane, FileText, Calendar } from 'lucide-react';
+import { ClaimStatusModal } from '@/components/ClaimStatusModal';
 
 function SuccessPageContent() {
   const searchParams = useSearchParams();
   const router = useRouter();
-  const [claimId, setClaimId] = useState<string>('');
 
-  // Get claim details from URL params
+  // Get claim ID from URL params (required - generated server-side)
+  const claimId = searchParams.get('claim_id');
   const sessionId = searchParams.get('session_id');
   const paymentIntentId = searchParams.get('payment_intent_id');
 
   useEffect(() => {
-    // Generate a claim ID if not provided
-    if (!claimId) {
-      const newClaimId = `claim-${Date.now()}`;
-      setClaimId(newClaimId);
-    }
-
     // Clear any stored form data
     localStorage.removeItem('claimFormData');
-  }, [claimId]);
+  }, []);
 
-  const handleCheckStatus = () => {
-    // For MVP, redirect to contact page or show instructions
-    alert('For claim status updates, please email us at claims@flghtly.com with your claim ID: ' + claimId);
-  };
+  // Show error if claim ID is missing
+  if (!claimId) {
+    return (
+      <div className="min-h-screen bg-slate-950 py-12">
+        <div className="container mx-auto px-4 max-w-4xl">
+          <Card className="bg-slate-800 border-slate-700">
+            <CardContent className="pt-6 text-center">
+              <h2 className="text-2xl font-bold text-red-400 mb-4">Error: Missing Claim ID</h2>
+              <p className="text-slate-400 mb-6">
+                We couldn't find your claim ID. Please contact support at claims@flghtly.com with your payment confirmation.
+              </p>
+              <Button onClick={() => router.push('/')} variant="outline">
+                Return to Home
+              </Button>
+            </CardContent>
+          </Card>
+        </div>
+      </div>
+    );
+  }
 
   const handleFileAnother = () => {
     router.push('/check-eligibility');
@@ -173,14 +184,7 @@ function SuccessPageContent() {
 
             {/* Action Buttons */}
             <div className="flex flex-col sm:flex-row gap-4 mt-8">
-              <Button
-                onClick={handleCheckStatus}
-                variant="outline"
-                className="flex-1 text-lg py-6 border-slate-600 text-slate-300 hover:text-white hover:border-slate-500"
-                size="lg"
-              >
-                Check Claim Status
-              </Button>
+              <ClaimStatusModal claimId={claimId} />
               <Button
                 onClick={handleFileAnother}
                 className="flex-1 text-lg py-6"

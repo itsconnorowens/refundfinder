@@ -5,7 +5,13 @@ import { motion } from 'framer-motion';
 import { CheckEligibilityResponse } from '../types/api';
 import AirportAutocomplete from './AirportAutocomplete';
 import AirlineAutocomplete from './AirlineAutocomplete';
-import { validateAirportCode } from '@/lib/airports';
+import {
+  validateFlightNumber,
+  validateAirportCode,
+  validateFlightDate,
+  validateDelayDuration,
+  validateEmail
+} from '@/lib/validation';
 
 interface FlightLookupFormProps {
   onResults: (results: CheckEligibilityResponse) => void;
@@ -57,56 +63,82 @@ export default function FlightLookupForm({ onResults, onLoading }: FlightLookupF
   });
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [loading, setLoading] = useState(false);
+  const [fieldValid, setFieldValid] = useState<Record<string, boolean>>({});
+  const [emailSuggestion, setEmailSuggestion] = useState<string>('');
+
+  const validateField = (field: string, value: string) => {
+    let result: { valid: boolean; error?: string; suggestion?: string } = { valid: true };
+
+    switch (field) {
+      case 'flightNumber':
+        result = validateFlightNumber(value);
+        break;
+      case 'departureAirport':
+      case 'arrivalAirport':
+        result = validateAirportCode(value);
+        break;
+      case 'departureDate':
+        result = validateFlightDate(value);
+        break;
+      case 'passengerEmail':
+        result = validateEmail(value);
+        if (result.suggestion) {
+          setEmailSuggestion(result.suggestion);
+        } else {
+          setEmailSuggestion('');
+        }
+        break;
+    }
+
+    if (result.error) {
+      setErrors(prev => ({ ...prev, [field]: result.error || '' }));
+      setFieldValid(prev => ({ ...prev, [field]: false }));
+    } else {
+      setErrors(prev => ({ ...prev, [field]: '' }));
+      setFieldValid(prev => ({ ...prev, [field]: result.valid }));
+    }
+
+    return result.valid;
+  };
 
   const validateForm = () => {
     const newErrors: Record<string, string> = {};
 
-    if (!formData.flightNumber.trim()) {
-      newErrors.flightNumber = 'Flight number is required';
-    } else if (!/^[A-Z]{2,3}\d{1,4}$/i.test(formData.flightNumber.trim())) {
-      newErrors.flightNumber = 'Please enter a valid flight number (e.g., TK157, AA123)';
+    // Use validation functions
+    const flightNumberResult = validateFlightNumber(formData.flightNumber.trim());
+    if (!flightNumberResult.valid) {
+      newErrors.flightNumber = flightNumberResult.error || 'Invalid flight number';
     }
 
-    if (!formData.departureDate) {
-      newErrors.departureDate = 'Departure date is required';
-    } else {
-      const selectedDate = new Date(formData.departureDate);
-      const today = new Date();
-      today.setHours(0, 0, 0, 0);
-      // Allow dates from 1 year ago to 1 year in the future
-      const oneYearAgo = new Date();
-      oneYearAgo.setFullYear(oneYearAgo.getFullYear() - 1);
-      const oneYearFromNow = new Date();
-      oneYearFromNow.setFullYear(oneYearFromNow.getFullYear() + 1);
-      
-      if (selectedDate < oneYearAgo || selectedDate > oneYearFromNow) {
-        newErrors.departureDate = 'Please select a date within the last year or next year';
-      }
+    const dateResult = validateFlightDate(formData.departureDate);
+    if (!dateResult.valid) {
+      newErrors.departureDate = dateResult.error || 'Invalid date';
     }
 
-    if (!formData.departureAirport.trim()) {
-      newErrors.departureAirport = 'Departure airport is required';
-    } else if (!validateAirportCode(formData.departureAirport.trim())) {
-      newErrors.departureAirport = 'Please enter a valid airport code';
+    const departureResult = validateAirportCode(formData.departureAirport.trim());
+    if (!departureResult.valid) {
+      newErrors.departureAirport = departureResult.error || 'Invalid airport code';
     }
 
-    if (!formData.arrivalAirport.trim()) {
-      newErrors.arrivalAirport = 'Arrival airport is required';
-    } else if (!validateAirportCode(formData.arrivalAirport.trim())) {
-      newErrors.arrivalAirport = 'Please enter a valid airport code';
+    const arrivalResult = validateAirportCode(formData.arrivalAirport.trim());
+    if (!arrivalResult.valid) {
+      newErrors.arrivalAirport = arrivalResult.error || 'Invalid airport code';
     }
 
     if (!formData.airline.trim()) {
       newErrors.airline = 'Airline is required';
     }
 
-    if (!formData.delayHours.trim() && !formData.delayMinutes.trim()) {
-      newErrors.delayHours = 'Delay duration is required';
-    } else {
-      const hours = parseInt(formData.delayHours) || 0;
-      const minutes = parseInt(formData.delayMinutes) || 0;
-      if (hours === 0 && minutes === 0) {
-        newErrors.delayHours = 'Please enter delay duration';
+    // Validate delay duration for delays
+    if (formData.disruptionType === 'delay') {
+      if (!formData.delayHours.trim() && !formData.delayMinutes.trim()) {
+        newErrors.delayHours = 'Delay duration is required';
+      } else {
+        const hours = parseInt(formData.delayHours) || 0;
+        const minutes = parseInt(formData.delayMinutes) || 0;
+        if (hours === 0 && minutes === 0) {
+          newErrors.delayHours = 'Please enter delay duration';
+        }
       }
     }
 
@@ -149,10 +181,9 @@ export default function FlightLookupForm({ onResults, onLoading }: FlightLookupF
       }
     }
 
-    if (!formData.passengerEmail.trim()) {
-      newErrors.passengerEmail = 'Email is required';
-    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.passengerEmail.trim())) {
-      newErrors.passengerEmail = 'Please enter a valid email address';
+    const emailResult = validateEmail(formData.passengerEmail.trim());
+    if (!emailResult.valid) {
+      newErrors.passengerEmail = emailResult.error || 'Invalid email';
     }
 
     if (!formData.firstName.trim()) {
@@ -243,6 +274,10 @@ export default function FlightLookupForm({ onResults, onLoading }: FlightLookupF
     if (errors[field]) {
       setErrors(prev => ({ ...prev, [field]: '' }));
     }
+    // Clear field valid indicator
+    if (fieldValid[field]) {
+      setFieldValid(prev => ({ ...prev, [field]: false }));
+    }
   };
 
   return (
@@ -259,20 +294,26 @@ export default function FlightLookupForm({ onResults, onLoading }: FlightLookupF
           <label htmlFor="flightNumber" className="block text-sm font-medium text-gray-700 mb-2">
             Flight Number *
           </label>
-          <input
-            type="text"
-            id="flightNumber"
-            value={formData.flightNumber}
-            onChange={(e) => handleInputChange('flightNumber', e.target.value)}
-            placeholder="e.g., UA2847 or BA456"
-            className={`w-full px-4 py-4 md:py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-base ${
-              errors.flightNumber ? 'border-red-500' : 'border-gray-300'
-            }`}
-          />
+          <div className="relative">
+            <input
+              type="text"
+              id="flightNumber"
+              value={formData.flightNumber}
+              onChange={(e) => handleInputChange('flightNumber', e.target.value)}
+              onBlur={(e) => validateField('flightNumber', e.target.value)}
+              placeholder="e.g., BA123"
+              className={`w-full px-4 py-4 md:py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-base ${
+                errors.flightNumber ? 'border-red-500' : fieldValid.flightNumber ? 'border-green-500' : 'border-gray-300'
+              }`}
+            />
+            {fieldValid.flightNumber && !errors.flightNumber && (
+              <span className="absolute right-3 top-1/2 -translate-y-1/2 text-green-600 text-xl">✓</span>
+            )}
+          </div>
           {errors.flightNumber && (
             <p className="mt-1 text-sm text-red-600">{errors.flightNumber}</p>
           )}
-          <p className="mt-1 text-xs text-gray-500">💡 Found on your boarding pass or confirmation email</p>
+          <p className="mt-1 text-xs text-gray-500">Found on your boarding pass or confirmation email</p>
         </div>
 
         {/* Departure Date */}
@@ -280,19 +321,25 @@ export default function FlightLookupForm({ onResults, onLoading }: FlightLookupF
           <label htmlFor="departureDate" className="block text-sm font-medium text-gray-700 mb-2">
             Departure Date *
           </label>
-          <input
-            type="date"
-            id="departureDate"
-            value={formData.departureDate}
-            onChange={(e) => handleInputChange('departureDate', e.target.value)}
-            className={`w-full px-4 py-4 md:py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-base ${
-              errors.departureDate ? 'border-red-500' : 'border-gray-300'
-            }`}
-          />
+          <div className="relative">
+            <input
+              type="date"
+              id="departureDate"
+              value={formData.departureDate}
+              onChange={(e) => handleInputChange('departureDate', e.target.value)}
+              onBlur={(e) => validateField('departureDate', e.target.value)}
+              className={`w-full px-4 py-4 md:py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-base ${
+                errors.departureDate ? 'border-red-500' : fieldValid.departureDate ? 'border-green-500' : 'border-gray-300'
+              }`}
+            />
+            {fieldValid.departureDate && !errors.departureDate && (
+              <span className="absolute right-3 top-1/2 -translate-y-1/2 text-green-600 text-xl">✓</span>
+            )}
+          </div>
           {errors.departureDate && (
             <p className="mt-1 text-sm text-red-600">{errors.departureDate}</p>
           )}
-          <p className="mt-1 text-xs text-gray-500">📅 When was your flight scheduled to depart?</p>
+          <p className="mt-1 text-xs text-gray-500">When was your flight scheduled to depart?</p>
         </div>
 
         {/* Departure Airport */}
@@ -1087,16 +1134,34 @@ export default function FlightLookupForm({ onResults, onLoading }: FlightLookupF
             <label htmlFor="passengerEmail" className="block text-sm font-medium text-gray-700 mb-2">
               Email Address *
             </label>
-            <input
-              type="email"
-              id="passengerEmail"
-              value={formData.passengerEmail}
-              onChange={(e) => handleInputChange('passengerEmail', e.target.value)}
-              placeholder="john@example.com"
-              className={`w-full px-4 py-4 md:py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-base ${
-                errors.passengerEmail ? 'border-red-500' : 'border-gray-300'
-              }`}
-            />
+            <div className="relative">
+              <input
+                type="email"
+                id="passengerEmail"
+                value={formData.passengerEmail}
+                onChange={(e) => handleInputChange('passengerEmail', e.target.value)}
+                onBlur={(e) => validateField('passengerEmail', e.target.value)}
+                placeholder="john@example.com"
+                className={`w-full px-4 py-4 md:py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-base ${
+                  errors.passengerEmail ? 'border-red-500' : fieldValid.passengerEmail ? 'border-green-500' : 'border-gray-300'
+                }`}
+              />
+              {fieldValid.passengerEmail && !errors.passengerEmail && (
+                <span className="absolute right-3 top-1/2 -translate-y-1/2 text-green-600 text-xl">✓</span>
+              )}
+            </div>
+            {emailSuggestion && (
+              <p className="mt-1 text-sm text-blue-600">
+                Did you mean <button
+                  type="button"
+                  onClick={() => {
+                    handleInputChange('passengerEmail', emailSuggestion);
+                    setEmailSuggestion('');
+                  }}
+                  className="underline font-medium"
+                >{emailSuggestion}</button>?
+              </p>
+            )}
             {errors.passengerEmail && (
               <p className="mt-1 text-sm text-red-600">{errors.passengerEmail}</p>
             )}

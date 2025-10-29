@@ -17,6 +17,15 @@ import DocumentUploadZone from '@/components/DocumentUploadZone';
 import StickyPricingBadge from '@/components/StickyPricingBadge';
 import TrustSignal from '@/components/TrustSignal';
 import AirlineAutocomplete from '@/components/AirlineAutocomplete';
+import { MobileStepIndicator } from '@/components/MobileStepIndicator';
+import { showError, showSuccess } from '@/lib/toast';
+import {
+  validateFlightNumber,
+  validateAirportCode,
+  validateFlightDate,
+  validateDelayDuration,
+  validateEmail
+} from '@/lib/validation';
 
 interface FormData {
   // Step 1: Personal Info
@@ -145,20 +154,47 @@ export default function ClaimSubmissionForm() {
     if (step === 1) {
       if (!formData.firstName.trim()) newErrors.firstName = 'First name is required';
       if (!formData.lastName.trim()) newErrors.lastName = 'Last name is required';
-      if (!formData.email.trim()) {
-        newErrors.email = 'Email is required';
-      } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
-        newErrors.email = 'Please enter a valid email address';
+
+      // Use email validation with typo detection
+      const emailResult = validateEmail(formData.email.trim());
+      if (!emailResult.valid) {
+        newErrors.email = emailResult.error || 'Invalid email address';
       }
     }
 
     if (step === 2) {
-      if (!formData.flightNumber.trim()) newErrors.flightNumber = 'Flight number is required';
-      if (!formData.airline.trim()) newErrors.airline = 'Airline is required';
-      if (!formData.departureDate) newErrors.departureDate = 'Departure date is required';
-      if (!formData.departureAirport.trim()) newErrors.departureAirport = 'Departure airport is required';
-      if (!formData.arrivalAirport.trim()) newErrors.arrivalAirport = 'Arrival airport is required';
-      if (!formData.delayDuration.trim()) newErrors.delayDuration = 'Delay duration is required';
+      // Use comprehensive validation functions
+      const flightNumberResult = validateFlightNumber(formData.flightNumber.trim());
+      if (!flightNumberResult.valid) {
+        newErrors.flightNumber = flightNumberResult.error || 'Invalid flight number';
+      }
+
+      if (!formData.airline.trim()) {
+        newErrors.airline = 'Airline is required';
+      }
+
+      const dateResult = validateFlightDate(formData.departureDate);
+      if (!dateResult.valid) {
+        newErrors.departureDate = dateResult.error || 'Invalid date';
+      }
+
+      const departureResult = validateAirportCode(formData.departureAirport.trim());
+      if (!departureResult.valid) {
+        newErrors.departureAirport = departureResult.error || 'Invalid airport code';
+      }
+
+      const arrivalResult = validateAirportCode(formData.arrivalAirport.trim());
+      if (!arrivalResult.valid) {
+        newErrors.arrivalAirport = arrivalResult.error || 'Invalid airport code';
+      }
+
+      const delayResult = validateDelayDuration(formData.delayDuration.trim());
+      if (!delayResult.valid) {
+        newErrors.delayDuration = delayResult.error || 'Invalid delay duration';
+      } else if (delayResult.normalized && delayResult.normalized !== formData.delayDuration) {
+        // Update form data with normalized value
+        setFormData(prev => ({ ...prev, delayDuration: delayResult.normalized || prev.delayDuration }));
+      }
     }
 
     if (step === 3) {
@@ -200,10 +236,6 @@ export default function ClaimSubmissionForm() {
   const createPaymentIntent = async () => {
     setIsCreatingPaymentIntent(true);
     try {
-      // Generate claim ID if not already created
-      const newClaimId = `claim-${Date.now()}`;
-      setClaimId(newClaimId);
-
       const response = await fetch('/api/create-payment-intent', {
         method: 'POST',
         headers: {
@@ -211,7 +243,6 @@ export default function ClaimSubmissionForm() {
         },
         body: JSON.stringify({
           email: formData.email,
-          claimId: newClaimId,
           firstName: formData.firstName,
           lastName: formData.lastName,
         }),
@@ -224,9 +255,10 @@ export default function ClaimSubmissionForm() {
       const data = await response.json();
       setPaymentClientSecret(data.clientSecret);
       setPaymentIntentId(data.paymentIntentId);
+      setClaimId(data.claimId); // Receive claim ID from server
     } catch (error) {
       console.error('Error creating payment intent:', error);
-      alert('Failed to initialize payment. Please try again.');
+      showError('Failed to initialize payment. Please try again.');
     } finally {
       setIsCreatingPaymentIntent(false);
     }
@@ -389,7 +421,7 @@ export default function ClaimSubmissionForm() {
     try {
       // Validate that files have been uploaded
       if (!formData.boardingPassUrl || !formData.delayProofUrl) {
-        alert('Please ensure all files have been uploaded successfully before proceeding.');
+        showError('Please ensure all files have been uploaded successfully before proceeding.');
         setIsSubmitting(false);
         return;
       }
@@ -422,15 +454,20 @@ export default function ClaimSubmissionForm() {
         // Clear form data from localStorage
         localStorage.removeItem('claimFormData');
         // Show success message
-        alert(`✅ Claim submitted successfully!\n\n${result.message}\n\n${result.refundGuarantee}\n\nClaim ID: ${result.claimId}`);
-        // Could redirect to a success page here
-        window.location.href = '/';
+        showSuccess('Claim submitted successfully!', {
+          description: `${result.message} - Claim ID: ${result.claimId}`,
+          duration: 5000,
+        });
+        // Redirect to success page after a short delay
+        setTimeout(() => {
+          window.location.href = `/success?claim_id=${result.claimId}`;
+        }, 1500);
       } else {
         throw new Error(result.error || 'Failed to submit claim');
       }
     } catch (error) {
       console.error('Error submitting claim:', error);
-      alert('Failed to submit claim. Please contact support with your payment confirmation.');
+      showError('Failed to submit claim. Please contact support with your payment confirmation.');
     } finally {
       setIsSubmitting(false);
     }
@@ -440,6 +477,15 @@ export default function ClaimSubmissionForm() {
 
   return (
     <div className="max-w-4xl mx-auto p-6">
+      {/* Mobile Step Indicator */}
+      <MobileStepIndicator
+        currentStep={currentStep}
+        totalSteps={STEPS.length}
+        stepName={STEPS[currentStep - 1].title}
+        onBack={handleBack}
+        canGoBack={currentStep > 1}
+      />
+
       {/* Trust & Pricing indicators */}
       <div className="mb-3 flex items-center justify-center gap-2">
         <TrustSignal type="security" />

@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import { ClaimStatus } from '@/lib/airtable';
 import { getAirlineConfig } from '@/lib/airline-config';
+import { showError, showSuccess } from '@/lib/toast';
 
 interface Claim {
   id: string;
@@ -83,11 +84,12 @@ export default function ClaimDetailPage({ params }: { params: { id: string } }) 
       if (data.success) {
         setSubmissionTemplate(data.data);
         setClaim(prev => prev ? { ...prev, status: 'ready_to_file' } : null);
+        showSuccess('Submission materials generated successfully');
       } else {
-        alert(data.error || 'Failed to generate submission');
+        showError(data.error || 'Failed to generate submission');
       }
     } catch (err) {
-      alert('Failed to generate submission');
+      showError('Failed to generate submission');
     } finally {
       setGeneratingSubmission(false);
     }
@@ -105,12 +107,12 @@ export default function ClaimDetailPage({ params }: { params: { id: string } }) 
 
       if (data.success) {
         setClaim(prev => prev ? { ...prev, status: newStatus } : null);
-        alert('Status updated successfully');
+        showSuccess('Status updated successfully');
       } else {
-        alert(data.error || 'Failed to update status');
+        showError(data.error || 'Failed to update status');
       }
     } catch (err) {
-      alert('Failed to update status');
+      showError('Failed to update status');
     } finally {
       setUpdatingStatus(false);
     }
@@ -118,7 +120,7 @@ export default function ClaimDetailPage({ params }: { params: { id: string } }) 
 
   const markAsFiled = async () => {
     if (!airlineReference || !filedBy) {
-      alert('Please provide airline reference and filed by information');
+      showError('Please provide airline reference and filed by information');
       return;
     }
 
@@ -136,20 +138,20 @@ export default function ClaimDetailPage({ params }: { params: { id: string } }) 
       const data = await response.json();
 
       if (data.success) {
-        setClaim(prev => prev ? { 
-          ...prev, 
+        setClaim(prev => prev ? {
+          ...prev,
           status: 'filed',
           airlineReference,
           filedBy,
           filingMethod,
           filedAt: new Date().toISOString()
         } : null);
-        alert('Claim marked as filed successfully');
+        showSuccess('Claim marked as filed successfully');
       } else {
-        alert(data.error || 'Failed to mark claim as filed');
+        showError(data.error || 'Failed to mark claim as filed');
       }
     } catch (err) {
-      alert('Failed to mark claim as filed');
+      showError('Failed to mark claim as filed');
     } finally {
       setUpdatingStatus(false);
     }
