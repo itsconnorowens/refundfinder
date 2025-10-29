@@ -22,5 +22,27 @@ PAYMENT_QUICK_START.md:generic-api-key:11
 e2e/automated-claim-system.spec.ts:generic-api-key:68
 
 # Next.js build artifacts - auto-generated internal keys (not real secrets)
-.next/**
+.next/cache/.rscinfo:generic-api-key:1
+.next/cache/.previewinfo:generic-api-key:1
+.next/dev/prerender-manifest.json:generic-api-key:8
+.next/dev/prerender-manifest.json:generic-api-key:9
+.next/dev/server/middleware/middleware-manifest.json:generic-api-key:28
+.next/dev/server/middleware/middleware-manifest.json:generic-api-key:29
+.next/dev/server/middleware-manifest.json:generic-api-key:34
+.next/dev/server/middleware-manifest.json:generic-api-key:35
+.next/prerender-manifest.json:generic-api-key:570
+.next/prerender-manifest.json:generic-api-key:571
+.next/server/middleware/middleware-manifest.json:generic-api-key:22
+.next/server/middleware/middleware-manifest.json:generic-api-key:24
+.next/server/middleware/middleware-manifest.json:generic-api-key:25
+.next/server/middleware-manifest.json:generic-api-key:25
+.next/server/middleware-manifest.json:generic-api-key:27
+.next/server/middleware-manifest.json:generic-api-key:28
+.next/server/server-reference-manifest.json:generic-api-key:4
+
+# PostHog public key (safe to commit as NEXT_PUBLIC_ variable)
+.env.local:generic-api-key:32
+
+# Sentry auth token (local only, gitignored)
+.env.local:sentry-org-token:29
 

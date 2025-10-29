@@ -12,11 +12,11 @@ import { usePathname, useSearchParams } from 'next/navigation';
 
 if (typeof window !== 'undefined') {
   const posthogKey = process.env.NEXT_PUBLIC_POSTHOG_KEY;
-  const posthogHost = process.env.NEXT_PUBLIC_POSTHOG_HOST || 'https://us.i.posthog.com';
 
   if (posthogKey) {
     posthog.init(posthogKey, {
-      api_host: posthogHost,
+      api_host: '/ingest',
+      ui_host: 'https://us.posthog.com',
       person_profiles: 'identified_only',
       capture_pageview: false, // We'll capture pageviews manually
       capture_pageleave: true,
@@ -24,11 +24,11 @@ if (typeof window !== 'undefined') {
       defaults: '2025-05-24', // PostHog API version
 
       // Disable in development
-      // loaded: (posthog) => {
-      //   if (process.env.NODE_ENV === 'development') {
-      //     posthog.opt_out_capturing();
-      //   }
-      // },
+      loaded: (posthog) => {
+        if (process.env.NODE_ENV === 'development') {
+          posthog.opt_out_capturing();
+        }
+      },
     });
   }
 }
