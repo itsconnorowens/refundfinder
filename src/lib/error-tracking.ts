@@ -167,11 +167,15 @@ export function trackPerformance(
 ) {
   const duration = Date.now() - startTime;
 
-  Sentry.metrics.distribution('operation.duration', duration, {
-    tags: {
+  // Set tags on the current scope for this metric
+  if (tags) {
+    Sentry.setTags({
       operation,
       ...tags,
-    },
+    });
+  }
+
+  Sentry.metrics.distribution('operation.duration', duration, {
     unit: 'millisecond',
   });
 
@@ -189,10 +193,17 @@ export function trackPerformance(
 
 /**
  * Start a Sentry transaction for tracing
+ * Uses the newer Sentry tracing API
  */
 export function startTransaction(name: string, op: string) {
-  return Sentry.startTransaction({
-    name,
-    op,
-  });
+  // Use startSpan for newer Sentry versions
+  if ('startSpan' in Sentry && typeof Sentry.startSpan === 'function') {
+    return Sentry.startSpan({ name, op }, (span) => span);
+  }
+  // Fallback: return a mock object if API not available
+  return {
+    finish: () => {},
+    setTag: () => {},
+    setData: () => {},
+  };
 }

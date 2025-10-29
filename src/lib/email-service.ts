@@ -1458,3 +1458,26 @@ export async function sendClaimRejectedNotification(
     variables,
   });
 }
+
+/**
+ * Simple email sending helper for basic notifications
+ * Used by notification-service and other simple email needs
+ */
+export async function sendEmail(data: {
+  to: string;
+  subject: string;
+  html: string;
+  text?: string;
+  category?: string;
+}): Promise<EmailResult> {
+  const template: EmailTemplate = {
+    subject: data.subject,
+    html: data.html,
+    text: data.text || data.html.replace(/<[^>]*>/g, ''), // Simple HTML to text conversion
+  };
+
+  return emailService.sendEmail({
+    to: data.to,
+    template,
+  });
+}
