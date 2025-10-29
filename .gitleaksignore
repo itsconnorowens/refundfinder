@@ -1,0 +1,13 @@
+# Gitleaks ignore file
+# These are documentation examples and test fixtures, not real secrets
+
+# Documentation files with placeholder examples
+AUTOMATED_REFUND_SYSTEM.md:curl-auth-header:160
+AIRTABLE_SETUP_GUIDE.md:airtable-api-key:119
+AIRTABLE_SETUP_GUIDE.md:airtable-api-key:120
+PAYMENT_QUICK_START.md:generic-api-key:10
+PAYMENT_QUICK_START.md:generic-api-key:11
+
+# E2E test files with mock/test secrets
+e2e/automated-claim-system.spec.ts:generic-api-key:68
+

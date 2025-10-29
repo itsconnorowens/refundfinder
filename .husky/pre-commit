@@ -3,6 +3,10 @@
 
 echo "🔍 Running pre-commit checks..."
 
+# Scan for secrets
+echo "🔒 Scanning for secrets..."
+npm run scan:secrets
+
 # Run linting
 echo "📝 Checking code style..."
 npm run lint
