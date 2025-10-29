@@ -320,7 +320,7 @@ async function sendAirlineClaimEmail(
             ${emailData.body.replace(/\n/g, '<br>')}
           </div>
           <p><strong>Note:</strong> This claim is being processed by Flghtly on behalf of the passenger.</p>
-          <p>For any questions, please contact: support@flghtly.com</p>
+          <p>For any questions, please contact: claims@flghtly.com</p>
         </div>
       `,
       text: emailData.body,

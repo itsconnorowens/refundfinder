@@ -3453,7 +3453,7 @@ ${claimData.email}
 
 ---
 This claim is being processed by Flghtly on behalf of the passenger.
-For any questions, please contact: support@flghtly.com
+For any questions, please contact: claims@flghtly.com
 `;
 }
 

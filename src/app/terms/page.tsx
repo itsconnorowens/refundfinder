@@ -161,7 +161,7 @@ export default function TermsPage() {
               </p>
               <div className="bg-slate-700 rounded-lg p-4 mt-3">
                 <p><strong>Email:</strong> legal@flghtly.com</p>
-                <p><strong>Support:</strong> support@flghtly.com</p>
+                <p><strong>Support:</strong> claims@flghtly.com</p>
                 <p><strong>EU Representative:</strong> eu-representative@flghtly.com</p>
               </div>
             </section>

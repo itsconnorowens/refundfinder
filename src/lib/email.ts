@@ -135,14 +135,14 @@ export function getPaymentConfirmationTemplate(
               <p><strong>Important:</strong> We'll email you with every update. No action needed from you - we handle everything!</p>
               
               <div style="text-align: center; margin: 30px 0;">
-                <a href="mailto:support@flghtly.com?subject=Claim ${data.claimId}" class="button">
+                <a href="mailto:claims@flghtly.com?subject=Claim ${data.claimId}" class="button">
                   Contact Support
                 </a>
               </div>
             </div>
             
             <div class="footer">
-              <p>Questions? Reply to this email or contact us at support@flghtly.com</p>
+              <p>Questions? Reply to this email or contact us at claims@flghtly.com</p>
               <p>Flghtly - We fight for your flight delay compensation</p>
             </div>
           </div>
@@ -172,7 +172,7 @@ WHAT HAPPENS NEXT:
 
 Important: We'll email you with every update. No action needed from you - we handle everything!
 
-Questions? Contact us at support@flghtly.com
+Questions? Contact us at claims@flghtly.com
 
 Flghtly - We fight for your flight delay compensation
     `,
@@ -252,7 +252,7 @@ export function getStatusUpdateTemplate(data: StatusUpdateData): EmailTemplate {
             </div>
             
             <div class="footer">
-              <p>Questions? Reply to this email or contact us at support@flghtly.com</p>
+              <p>Questions? Reply to this email or contact us at claims@flghtly.com</p>
               <p>Flghtly - We fight for your flight delay compensation</p>
             </div>
           </div>
@@ -275,7 +275,7 @@ ${data.nextSteps ? `NEXT STEPS:\n${data.nextSteps}\n` : ''}
 
 We'll continue to keep you updated on any changes to your claim.
 
-Questions? Contact us at support@flghtly.com
+Questions? Contact us at claims@flghtly.com
 
 Flghtly - We fight for your flight delay compensation
     `,

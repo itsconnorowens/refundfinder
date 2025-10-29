@@ -73,7 +73,7 @@ const REFUND_TEMPLATES: RefundNotificationTemplates = {
           
           <div style="background: #0f172a; padding: 15px; border-radius: 8px; margin: 20px 0;">
             <p style="color: #94a3b8; font-size: 14px; margin: 0;">
-              <strong>Need help?</strong> Reply to this email or contact us at support@flghtly.com
+              <strong>Need help?</strong> Reply to this email or contact us at claims@flghtly.com
             </p>
           </div>
           
@@ -98,7 +98,7 @@ const REFUND_TEMPLATES: RefundNotificationTemplates = {
       
       The refund has been processed through Stripe and should appear in your account within ${data.estimatedRefundTime}.
       
-      Need help? Contact us at support@flghtly.com
+      Need help? Contact us at claims@flghtly.com
 
       Thank you for using Flghtly.
     `,
@@ -133,7 +133,7 @@ const REFUND_TEMPLATES: RefundNotificationTemplates = {
           
           <div style="background: #0f172a; padding: 15px; border-radius: 8px; margin: 20px 0;">
             <p style="color: #94a3b8; font-size: 14px; margin: 0;">
-              <strong>Need help?</strong> Reply to this email or contact us at support@flghtly.com
+              <strong>Need help?</strong> Reply to this email or contact us at claims@flghtly.com
             </p>
           </div>
         </div>
@@ -154,7 +154,7 @@ const REFUND_TEMPLATES: RefundNotificationTemplates = {
       
       The refund has been processed and should appear in your account within ${data.estimatedRefundTime}.
       
-      Need help? Contact us at support@flghtly.com
+      Need help? Contact us at claims@flghtly.com
     `,
   }),
 
@@ -186,7 +186,7 @@ const REFUND_TEMPLATES: RefundNotificationTemplates = {
           
           <div style="background: #0f172a; padding: 15px; border-radius: 8px; margin: 20px 0;">
             <p style="color: #94a3b8; font-size: 14px; margin: 0;">
-              <strong>Need help?</strong> Reply to this email or contact us at support@flghtly.com
+              <strong>Need help?</strong> Reply to this email or contact us at claims@flghtly.com
             </p>
           </div>
         </div>
@@ -206,7 +206,7 @@ const REFUND_TEMPLATES: RefundNotificationTemplates = {
       
       If you have any questions about this refund or need assistance with future claims, please don't hesitate to contact us.
       
-      Need help? Contact us at support@flghtly.com
+      Need help? Contact us at claims@flghtly.com
     `,
   }),
 };

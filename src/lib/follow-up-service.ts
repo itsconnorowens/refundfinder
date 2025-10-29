@@ -79,7 +79,7 @@ We look forward to your prompt response.
 
 Best regards,
 Flghtly Support Team
-support@flghtly.com
+claims@flghtly.com
 
 ---
 This follow-up is being sent on behalf of the passenger as part of our compensation assistance service.
@@ -109,7 +109,7 @@ We appreciate your attention to this matter.
 
 Best regards,
 Flghtly Support Team
-support@flghtly.com
+claims@flghtly.com
 
 ---
 This reminder is being sent on behalf of the passenger as part of our compensation assistance service.
@@ -144,7 +144,7 @@ We hope to resolve this matter amicably and look forward to your urgent response
 
 Best regards,
 Flghtly Support Team
-support@flghtly.com
+claims@flghtly.com
 
 ---
 This escalation notice is being sent on behalf of the passenger as part of our compensation assistance service.
@@ -178,7 +178,7 @@ This is our final attempt to resolve this matter directly.
 
 Best regards,
 Flghtly Support Team
-support@flghtly.com
+claims@flghtly.com
 
 ---
 This final notice is being sent on behalf of the passenger as part of our compensation assistance service.

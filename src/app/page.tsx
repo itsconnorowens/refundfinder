@@ -500,7 +500,7 @@ export default function Home() {
                 GDPR Rights
               </a>
               <a 
-                href="mailto:support@flghtly.com" 
+                href="mailto:claims@flghtly.com" 
                 className="text-gray-400 hover:text-white transition-colors"
               >
                 Contact Support

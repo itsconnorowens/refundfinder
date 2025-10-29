@@ -29,7 +29,7 @@ function SuccessPageContent() {
 
   const handleCheckStatus = () => {
     // For MVP, redirect to contact page or show instructions
-    alert('For claim status updates, please email us at support@flghtly.com with your claim ID: ' + claimId);
+    alert('For claim status updates, please email us at claims@flghtly.com with your claim ID: ' + claimId);
   };
 
   const handleFileAnother = () => {
@@ -166,7 +166,7 @@ function SuccessPageContent() {
                 We'll email you with updates about your claim. Check your email for confirmation and next steps.
               </p>
               <div className="text-sm text-green-400">
-                <p><strong>Email:</strong> support@flghtly.com</p>
+                <p><strong>Email:</strong> claims@flghtly.com</p>
                 <p><strong>Reference:</strong> {claimId}</p>
               </div>
             </div>
