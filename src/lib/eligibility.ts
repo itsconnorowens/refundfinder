@@ -1,4 +1,5 @@
 import { calculateFlightDistanceCached } from './distance-calculator';
+import { checkRegionalEligibility } from './regulations/regional';
 import { getAirlineRegulations, normalizeAirlineName } from './airlines';
 import { analyzeExtraordinaryCircumstances } from './extraordinary-circumstances';
 
@@ -56,16 +57,57 @@ export async function checkEligibility(
     };
   }
 
-  // Check if it's a UK flight (UK CAA regulations apply)
-  const isUKFlight = isUKCoveredFlight(flight);
-  if (isUKFlight) {
-    return await checkUKCAAEligibility(flight, delayHours);
+  // Calculate distance once for downstream checks
+  const distanceResult = calculateFlightDistanceCached(
+    flight.departureAirport,
+    flight.arrivalAirport
+  );
+  const distance = distanceResult.isValid ? distanceResult.distanceKm : 1000;
+
+  // Determine extraordinary circumstances once
+  const isExtraordinary = await isExtraordinaryCircumstance(
+    flight.delayReason,
+    {
+      flightNumber: flight.flightNumber,
+      airline: flight.airline,
+      departureAirport: flight.departureAirport,
+      arrivalAirport: flight.arrivalAirport,
+      delayDuration: flight.delayDuration,
+    }
+  );
+
+  // Priority: Swiss → Norwegian → Canadian → EU → UK → US
+  const regionalResult = checkRegionalEligibility(
+    flight.departureAirport,
+    flight.arrivalAirport,
+    delayHours,
+    distance,
+    false,
+    isExtraordinary,
+    flight.delayReason
+  );
+
+  if (regionalResult) {
+    return {
+      eligible: regionalResult.eligible,
+      amount: formatRegionalAmount(regionalResult.compensation, regionalResult.currency),
+      confidence: 85,
+      message: formatRegionalMessage(regionalResult),
+      regulation: regionalResult.regulation,
+      reason: regionalResult.reason,
+    };
   }
 
   // Check if it's an EU flight (EU261 applies)
   const isEUFlight = isEUCoveredFlight(flight);
   if (isEUFlight) {
     return await checkEU261Eligibility(flight, delayHours);
+  }
+
+  // Check if it's a UK flight (UK CAA regulations apply)
+  const isUKFlight = isUKCoveredFlight(flight);
+  if (isUKFlight) {
+    return await checkUKCAAEligibility(flight, delayHours);
   }
 
   // Check if it's a US flight (DOT regulations)
@@ -92,19 +134,57 @@ export async function checkEligibility(
 async function checkCancellationEligibility(
   flight: FlightDetails
 ): Promise<EligibilityResult> {
-  // Check if it's a UK flight (UK CAA regulations apply)
-  const isUKFlight = isUKCoveredFlight(flight);
-  if (isUKFlight) {
-    return await checkUKCAACancellationEligibility(flight);
+  // Precompute distance and extraordinary circumstances
+  const distanceResult = calculateFlightDistanceCached(
+    flight.departureAirport,
+    flight.arrivalAirport
+  );
+  const distance = distanceResult.isValid ? distanceResult.distanceKm : 1000;
+  const isExtraordinary = await isExtraordinaryCircumstance(
+    flight.delayReason,
+    {
+      flightNumber: flight.flightNumber,
+      airline: flight.airline,
+      departureAirport: flight.departureAirport,
+      arrivalAirport: flight.arrivalAirport,
+      delayDuration: flight.delayDuration,
+    }
+  );
+
+  // Regional checks first (Swiss → Norwegian → Canadian)
+  const regionalResult = checkRegionalEligibility(
+    flight.departureAirport,
+    flight.arrivalAirport,
+    // For cancellations, some regimes still look at delay on reroute; fallback to parsed delay
+    parseDelayHours(flight.delayDuration || '0 hours'),
+    distance,
+    true,
+    isExtraordinary,
+    flight.delayReason
+  );
+
+  if (regionalResult) {
+    return {
+      eligible: regionalResult.eligible,
+      amount: formatRegionalAmount(regionalResult.compensation, regionalResult.currency),
+      confidence: 85,
+      message: formatRegionalMessage(regionalResult),
+      regulation: regionalResult.regulation,
+      reason: regionalResult.reason,
+    };
   }
 
-  // Check if it's an EU flight (EU261 applies)
+  // Then EU → UK → US
   const isEUFlight = isEUCoveredFlight(flight);
   if (isEUFlight) {
     return await checkEU261CancellationEligibility(flight);
   }
 
-  // Check if it's a US flight (DOT regulations)
+  const isUKFlight = isUKCoveredFlight(flight);
+  if (isUKFlight) {
+    return await checkUKCAACancellationEligibility(flight);
+  }
+
   const isUSFlightResult = isUSFlight(flight);
   if (isUSFlightResult) {
     return await checkDOTCancellationEligibility(flight);
@@ -120,6 +200,23 @@ async function checkCancellationEligibility(
     regulation: 'Unknown',
     reason: 'Route not covered by EU261, UK CAA, or US DOT',
   };
+}
+
+// Helpers to format regional outputs
+function formatRegionalAmount(value: number, currency: string): string {
+  const upper = currency.toUpperCase();
+  if (upper === 'CHF') return `CHF ${value}`;
+  if (upper === 'NOK') return `NOK ${value}`;
+  if (upper === 'CAD') return `$${value} CAD`;
+  return `${value} ${currency}`;
+}
+
+function formatRegionalMessage(r: {
+  compensation: number;
+  currency: string;
+  regulation: string;
+}): string {
+  return `You're likely entitled to ${formatRegionalAmount(r.compensation, r.currency)} under ${r.regulation}`;
 }
 
 /**
