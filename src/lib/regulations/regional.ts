@@ -113,7 +113,7 @@ export class SwissRegulations {
     departureAirport: string,
     arrivalAirport: string
   ): boolean {
-    const swissAirports = ['ZRH', 'GVA', 'BSL']; // Zurich, Geneva, Basel
+    const swissAirports = ['ZRH', 'GVA', 'BSL', 'SIR', 'LUG']; // Zurich, Geneva, Basel, Sion, Lugano
     return swissAirports.some(
       (airport) => departureAirport === airport || arrivalAirport === airport
     );
@@ -193,7 +193,7 @@ export class NorwegianRegulations {
     departureAirport: string,
     arrivalAirport: string
   ): boolean {
-    const norwegianAirports = ['OSL', 'BGO', 'TRD', 'SVG']; // Oslo, Bergen, Trondheim, Stavanger
+    const norwegianAirports = ['OSL', 'BGO', 'TRD', 'SVG', 'TOS', 'AAL', 'BOO']; // Oslo, Bergen, Trondheim, Stavanger, Tromsø, Ålesund, Bodø
     return norwegianAirports.some(
       (airport) => departureAirport === airport || arrivalAirport === airport
     );
@@ -375,6 +375,10 @@ export class CanadianRegulations {
       'YOW', // Ottawa
       'YHZ', // Halifax
       'YEG', // Edmonton
+      'YQT', // Thunder Bay
+      'YYT', // St. John's
+      'YWG', // Winnipeg
+      'YQR', // Regina
     ];
     return canadianAirports.some(
       (airport) => departureAirport === airport || arrivalAirport === airport
