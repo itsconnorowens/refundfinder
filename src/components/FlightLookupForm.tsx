@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { CheckEligibilityResponse } from '../types/api';
 import AirportAutocomplete from './AirportAutocomplete';
+import AirlineAutocomplete from './AirlineAutocomplete';
 import { validateAirportCode } from '@/lib/airports';
 
 interface FlightLookupFormProps {
@@ -243,25 +244,15 @@ export default function FlightLookupForm({ onResults, onLoading }: FlightLookupF
         />
 
         {/* Airline */}
-        <div>
-          <label htmlFor="airline" className="block text-sm font-medium text-gray-700 mb-2">
-            Airline *
-          </label>
-          <input
-            type="text"
-            id="airline"
-            value={formData.airline}
-            onChange={(e) => handleInputChange('airline', e.target.value)}
-            placeholder="Select your airline..."
-            className={`w-full px-4 py-4 md:py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-base ${
-              errors.airline ? 'border-red-500' : 'border-gray-300'
-            }`}
-          />
-          {errors.airline && (
-            <p className="mt-1 text-sm text-red-600">{errors.airline}</p>
-          )}
-          <p className="mt-1 text-xs text-gray-500">✈️ The airline operating your flight</p>
-        </div>
+        <AirlineAutocomplete
+          value={formData.airline}
+          onChange={(value) => handleInputChange('airline', value)}
+          label="Airline"
+          required={true}
+          placeholder="e.g., British Airways, BA"
+          error={errors.airline}
+        />
+        <p className="mt-1 text-xs text-gray-500">✈️ The airline operating your flight</p>
 
         {/* Disruption Type */}
         <div>

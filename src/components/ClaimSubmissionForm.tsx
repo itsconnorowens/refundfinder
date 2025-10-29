@@ -11,6 +11,7 @@ import { Badge } from '@/components/ui/badge';
 import { ChevronLeft, ChevronRight, Upload, FileText, CheckCircle, AlertCircle, X } from 'lucide-react';
 import StripeProvider from '@/components/StripeProvider';
 import PaymentStep from '@/components/PaymentStep';
+import AirlineAutocomplete from '@/components/AirlineAutocomplete';
 
 interface FormData {
   // Step 1: Personal Info
@@ -565,22 +566,14 @@ export default function ClaimSubmissionForm() {
                   )}
                 </div>
                 <div>
-                  <Label htmlFor="airline" className="text-sm font-medium">
-                    Airline *
-                  </Label>
-                  <Input
-                    id="airline"
+                  <AirlineAutocomplete
                     value={formData.airline}
-                    onChange={(e) => handleInputChange('airline', e.target.value)}
-                    className={errors.airline ? 'border-red-500' : ''}
-                    placeholder="e.g., American Airlines"
+                    onChange={(value) => handleInputChange('airline', value)}
+                    label="Airline"
+                    required={true}
+                    placeholder="e.g., American Airlines, AA"
+                    error={errors.airline}
                   />
-                  {errors.airline && (
-                    <p className="text-red-500 text-sm mt-1 flex items-center">
-                      <AlertCircle className="w-4 h-4 mr-1" />
-                      {errors.airline}
-                    </p>
-                  )}
                 </div>
                 <div>
                   <Label htmlFor="departureDate" className="text-sm font-medium">

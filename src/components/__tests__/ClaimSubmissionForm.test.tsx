@@ -3,6 +3,13 @@ import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import ClaimSubmissionForm from '../ClaimSubmissionForm';
 
+// Mock Next.js hooks
+vi.mock('next/navigation', () => ({
+  useSearchParams: () => ({
+    get: vi.fn(() => null),
+  }),
+}));
+
 // Mock the Stripe components
 vi.mock('../StripeProvider', () => ({
   default: ({ children }: { children: React.ReactNode }) => <div>{children}</div>,

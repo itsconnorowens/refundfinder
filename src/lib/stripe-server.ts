@@ -57,12 +57,12 @@ export async function createPaymentIntent(
       receipt_email: email,
       metadata: {
         claimId,
-        service: 'refund-finder',
+        service: 'flghtly',
         priceId: STRIPE_PRICE_ID || '',
         productId: process.env.STRIPE_PRODUCT_ID || '',
         ...metadata,
       },
-      description: `Refund Finder Service Fee - Claim ${claimId}`,
+      description: `Flghtly Service Fee - Claim ${claimId}`,
     });
 
     return paymentIntent;
@@ -101,7 +101,7 @@ export async function processRefund(
       payment_intent: paymentIntentId,
       reason: reason as Stripe.RefundCreateParams.Reason | undefined,
       metadata: {
-        service: 'refund-finder',
+        service: 'flghtly',
         ...metadata,
       },
     });
@@ -129,7 +129,7 @@ export async function processPartialRefund(
       amount,
       reason: reason as Stripe.RefundCreateParams.Reason | undefined,
       metadata: {
-        service: 'refund-finder',
+        service: 'flghtly',
         ...metadata,
       },
     });
@@ -187,7 +187,7 @@ export async function createCustomer(
       email,
       name,
       metadata: {
-        service: 'refund-finder',
+        service: 'flghtly',
         ...metadata,
       },
     });

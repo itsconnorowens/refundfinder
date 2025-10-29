@@ -7,6 +7,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import FlightPathsAnimation from './FlightPathsAnimation';
+import AirlineAutocomplete from './AirlineAutocomplete';
 
 interface EligibilityFormData {
   // Option 1: Email paste
@@ -267,15 +268,12 @@ export function EligibilityForm() {
                       </div>
                       
                       <div>
-                        <Label htmlFor="airline" className="text-sm font-medium text-white">
-                          Airline *
-                        </Label>
-                        <Input
-                          id="airline"
+                        <AirlineAutocomplete
                           value={formData.airline}
-                          onChange={(e) => handleInputChange('airline', e.target.value)}
-                          placeholder="e.g., British Airways"
-                          className="mt-1 bg-slate-800/50 border-slate-700 text-white placeholder-slate-500 focus:border-[#00D9B5]"
+                          onChange={(value) => handleInputChange('airline', value)}
+                          label="Airline"
+                          required={true}
+                          placeholder="e.g., British Airways, BA"
                         />
                       </div>
                       
