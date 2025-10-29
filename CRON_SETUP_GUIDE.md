@@ -2,9 +2,9 @@
 
 ## Generated Cron Secret
 
-Your secure cron secret has been generated:
+Your secure cron secret should be stored in environment variables only. Do not commit real secrets to the repo.
 ```
-REDACTED_CRON_SECRET
+<your_cron_secret_here>
 ```
 
 ## Environment Variable Setup
@@ -12,7 +12,7 @@ REDACTED_CRON_SECRET
 ### 1. Local Development (.env.local)
 Create a `.env.local` file in your project root with:
 ```bash
-CRON_SECRET=REDACTED_CRON_SECRET
+CRON_SECRET=<your_cron_secret_here>
 # ... other environment variables
 ```
 
@@ -24,13 +24,13 @@ Add the cron secret to your Vercel environment variables:
 2. Navigate to Settings → Environment Variables
 3. Add new variable:
    - **Name**: `CRON_SECRET`
-   - **Value**: `REDACTED_CRON_SECRET`
+   - **Value**: `<your_cron_secret_here>`
    - **Environment**: Production (and Preview if needed)
 
 **Via Vercel CLI:**
 ```bash
 vercel env add CRON_SECRET
-# Enter: REDACTED_CRON_SECRET
+# Enter: <your_cron_secret_here>
 ```
 
 ## Cron Job Configuration
@@ -55,7 +55,7 @@ You can test the cron job manually:
 ```bash
 # Test the cron endpoint
 curl -X POST https://your-domain.com/api/cron/process-automatic-refunds \
-  -H "Authorization: Bearer REDACTED_CRON_SECRET"
+  -H "Authorization: Bearer <your_cron_secret_here>"
 
 # Health check
 curl https://your-domain.com/api/cron/process-automatic-refunds
