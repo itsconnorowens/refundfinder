@@ -1,6 +1,14 @@
 # Gitleaks ignore file
 # These are documentation examples and test fixtures, not real secrets
 
+# Local environment files with actual secrets (gitignored, safe to ignore)
+.env.local:stripe-access-token:4
+.env.local:generic-api-key:6
+.env.local:generic-api-key:9
+.env.local:airtable-api-key:10
+.claude/settings.local.json:generic-api-key:11
+.claude/settings.local.json:airtable-api-key:11
+
 # Documentation files with placeholder examples
 AUTOMATED_REFUND_SYSTEM.md:curl-auth-header:160
 AIRTABLE_SETUP_GUIDE.md:airtable-api-key:119

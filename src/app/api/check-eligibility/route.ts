@@ -43,7 +43,7 @@ export async function POST(request: NextRequest) {
     const body = await request.json();
     console.log('📝 Request body received:', JSON.stringify(body, null, 2));
 
-    // Validate required fields
+    // Extract all fields from body (with backward compatibility defaults)
     const {
       flightNumber,
       airline,
@@ -52,6 +52,25 @@ export async function POST(request: NextRequest) {
       arrivalAirport,
       delayDuration,
       delayReason,
+      // Disruption type (defaults to 'delay' for backward compatibility)
+      disruptionType = 'delay',
+      // Cancellation-specific fields
+      noticeGiven,
+      alternativeOffered,
+      alternativeTiming,
+      cancellationReason,
+      // Denied boarding-specific fields
+      deniedBoardingType,
+      deniedBoardingReason,
+      compensationOffered,
+      compensationAmount,
+      passengerCount,
+      // Downgrade-specific fields
+      bookedClass,
+      actualClass,
+      ticketPrice,
+      fareDifference,
+      downgradeReason,
     } = body;
 
     console.log('🔍 Field validation:');
@@ -66,6 +85,7 @@ export async function POST(request: NextRequest) {
     console.log('  arrivalAirport:', arrivalAirport, typeof arrivalAirport);
     console.log('  delayDuration:', delayDuration, typeof delayDuration);
     console.log('  delayReason:', delayReason, typeof delayReason);
+    console.log('  disruptionType:', disruptionType, typeof disruptionType);
 
     // Validate required fields with better error messages
     const missingFields = [];
@@ -74,7 +94,11 @@ export async function POST(request: NextRequest) {
     if (!departureDate?.trim()) missingFields.push('departureDate');
     if (!departureAirport?.trim()) missingFields.push('departureAirport');
     if (!arrivalAirport?.trim()) missingFields.push('arrivalAirport');
-    if (!delayDuration?.trim()) missingFields.push('delayDuration');
+
+    // Only require delayDuration for delay disruption type (backward compatibility)
+    if (disruptionType === 'delay' && !delayDuration?.trim()) {
+      missingFields.push('delayDuration');
+    }
 
     console.log('❌ Missing fields:', missingFields);
 
@@ -92,15 +116,32 @@ export async function POST(request: NextRequest) {
 
     console.log('✅ All fields validated successfully');
 
-    // Create flight details object
+    // Create flight details object with all fields
     const flightDetails: FlightDetails = {
       flightNumber: flightNumber.trim(),
       airline: airline.trim(),
       departureDate,
       departureAirport: departureAirport.trim().toUpperCase(),
       arrivalAirport: arrivalAirport.trim().toUpperCase(),
-      delayDuration: delayDuration.trim(),
+      delayDuration: delayDuration?.trim() || '0',
       delayReason: delayReason?.trim(),
+      // Disruption type
+      disruptionType: disruptionType as
+        | 'delay'
+        | 'cancellation'
+        | 'downgrading'
+        | 'denied_boarding',
+      // Cancellation fields (only include if provided)
+      ...(noticeGiven && { noticeGiven }),
+      ...(alternativeOffered !== undefined && { alternativeOffered }),
+      ...(alternativeTiming && { alternativeTiming }),
+      // Denied boarding fields (only include if provided)
+      ...(deniedBoardingType && { deniedBoardingType }),
+      ...(compensationOffered !== undefined && { compensationOffered }),
+      // Downgrade fields (only include if provided)
+      ...(bookedClass && { bookedClass }),
+      ...(actualClass && { actualClass }),
+      ...(ticketPrice !== undefined && { ticketPrice }),
     };
 
     console.log(
@@ -152,12 +193,31 @@ export async function POST(request: NextRequest) {
             departureDate: flightDetails.departureDate,
             departureAirport: flightDetails.departureAirport,
             arrivalAirport: flightDetails.arrivalAirport,
-            status: 'Delayed',
+            status:
+              disruptionType === 'cancellation'
+                ? 'Cancelled'
+                : disruptionType === 'denied_boarding'
+                  ? 'Denied Boarding'
+                  : disruptionType === 'downgrading'
+                    ? 'Downgraded'
+                    : 'Delayed',
           },
           eligibility: {
             isEligible: result.eligible,
             compensationAmount: result.amount,
             reason: result.reason || result.message,
+            regulation: result.regulation,
+            confidence: result.confidence,
+            disruptionType: flightDetails.disruptionType,
+            // Include scenario-specific fields in response
+            ...(noticeGiven && { noticeGiven }),
+            ...(alternativeOffered !== undefined && { alternativeOffered }),
+            ...(alternativeTiming && { alternativeTiming }),
+            ...(deniedBoardingType && { deniedBoardingType }),
+            ...(compensationOffered !== undefined && { compensationOffered }),
+            ...(bookedClass && { bookedClass }),
+            ...(actualClass && { actualClass }),
+            ...(fareDifference !== undefined && { fareDifference }),
           },
           validation: {
             isValid: true,

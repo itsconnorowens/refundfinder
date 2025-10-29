@@ -1,8 +1,46 @@
 import { calculateFlightDistanceCached } from './distance-calculator';
-import { getAirlineRegulations, normalizeAirlineName } from './airlines';
+import { checkRegionalEligibility } from './regulations/regional';
 import { analyzeExtraordinaryCircumstances } from './extraordinary-circumstances';
+import { checkDeniedBoardingEligibility } from './denied-boarding';
 
 import { getDistanceBetweenAirports } from './airports';
+
+// Seat class types in descending order of quality
+export type SeatClass = 'first' | 'business' | 'premium_economy' | 'economy';
+
+/**
+ * Notice period for cancellation
+ * Determines compensation eligibility under EU261 Article 5
+ */
+export type NoticePeriod = '< 7 days' | '7-14 days' | '> 14 days';
+
+/**
+ * Alternative flight offering details for cancellations
+ * Based on EU261 Article 5 requirements for re-routing
+ */
+export interface AlternativeFlight {
+  offered: boolean;
+  departureTime?: string; // ISO format or time string
+  arrivalTime?: string; // ISO format or time string
+  // Time differences compared to original flight (in hours)
+  departureTimeDifference?: number; // negative = earlier, positive = later
+  arrivalTimeDifference?: number; // negative = earlier, positive = later
+  // Combined timing adjustment for compensation calculation
+  totalTimingAdjustment?: number; // in hours
+}
+
+/**
+ * Care and assistance provided by airline during disruption
+ * EU261 Article 9 requirements
+ */
+export interface CareProvision {
+  mealsProvided?: boolean;
+  refreshmentsProvided?: boolean;
+  hotelAccommodationProvided?: boolean;
+  transportToAccommodationProvided?: boolean;
+  communicationMeansProvided?: boolean; // phone calls, emails
+  adequateCareProvided?: boolean; // overall assessment
+}
 
 export interface FlightDetails {
   flightNumber: string;
@@ -12,11 +50,31 @@ export interface FlightDetails {
   arrivalAirport: string;
   delayDuration: string;
   delayReason?: string;
-  // New fields for cancellation support
-  disruptionType?: 'delay' | 'cancellation';
-  noticeGiven?: string; // "< 7 days", "7-14 days", "> 14 days"
+
+  // Disruption type
+  disruptionType?: 'delay' | 'cancellation' | 'downgrading' | 'denied_boarding';
+
+  // Enhanced cancellation support (EU261 Article 5)
+  noticeGiven?: NoticePeriod;
+  cancellationDate?: string; // When passenger was notified (ISO format)
+  alternativeFlight?: AlternativeFlight;
+  careProvision?: CareProvision;
+
+  // Legacy cancellation fields (maintained for backward compatibility)
+  /** @deprecated Use alternativeFlight.offered instead */
   alternativeOffered?: boolean;
-  alternativeTiming?: string; // departure time difference
+  /** @deprecated Use alternativeFlight.totalTimingAdjustment instead */
+  alternativeTiming?: string;
+
+  // Downgrading support
+  bookedClass?: SeatClass;
+  actualClass?: SeatClass;
+  ticketPrice?: number;
+
+  // Denied boarding support
+  deniedBoardingType?: 'voluntary' | 'involuntary';
+  alternativeArrivalDelay?: string;
+  compensationOffered?: number;
 }
 
 export interface EligibilityResult {
@@ -35,6 +93,16 @@ export async function checkEligibility(
   flight: FlightDetails
 ): Promise<EligibilityResult> {
   const disruptionType = flight.disruptionType || 'delay';
+
+  // Handle denied boarding
+  if (disruptionType === 'denied_boarding') {
+    return await checkDeniedBoardingEligibility(flight);
+  }
+
+  // Handle downgrades
+  if (disruptionType === 'downgrading') {
+    return await checkDowngradingEligibility(flight);
+  }
 
   // Handle cancellations differently
   if (disruptionType === 'cancellation') {
@@ -56,16 +124,57 @@ export async function checkEligibility(
     };
   }
 
-  // Check if it's a UK flight (UK CAA regulations apply)
-  const isUKFlight = isUKCoveredFlight(flight);
-  if (isUKFlight) {
-    return await checkUKCAAEligibility(flight, delayHours);
+  // Calculate distance once for downstream checks
+  const distanceResult = calculateFlightDistanceCached(
+    flight.departureAirport,
+    flight.arrivalAirport
+  );
+  const distance = distanceResult.isValid ? distanceResult.distanceKm : 1000;
+
+  // Determine extraordinary circumstances once
+  const isExtraordinary = await isExtraordinaryCircumstance(
+    flight.delayReason,
+    {
+      flightNumber: flight.flightNumber,
+      airline: flight.airline,
+      departureAirport: flight.departureAirport,
+      arrivalAirport: flight.arrivalAirport,
+      delayDuration: flight.delayDuration,
+    }
+  );
+
+  // Priority: Swiss → Norwegian → Canadian → EU → UK → US
+  const regionalResult = checkRegionalEligibility(
+    flight.departureAirport,
+    flight.arrivalAirport,
+    delayHours,
+    distance,
+    false,
+    isExtraordinary,
+    flight.delayReason
+  );
+
+  if (regionalResult) {
+    return {
+      eligible: regionalResult.eligible,
+      amount: formatRegionalAmount(regionalResult.compensation, regionalResult.currency),
+      confidence: 85,
+      message: formatRegionalMessage(regionalResult),
+      regulation: regionalResult.regulation,
+      reason: regionalResult.reason,
+    };
   }
 
   // Check if it's an EU flight (EU261 applies)
   const isEUFlight = isEUCoveredFlight(flight);
   if (isEUFlight) {
     return await checkEU261Eligibility(flight, delayHours);
+  }
+
+  // Check if it's a UK flight (UK CAA regulations apply)
+  const isUKFlight = isUKCoveredFlight(flight);
+  if (isUKFlight) {
+    return await checkUKCAAEligibility(flight, delayHours);
   }
 
   // Check if it's a US flight (DOT regulations)
@@ -92,19 +201,57 @@ export async function checkEligibility(
 async function checkCancellationEligibility(
   flight: FlightDetails
 ): Promise<EligibilityResult> {
-  // Check if it's a UK flight (UK CAA regulations apply)
-  const isUKFlight = isUKCoveredFlight(flight);
-  if (isUKFlight) {
-    return await checkUKCAACancellationEligibility(flight);
+  // Precompute distance and extraordinary circumstances
+  const distanceResult = calculateFlightDistanceCached(
+    flight.departureAirport,
+    flight.arrivalAirport
+  );
+  const distance = distanceResult.isValid ? distanceResult.distanceKm : 1000;
+  const isExtraordinary = await isExtraordinaryCircumstance(
+    flight.delayReason,
+    {
+      flightNumber: flight.flightNumber,
+      airline: flight.airline,
+      departureAirport: flight.departureAirport,
+      arrivalAirport: flight.arrivalAirport,
+      delayDuration: flight.delayDuration,
+    }
+  );
+
+  // Regional checks first (Swiss → Norwegian → Canadian)
+  const regionalResult = checkRegionalEligibility(
+    flight.departureAirport,
+    flight.arrivalAirport,
+    // For cancellations, some regimes still look at delay on reroute; fallback to parsed delay
+    parseDelayHours(flight.delayDuration || '0 hours'),
+    distance,
+    true,
+    isExtraordinary,
+    flight.delayReason
+  );
+
+  if (regionalResult) {
+    return {
+      eligible: regionalResult.eligible,
+      amount: formatRegionalAmount(regionalResult.compensation, regionalResult.currency),
+      confidence: 85,
+      message: formatRegionalMessage(regionalResult),
+      regulation: regionalResult.regulation,
+      reason: regionalResult.reason,
+    };
   }
 
-  // Check if it's an EU flight (EU261 applies)
+  // Then EU → UK → US
   const isEUFlight = isEUCoveredFlight(flight);
   if (isEUFlight) {
     return await checkEU261CancellationEligibility(flight);
   }
 
-  // Check if it's a US flight (DOT regulations)
+  const isUKFlight = isUKCoveredFlight(flight);
+  if (isUKFlight) {
+    return await checkUKCAACancellationEligibility(flight);
+  }
+
   const isUSFlightResult = isUSFlight(flight);
   if (isUSFlightResult) {
     return await checkDOTCancellationEligibility(flight);
@@ -120,6 +267,185 @@ async function checkCancellationEligibility(
     regulation: 'Unknown',
     reason: 'Route not covered by EU261, UK CAA, or US DOT',
   };
+}
+
+// Helpers to format regional outputs
+function formatRegionalAmount(value: number, currency: string): string {
+  const upper = currency.toUpperCase();
+  if (upper === 'CHF') return `CHF ${value}`;
+  if (upper === 'NOK') return `NOK ${value}`;
+  if (upper === 'CAD') return `$${value} CAD`;
+  return `${value} ${currency}`;
+}
+
+function formatRegionalMessage(r: {
+  compensation: number;
+  currency: string;
+  regulation: string;
+}): string {
+  return `You're likely entitled to ${formatRegionalAmount(r.compensation, r.currency)} under ${r.regulation}`;
+}
+
+/**
+ * Analyze notification timing for cancellation
+ * Determines which EU261 Article 5 rule applies
+ *
+ * EU261 Rules:
+ * - > 14 days: No compensation required
+ * - 7-14 days: Compensation required unless suitable alternative offered
+ * - < 7 days: Full compensation unless very close alternative offered
+ */
+function analyzeNotificationTiming(flight: FlightDetails): {
+  noticePeriod: NoticePeriod;
+  requiresCompensation: boolean;
+  allowsAlternativeReduction: boolean;
+} {
+  const noticeGiven = flight.noticeGiven;
+
+  if (!noticeGiven || noticeGiven === '> 14 days') {
+    return {
+      noticePeriod: '> 14 days',
+      requiresCompensation: false,
+      allowsAlternativeReduction: false,
+    };
+  }
+
+  if (noticeGiven === '7-14 days') {
+    return {
+      noticePeriod: '7-14 days',
+      requiresCompensation: true,
+      allowsAlternativeReduction: true, // Alternative must depart within 2 hours and arrive within 4 hours
+    };
+  }
+
+  // < 7 days
+  return {
+    noticePeriod: '< 7 days',
+    requiresCompensation: true,
+    allowsAlternativeReduction: true, // Alternative must depart within 1 hour and arrive within 2 hours
+  };
+}
+
+/**
+ * Analyze alternative flight timing to determine compensation reduction
+ * Based on EU261 Article 5(1)(c)
+ *
+ * Returns compensation multiplier (0 = no compensation, 0.5 = 50%, 1 = full)
+ */
+function analyzeAlternativeFlights(
+  flight: FlightDetails,
+  noticePeriod: NoticePeriod
+): {
+  hasAlternative: boolean;
+  compensationMultiplier: number;
+  reason: string;
+} {
+  // Check for enhanced alternative flight data first
+  if (flight.alternativeFlight && flight.alternativeFlight.offered) {
+    const alt = flight.alternativeFlight;
+    const departDiff = Math.abs(alt.departureTimeDifference || 0);
+    const arrivalDiff = Math.abs(alt.arrivalTimeDifference || 0);
+
+    if (noticePeriod === '7-14 days') {
+      // For 7-14 days: depart < 2 hours before, arrive < 4 hours after
+      if (departDiff <= 2 && arrivalDiff <= 4) {
+        return {
+          hasAlternative: true,
+          compensationMultiplier: 0,
+          reason: 'Alternative flight within acceptable timing (7-14 days notice)',
+        };
+      }
+    } else if (noticePeriod === '< 7 days') {
+      // For < 7 days: depart < 1 hour before, arrive < 2 hours after
+      if (departDiff <= 1 && arrivalDiff <= 2) {
+        return {
+          hasAlternative: true,
+          compensationMultiplier: 0,
+          reason: 'Alternative flight within acceptable timing (< 7 days notice)',
+        };
+      }
+      // Partial reduction for close alternatives
+      if (departDiff <= 2 && arrivalDiff <= 3) {
+        return {
+          hasAlternative: true,
+          compensationMultiplier: 0.5,
+          reason: 'Alternative flight offered with minor delays (< 7 days notice)',
+        };
+      }
+    }
+
+    return {
+      hasAlternative: true,
+      compensationMultiplier: 1,
+      reason: 'Alternative flight offered but timing exceeds EU261 thresholds',
+    };
+  }
+
+  // Fallback to legacy fields for backward compatibility
+  if (flight.alternativeOffered && flight.alternativeTiming) {
+    const alternativeHours = parseAlternativeTiming(flight.alternativeTiming);
+
+    if (noticePeriod === '7-14 days') {
+      if (alternativeHours <= 4) {
+        return {
+          hasAlternative: true,
+          compensationMultiplier: 0,
+          reason: 'Alternative flight within 4 hours (7-14 days notice)',
+        };
+      }
+    } else if (noticePeriod === '< 7 days') {
+      if (alternativeHours <= 2) {
+        return {
+          hasAlternative: true,
+          compensationMultiplier: 0,
+          reason: 'Alternative flight within 2 hours (< 7 days notice)',
+        };
+      }
+      if (alternativeHours <= 3) {
+        return {
+          hasAlternative: true,
+          compensationMultiplier: 0.5,
+          reason: 'Alternative flight within 3 hours (< 7 days notice)',
+        };
+      }
+    }
+
+    return {
+      hasAlternative: true,
+      compensationMultiplier: 1,
+      reason: 'Alternative flight timing exceeds EU261 thresholds',
+    };
+  }
+
+  return {
+    hasAlternative: false,
+    compensationMultiplier: 1,
+    reason: 'No alternative flight offered',
+  };
+}
+
+/**
+ * Calculate cancellation compensation amount
+ * Based on flight distance and compensation multiplier
+ */
+function calculateCancellationCompensation(
+  distance: number,
+  compensationMultiplier: number,
+  currency: '€' | '£' = '€'
+): string {
+  let baseAmount = 0;
+
+  // EU261/UK CAA compensation tiers based on distance
+  if (distance <= 1500) {
+    baseAmount = currency === '£' ? 250 : 250;
+  } else if (distance <= 3500) {
+    baseAmount = currency === '£' ? 400 : 400;
+  } else {
+    baseAmount = currency === '£' ? 520 : 600;
+  }
+
+  const finalAmount = Math.round(baseAmount * compensationMultiplier);
+  return `${currency}${finalAmount}`;
 }
 
 /**
@@ -215,26 +541,29 @@ async function checkUKCAACancellationEligibility(
 }
 
 /**
- * Check EU261 cancellation eligibility
+ * Check EU261 cancellation eligibility with enhanced Article 5 compliance
+ * Implements full EU261/2004 Article 5 logic for cancellation compensation
  */
 async function checkEU261CancellationEligibility(
   flight: FlightDetails
 ): Promise<EligibilityResult> {
-  // Check notice period
-  const noticeGiven = flight.noticeGiven;
-  if (!noticeGiven || noticeGiven === '> 14 days') {
+  // Step 1: Analyze notification timing
+  const timing = analyzeNotificationTiming(flight);
+
+  // If > 14 days notice, no compensation required
+  if (!timing.requiresCompensation) {
     return {
       eligible: false,
       amount: '€0',
-      confidence: 90,
+      confidence: 95,
       message:
-        'Cancellation with more than 14 days notice does not qualify for compensation',
+        'Cancellation with more than 14 days notice does not qualify for compensation under EU261 Article 5',
       regulation: 'EU261',
-      reason: 'Insufficient notice period',
+      reason: 'More than 14 days notice given',
     };
   }
 
-  // Check for extraordinary circumstances using enhanced NLP
+  // Step 2: Check for extraordinary circumstances using enhanced NLP
   const isExtraordinary = await isExtraordinaryCircumstance(
     flight.delayReason,
     {
@@ -251,58 +580,58 @@ async function checkEU261CancellationEligibility(
       eligible: false,
       amount: '€0',
       confidence: 90,
-      message: 'Compensation not available due to extraordinary circumstances',
+      message:
+        'Compensation not available due to extraordinary circumstances that could not have been avoided (EU261 Article 5(3))',
       regulation: 'EU261',
       reason: 'Extraordinary circumstances (weather, security, etc.)',
     };
   }
 
-  // Calculate compensation based on distance
+  // Step 3: Calculate flight distance for compensation tier
   const distanceResult = calculateFlightDistanceCached(
     flight.departureAirport,
     flight.arrivalAirport
   );
   const distance = distanceResult.isValid ? distanceResult.distanceKm : 1000;
-  let amount = '€0';
 
-  if (distance <= 1500) {
-    amount = '€250';
-  } else if (distance <= 3500) {
-    amount = '€400';
-  } else {
-    amount = '€600';
+  // Step 4: Analyze alternative flight timing for compensation reduction
+  const alternativeAnalysis = analyzeAlternativeFlights(
+    flight,
+    timing.noticePeriod
+  );
+
+  // Step 5: Calculate final compensation amount
+  const amount = calculateCancellationCompensation(
+    distance,
+    alternativeAnalysis.compensationMultiplier,
+    '€'
+  );
+
+  // Step 6: Determine eligibility and return result
+  if (alternativeAnalysis.compensationMultiplier === 0) {
+    return {
+      eligible: false,
+      amount,
+      confidence: 90,
+      message:
+        'Alternative flight offered within EU261 acceptable timing - no compensation required',
+      regulation: 'EU261',
+      reason: alternativeAnalysis.reason,
+    };
   }
 
-  // Check if alternative flight was offered
-  if (flight.alternativeOffered && flight.alternativeTiming) {
-    const alternativeHours = parseAlternativeTiming(flight.alternativeTiming);
-
-    if (alternativeHours <= 1) {
-      // 50% compensation if alternative within 1 hour
-      const baseAmount = parseFloat(amount.replace('€', ''));
-      amount = `€${Math.round(baseAmount * 0.5)}`;
-    } else if (alternativeHours <= 2) {
-      // No compensation if alternative within 2 hours
-      amount = '€0';
-      return {
-        eligible: false,
-        amount,
-        confidence: 90,
-        message:
-          'Alternative flight offered within 2 hours - no compensation required',
-        regulation: 'EU261',
-        reason: 'Alternative flight timing',
-      };
-    }
-  }
+  const eligible = alternativeAnalysis.compensationMultiplier > 0;
+  const confidence = eligible ? 85 : 90;
 
   return {
-    eligible: true,
+    eligible,
     amount,
-    confidence: 85,
-    message: `You're likely entitled to ${amount} compensation under EU261 for cancellation`,
+    confidence,
+    message: eligible
+      ? `You're likely entitled to ${amount} compensation under EU261 Article 5 for cancellation`
+      : 'No compensation required based on alternative flight timing',
     regulation: 'EU261',
-    reason: `Flight cancelled with ${noticeGiven} notice, distance ${distance}km`,
+    reason: `Flight cancelled with ${timing.noticePeriod} notice, distance ${distance}km. ${alternativeAnalysis.reason}`,
   };
 }
 
@@ -780,3 +1109,277 @@ export function getAirlineCompensationInfo(airline: string): string {
     ? airlineInfo[matchedAirline]
     : 'Check with airline for compensation policy';
 }
+
+/**
+ * Calculate the class difference level for downgrading
+ * Returns the number of class steps downgraded
+ */
+export function calculateClassDifference(
+  bookedClass: SeatClass,
+  actualClass: SeatClass
+): number {
+  const classHierarchy: SeatClass[] = [
+    'first',
+    'business',
+    'premium_economy',
+    'economy',
+  ];
+
+  const bookedIndex = classHierarchy.indexOf(bookedClass);
+  const actualIndex = classHierarchy.indexOf(actualClass);
+
+  // Return positive number if downgraded, 0 or negative if same/upgraded
+  return actualIndex - bookedIndex;
+}
+
+/**
+ * Calculate downgrading refund percentage based on flight distance (EU261 Article 10)
+ */
+function calculateDowngradingPercentage(distanceKm: number): number {
+  if (distanceKm <= 1500) {
+    return 30; // 30% for flights up to 1500km
+  } else if (distanceKm <= 3500) {
+    return 50; // 50% for flights between 1500-3500km
+  } else {
+    return 75; // 75% for flights over 3500km
+  }
+}
+
+/**
+ * Check downgrading eligibility based on regulations
+ */
+export async function checkDowngradingEligibility(
+  flight: FlightDetails
+): Promise<EligibilityResult> {
+  // Check if it's a UK flight (UK CAA regulations apply)
+  const isUKFlight = isUKCoveredFlight(flight);
+  if (isUKFlight) {
+    return await checkUKCAADowngradingEligibility(flight);
+  }
+
+  // Check if it's an EU flight (EU261 applies)
+  const isEUFlight = isEUCoveredFlight(flight);
+  if (isEUFlight) {
+    return await checkEU261DowngradingEligibility(flight);
+  }
+
+  // Check if it's a US flight (DOT regulations)
+  const isUSFlightResult = isUSFlight(flight);
+  if (isUSFlightResult) {
+    return await checkDOTDowngradingEligibility(flight);
+  }
+
+  // Not covered by major regulations
+  return {
+    eligible: false,
+    amount: '€0',
+    confidence: 80,
+    message:
+      'This flight may not be covered by major compensation regulations. We provide assistance services only and cannot guarantee eligibility.',
+    regulation: 'Unknown',
+    reason: 'Route not covered by EU261, UK CAA, or US DOT',
+  };
+}
+
+/**
+ * Check EU261 downgrading eligibility (Article 10)
+ * Note: Downgrades are ALWAYS eligible - no extraordinary circumstances exemption
+ */
+async function checkEU261DowngradingEligibility(
+  flight: FlightDetails
+): Promise<EligibilityResult> {
+  // Validate required fields
+  if (!flight.bookedClass || !flight.actualClass) {
+    return {
+      eligible: false,
+      amount: '€0',
+      confidence: 50,
+      message:
+        'Unable to determine downgrading eligibility - missing booked or actual class information',
+      regulation: 'EU261',
+      reason: 'Missing class information',
+    };
+  }
+
+  // Check if actually downgraded
+  const classDifference = calculateClassDifference(
+    flight.bookedClass,
+    flight.actualClass
+  );
+  if (classDifference <= 0) {
+    return {
+      eligible: false,
+      amount: '€0',
+      confidence: 100,
+      message:
+        'No downgrade detected - you received the same or better class than booked',
+      regulation: 'EU261',
+      reason: 'No downgrade occurred',
+    };
+  }
+
+  // Check if ticket price is available
+  if (!flight.ticketPrice || flight.ticketPrice <= 0) {
+    return {
+      eligible: true,
+      amount: 'To be calculated',
+      confidence: 70,
+      message:
+        'You are eligible for downgrading compensation under EU261 Article 10. Please provide your ticket price to calculate the exact refund amount.',
+      regulation: 'EU261',
+      reason: `Downgraded from ${flight.bookedClass} to ${flight.actualClass} class`,
+    };
+  }
+
+  // Calculate compensation based on distance
+  const distanceResult = calculateFlightDistanceCached(
+    flight.departureAirport,
+    flight.arrivalAirport
+  );
+  const distance = distanceResult.isValid ? distanceResult.distanceKm : 1000;
+
+  // Get percentage based on distance (EU261 Article 10)
+  const percentage = calculateDowngradingPercentage(distance);
+
+  // Calculate refund amount
+  const refundAmount = Math.round((flight.ticketPrice * percentage) / 100);
+
+  // Cap at ticket price
+  const finalAmount = Math.min(refundAmount, flight.ticketPrice);
+
+  return {
+    eligible: true,
+    amount: `€${finalAmount}`,
+    confidence: 95,
+    message: `You're entitled to €${finalAmount} (${percentage}% of ticket price) under EU261 Article 10 for seat downgrading`,
+    regulation: 'EU261',
+    reason: `Downgraded from ${flight.bookedClass} to ${flight.actualClass}, distance ${distance}km, ${percentage}% refund`,
+  };
+}
+
+/**
+ * Check UK CAA downgrading eligibility
+ * Same as EU261 but with GBP currency
+ */
+async function checkUKCAADowngradingEligibility(
+  flight: FlightDetails
+): Promise<EligibilityResult> {
+  // Validate required fields
+  if (!flight.bookedClass || !flight.actualClass) {
+    return {
+      eligible: false,
+      amount: '£0',
+      confidence: 50,
+      message:
+        'Unable to determine downgrading eligibility - missing booked or actual class information',
+      regulation: 'UK CAA',
+      reason: 'Missing class information',
+    };
+  }
+
+  // Check if actually downgraded
+  const classDifference = calculateClassDifference(
+    flight.bookedClass,
+    flight.actualClass
+  );
+  if (classDifference <= 0) {
+    return {
+      eligible: false,
+      amount: '£0',
+      confidence: 100,
+      message:
+        'No downgrade detected - you received the same or better class than booked',
+      regulation: 'UK CAA',
+      reason: 'No downgrade occurred',
+    };
+  }
+
+  // Check if ticket price is available
+  if (!flight.ticketPrice || flight.ticketPrice <= 0) {
+    return {
+      eligible: true,
+      amount: 'To be calculated',
+      confidence: 70,
+      message:
+        'You are eligible for downgrading compensation under UK CAA regulations. Please provide your ticket price to calculate the exact refund amount.',
+      regulation: 'UK CAA',
+      reason: `Downgraded from ${flight.bookedClass} to ${flight.actualClass} class`,
+    };
+  }
+
+  // Calculate compensation based on distance
+  const distanceResult = calculateFlightDistanceCached(
+    flight.departureAirport,
+    flight.arrivalAirport
+  );
+  const distance = distanceResult.isValid ? distanceResult.distanceKm : 1000;
+
+  // Get percentage based on distance (same as EU261 Article 10)
+  const percentage = calculateDowngradingPercentage(distance);
+
+  // Calculate refund amount
+  const refundAmount = Math.round((flight.ticketPrice * percentage) / 100);
+
+  // Cap at ticket price
+  const finalAmount = Math.min(refundAmount, flight.ticketPrice);
+
+  return {
+    eligible: true,
+    amount: `£${finalAmount}`,
+    confidence: 95,
+    message: `You're entitled to £${finalAmount} (${percentage}% of ticket price) under UK CAA regulations for seat downgrading`,
+    regulation: 'UK CAA',
+    reason: `Downgraded from ${flight.bookedClass} to ${flight.actualClass}, distance ${distance}km, ${percentage}% refund`,
+  };
+}
+
+/**
+ * Check US DOT downgrading eligibility
+ * US DOT doesn't mandate specific downgrading compensation - it's airline-specific
+ */
+async function checkDOTDowngradingEligibility(
+  flight: FlightDetails
+): Promise<EligibilityResult> {
+  // Validate required fields
+  if (!flight.bookedClass || !flight.actualClass) {
+    return {
+      eligible: false,
+      amount: '$0',
+      confidence: 50,
+      message:
+        'Unable to determine downgrading eligibility - missing booked or actual class information',
+      regulation: 'US DOT',
+      reason: 'Missing class information',
+    };
+  }
+
+  // Check if actually downgraded
+  const classDifference = calculateClassDifference(
+    flight.bookedClass,
+    flight.actualClass
+  );
+  if (classDifference <= 0) {
+    return {
+      eligible: false,
+      amount: '$0',
+      confidence: 100,
+      message:
+        'No downgrade detected - you received the same or better class than booked',
+      regulation: 'US DOT',
+      reason: 'No downgrade occurred',
+    };
+  }
+
+  // US DOT doesn't mandate compensation, but airlines typically offer refunds
+  return {
+    eligible: true,
+    amount: 'Varies by airline',
+    confidence: 65,
+    message:
+      'US DOT does not mandate specific compensation for seat downgrades, but most airlines offer a partial refund. Contact the airline directly for their downgrade policy.',
+    regulation: 'US DOT',
+    reason: `Downgraded from ${flight.bookedClass} to ${flight.actualClass} - check airline policy`,
+  };
+}
+
+// checkDeniedBoardingEligibility is imported from ./denied-boarding module

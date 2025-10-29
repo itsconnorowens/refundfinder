@@ -63,6 +63,28 @@ export interface ClaimRecord {
   delayReason?: string;
   bookingReference?: string;
 
+  // Disruption type
+  disruptionType?: 'delay' | 'cancellation' | 'denied_boarding' | 'downgrade';
+
+  // Cancellation-specific fields
+  noticeGiven?: string;
+  alternativeOffered?: boolean;
+  alternativeTiming?: string;
+  cancellationReason?: string;
+
+  // Denied boarding-specific fields
+  deniedBoardingType?: 'voluntary' | 'involuntary';
+  deniedBoardingReason?: string;
+  compensationOfferedByAirline?: number;
+  passengerCount?: number;
+
+  // Downgrade-specific fields
+  bookedClass?: string;
+  actualClass?: string;
+  ticketPrice?: number;
+  fareDifference?: number;
+  downgradeReason?: string;
+
   // Documents
   boardingPassUrl?: string;
   delayProofUrl?: string;
@@ -201,7 +223,8 @@ export async function createClaim(claim: ClaimRecord): Promise<string> {
   }
 
   try {
-    const record = await base(TABLES.CLAIMS).create({
+    // Build fields object, removing undefined/null values
+    const fields: Record<string, any> = {
       claim_id: claim.claimId,
       user_first_name: claim.firstName,
       user_last_name: claim.lastName,
@@ -211,16 +234,78 @@ export async function createClaim(claim: ClaimRecord): Promise<string> {
       departure_date: claim.departureDate,
       departure_airport: claim.departureAirport,
       arrival_airport: claim.arrivalAirport,
-      delay_duration: claim.delayDuration,
       delay_reason: claim.delayReason || '',
       status: claim.status,
-      estimated_compensation: claim.estimatedCompensation || '',
-      payment_id: claim.paymentId || '',
-      submitted_at: claim.submittedAt,
-      boarding_pass_url: claim.boardingPassUrl || '',
-      delay_proof_url: claim.delayProofUrl || '',
-      internal_notes: claim.internalNotes || '',
-    });
+    };
+
+    // Add optional fields only if they exist in Airtable schema
+    if (claim.estimatedCompensation) fields.estimated_compensation = claim.estimatedCompensation;
+    if (claim.paymentId) fields.payment_id = claim.paymentId;
+    if (claim.boardingPassUrl) fields.boarding_pass_url = claim.boardingPassUrl;
+    if (claim.delayProofUrl) fields.delay_proof_url = claim.delayProofUrl;
+    if (claim.internalNotes) fields.internal_notes = claim.internalNotes;
+
+    // Add delay_duration if it exists (optional for backward compatibility)
+    if (claim.delayDuration) {
+      fields.delay_duration = claim.delayDuration;
+    }
+
+    // Note: submitted_at is a computed field in Airtable - do not set it manually
+
+    // Add disruption type
+    if (claim.disruptionType) {
+      fields.disruption_type = claim.disruptionType;
+    }
+
+    // Add cancellation-specific fields
+    if (claim.noticeGiven) {
+      fields.notice_given = claim.noticeGiven;
+    }
+    if (claim.alternativeOffered !== undefined) {
+      fields.alternative_flight_offered = claim.alternativeOffered;
+    }
+    if (claim.alternativeTiming) {
+      fields.alternative_timing = claim.alternativeTiming;
+    }
+    if (claim.cancellationReason) {
+      fields.cancellation_reason = claim.cancellationReason;
+    }
+
+    // Add denied boarding-specific fields
+    if (claim.deniedBoardingType) {
+      fields.denied_boarding_type = claim.deniedBoardingType;
+    }
+    if (claim.deniedBoardingReason) {
+      fields.denied_boarding_reason = claim.deniedBoardingReason;
+    }
+    if (claim.compensationOfferedByAirline !== undefined) {
+      // Convert to boolean for checkbox field - if a number was provided, check if > 0
+      fields.compensation_offered_by_airline = typeof claim.compensationOfferedByAirline === 'number'
+        ? claim.compensationOfferedByAirline > 0
+        : Boolean(claim.compensationOfferedByAirline);
+    }
+    if (claim.passengerCount !== undefined) {
+      fields.passenger_count = claim.passengerCount;
+    }
+
+    // Add downgrade-specific fields
+    if (claim.bookedClass) {
+      fields.booked_class = claim.bookedClass;
+    }
+    if (claim.actualClass) {
+      fields.actual_class = claim.actualClass;
+    }
+    if (claim.ticketPrice !== undefined) {
+      fields.ticket_price = claim.ticketPrice;
+    }
+    if (claim.fareDifference !== undefined) {
+      fields.fare_difference = claim.fareDifference;
+    }
+    if (claim.downgradeReason) {
+      fields.downgrade_reason = claim.downgradeReason;
+    }
+
+    const record = await base(TABLES.CLAIMS).create(fields);
 
     return record.id;
   } catch (error) {

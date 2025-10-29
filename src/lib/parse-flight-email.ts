@@ -15,11 +15,46 @@ export interface FlightEmailData {
   arrivalAirport: string;
   delayDuration?: string;
   delayReason?: string;
+
+  // Enhanced cancellation fields
   isCancelled: boolean;
   cancellationReason?: string;
+  cancellationNoticeDate?: string; // When passenger was notified (ISO format)
+  noticePeriod?: '< 7 days' | '7-14 days' | '> 14 days';
+
+  // Alternative flight information for cancellations
+  alternativeFlightOffered?: boolean;
+  alternativeDepartureTime?: string;
+  alternativeArrivalTime?: string;
+  alternativeDepartureTimeDiff?: number; // Hours difference from original
+  alternativeArrivalTimeDiff?: number; // Hours difference from original
+
+  // Care and assistance provided
+  careProvided?: {
+    meals?: boolean;
+    refreshments?: boolean;
+    hotel?: boolean;
+    transport?: boolean;
+    communication?: boolean;
+  };
+
+  // Denied boarding fields
+  isDeniedBoarding?: boolean;
+  deniedBoardingType?: 'voluntary' | 'involuntary';
+  alternativeFlightArrivalDelay?: string; // Delay in hours for alternative flight arrival
+  deniedBoardingCompensationOffered?: number; // $ amount offered by airline
+  ticketPrice?: number; // Original ticket price (needed for US DOT calculations)
+
+  // Downgrading fields
+  isDowngraded?: boolean;
+  bookedClass?: 'first' | 'business' | 'premium_economy' | 'economy';
+  actualClass?: 'first' | 'business' | 'premium_economy' | 'economy';
+
+  // Passenger information
   passengerName?: string;
   bookingReference?: string;
   ticketNumber?: string;
+
   confidence: number;
   parsingMetadata?: {
     emailLength: number;
@@ -138,11 +173,14 @@ function createEnhancedParsingPrompt(emailContent: string): string {
 You are an expert aviation data extraction specialist with deep knowledge of airline communications, flight operations, and EU261/UK CAA regulations. Your task is to extract structured flight information from airline emails with maximum accuracy.
 
 ANALYSIS CONTEXT:
-- This email may contain flight delays, cancellations, or schedule changes
-- Focus on extracting data relevant to compensation claims under EU261/UK CAA
+- This email may contain flight delays, cancellations, denied boarding, seat downgrades, or schedule changes
+- Focus on extracting data relevant to compensation claims under EU261/UK CAA/US DOT
 - Be precise with dates, times, and airport codes
 - Distinguish between scheduled times and actual times
 - Identify delay durations and reasons accurately
+- For cancellations, extract notification timing and alternative flight details
+- For denied boarding, distinguish between voluntary and involuntary cases
+- For seat downgrades, identify booked class vs actual class received
 
 EMAIL CONTENT TO ANALYZE:
 ${emailContent}
@@ -162,6 +200,28 @@ Extract the following information and return ONLY a valid JSON object with this 
   "delayReason": "string (reason for delay) or null if not mentioned",
   "isCancelled": "boolean (true if flight was cancelled)",
   "cancellationReason": "string (reason for cancellation) or null if not cancelled",
+  "cancellationNoticeDate": "string in YYYY-MM-DD format (when passenger was notified) or null",
+  "noticePeriod": "'< 7 days' | '7-14 days' | '> 14 days' or null (calculate from notification date to departure date)",
+  "alternativeFlightOffered": "boolean (true if alternative flight was offered for cancellation) or null",
+  "alternativeDepartureTime": "string in HH:MM format (24-hour) or null",
+  "alternativeArrivalTime": "string in HH:MM format (24-hour) or null",
+  "alternativeDepartureTimeDiff": "number (hours difference, negative if earlier, positive if later) or null",
+  "alternativeArrivalTimeDiff": "number (hours difference, negative if earlier, positive if later) or null",
+  "careProvided": {
+    "meals": "boolean or null",
+    "refreshments": "boolean or null",
+    "hotel": "boolean or null",
+    "transport": "boolean or null",
+    "communication": "boolean or null"
+  },
+  "isDeniedBoarding": "boolean (true if passenger was denied boarding) or false",
+  "deniedBoardingType": "'voluntary' | 'involuntary' or null (CRITICAL: involuntary means forced/denied boarding against passenger will; voluntary means passenger accepted offer to give up seat)",
+  "alternativeFlightArrivalDelay": "string (e.g., '2 hours', '180 minutes') - delay of alternative flight ARRIVAL compared to original, or null",
+  "deniedBoardingCompensationOffered": "number (dollar amount offered by airline for voluntary denied boarding) or null",
+  "ticketPrice": "number (original ticket price in dollars/euros - needed for US DOT denied boarding calculations) or null",
+  "isDowngraded": "boolean (true if passenger was downgraded to a lower class) or false",
+  "bookedClass": "'first' | 'business' | 'premium_economy' | 'economy' or null (the class originally booked)",
+  "actualClass": "'first' | 'business' | 'premium_economy' | 'economy' or null (the class actually received)",
   "passengerName": "string (passenger name) or null if not found",
   "bookingReference": "string (PNR/booking reference) or null if not found",
   "ticketNumber": "string (ticket number) or null if not found",
@@ -175,21 +235,52 @@ CRITICAL RULES:
 4. For airport codes, use standard 3-letter IATA codes (e.g., "New York JFK" → "JFK")
 5. For delay duration, extract the actual delay time mentioned (not scheduled vs actual)
 6. Set isCancelled to true only if explicitly mentioned as cancelled
-7. Calculate confidence based on:
-   - Completeness of required fields (40%)
-   - Format accuracy (30%)
-   - Context clarity (20%)
-   - Additional details found (10%)
-8. Return ONLY the JSON object, no other text
+7. For cancellations, calculate noticePeriod by comparing cancellationNoticeDate to departureDate:
+   - More than 14 days: "> 14 days"
+   - Between 7-14 days: "7-14 days"
+   - Less than 7 days: "< 7 days"
+8. For alternative flights, calculate time differences in hours (can be fractional)
+9. For careProvided, only set to true if explicitly mentioned in email
+10. Calculate confidence based on:
+    - Completeness of required fields (40%)
+    - Format accuracy (30%)
+    - Context clarity (20%)
+    - Additional details found (10%)
+11. Return ONLY the JSON object, no other text
 
 EXAMPLES OF ACCURATE EXTRACTIONS:
+
+Delays:
 - "Flight AA123" → "AA123"
 - "American Airlines" → "American Airlines"
 - "departing at 2:30 PM" → "14:30"
 - "from JFK to LAX" → departureAirport: "JFK", arrivalAirport: "LAX"
 - "delayed by 3 hours" → delayDuration: "3 hours"
+
+Cancellations:
 - "cancelled due to weather" → isCancelled: true, cancellationReason: "weather"
+- "notified on March 10, flight on March 15" → noticePeriod: "< 7 days"
+- "alternative flight departing 1 hour earlier" → alternativeDepartureTimeDiff: -1
+- "alternative arriving 2 hours later" → alternativeArrivalTimeDiff: 2
+- "we will provide meals and hotel" → careProvided: {meals: true, hotel: true}
+
+Denied Boarding:
+
+Seat Downgrades:
+- "downgraded from Business to Economy class" → isDowngraded: true, bookedClass: "business", actualClass: "economy"
+- "you booked First Class but were seated in Business" → isDowngraded: true, bookedClass: "first", actualClass: "business"
+- "confirmed Premium Economy but received Economy seat" → isDowngraded: true, bookedClass: "premium_economy", actualClass: "economy"
+- "ticket price was €450" → ticketPrice: 450
+- "denied boarding due to overbooking" → isDeniedBoarding: true, deniedBoardingType: "involuntary"
+- "we are looking for volunteers to give up their seat for $500" → isDeniedBoarding: true, deniedBoardingType: "voluntary", deniedBoardingCompensationOffered: 500
+- "unfortunately you were not allowed to board" → isDeniedBoarding: true, deniedBoardingType: "involuntary"
+- "alternative flight arrives 3 hours after your original arrival time" → alternativeFlightArrivalDelay: "3 hours"
+- "ticket price was $350" → ticketPrice: 350
+
+Dates:
 - "March 15, 2024" → "2024-03-15"
+- "15th March 2024" → "2024-03-15"
+- "03/15/2024" → "2024-03-15"
 
 QUALITY CHECKS:
 - Verify airport codes are valid IATA codes
@@ -197,6 +288,8 @@ QUALITY CHECKS:
 - Check that times are in 24-hour format
 - Validate flight number format (2-3 letters + 1-4 digits)
 - Confirm delay duration makes sense
+- For cancellations, ensure notice period calculation is accurate
+- Verify alternative flight times are reasonable
 
 Return the JSON object now:
 `;

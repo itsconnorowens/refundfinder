@@ -71,8 +71,8 @@ export default function EligibilityResults({ results }: EligibilityResultsProps)
 
       {/* Eligibility Status */}
       <div className={`rounded-lg p-6 ${
-        isEligible 
-          ? 'bg-green-50 border border-green-200' 
+        isEligible
+          ? 'bg-green-50 border border-green-200'
           : 'bg-gray-50 border border-gray-200'
       }`}>
         <div className="flex items-center mb-4">
@@ -95,25 +95,115 @@ export default function EligibilityResults({ results }: EligibilityResultsProps)
             </h3>
           </div>
         </div>
-        
+
         <div className={`${isEligible ? 'text-green-700' : 'text-gray-700'}`}>
           {isEligible ? (
             <div>
               <p className="text-lg font-semibold mb-2">
                 Potential Compensation: {compensationAmount || 'Up to €600'}
               </p>
-              <p className="mb-4">
-                Based on EU Regulation 261/2004, you may be entitled to compensation for your flight delay or cancellation.
-              </p>
-              <div className="bg-green-100 border border-green-300 rounded-lg p-4">
-                <h4 className="font-medium text-green-900 mb-2">What happens next?</h4>
-                <ul className="text-sm text-green-800 space-y-1">
-                  <li>• We&apos;ll submit your claim to the airline</li>
-                  <li>• Handle all paperwork and communication</li>
-                  <li>• Keep you updated on progress via email</li>
-                  <li>• Only charge if we successfully get you compensation</li>
-                </ul>
-              </div>
+
+              {/* Disruption Type Specific Information */}
+              {eligibilityData?.disruptionType === 'delay' && (
+                <p className="mb-4">
+                  Based on EU Regulation 261/2004, you may be entitled to compensation for your flight delay.
+                </p>
+              )}
+
+              {eligibilityData?.disruptionType === 'cancellation' && (
+                <p className="mb-4">
+                  Based on EU Regulation 261/2004, you may be entitled to compensation for your flight cancellation.
+                </p>
+              )}
+
+              {eligibilityData?.disruptionType === 'denied_boarding' && (
+                <div className="mb-4">
+                  <p className="mb-2">
+                    You are entitled to compensation for being denied boarding{eligibilityData?.deniedBoardingType === 'involuntary' ? ' involuntarily' : ''}.
+                  </p>
+
+                  {/* Denied Boarding Specific Details */}
+                  <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mt-3">
+                    <h4 className="font-medium text-blue-900 mb-2">Denied Boarding Rights</h4>
+                    <ul className="text-sm text-blue-800 space-y-1">
+                      {eligibilityData?.deniedBoardingType === 'involuntary' ? (
+                        <>
+                          <li>• Involuntary denied boarding qualifies for full compensation</li>
+                          <li>• Compensation is distance-based under EU261/2004</li>
+                          <li>• You are also entitled to care (meals, hotel, transport)</li>
+                          <li>• Choice between refund or alternative flight to final destination</li>
+                        </>
+                      ) : (
+                        <>
+                          <li>• Voluntary denied boarding - airline should have offered benefits</li>
+                          <li>• You still have rights to alternative transport or refund</li>
+                          <li>• Additional compensation depends on your agreement with airline</li>
+                        </>
+                      )}
+                    </ul>
+                  </div>
+
+                  {eligibilityData?.additionalRights && eligibilityData.additionalRights.length > 0 && (
+                    <div className="bg-green-100 border border-green-300 rounded-lg p-4 mt-3">
+                      <h4 className="font-medium text-green-900 mb-2">Additional Rights</h4>
+                      <ul className="text-sm text-green-800 space-y-1">
+                        {eligibilityData.additionalRights.map((right: string, index: number) => (
+                          <li key={index}>• {right}</li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
+                </div>
+              )}
+
+              {eligibilityData?.disruptionType === 'downgrade' && (
+                <div className="mb-4">
+                  <p className="mb-2 font-medium">
+                    Great news! Downgrades are always eligible for refunds - no exceptions!
+                  </p>
+
+                  {/* Downgrade Specific Details */}
+                  <div className="bg-purple-50 border border-purple-200 rounded-lg p-4 mt-3">
+                    <h4 className="font-medium text-purple-900 mb-2">Downgrade Refund Details</h4>
+                    <ul className="text-sm text-purple-800 space-y-2">
+                      {eligibilityData?.bookedClass && eligibilityData?.actualClass && (
+                        <li>• You were downgraded from <strong>{eligibilityData.bookedClass}</strong> to <strong>{eligibilityData.actualClass}</strong></li>
+                      )}
+                      {eligibilityData?.fareDifferenceRefund && (
+                        <li>• Estimated refund: <strong>${eligibilityData.fareDifferenceRefund}</strong></li>
+                      )}
+                      <li>• Refund percentage based on flight distance</li>
+                      <li>• No extraordinary circumstances exemption applies</li>
+                      <li>• Must be claimed within 7 days for full rights</li>
+                    </ul>
+                  </div>
+
+                  <div className="bg-green-100 border border-green-300 rounded-lg p-4 mt-3">
+                    <h4 className="font-medium text-green-900 mb-2">Why This Amount?</h4>
+                    <p className="text-sm text-green-800">
+                      Under EU Regulation 261/2004, passengers downgraded to a lower class are entitled to a refund of:
+                    </p>
+                    <ul className="text-sm text-green-800 space-y-1 mt-2">
+                      <li>• 30% of ticket price for flights under 1,500 km</li>
+                      <li>• 50% of ticket price for flights 1,500-3,500 km</li>
+                      <li>• 75% of ticket price for flights over 3,500 km</li>
+                    </ul>
+                  </div>
+                </div>
+              )}
+
+              {/* General Next Steps */}
+              {eligibilityData?.disruptionType !== 'denied_boarding' && eligibilityData?.disruptionType !== 'downgrade' && (
+                <div className="bg-green-100 border border-green-300 rounded-lg p-4">
+                  <h4 className="font-medium text-green-900 mb-2">What happens next?</h4>
+                  <ul className="text-sm text-green-800 space-y-1">
+                    <li>• We&apos;ll submit your claim to the airline</li>
+                    <li>• Handle all paperwork and communication</li>
+                    <li>• Keep you updated on progress via email</li>
+                    <li>• Only charge if we successfully get you compensation</li>
+                  </ul>
+                </div>
+              )}
             </div>
           ) : (
             <div>

@@ -25,11 +25,35 @@ export default function FlightLookupForm({ onResults, onLoading }: FlightLookupF
     passengerEmail: '',
     firstName: '',
     lastName: '',
-    // New fields for cancellation support
-    disruptionType: 'delay' as 'delay' | 'cancellation',
+    // Disruption type fields
+    disruptionType: 'delay' as 'delay' | 'cancellation' | 'denied_boarding' | 'downgrade',
+    // Cancellation fields
+    notificationDate: '',
     noticeGiven: '',
     alternativeOffered: false,
-    alternativeTiming: ''
+    alternativeFlightNumber: '',
+    alternativeDepartureTime: '',
+    alternativeArrivalTime: '',
+    alternativeTiming: '',
+    careProvided: {
+      meals: false,
+      hotel: false,
+      transport: false,
+      communication: false
+    },
+    passengerChoice: '',
+    // Denied boarding fields
+    boardingType: 'involuntary' as 'involuntary' | 'voluntary',
+    volunteersRequested: false,
+    deniedBoardingReason: '',
+    alternativeArrivalDelay: '',
+    checkInTime: '',
+    ticketPrice: '',
+    // Downgrade fields
+    classPaidFor: '',
+    classReceived: '',
+    downgradeTiming: '',
+    downgradeReason: ''
   });
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [loading, setLoading] = useState(false);
@@ -96,6 +120,35 @@ export default function FlightLookupForm({ onResults, onLoading }: FlightLookupF
       }
     }
 
+    // Validate denied boarding fields
+    if (formData.disruptionType === 'denied_boarding') {
+      if (!formData.deniedBoardingReason) {
+        newErrors.deniedBoardingReason = 'Reason for denied boarding is required';
+      }
+      if (!formData.checkInTime) {
+        newErrors.checkInTime = 'Check-in time is required for denied boarding claims';
+      }
+      if (!formData.ticketPrice.trim() || parseFloat(formData.ticketPrice) <= 0) {
+        newErrors.ticketPrice = 'Valid ticket price is required';
+      }
+    }
+
+    // Validate downgrade fields
+    if (formData.disruptionType === 'downgrade') {
+      if (!formData.classPaidFor) {
+        newErrors.classPaidFor = 'Original class is required';
+      }
+      if (!formData.classReceived) {
+        newErrors.classReceived = 'Actual class received is required';
+      }
+      if (!formData.ticketPrice.trim() || parseFloat(formData.ticketPrice) <= 0) {
+        newErrors.ticketPrice = 'Ticket price is required to calculate your refund';
+      }
+      if (!formData.downgradeTiming) {
+        newErrors.downgradeTiming = 'When the downgrade occurred is required';
+      }
+    }
+
     if (!formData.passengerEmail.trim()) {
       newErrors.passengerEmail = 'Email is required';
     } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.passengerEmail.trim())) {
@@ -142,11 +195,30 @@ export default function FlightLookupForm({ onResults, onLoading }: FlightLookupF
           passengerEmail: formData.passengerEmail.trim(),
           firstName: formData.firstName.trim(),
           lastName: formData.lastName.trim(),
-          // New fields for cancellation support
+          // Disruption type
           disruptionType: formData.disruptionType,
+          // Cancellation fields
+          notificationDate: formData.notificationDate,
           noticeGiven: formData.noticeGiven,
           alternativeOffered: formData.alternativeOffered,
-          alternativeTiming: formData.alternativeTiming.trim()
+          alternativeFlightNumber: formData.alternativeFlightNumber.trim(),
+          alternativeDepartureTime: formData.alternativeDepartureTime,
+          alternativeArrivalTime: formData.alternativeArrivalTime,
+          alternativeTiming: formData.alternativeTiming.trim(),
+          careProvided: formData.careProvided,
+          passengerChoice: formData.passengerChoice,
+          // Denied boarding fields
+          boardingType: formData.boardingType,
+          volunteersRequested: formData.volunteersRequested,
+          deniedBoardingReason: formData.deniedBoardingReason,
+          alternativeArrivalDelay: formData.alternativeArrivalDelay,
+          checkInTime: formData.checkInTime,
+          ticketPrice: formData.ticketPrice ? parseFloat(formData.ticketPrice) : undefined,
+          // Downgrade fields
+          classPaidFor: formData.classPaidFor,
+          classReceived: formData.classReceived,
+          downgradeTiming: formData.downgradeTiming,
+          downgradeReason: formData.downgradeReason
         }),
       });
 
@@ -255,32 +327,66 @@ export default function FlightLookupForm({ onResults, onLoading }: FlightLookupF
         <p className="mt-1 text-xs text-gray-500">✈️ The airline operating your flight</p>
 
         {/* Disruption Type */}
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">
-            What happened? *
+        <div className="md:col-span-2">
+          <label className="block text-sm font-medium text-gray-700 mb-3">
+            What happened to your flight? *
           </label>
-          <div className="flex space-x-4">
-            <label className="flex items-center">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <label className="flex items-center p-3 border rounded-lg cursor-pointer hover:bg-gray-50 transition-colors">
               <input
                 type="radio"
                 name="disruptionType"
                 value="delay"
                 checked={formData.disruptionType === 'delay'}
                 onChange={(e) => handleInputChange('disruptionType', e.target.value)}
-                className="mr-2"
+                className="mr-3 w-4 h-4"
               />
-              <span className="text-sm">Flight Delayed</span>
+              <div>
+                <span className="text-sm font-medium">Flight Delayed</span>
+                <p className="text-xs text-gray-500">Flight departed late from scheduled time</p>
+              </div>
             </label>
-            <label className="flex items-center">
+            <label className="flex items-center p-3 border rounded-lg cursor-pointer hover:bg-gray-50 transition-colors">
               <input
                 type="radio"
                 name="disruptionType"
                 value="cancellation"
                 checked={formData.disruptionType === 'cancellation'}
                 onChange={(e) => handleInputChange('disruptionType', e.target.value)}
-                className="mr-2"
+                className="mr-3 w-4 h-4"
               />
-              <span className="text-sm">Flight Cancelled</span>
+              <div>
+                <span className="text-sm font-medium">Flight Cancelled</span>
+                <p className="text-xs text-gray-500">Flight did not operate at all</p>
+              </div>
+            </label>
+            <label className="flex items-center p-3 border rounded-lg cursor-pointer hover:bg-gray-50 transition-colors">
+              <input
+                type="radio"
+                name="disruptionType"
+                value="denied_boarding"
+                checked={formData.disruptionType === 'denied_boarding'}
+                onChange={(e) => handleInputChange('disruptionType', e.target.value)}
+                className="mr-3 w-4 h-4"
+              />
+              <div>
+                <span className="text-sm font-medium">Denied Boarding</span>
+                <p className="text-xs text-gray-500">Not allowed to board despite valid ticket</p>
+              </div>
+            </label>
+            <label className="flex items-center p-3 border rounded-lg cursor-pointer hover:bg-gray-50 transition-colors">
+              <input
+                type="radio"
+                name="disruptionType"
+                value="downgrade"
+                checked={formData.disruptionType === 'downgrade'}
+                onChange={(e) => handleInputChange('disruptionType', e.target.value)}
+                className="mr-3 w-4 h-4"
+              />
+              <div>
+                <span className="text-sm font-medium">Seat Downgrade</span>
+                <p className="text-xs text-gray-500">Placed in lower class than booked</p>
+              </div>
             </label>
           </div>
         </div>
@@ -328,73 +434,586 @@ export default function FlightLookupForm({ onResults, onLoading }: FlightLookupF
           </div>
         )}
 
-        {/* Notice Given - Only show for cancellations */}
-        {formData.disruptionType === 'cancellation' && (
-          <div>
-            <label htmlFor="noticeGiven" className="block text-sm font-medium text-gray-700 mb-2">
-              When were you notified? *
-            </label>
-            <select
-              id="noticeGiven"
-              value={formData.noticeGiven}
-              onChange={(e) => handleInputChange('noticeGiven', e.target.value)}
-              className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${
-                errors.noticeGiven ? 'border-red-500' : 'border-gray-300'
-              }`}
-            >
-              <option value="">Select notice period</option>
-              <option value="< 7 days">Less than 7 days before departure</option>
-              <option value="7-14 days">7-14 days before departure</option>
-              <option value="> 14 days">More than 14 days before departure</option>
-            </select>
-            {errors.noticeGiven && (
-              <p className="mt-1 text-sm text-red-600">{errors.noticeGiven}</p>
-            )}
-            <p className="mt-1 text-sm text-gray-500">
-              This affects your compensation eligibility
-            </p>
-          </div>
-        )}
+      </div>
 
-        {/* Alternative Flight Offered - Only show for cancellations */}
-        {formData.disruptionType === 'cancellation' && (
-          <div>
-            <label className="flex items-center">
+      {/* CANCELLATION SECTION - Enhanced */}
+      {formData.disruptionType === 'cancellation' && (
+        <div className="border-t pt-6">
+          <h3 className="text-lg font-medium text-gray-900 mb-4">Cancellation Details</h3>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
+
+            {/* Notification Date */}
+            <div>
+              <label htmlFor="notificationDate" className="block text-sm font-medium text-gray-700 mb-2">
+                When were you notified of the cancellation? *
+              </label>
               <input
-                type="checkbox"
-                checked={formData.alternativeOffered}
-                onChange={(e) => handleInputChange('alternativeOffered', e.target.checked.toString())}
-                className="mr-2"
+                type="date"
+                id="notificationDate"
+                value={formData.notificationDate}
+                onChange={(e) => handleInputChange('notificationDate', e.target.value)}
+                className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${
+                  errors.notificationDate ? 'border-red-500' : 'border-gray-300'
+                }`}
               />
-              <span className="text-sm font-medium text-gray-700">
-                Airline offered alternative flight
-              </span>
-            </label>
-            {formData.alternativeOffered && (
-              <div className="mt-2">
-                <label htmlFor="alternativeTiming" className="block text-sm font-medium text-gray-700 mb-2">
-                  When was the alternative flight? *
-                </label>
+              {errors.notificationDate && (
+                <p className="mt-1 text-sm text-red-600">{errors.notificationDate}</p>
+              )}
+              <p className="mt-1 text-xs text-gray-500">📅 The date you received the cancellation notice</p>
+            </div>
+
+            {/* Notice Period */}
+            <div>
+              <label htmlFor="noticeGiven" className="block text-sm font-medium text-gray-700 mb-2">
+                How much notice did you get? *
+              </label>
+              <select
+                id="noticeGiven"
+                value={formData.noticeGiven}
+                onChange={(e) => handleInputChange('noticeGiven', e.target.value)}
+                className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${
+                  errors.noticeGiven ? 'border-red-500' : 'border-gray-300'
+                }`}
+              >
+                <option value="">Select notice period</option>
+                <option value="< 7 days">Less than 7 days before departure</option>
+                <option value="7-14 days">7-14 days before departure</option>
+                <option value="> 14 days">More than 14 days before departure</option>
+              </select>
+              {errors.noticeGiven && (
+                <p className="mt-1 text-sm text-red-600">{errors.noticeGiven}</p>
+              )}
+              <p className="mt-1 text-xs text-gray-500">🕐 This affects your compensation eligibility</p>
+            </div>
+
+            {/* Alternative Flight Checkbox */}
+            <div className="md:col-span-2">
+              <label className="flex items-center p-3 border rounded-lg cursor-pointer hover:bg-gray-50">
                 <input
-                  type="text"
-                  id="alternativeTiming"
-                  value={formData.alternativeTiming}
-                  onChange={(e) => handleInputChange('alternativeTiming', e.target.value)}
-                  placeholder="e.g., 2 hours later, next day"
-                  className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${
-                    errors.alternativeTiming ? 'border-red-500' : 'border-gray-300'
-                  }`}
+                  type="checkbox"
+                  checked={formData.alternativeOffered}
+                  onChange={(e) => setFormData(prev => ({ ...prev, alternativeOffered: e.target.checked }))}
+                  className="mr-3 w-4 h-4"
                 />
-                {errors.alternativeTiming && (
-                  <p className="mt-1 text-sm text-red-600">{errors.alternativeTiming}</p>
-                )}
-                <p className="mt-1 text-sm text-gray-500">
-                  This affects your compensation amount
+                <span className="text-sm font-medium text-gray-700">
+                  Airline offered an alternative flight
+                </span>
+              </label>
+            </div>
+
+            {/* Alternative Flight Details - Show if checked */}
+            {formData.alternativeOffered && (
+              <>
+                <div>
+                  <label htmlFor="alternativeFlightNumber" className="block text-sm font-medium text-gray-700 mb-2">
+                    Alternative Flight Number
+                  </label>
+                  <input
+                    type="text"
+                    id="alternativeFlightNumber"
+                    value={formData.alternativeFlightNumber}
+                    onChange={(e) => handleInputChange('alternativeFlightNumber', e.target.value)}
+                    placeholder="e.g., BA123"
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  />
+                </div>
+
+                <div>
+                  <label htmlFor="alternativeTiming" className="block text-sm font-medium text-gray-700 mb-2">
+                    When was the alternative? *
+                  </label>
+                  <input
+                    type="text"
+                    id="alternativeTiming"
+                    value={formData.alternativeTiming}
+                    onChange={(e) => handleInputChange('alternativeTiming', e.target.value)}
+                    placeholder="e.g., 2 hours later, next day"
+                    className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${
+                      errors.alternativeTiming ? 'border-red-500' : 'border-gray-300'
+                    }`}
+                  />
+                  {errors.alternativeTiming && (
+                    <p className="mt-1 text-sm text-red-600">{errors.alternativeTiming}</p>
+                  )}
+                  <p className="mt-1 text-xs text-gray-500">⏰ This affects your compensation amount</p>
+                </div>
+
+                <div>
+                  <label htmlFor="alternativeDepartureTime" className="block text-sm font-medium text-gray-700 mb-2">
+                    Alternative Departure Time
+                  </label>
+                  <input
+                    type="time"
+                    id="alternativeDepartureTime"
+                    value={formData.alternativeDepartureTime}
+                    onChange={(e) => handleInputChange('alternativeDepartureTime', e.target.value)}
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  />
+                </div>
+
+                <div>
+                  <label htmlFor="alternativeArrivalTime" className="block text-sm font-medium text-gray-700 mb-2">
+                    Alternative Arrival Time
+                  </label>
+                  <input
+                    type="time"
+                    id="alternativeArrivalTime"
+                    value={formData.alternativeArrivalTime}
+                    onChange={(e) => handleInputChange('alternativeArrivalTime', e.target.value)}
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  />
+                </div>
+              </>
+            )}
+
+            {/* Care Provided */}
+            <div className="md:col-span-2">
+              <label className="block text-sm font-medium text-gray-700 mb-3">
+                What care did the airline provide?
+              </label>
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                <label className="flex items-center p-2 border rounded cursor-pointer hover:bg-gray-50">
+                  <input
+                    type="checkbox"
+                    checked={formData.careProvided.meals}
+                    onChange={(e) => setFormData(prev => ({
+                      ...prev,
+                      careProvided: { ...prev.careProvided, meals: e.target.checked }
+                    }))}
+                    className="mr-2"
+                  />
+                  <span className="text-sm">Meals</span>
+                </label>
+                <label className="flex items-center p-2 border rounded cursor-pointer hover:bg-gray-50">
+                  <input
+                    type="checkbox"
+                    checked={formData.careProvided.hotel}
+                    onChange={(e) => setFormData(prev => ({
+                      ...prev,
+                      careProvided: { ...prev.careProvided, hotel: e.target.checked }
+                    }))}
+                    className="mr-2"
+                  />
+                  <span className="text-sm">Hotel</span>
+                </label>
+                <label className="flex items-center p-2 border rounded cursor-pointer hover:bg-gray-50">
+                  <input
+                    type="checkbox"
+                    checked={formData.careProvided.transport}
+                    onChange={(e) => setFormData(prev => ({
+                      ...prev,
+                      careProvided: { ...prev.careProvided, transport: e.target.checked }
+                    }))}
+                    className="mr-2"
+                  />
+                  <span className="text-sm">Transport</span>
+                </label>
+                <label className="flex items-center p-2 border rounded cursor-pointer hover:bg-gray-50">
+                  <input
+                    type="checkbox"
+                    checked={formData.careProvided.communication}
+                    onChange={(e) => setFormData(prev => ({
+                      ...prev,
+                      careProvided: { ...prev.careProvided, communication: e.target.checked }
+                    }))}
+                    className="mr-2"
+                  />
+                  <span className="text-sm">Calls/emails</span>
+                </label>
+              </div>
+              <p className="mt-2 text-xs text-gray-500">These are your rights under EU261, separate from compensation</p>
+            </div>
+
+            {/* Passenger Choice */}
+            <div className="md:col-span-2">
+              <label htmlFor="passengerChoice" className="block text-sm font-medium text-gray-700 mb-2">
+                What did you choose to do?
+              </label>
+              <select
+                id="passengerChoice"
+                value={formData.passengerChoice}
+                onChange={(e) => handleInputChange('passengerChoice', e.target.value)}
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+              >
+                <option value="">Select your choice</option>
+                <option value="refund">Requested full refund</option>
+                <option value="re-routing">Accepted re-routing/alternative flight</option>
+                <option value="both">Both - refund for original, paid for new</option>
+              </select>
+              <p className="mt-1 text-xs text-gray-500">This helps us understand your situation better</p>
+            </div>
+
+            {/* Informational Box */}
+            <div className="md:col-span-2 bg-blue-50 border border-blue-200 rounded-lg p-4">
+              <h4 className="font-medium text-blue-900 mb-2">Your Rights for Cancellations</h4>
+              <ul className="text-sm text-blue-800 space-y-1">
+                <li>• Compensation depends on notice period and alternative flight timing</li>
+                <li>• Less than 7 days notice: Usually eligible for full compensation</li>
+                <li>• You always have the right to a refund OR alternative flight</li>
+                <li>• Airlines must provide care (meals, hotel) during waiting time</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* DENIED BOARDING SECTION */}
+      {formData.disruptionType === 'denied_boarding' && (
+        <div className="border-t pt-6">
+          <h3 className="text-lg font-medium text-gray-900 mb-4">Denied Boarding Details</h3>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
+
+            {/* Boarding Type */}
+            <div className="md:col-span-2">
+              <label className="block text-sm font-medium text-gray-700 mb-3">
+                Type of Denied Boarding *
+              </label>
+              <div className="space-y-3">
+                <label className="flex items-start p-3 border rounded-lg cursor-pointer hover:bg-gray-50">
+                  <input
+                    type="radio"
+                    name="boardingType"
+                    value="involuntary"
+                    checked={formData.boardingType === 'involuntary'}
+                    onChange={(e) => handleInputChange('boardingType', e.target.value)}
+                    className="mr-3 mt-1 w-4 h-4"
+                  />
+                  <div>
+                    <span className="text-sm font-medium">Involuntary - You were denied boarding</span>
+                    <p className="text-xs text-gray-500 mt-1">The airline refused to let you board even though you had a valid ticket and checked in on time</p>
+                  </div>
+                </label>
+                <label className="flex items-start p-3 border rounded-lg cursor-pointer hover:bg-gray-50">
+                  <input
+                    type="radio"
+                    name="boardingType"
+                    value="voluntary"
+                    checked={formData.boardingType === 'voluntary'}
+                    onChange={(e) => handleInputChange('boardingType', e.target.value)}
+                    className="mr-3 mt-1 w-4 h-4"
+                  />
+                  <div>
+                    <span className="text-sm font-medium">Voluntary - You gave up your seat</span>
+                    <p className="text-xs text-gray-500 mt-1">You volunteered to give up your seat in exchange for benefits offered by the airline</p>
+                  </div>
+                </label>
+              </div>
+            </div>
+
+            {/* Volunteers Requested */}
+            <div className="md:col-span-2">
+              <label className="flex items-center p-3 border rounded-lg cursor-pointer hover:bg-gray-50">
+                <input
+                  type="checkbox"
+                  checked={formData.volunteersRequested}
+                  onChange={(e) => setFormData(prev => ({ ...prev, volunteersRequested: e.target.checked }))}
+                  className="mr-3 w-4 h-4"
+                />
+                <span className="text-sm font-medium text-gray-700">
+                  Did the airline ask for volunteers before denying boarding?
+                </span>
+              </label>
+              <p className="mt-2 text-xs text-gray-500 px-3">Airlines are required to ask for volunteers first in overbooking situations</p>
+            </div>
+
+            {/* Denied Boarding Reason */}
+            <div>
+              <label htmlFor="deniedBoardingReason" className="block text-sm font-medium text-gray-700 mb-2">
+                Reason for Denied Boarding *
+              </label>
+              <select
+                id="deniedBoardingReason"
+                value={formData.deniedBoardingReason}
+                onChange={(e) => handleInputChange('deniedBoardingReason', e.target.value)}
+                className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${
+                  errors.deniedBoardingReason ? 'border-red-500' : 'border-gray-300'
+                }`}
+              >
+                <option value="">Select reason</option>
+                <option value="overbooking">Overbooking - Flight oversold</option>
+                <option value="aircraft_change">Aircraft change - Smaller plane</option>
+                <option value="weight_restrictions">Weight/balance restrictions</option>
+                <option value="operational">Operational reasons</option>
+                <option value="other">Other reason</option>
+              </select>
+              {errors.deniedBoardingReason && (
+                <p className="mt-1 text-sm text-red-600">{errors.deniedBoardingReason}</p>
+              )}
+            </div>
+
+            {/* Alternative Arrival Delay */}
+            <div>
+              <label htmlFor="alternativeArrivalDelay" className="block text-sm font-medium text-gray-700 mb-2">
+                How late did the alternative flight arrive?
+              </label>
+              <input
+                type="text"
+                id="alternativeArrivalDelay"
+                value={formData.alternativeArrivalDelay}
+                onChange={(e) => handleInputChange('alternativeArrivalDelay', e.target.value)}
+                placeholder="e.g., 2 hours, same day, next day"
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+              />
+              <p className="mt-1 text-xs text-gray-500">⏰ Arriving within 2-4 hours may reduce compensation</p>
+            </div>
+
+            {/* Check-in Time */}
+            <div>
+              <label htmlFor="checkInTime" className="block text-sm font-medium text-gray-700 mb-2">
+                What time did you check in? *
+              </label>
+              <input
+                type="time"
+                id="checkInTime"
+                value={formData.checkInTime}
+                onChange={(e) => handleInputChange('checkInTime', e.target.value)}
+                className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${
+                  errors.checkInTime ? 'border-red-500' : 'border-gray-300'
+                }`}
+              />
+              {errors.checkInTime && (
+                <p className="mt-1 text-sm text-red-600">{errors.checkInTime}</p>
+              )}
+              <p className="mt-1 text-xs text-gray-500">🕐 Must be within check-in deadline to be eligible</p>
+            </div>
+
+            {/* Ticket Price */}
+            <div>
+              <label htmlFor="ticketPrice" className="block text-sm font-medium text-gray-700 mb-2">
+                Ticket Price (USD) *
+              </label>
+              <input
+                type="number"
+                id="ticketPrice"
+                value={formData.ticketPrice}
+                onChange={(e) => handleInputChange('ticketPrice', e.target.value)}
+                placeholder="e.g., 450"
+                min="0"
+                step="0.01"
+                className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${
+                  errors.ticketPrice ? 'border-red-500' : 'border-gray-300'
+                }`}
+              />
+              {errors.ticketPrice && (
+                <p className="mt-1 text-sm text-red-600">{errors.ticketPrice}</p>
+              )}
+              <p className="mt-1 text-xs text-gray-500">💰 Required for US DOT compensation calculation</p>
+            </div>
+
+            {/* EU Rights Info Box */}
+            <div className="md:col-span-2 bg-green-50 border border-green-200 rounded-lg p-4">
+              <h4 className="font-medium text-green-900 mb-2">EU Regulation 261/2004 - Denied Boarding Rights</h4>
+              <ul className="text-sm text-green-800 space-y-1">
+                <li>• Up to €600 compensation for involuntary denied boarding</li>
+                <li>• Distance-based: €250 (under 1,500km), €400 (1,500-3,500km), €600 (over 3,500km)</li>
+                <li>• 50% reduction if alternative arrives within 2-4 hours of original</li>
+                <li>• Right to care: meals, hotel, transport during waiting time</li>
+                <li>• Choice between refund or alternative flight to final destination</li>
+              </ul>
+            </div>
+
+            {/* US Rights Info Box */}
+            <div className="md:col-span-2 bg-blue-50 border border-blue-200 rounded-lg p-4">
+              <h4 className="font-medium text-blue-900 mb-2">US DOT - Involuntary Bumping Compensation</h4>
+              <ul className="text-sm text-blue-800 space-y-1">
+                <li>• Airlines must ask for volunteers before denying boarding involuntarily</li>
+                <li>• 0-1 hour delay: No compensation required</li>
+                <li>• 1-2 hours delay (domestic) / 1-4 hours (international): 200% of fare (max $775)</li>
+                <li>• 2+ hours delay (domestic) / 4+ hours (international): 400% of fare (max $1,550)</li>
+                <li>• Compensation must be paid immediately at the airport</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* DOWNGRADE SECTION */}
+      {formData.disruptionType === 'downgrade' && (
+        <div className="border-t pt-6">
+          <h3 className="text-lg font-medium text-gray-900 mb-4">Seat Downgrade Details</h3>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
+
+            {/* Class Paid For */}
+            <div>
+              <label htmlFor="classPaidFor" className="block text-sm font-medium text-gray-700 mb-2">
+                Class You Paid For *
+              </label>
+              <select
+                id="classPaidFor"
+                value={formData.classPaidFor}
+                onChange={(e) => handleInputChange('classPaidFor', e.target.value)}
+                className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${
+                  errors.classPaidFor ? 'border-red-500' : 'border-gray-300'
+                }`}
+              >
+                <option value="">Select class</option>
+                <option value="first">First Class</option>
+                <option value="business">Business Class</option>
+                <option value="premium_economy">Premium Economy</option>
+                <option value="economy">Economy Class</option>
+              </select>
+              {errors.classPaidFor && (
+                <p className="mt-1 text-sm text-red-600">{errors.classPaidFor}</p>
+              )}
+            </div>
+
+            {/* Class Received */}
+            <div>
+              <label htmlFor="classReceived" className="block text-sm font-medium text-gray-700 mb-2">
+                Class You Actually Received *
+              </label>
+              <select
+                id="classReceived"
+                value={formData.classReceived}
+                onChange={(e) => handleInputChange('classReceived', e.target.value)}
+                className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${
+                  errors.classReceived ? 'border-red-500' : 'border-gray-300'
+                }`}
+              >
+                <option value="">Select class</option>
+                <option value="first">First Class</option>
+                <option value="business">Business Class</option>
+                <option value="premium_economy">Premium Economy</option>
+                <option value="economy">Economy Class</option>
+              </select>
+              {errors.classReceived && (
+                <p className="mt-1 text-sm text-red-600">{errors.classReceived}</p>
+              )}
+            </div>
+
+            {/* Ticket Price */}
+            <div>
+              <label htmlFor="ticketPrice" className="block text-sm font-medium text-gray-700 mb-2">
+                Ticket Price (USD) *
+              </label>
+              <input
+                type="number"
+                id="ticketPrice"
+                value={formData.ticketPrice}
+                onChange={(e) => handleInputChange('ticketPrice', e.target.value)}
+                placeholder="e.g., 2500"
+                min="0"
+                step="0.01"
+                className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${
+                  errors.ticketPrice ? 'border-red-500' : 'border-gray-300'
+                }`}
+              />
+              {errors.ticketPrice && (
+                <p className="mt-1 text-sm text-red-600">{errors.ticketPrice}</p>
+              )}
+              <p className="mt-1 text-xs text-gray-500">💰 Required to calculate your refund amount</p>
+            </div>
+
+            {/* Live Compensation Preview */}
+            {formData.classPaidFor && formData.classReceived && formData.ticketPrice && parseFloat(formData.ticketPrice) > 0 && (
+              <div className="bg-green-50 border border-green-200 rounded-lg p-4">
+                <h4 className="font-medium text-green-900 mb-2">Estimated Refund</h4>
+                <p className="text-2xl font-bold text-green-700">
+                  ${(() => {
+                    const price = parseFloat(formData.ticketPrice);
+                    const distance = 3000; // Placeholder - should be calculated based on route
+                    let percentage = 0;
+
+                    // Calculate percentage based on EU261/2004
+                    if (formData.classPaidFor === 'first' && formData.classReceived === 'business') {
+                      percentage = 0.30;
+                    } else if (formData.classPaidFor === 'first' && formData.classReceived === 'premium_economy') {
+                      percentage = 0.50;
+                    } else if (formData.classPaidFor === 'first' && formData.classReceived === 'economy') {
+                      percentage = 0.75;
+                    } else if (formData.classPaidFor === 'business' && formData.classReceived === 'premium_economy') {
+                      percentage = 0.30;
+                    } else if (formData.classPaidFor === 'business' && formData.classReceived === 'economy') {
+                      percentage = 0.50;
+                    } else if (formData.classPaidFor === 'premium_economy' && formData.classReceived === 'economy') {
+                      percentage = 0.30;
+                    }
+
+                    // EU261 distance-based refund
+                    if (distance < 1500) {
+                      percentage = percentage * 0.30; // 30% of fare
+                    } else if (distance < 3500) {
+                      percentage = percentage * 0.50; // 50% of fare
+                    } else {
+                      percentage = percentage * 0.75; // 75% of fare
+                    }
+
+                    return (price * percentage).toFixed(2);
+                  })()}
+                </p>
+                <p className="text-xs text-green-700 mt-1">
+                  {(() => {
+                    const distance = 3000;
+                    if (distance < 1500) return '30% refund for flights under 1,500 km';
+                    if (distance < 3500) return '50% refund for flights 1,500-3,500 km';
+                    return '75% refund for flights over 3,500 km';
+                  })()}
                 </p>
               </div>
             )}
+
+            {/* Downgrade Timing */}
+            <div>
+              <label htmlFor="downgradeTiming" className="block text-sm font-medium text-gray-700 mb-2">
+                When did the downgrade happen? *
+              </label>
+              <select
+                id="downgradeTiming"
+                value={formData.downgradeTiming}
+                onChange={(e) => handleInputChange('downgradeTiming', e.target.value)}
+                className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${
+                  errors.downgradeTiming ? 'border-red-500' : 'border-gray-300'
+                }`}
+              >
+                <option value="">Select timing</option>
+                <option value="booking">At booking / weeks before flight</option>
+                <option value="check-in">At check-in / airport</option>
+                <option value="boarding">During boarding</option>
+                <option value="in-flight">After boarding / in-flight</option>
+              </select>
+              {errors.downgradeTiming && (
+                <p className="mt-1 text-sm text-red-600">{errors.downgradeTiming}</p>
+              )}
+            </div>
+
+            {/* Downgrade Reason */}
+            <div>
+              <label htmlFor="downgradeReason" className="block text-sm font-medium text-gray-700 mb-2">
+                Reason Given (if any)
+              </label>
+              <select
+                id="downgradeReason"
+                value={formData.downgradeReason}
+                onChange={(e) => handleInputChange('downgradeReason', e.target.value)}
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+              >
+                <option value="">Select reason</option>
+                <option value="overbooking">Overbooking in higher class</option>
+                <option value="aircraft_change">Aircraft change</option>
+                <option value="seat_malfunction">Seat malfunction</option>
+                <option value="operational">Operational reasons</option>
+                <option value="not_given">No reason given</option>
+                <option value="other">Other</option>
+              </select>
+            </div>
+
+            {/* Informational Box */}
+            <div className="md:col-span-2 bg-purple-50 border border-purple-200 rounded-lg p-4">
+              <h4 className="font-medium text-purple-900 mb-2">Great News About Downgrades!</h4>
+              <ul className="text-sm text-purple-800 space-y-1">
+                <li>• Downgrades have NO extraordinary circumstances exemption</li>
+                <li>• You are ALWAYS eligible for a refund - no exceptions</li>
+                <li>• Refund amount: 30% (under 1,500km), 50% (1,500-3,500km), 75% (over 3,500km)</li>
+                <li>• Must be requested within 7 days for full refund rights</li>
+                <li>• This is IN ADDITION to any voluntary compensation from the airline</li>
+              </ul>
+            </div>
           </div>
-        )}
+        </div>
+      )}
+
+      {/* Reason for Disruption - Universal field */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
 
         {/* Reason for Disruption */}
         <div>
