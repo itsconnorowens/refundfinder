@@ -47,7 +47,7 @@ v=spf1 include:amazonses.com include:spf.efwd.registrar-servers.com ~all
 **Impact:** Emails won't send in production  
 **Required Env Vars:**
 ```bash
-RESEND_API_KEY=REDACTED_RESEND_KEY
+RESEND_API_KEY=your_resend_api_key_here
 RESEND_FROM_EMAIL=claims@flghtly.com
 FROM_NAME=Flghtly
 EMAIL_PROVIDER=resend
