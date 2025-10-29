@@ -234,9 +234,13 @@ export async function createClaim(claim: ClaimRecord): Promise<string> {
       departure_date: claim.departureDate,
       departure_airport: claim.departureAirport,
       arrival_airport: claim.arrivalAirport,
-      delay_reason: claim.delayReason || '',
       status: claim.status,
     };
+
+    // Add delay_reason only if provided (primarily for delay scenarios)
+    if (claim.delayReason) {
+      fields.delay_reason = claim.delayReason;
+    }
 
     // Add optional fields only if they exist in Airtable schema
     if (claim.estimatedCompensation) fields.estimated_compensation = claim.estimatedCompensation;

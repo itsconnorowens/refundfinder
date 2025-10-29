@@ -23,7 +23,7 @@ const testClaims: ClaimRecord[] = [
     departureAirport: 'LHR',
     arrivalAirport: 'CDG',
     delayDuration: '',
-    delayReason: 'Flight cancelled',
+    delayReason: '', // Not applicable for cancellations
     status: 'submitted',
     estimatedCompensation: '€250',
     submittedAt: new Date().toISOString(),
@@ -47,7 +47,7 @@ const testClaims: ClaimRecord[] = [
     departureAirport: 'FRA',
     arrivalAirport: 'JFK',
     delayDuration: '',
-    delayReason: 'Flight cancelled',
+    delayReason: '', // Cancellation uses cancellation_reason field
     status: 'submitted',
     estimatedCompensation: '€600',
     submittedAt: new Date().toISOString(),
@@ -72,7 +72,7 @@ const testClaims: ClaimRecord[] = [
     departureAirport: 'LHR',
     arrivalAirport: 'JFK',
     delayDuration: '',
-    delayReason: 'Denied boarding - overbooking',
+    delayReason: '', // Denied boarding uses denied_boarding_reason field
     status: 'submitted',
     estimatedCompensation: '£520',
     submittedAt: new Date().toISOString(),
@@ -97,7 +97,7 @@ const testClaims: ClaimRecord[] = [
     departureAirport: 'SFO',
     arrivalAirport: 'LHR',
     delayDuration: '',
-    delayReason: 'Denied boarding - overbooking',
+    delayReason: '', // Denied boarding uses denied_boarding_reason field
     status: 'submitted',
     estimatedCompensation: '$775',
     submittedAt: new Date().toISOString(),
@@ -123,7 +123,7 @@ const testClaims: ClaimRecord[] = [
     departureAirport: 'CDG',
     arrivalAirport: 'BCN',
     delayDuration: '',
-    delayReason: 'Seat downgrade',
+    delayReason: '', // Downgrade uses downgrade_reason field
     status: 'submitted',
     estimatedCompensation: '€150',
     submittedAt: new Date().toISOString(),
@@ -149,7 +149,7 @@ const testClaims: ClaimRecord[] = [
     departureAirport: 'LHR',
     arrivalAirport: 'SYD',
     delayDuration: '',
-    delayReason: 'Seat downgrade',
+    delayReason: '', // Downgrade uses downgrade_reason field
     status: 'submitted',
     estimatedCompensation: '£6000',
     submittedAt: new Date().toISOString(),
@@ -175,7 +175,7 @@ const testClaims: ClaimRecord[] = [
     departureAirport: 'LAX',
     arrivalAirport: 'JFK',
     delayDuration: '',
-    delayReason: 'Seat downgrade',
+    delayReason: '', // Downgrade uses downgrade_reason field
     status: 'submitted',
     estimatedCompensation: 'Varies by airline',
     submittedAt: new Date().toISOString(),

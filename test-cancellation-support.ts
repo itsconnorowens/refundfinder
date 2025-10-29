@@ -4,7 +4,7 @@
  * Tests all cancellation scenarios, API verification, cost controls, and end-to-end user flows
  */
 
-import { checkEligibility, FlightDetails } from './src/lib/eligibility';
+import { checkEligibility, FlightDetails, NoticePeriod } from './src/lib/eligibility';
 import { flightValidationService } from './src/lib/flight-validation';
 
 // Test data for various scenarios
@@ -18,7 +18,7 @@ const testScenarios = {
     arrivalAirport: 'JFK',
     delayDuration: '0 hours 0 minutes',
     disruptionType: 'cancellation' as const,
-    noticeGiven: '< 7 days',
+    noticeGiven: '< 7 days' as NoticePeriod,
     alternativeOffered: false,
   },
 
@@ -30,7 +30,7 @@ const testScenarios = {
     arrivalAirport: 'CDG',
     delayDuration: '0 hours 0 minutes',
     disruptionType: 'cancellation' as const,
-    noticeGiven: '7-14 days',
+    noticeGiven: '7-14 days' as NoticePeriod,
     alternativeOffered: true,
     alternativeTiming: '1 hour later',
   },
@@ -43,7 +43,7 @@ const testScenarios = {
     arrivalAirport: 'MAD',
     delayDuration: '0 hours 0 minutes',
     disruptionType: 'cancellation' as const,
-    noticeGiven: '> 14 days',
+    noticeGiven: '> 14 days' as NoticePeriod,
     alternativeOffered: false,
   },
 
@@ -56,7 +56,7 @@ const testScenarios = {
     arrivalAirport: 'EDI',
     delayDuration: '0 hours 0 minutes',
     disruptionType: 'cancellation' as const,
-    noticeGiven: '< 7 days',
+    noticeGiven: '< 7 days' as NoticePeriod,
     alternativeOffered: false,
   },
 
@@ -69,7 +69,7 @@ const testScenarios = {
     arrivalAirport: 'LAX',
     delayDuration: '0 hours 0 minutes',
     disruptionType: 'cancellation' as const,
-    noticeGiven: '< 7 days',
+    noticeGiven: '< 7 days' as NoticePeriod,
     alternativeOffered: false,
   },
 

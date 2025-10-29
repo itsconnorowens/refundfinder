@@ -27,7 +27,7 @@ async function testPaymentsIntegration() {
         departureAirport: 'LHR',
         arrivalAirport: 'JFK',
         delayDuration: '',
-        delayReason: 'Flight cancelled',
+        delayReason: '', // Cancellations use cancellation_reason field
         status: 'submitted' as const,
         estimatedCompensation: '€600',
         submittedAt: new Date().toISOString(),
@@ -59,7 +59,7 @@ async function testPaymentsIntegration() {
         departureAirport: 'SFO',
         arrivalAirport: 'LHR',
         delayDuration: '',
-        delayReason: 'Denied boarding',
+        delayReason: '', // Denied boarding uses denied_boarding_reason field
         status: 'submitted' as const,
         estimatedCompensation: '$775',
         submittedAt: new Date().toISOString(),
@@ -92,7 +92,7 @@ async function testPaymentsIntegration() {
         departureAirport: 'CDG',
         arrivalAirport: 'BCN',
         delayDuration: '',
-        delayReason: 'Seat downgrade',
+        delayReason: '', // Downgrades use downgrade_reason field
         status: 'submitted' as const,
         estimatedCompensation: '€150',
         submittedAt: new Date().toISOString(),

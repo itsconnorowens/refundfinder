@@ -58,12 +58,14 @@ async function verifyAirtableData() {
   console.log('Fetching all records with email containing "test-"\n');
 
   try {
-    const records: AirtableRecord[] = await base('Claims')
+    const recordsRaw = await base('Claims')
       .select({
         filterByFormula: "FIND('test-', {user_email}) > 0",
         sort: [{ field: 'user_email', direction: 'asc' }],
       })
       .all();
+
+    const records: AirtableRecord[] = recordsRaw as unknown as AirtableRecord[];
 
     if (records.length === 0) {
       console.log('⚠️  No test records found!');
