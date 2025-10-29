@@ -227,7 +227,7 @@ export async function sendRefundNotification(
     const template = REFUND_TEMPLATES[type](data);
 
     const result = await resend.emails.send({
-      from: 'Flghtly <noreply@flghtly.com>',
+      from: 'Flghtly <claims@flghtly.com>',
       to: [data.customerEmail],
       subject: template.subject,
       html: template.html,

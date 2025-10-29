@@ -288,7 +288,7 @@ Flghtly - We fight for your flight delay compensation
 export async function sendEmail(
   to: string,
   template: EmailTemplate,
-  fromEmail: string = 'noreply@flghtly.com',
+  fromEmail: string = 'claims@flghtly.com',
   fromName: string = 'Flghtly'
 ): Promise<boolean> {
   if (!sendGridApiKey) {

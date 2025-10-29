@@ -70,7 +70,7 @@ class EmailService {
       fallbacks.push({
         provider: 'sendgrid',
         apiKey: process.env.SENDGRID_API_KEY,
-        fromEmail: process.env.SENDGRID_FROM_EMAIL || 'noreply@flghtly.com',
+        fromEmail: process.env.SENDGRID_FROM_EMAIL || 'claims@flghtly.com',
         fromName: 'Flghtly',
       });
     }
@@ -168,7 +168,7 @@ class EmailService {
     const msg = {
       to: emailData.to,
       from: {
-        email: provider.fromEmail || 'noreply@flghtly.com',
+        email: provider.fromEmail || 'claims@flghtly.com',
         name: provider.fromName || 'Flghtly',
       },
       subject: template.subject,
@@ -201,7 +201,7 @@ class EmailService {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        from: `${provider.fromName || 'Flghtly'} <${provider.fromEmail || 'noreply@flghtly.com'}>`,
+        from: `${provider.fromName || 'Flghtly'} <${provider.fromEmail || 'claims@flghtly.com'}>`,
         to: [emailData.to],
         subject: template.subject,
         html: template.html,
@@ -267,7 +267,7 @@ class EmailService {
     console.log('='.repeat(80));
     console.log(`To: ${emailData.to}`);
     console.log(
-      `From: ${provider.fromName || 'Flghtly'} <${provider.fromEmail || 'noreply@flghtly.com'}>`
+      `From: ${provider.fromName || 'Flghtly'} <${provider.fromEmail || 'claims@flghtly.com'}>`
     );
     console.log(`Subject: ${template.subject}`);
     console.log('-'.repeat(40));
