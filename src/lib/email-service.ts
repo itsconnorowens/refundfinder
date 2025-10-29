@@ -241,7 +241,7 @@ class EmailService {
     });
 
     const mailOptions = {
-      from: `${provider.fromName || 'Flghtly'} <${provider.fromEmail || 'noreply@refundfinder.com'}>`,
+      from: `${provider.fromName || 'Flghtly'} <${provider.fromEmail || 'claims@flghtly.com'}>`,
       to: emailData.to,
       subject: template.subject,
       text: template.text,
@@ -439,7 +439,7 @@ Flghtly - Flight Delay Compensation Assistance
         <hr style="margin: 30px 0;">
         <p style="font-size: 12px; color: #666;">
           Flghtly - Flight Delay Compensation Assistance<br>
-          <a href="mailto:support@refundfinder.com">support@refundfinder.com</a>
+          <a href="mailto:support@flghtly.com">support@flghtly.com</a>
         </p>
       </div>
     `,
@@ -468,7 +468,7 @@ Important: We provide assistance services only. We are not a law firm and do not
 
 ---
 Flghtly - Flight Delay Compensation Assistance
-support@refundfinder.com
+support@flghtly.com
     `,
   },
 
@@ -506,7 +506,7 @@ support@refundfinder.com
         <hr style="margin: 30px 0;">
         <p style="font-size: 12px; color: #666;">
           Flghtly - Flight Delay Compensation Assistance<br>
-          <a href="mailto:support@refundfinder.com">support@refundfinder.com</a>
+          <a href="mailto:support@flghtly.com">support@flghtly.com</a>
         </p>
       </div>
     `,
@@ -536,7 +536,7 @@ Important: We'll handle all follow-ups with {{airline}} on your behalf. You don'
 
 ---
 Flghtly - Flight Delay Compensation Assistance
-support@refundfinder.com
+support@flghtly.com
     `,
   },
 
@@ -571,7 +571,7 @@ support@refundfinder.com
         <hr style="margin: 30px 0;">
         <p style="font-size: 12px; color: #666;">
           Flghtly - Flight Delay Compensation Assistance<br>
-          <a href="mailto:support@refundfinder.com">support@refundfinder.com</a>
+          <a href="mailto:support@flghtly.com">support@flghtly.com</a>
         </p>
       </div>
     `,
@@ -598,7 +598,7 @@ We'll keep you informed of any developments. Thank you for your patience!
 
 ---
 Flghtly - Flight Delay Compensation Assistance
-support@refundfinder.com
+support@flghtly.com
     `,
   },
 
@@ -640,7 +640,7 @@ support@refundfinder.com
         <hr style="margin: 30px 0;">
         <p style="font-size: 12px; color: #666;">
           Flghtly - Flight Delay Compensation Assistance<br>
-          <a href="mailto:support@refundfinder.com">support@refundfinder.com</a>
+          <a href="mailto:support@flghtly.com">support@flghtly.com</a>
         </p>
       </div>
     `,
@@ -672,7 +672,7 @@ We'll continue to monitor your claim and keep you updated on any further develop
 
 ---
 Flghtly - Flight Delay Compensation Assistance
-support@refundfinder.com
+support@flghtly.com
     `,
   },
 
@@ -915,7 +915,7 @@ This email was sent regarding claim {{claimId}}
         <hr style="margin: 30px 0;">
         <p style="font-size: 12px; color: #666;">
           Flghtly - Flight Delay Compensation Assistance<br>
-          <a href="mailto:support@refundfinder.com">support@refundfinder.com</a>
+          <a href="mailto:support@flghtly.com">support@flghtly.com</a>
         </p>
       </div>
     `,
@@ -942,7 +942,7 @@ No action needed from you - we'll take care of everything!
 
 ---
 Flghtly - Flight Delay Compensation Assistance
-support@refundfinder.com
+support@flghtly.com
     `,
   },
 
@@ -982,7 +982,7 @@ support@refundfinder.com
         <hr style="margin: 30px 0;">
         <p style="font-size: 12px; color: #666;">
           Flghtly - Flight Delay Compensation Assistance<br>
-          <a href="mailto:support@refundfinder.com">support@refundfinder.com</a>
+          <a href="mailto:support@flghtly.com">support@flghtly.com</a>
         </p>
       </div>
     `,
@@ -1012,7 +1012,7 @@ We'll continue to monitor your claim and keep you updated on any further develop
 
 ---
 Flghtly - Flight Delay Compensation Assistance
-support@refundfinder.com
+support@flghtly.com
     `,
   },
 
@@ -1048,7 +1048,7 @@ support@refundfinder.com
         <hr style="margin: 30px 0;">
         <p style="font-size: 12px; color: #666;">
           Flghtly - Flight Delay Compensation Assistance<br>
-          <a href="mailto:support@refundfinder.com">support@refundfinder.com</a>
+          <a href="mailto:support@flghtly.com">support@flghtly.com</a>
         </p>
       </div>
     `,
@@ -1076,7 +1076,7 @@ Congratulations! You've successfully claimed your flight delay compensation.
 
 ---
 Flghtly - Flight Delay Compensation Assistance
-support@refundfinder.com
+support@flghtly.com
     `,
   },
 
@@ -1123,7 +1123,7 @@ support@refundfinder.com
         <hr style="margin: 30px 0;">
         <p style="font-size: 12px; color: #666;">
           Flghtly - Flight Delay Compensation Assistance<br>
-          <a href="mailto:support@refundfinder.com">support@refundfinder.com</a>
+          <a href="mailto:support@flghtly.com">support@flghtly.com</a>
         </p>
       </div>
     `,
@@ -1158,7 +1158,7 @@ We're sorry this claim wasn't successful. If you have any questions, please don'
 
 ---
 Flghtly - Flight Delay Compensation Assistance
-support@refundfinder.com
+support@flghtly.com
     `,
   },
 };

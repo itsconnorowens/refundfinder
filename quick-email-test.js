@@ -1,20 +1,20 @@
-import { NextRequest, NextResponse } from 'next/server';
-import { emailService } from '@/lib/email-service';
+#!/usr/bin/env node
+/**
+ * Quick Email Test - Send test email to your actual address
+ */
 
-export async function POST(request: NextRequest) {
+async function sendTestEmail() {
+  const testEmail = process.argv[2] || 'itsconnorowens@gmail.com';
+  
+  console.log(`\n🧪 Testing email system...`);
+  console.log(`📧 Sending test email to: ${testEmail}\n`);
+
   try {
-    const body = await request.json();
-    const { to } = body;
-
-    if (!to || !to.includes('@')) {
-      return NextResponse.json(
-        { error: 'Valid email address is required' },
-        { status: 400 }
-      );
-    }
-
+    // Import the email service
+    const { emailService } = await import('./src/lib/email-service.ts');
+    
     const result = await emailService.sendEmail({
-      to,
+      to: testEmail,
       template: {
         subject: '✅ Flghtly Email Test',
         html: `
@@ -71,34 +71,29 @@ Next Steps:
 3. Check deliverability at https://www.mail-tester.com/
 
 This is a test email from your Flghtly application.
-        `,
-      },
+        `
+      }
     });
 
     if (result.success) {
-      return NextResponse.json({
-        success: true,
-        message: `Test email sent successfully to ${to}`,
-        messageId: result.messageId,
-        provider: result.provider,
-      });
+      console.log('✅ SUCCESS! Email sent successfully!');
+      console.log(`📬 Message ID: ${result.messageId}`);
+      console.log(`🚀 Provider: ${result.provider}`);
+      console.log(`\n📧 Check your inbox at: ${testEmail}`);
+      console.log(`📁 Also check your spam folder just in case\n`);
+      console.log('Next: Test email forwarding by sending TO claims@flghtly.com\n');
     } else {
-      return NextResponse.json(
-        {
-          success: false,
-          error: result.error || 'Failed to send email',
-        },
-        { status: 500 }
-      );
+      console.log('❌ FAILED: Email not sent');
+      console.log(`Error: ${result.error || 'Unknown error'}\n`);
     }
-  } catch (error: any) {
-    console.error('Error sending test email:', error);
-    return NextResponse.json(
-      {
-        success: false,
-        error: error.message || 'Internal server error',
-      },
-      { status: 500 }
-    );
+  } catch (error) {
+    console.error('❌ ERROR:', error.message);
+    console.error('\nTroubleshooting:');
+    console.error('1. Make sure RESEND_API_KEY is set in .env.local');
+    console.error('2. Verify domain is verified in Resend dashboard');
+    console.error('3. Check Resend logs: https://resend.com/emails\n');
   }
 }
+
+sendTestEmail();
+

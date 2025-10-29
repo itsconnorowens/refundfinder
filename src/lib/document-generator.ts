@@ -99,7 +99,7 @@ ${claim.email}
 
 ---
 This claim is being processed by Flghtly on behalf of the passenger.
-For any questions, please contact: support@refundfinder.com
+For any questions, please contact: support@flghtly.com
 `;
 
   return {
@@ -273,7 +273,7 @@ ${claim.email}
 
 ---
 This claim is being processed by Flghtly on behalf of the passenger.
-For any questions, please contact: support@refundfinder.com
+For any questions, please contact: support@flghtly.com
 `;
 
   return {
