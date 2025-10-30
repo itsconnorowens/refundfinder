@@ -6,7 +6,7 @@ import { withErrorTracking } from '@/lib/error-tracking';
  * GET /api/refund-analytics/dashboard
  * Get refund analytics dashboard data
  */
-export const GET = withErrorTracking(async (request: NextRequest) => {
+export const GET = withErrorTracking(async (_request: NextRequest) => {
   const dashboardData = await getRefundDashboardData();
 
   return NextResponse.json({

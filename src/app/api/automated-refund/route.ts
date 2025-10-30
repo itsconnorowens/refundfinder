@@ -2,17 +2,9 @@ import { NextRequest, NextResponse } from 'next/server';
 import {
   processAutomaticRefund,
   analyzeRefundEligibility,
-  getClaimsNeedingAutomaticRefunds,
   processBatchAutomaticRefunds,
   RefundTrigger,
 } from '@/lib/automated-refund';
-import {
-  calculateRefundAnalytics,
-  getRefundDashboardData,
-  getRefundPerformanceMetrics,
-  checkRefundAlerts,
-  RefundAlert,
-} from '@/lib/refund-analytics';
 
 /**
  * POST /api/automated-refund/process

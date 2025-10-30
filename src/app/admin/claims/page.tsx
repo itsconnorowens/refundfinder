@@ -60,7 +60,7 @@ export default function AdminDashboard() {
       } else {
         setError(data.error || 'Failed to fetch claims');
       }
-    } catch (err) {
+    } catch {
       setError('Failed to fetch claims');
     } finally {
       setLoading(false);
@@ -75,8 +75,8 @@ export default function AdminDashboard() {
       if (data.success) {
         setStats(data.data);
       }
-    } catch (err) {
-      console.error('Failed to fetch stats:', err);
+    } catch {
+      console.error('Failed to fetch stats');
     }
   };
 

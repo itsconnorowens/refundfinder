@@ -2,7 +2,6 @@ import { NextRequest, NextResponse } from 'next/server';
 import { getClaimsNeedingFollowUp, getOverdueClaims } from '@/lib/airtable';
 import {
   sendAdminOverdueAlert,
-  sendAdminReadyToFileAlert,
 } from '@/lib/email-service';
 import { withErrorTracking, addBreadcrumb, captureError } from '@/lib/error-tracking';
 
@@ -131,7 +130,7 @@ export async function GET() {
  * Send admin follow-up alert email
  */
 async function sendAdminFollowUpAlert(adminEmail: string, data: any) {
-  const { emailService, emailTemplates } = await import('@/lib/email-service');
+  const { emailService } = await import('@/lib/email-service');
 
   const variables = {
     totalClaims: data.totalClaims,

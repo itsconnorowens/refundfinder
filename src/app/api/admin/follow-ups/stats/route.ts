@@ -6,7 +6,7 @@ import { withErrorTracking } from '@/lib/error-tracking';
  * GET /api/admin/follow-ups/stats
  * Get follow-up statistics for the dashboard
  */
-export const GET = withErrorTracking(async (request: NextRequest) => {
+export const GET = withErrorTracking(async (_request: NextRequest) => {
   const stats = await getFollowUpStats();
 
   return NextResponse.json({

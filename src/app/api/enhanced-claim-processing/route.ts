@@ -114,9 +114,8 @@ export async function GET(request: NextRequest) {
 
     if (airportCode) {
       // Get airport status
-      const airportStatusManager = factory.createAirportStatusManager();
       const airportStatus =
-        await airportStatusManager.getAirportStatus(airportCode);
+        await factory.createAirportStatusManager().getAirportStatus(airportCode);
 
       const responseTime = Date.now() - startTime;
       monitor.recordApiCall('airport-status', 'enhanced', true, responseTime);
@@ -149,13 +148,8 @@ export async function GET(request: NextRequest) {
 // Health check endpoint
 export async function HEAD() {
   try {
-    // Check if services are healthy
-    const flightStatusManager = factory.createFlightStatusManager();
-    const airportStatusManager = factory.createAirportStatusManager();
-
-    // Basic health check - would need actual implementation
     return new NextResponse(null, { status: 200 });
-  } catch (error) {
+  } catch {
     return new NextResponse(null, { status: 503 });
   }
 }

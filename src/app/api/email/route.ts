@@ -13,21 +13,23 @@ export async function GET(request: NextRequest) {
     const action = url.searchParams.get('action');
 
     switch (action) {
-      case 'status':
+      case 'status': {
         const status = getEmailQueueStatus();
         return NextResponse.json({
           success: true,
           data: status,
         });
+      }
 
-      case 'failed':
+      case 'failed': {
         const failedEmails = getFailedEmails();
         return NextResponse.json({
           success: true,
           data: failedEmails,
         });
+      }
 
-      case 'test':
+      case 'test': {
         // Test email functionality
         const testResult = await emailService.sendEmail({
           to: 'test@example.com',
@@ -43,6 +45,7 @@ export async function GET(request: NextRequest) {
           message: 'Test email sent',
           data: testResult,
         });
+      }
 
       default:
         return NextResponse.json({
@@ -72,7 +75,7 @@ export async function POST(request: NextRequest) {
     const { action, emailId } = body;
 
     switch (action) {
-      case 'retry':
+      case 'retry': {
         if (!emailId) {
           return NextResponse.json(
             { error: 'Email ID is required' },
@@ -92,13 +95,15 @@ export async function POST(request: NextRequest) {
             { status: 404 }
           );
         }
+      }
 
-      case 'clear':
+      case 'clear': {
         emailQueue.clearSentEmails();
         return NextResponse.json({
           success: true,
           message: 'Sent emails cleared from queue',
         });
+      }
 
       default:
         return NextResponse.json({ error: 'Invalid action' }, { status: 400 });

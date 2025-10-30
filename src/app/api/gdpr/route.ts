@@ -2,8 +2,6 @@ import { NextRequest, NextResponse } from 'next/server';
 import {
   validateDataSubjectRequest,
   generateRequestId,
-  generateDataExport,
-  canDeleteData,
   GDPR_CONFIG,
   DataSubjectRequest,
 } from '@/lib/gdpr';
@@ -35,7 +33,7 @@ export async function POST(request: NextRequest) {
     console.log(`GDPR Request ${requestId}:`, dataSubjectRequest);
 
     // Process based on request type
-    let responseData: any = {};
+    let responseData: Record<string, unknown> = {};
 
     switch (body.type) {
       case 'access':
@@ -133,7 +131,7 @@ export async function POST(request: NextRequest) {
       const emailId = await queueGDPRConfirmation(body.email, {
         type: body.type,
         requestId,
-        nextSteps: responseData.nextSteps,
+        nextSteps: responseData.nextSteps as string[],
       });
 
       console.log(`GDPR confirmation email queued: ${emailId}`);

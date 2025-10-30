@@ -8,7 +8,7 @@ import { FormErrorBoundary } from '@/components/FormErrorBoundary';
 
 function ClaimPageContent() {
   const searchParams = useSearchParams();
-  const formStartTime = useRef<number>(Date.now());
+  const formStartTime = useRef<number>(0);
   const [lastStepReached, setLastStepReached] = useState(1);
   const [hadErrors, setHadErrors] = useState(false);
 
@@ -19,6 +19,10 @@ function ClaimPageContent() {
   const departureAirport = searchParams.get('departureAirport') || '';
   const arrivalAirport = searchParams.get('arrivalAirport') || '';
   const delayDuration = searchParams.get('delayDuration') || '';
+
+  useEffect(() => {
+    formStartTime.current = Date.now();
+  }, []);
 
   // Pre-fill localStorage with flight data if provided
   if (flightNumber && airline && departureDate && departureAirport && arrivalAirport && delayDuration) {

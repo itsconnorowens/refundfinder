@@ -1,12 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { generateAirlineSubmission } from '@/lib/claim-filing-service';
 
-/**
- * POST /api/admin/claims/[id]/generate-submission
- * Generate airline submission materials
- */
 export async function POST(
-  request: NextRequest,
+  _request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {

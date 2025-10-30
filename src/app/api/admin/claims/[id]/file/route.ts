@@ -1,10 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { markClaimAsFiled } from '@/lib/claim-filing-service';
 
-/**
- * POST /api/admin/claims/[id]/file
- * Mark claim as filed with airline reference
- */
 export async function POST(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
@@ -16,19 +12,16 @@ export async function POST(
 
     if (!airlineReference || !filedBy || !filingMethod) {
       return NextResponse.json(
-        {
-          error:
-            'Missing required fields: airlineReference, filedBy, filingMethod',
-        },
+        { error: 'airlineReference, filedBy, and filingMethod are required' },
         { status: 400 }
       );
     }
 
     const success = await markClaimAsFiled(
       claimId,
+      airlineReference,
       filedBy,
-      filingMethod,
-      airlineReference
+      filingMethod
     );
 
     if (!success) {

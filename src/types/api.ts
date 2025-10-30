@@ -128,6 +128,13 @@ export interface CheckEligibilityResponse {
     eligibility: EligibilityData;
     validation: ValidationData;
   };
+  // Error fields
   error?: string;
+  message?: string;
+  missingFields?: string[];
+  field?: string;
+  validation?: string;
+  retryAfter?: number;
+  status?: number;
   method: "flight_lookup" | "email_parsing";
 }

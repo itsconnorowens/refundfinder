@@ -1,12 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { validateClaimForFiling } from '@/lib/claim-filing-service';
 
-/**
- * POST /api/admin/claims/[id]/validate
- * Validate claim for filing
- */
 export async function POST(
-  request: NextRequest,
+  _request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {

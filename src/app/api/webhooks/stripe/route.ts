@@ -48,9 +48,12 @@ export const POST = withErrorTracking(async (request: NextRequest) => {
   // Handle the event
   addBreadcrumb('Processing Stripe webhook event', 'webhook', { event_type: event.type });
 
+  let paymentIntent: Stripe.PaymentIntent | undefined;
+  let failedPayment: Stripe.PaymentIntent | undefined;
+
   switch (event.type) {
     case 'payment_intent.succeeded':
-      const paymentIntent = event.data.object as Stripe.PaymentIntent;
+      paymentIntent = event.data.object as Stripe.PaymentIntent;
       console.log('Payment succeeded:', paymentIntent.id);
 
       // Set user context from payment metadata
@@ -171,7 +174,7 @@ export const POST = withErrorTracking(async (request: NextRequest) => {
       break;
 
     case 'payment_intent.payment_failed':
-      const failedPayment = event.data.object as Stripe.PaymentIntent;
+      failedPayment = event.data.object as Stripe.PaymentIntent;
       console.log('Payment failed:', failedPayment.id);
 
       // Set user context from payment metadata

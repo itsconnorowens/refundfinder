@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getAllAirlineConfigs, getAirlineConfig } from '@/lib/airline-config';
+import { getAirlineConfig } from '@/lib/airline-config';
 import { addBreadcrumb } from '@/lib/error-tracking';
 
 /**

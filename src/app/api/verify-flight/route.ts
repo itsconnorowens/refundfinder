@@ -79,7 +79,7 @@ export const POST = withErrorTracking(async (request: NextRequest) => {
   return NextResponse.json(validationResult);
 }, { route: '/api/verify-flight', tags: { service: 'flight_validation' } });
 
-export async function GET(request: NextRequest) {
+export async function GET(_request: NextRequest) {
   try {
     // Return service status and usage information
     const serviceStatus = flightValidationService.getServiceStatus();

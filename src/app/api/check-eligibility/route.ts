@@ -7,6 +7,7 @@ import {
   ELIGIBILITY_RATE_LIMIT,
 } from '@/lib/rate-limit';
 import { withErrorTracking, addBreadcrumb, captureError } from '@/lib/error-tracking';
+import { missingFieldsResponse, rateLimitResponse } from '@/lib/api-response';
 
 export const POST = withErrorTracking(async (request: NextRequest) => {
   console.log('🔍 Eligibility Check API - Request received');
@@ -20,23 +21,9 @@ export const POST = withErrorTracking(async (request: NextRequest) => {
 
     if (!rateLimitResult.allowed) {
       console.log('❌ Rate limit exceeded');
-      return NextResponse.json(
-        {
-          error: 'Rate limit exceeded',
-          message: `Too many requests. Please try again in ${rateLimitResult.retryAfter} seconds.`,
-          retryAfter: rateLimitResult.retryAfter,
-        },
-        {
-          status: 429,
-          headers: {
-            'Retry-After': rateLimitResult.retryAfter?.toString() || '3600',
-            'X-RateLimit-Limit': ELIGIBILITY_RATE_LIMIT.maxRequests.toString(),
-            'X-RateLimit-Remaining': rateLimitResult.remaining.toString(),
-            'X-RateLimit-Reset': Math.ceil(
-              rateLimitResult.resetTime / 1000
-            ).toString(),
-          },
-        }
+      return rateLimitResponse(
+        rateLimitResult.retryAfter || 3600,
+        rateLimitResult.remaining
       );
     }
 
@@ -58,19 +45,14 @@ export const POST = withErrorTracking(async (request: NextRequest) => {
       noticeGiven,
       alternativeOffered,
       alternativeTiming,
-      cancellationReason,
       // Denied boarding-specific fields
       deniedBoardingType,
-      deniedBoardingReason,
       compensationOffered,
-      compensationAmount,
-      passengerCount,
       // Downgrade-specific fields
       bookedClass,
       actualClass,
       ticketPrice,
       fareDifference,
-      downgradeReason,
     } = body;
 
     console.log('🔍 Field validation:');
@@ -104,14 +86,7 @@ export const POST = withErrorTracking(async (request: NextRequest) => {
 
     if (missingFields.length > 0) {
       console.log('❌ Validation failed - returning error');
-      return NextResponse.json(
-        {
-          error: 'Missing required fields',
-          missingFields: missingFields,
-          message: `The following fields are required: ${missingFields.join(', ')}`,
-        },
-        { status: 400 }
-      );
+      return missingFieldsResponse(missingFields);
     }
 
     console.log('✅ All fields validated successfully');

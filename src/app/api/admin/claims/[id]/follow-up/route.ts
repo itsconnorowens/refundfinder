@@ -1,10 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { scheduleFollowUp } from '@/lib/claim-filing-service';
 
-/**
- * POST /api/admin/claims/[id]/follow-up
- * Schedule follow-up for a claim
- */
 export async function POST(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
@@ -12,7 +8,7 @@ export async function POST(
   try {
     const { id: claimId } = await params;
     const body = await request.json();
-    const { followUpDate } = body;
+    const { followUpDate, followUpType, notes } = body;
 
     if (!followUpDate) {
       return NextResponse.json(
@@ -21,7 +17,12 @@ export async function POST(
       );
     }
 
-    const success = await scheduleFollowUp(claimId, followUpDate);
+    const success = await scheduleFollowUp(
+      claimId,
+      followUpDate,
+      followUpType || 'reminder',
+      notes
+    );
 
     if (!success) {
       return NextResponse.json(

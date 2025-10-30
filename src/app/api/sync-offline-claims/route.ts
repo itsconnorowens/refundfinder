@@ -9,7 +9,7 @@ import {
  * API endpoint to sync offline claims
  * Called by service worker when connection is restored
  */
-export async function POST(request: NextRequest) {
+export async function POST(_request: NextRequest) {
   try {
     const pendingClaims = await getPendingClaims();
 

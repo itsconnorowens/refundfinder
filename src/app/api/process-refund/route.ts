@@ -7,7 +7,7 @@ import {
   updateClaim,
   createRefund as createRefundRecord,
 } from '@/lib/airtable';
-import { withErrorTracking, setUser, addBreadcrumb } from '@/lib/error-tracking';
+import { withErrorTracking, addBreadcrumb } from '@/lib/error-tracking';
 
 export const POST = withErrorTracking(async (request: NextRequest) => {
   const body = await request.json();

@@ -1,7 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import {
   processAutomaticClaimFiling,
-  processClaimFollowUps,
 } from '@/lib/claim-filing-service';
 import { processAutomatedFollowUps } from '@/lib/follow-up-service';
 import { withErrorTracking, addBreadcrumb } from '@/lib/error-tracking';
@@ -71,7 +70,7 @@ export const POST = withErrorTracking(async (request: NextRequest) => {
  * GET /api/cron/process-automatic-filing
  * Health check endpoint for the cron job
  */
-export async function GET(request: NextRequest) {
+export async function GET() {
   try {
     // This would typically check the status of claims ready to file
     // For now, return a simple health check

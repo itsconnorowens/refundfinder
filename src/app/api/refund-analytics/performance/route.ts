@@ -6,7 +6,7 @@ import { withErrorTracking } from '@/lib/error-tracking';
  * GET /api/refund-analytics/performance
  * Get refund performance metrics
  */
-export const GET = withErrorTracking(async (request: NextRequest) => {
+export const GET = withErrorTracking(async (_request: NextRequest) => {
   const metrics = await getRefundPerformanceMetrics();
 
   return NextResponse.json({

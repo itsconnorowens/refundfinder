@@ -2,10 +2,8 @@ import { NextRequest, NextResponse } from 'next/server';
 import {
   getClaimsNeedingAutomaticRefunds,
   processBatchAutomaticRefunds,
-  RefundTrigger,
 } from '@/lib/automated-refund';
 import {
-  checkRefundAlerts,
   getRefundDashboardData,
 } from '@/lib/refund-analytics';
 import { withErrorTracking, addBreadcrumb } from '@/lib/error-tracking';
@@ -159,7 +157,7 @@ export const POST = withErrorTracking(async (request: NextRequest) => {
  * GET /api/cron/process-automatic-refunds
  * Health check endpoint for the cron job
  */
-export async function GET(request: NextRequest) {
+export async function GET() {
   try {
     const claimsNeedingRefunds = await getClaimsNeedingAutomaticRefunds();
 

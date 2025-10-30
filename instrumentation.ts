@@ -15,7 +15,7 @@ export async function onRequestError(
   request: {
     path: string;
     method: string;
-    headers: Headers;
+    headers: globalThis.Headers;
   },
   context: {
     routerKind: 'Pages Router' | 'App Router';

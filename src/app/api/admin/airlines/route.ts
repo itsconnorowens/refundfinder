@@ -1,8 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import {
-  validateAirlineConfig,
-  generateAirlineConfigFromTemplate,
-} from '@/lib/airline-config-template';
+import { validateAirlineConfig } from '@/lib/airline-config-template';
 import { withErrorTracking, addBreadcrumb } from '@/lib/error-tracking';
 
 /**
@@ -41,7 +38,7 @@ export const POST = withErrorTracking(async (request: NextRequest) => {
  * GET /api/admin/airlines
  * Get all airline configurations
  */
-export const GET = withErrorTracking(async (request: NextRequest) => {
+export const GET = withErrorTracking(async (_request: NextRequest) => {
   // In a real implementation, this would fetch from the database
   // For now, return a mock response
   const airlines = [

@@ -6,6 +6,9 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 
+// Force dynamic rendering for test pages
+export const dynamic = 'force-dynamic';
+
 export default function EmailTestPage() {
   const [testEmail, setTestEmail] = useState('');
   const [isLoading, setIsLoading] = useState(false);

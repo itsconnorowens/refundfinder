@@ -2,7 +2,6 @@ import { NextRequest, NextResponse } from 'next/server';
 import {
   verifyAdminPassword,
   createAdminSession,
-  clearAdminSession,
 } from '@/lib/admin-auth';
 import { withErrorTracking, addBreadcrumb, captureMessage } from '@/lib/error-tracking';
 
@@ -36,18 +35,10 @@ export const POST = withErrorTracking(async (request: NextRequest) => {
  * POST /api/admin/logout
  * Admin logout endpoint
  */
-export async function POST_LOGOUT() {
-  return clearAdminSession();
-}
+// Moved to /api/admin/logout
 
 /**
  * GET /api/admin/status
  * Check admin authentication status
  */
-export async function GET_STATUS() {
-  return NextResponse.json({
-    success: true,
-    authenticated: true,
-    timestamp: new Date().toISOString(),
-  });
-}
+// Moved to /api/admin/status

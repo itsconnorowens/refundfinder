@@ -21,19 +21,24 @@ export const GET = withErrorTracking(async (request: NextRequest) => {
     }
 
     switch (endpoint) {
-      case 'metrics':
+      case 'metrics': {
         return getMetrics();
-      case 'health':
+      }
+      case 'health': {
         return getHealth();
-      case 'config':
+      }
+      case 'config': {
         return getConfig();
-      case 'status':
+      }
+      case 'status': {
         return getStatus();
-      default:
+      }
+      default: {
         return NextResponse.json(
           { error: 'Invalid endpoint. Use: metrics, health, config, status' },
           { status: 400 }
         );
+      }
     }
 }, { route: '/api/monitoring', tags: { service: 'monitoring', operation: 'system_monitoring' } });
 

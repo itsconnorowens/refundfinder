@@ -7,7 +7,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Textarea } from '@/components/ui/textarea';
-import { AlertCircle, Plane, Clock, MapPin, Calendar } from 'lucide-react';
+import { AlertCircle, Plane } from 'lucide-react';
 
 interface EligibilityFormData {
   // Option 1: Email paste
@@ -21,15 +21,6 @@ interface EligibilityFormData {
   arrivalAirport: string;
   delayDuration: string;
   delayReason: string;
-}
-
-interface EligibilityResult {
-  eligible: boolean;
-  amount: string;
-  confidence: number;
-  message: string;
-  regulation: string;
-  reason?: string;
 }
 
 export default function CheckEligibilityPage() {

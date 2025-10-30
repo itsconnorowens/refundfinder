@@ -1,40 +1,53 @@
 'use client';
 
-import posthog from 'posthog-js';
-import { PostHogProvider as PHProvider } from 'posthog-js/react';
 import { useEffect } from 'react';
 import { usePathname, useSearchParams } from 'next/navigation';
 
 /**
  * PostHog client-side analytics provider
  * Wraps the app to enable PostHog tracking
+ * Simplified to avoid SSR issues during build
  */
 
-if (typeof window !== 'undefined') {
-  const posthogKey = process.env.NEXT_PUBLIC_POSTHOG_KEY;
-
-  if (posthogKey) {
-    posthog.init(posthogKey, {
-      api_host: '/ingest',
-      ui_host: 'https://us.posthog.com',
-      person_profiles: 'identified_only',
-      capture_pageview: false, // We'll capture pageviews manually
-      capture_pageleave: true,
-      autocapture: true,
-      defaults: '2025-05-24', // PostHog API version
-
-      // Disable in development
-      loaded: (posthog) => {
-        if (process.env.NODE_ENV === 'development') {
-          posthog.opt_out_capturing();
-        }
-      },
-    });
-  }
-}
-
 export function PostHogProvider({ children }: { children: React.ReactNode }) {
-  return <PHProvider client={posthog}>{children}</PHProvider>;
+  useEffect(() => {
+    // Initialize PostHog only on client side after mount
+    const initPostHog = async () => {
+      if (typeof window === 'undefined') return;
+
+      const posthogKey = process.env.NEXT_PUBLIC_POSTHOG_KEY;
+      if (!posthogKey) return;
+
+      try {
+        const posthog = (await import('posthog-js')).default;
+
+        // Check if already initialized
+        if (!(posthog as any).__flghtly_loaded) {
+          posthog.init(posthogKey, {
+            api_host: '/ingest',
+            ui_host: 'https://us.posthog.com',
+            person_profiles: 'identified_only',
+            capture_pageview: false,
+            capture_pageleave: true,
+            autocapture: true,
+            loaded: (ph) => {
+              if (process.env.NODE_ENV === 'development') {
+                ph.opt_out_capturing();
+              }
+            },
+          });
+          (posthog as any).__flghtly_loaded = true;
+        }
+      } catch (error) {
+        console.error('Failed to load PostHog:', error);
+      }
+    };
+
+    initPostHog();
+  }, []);
+
+  // Render children immediately to avoid hydration issues
+  return <>{children}</>;
 }
 
 /**
@@ -46,15 +59,27 @@ export function PostHogPageView() {
   const searchParams = useSearchParams();
 
   useEffect(() => {
-    if (pathname) {
-      let url = window.origin + pathname;
-      if (searchParams && searchParams.toString()) {
-        url = url + `?${searchParams.toString()}`;
+    // Track pageview after navigation
+    const trackPageview = async () => {
+      if (typeof window === 'undefined' || !pathname) return;
+
+      try {
+        const posthog = (await import('posthog-js')).default;
+
+        let url = window.origin + pathname;
+        if (searchParams?.toString()) {
+          url = url + `?${searchParams.toString()}`;
+        }
+
+        posthog.capture('$pageview', {
+          $current_url: url,
+        });
+      } catch (error) {
+        // Silently fail if PostHog not available
       }
-      posthog.capture('$pageview', {
-        $current_url: url,
-      });
-    }
+    };
+
+    trackPageview();
   }, [pathname, searchParams]);
 
   return null;

@@ -5,7 +5,7 @@ import { captureError, captureMessage } from '@/lib/error-tracking';
  * Test endpoint for Sentry integration
  * Visit: http://localhost:3000/api/test-sentry
  */
-export async function GET(request: NextRequest) {
+export async function GET(_request: NextRequest) {
   try {
     // Test capturing a message
     captureMessage('Sentry test message - monitoring system is working!', {

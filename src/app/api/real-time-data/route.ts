@@ -192,7 +192,7 @@ export async function HEAD() {
   try {
     // Basic health check
     return new NextResponse(null, { status: 200 });
-  } catch (error) {
+  } catch {
     return new NextResponse(null, { status: 503 });
   }
 }

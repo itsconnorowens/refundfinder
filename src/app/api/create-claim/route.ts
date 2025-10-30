@@ -7,6 +7,7 @@ import { notifyNewClaim } from '@/lib/notification-service';
 import { sendClaimConfirmationEmail } from '@/lib/email-service';
 import { generateClaimId } from '@/lib/claim-id';
 import { logger } from '@/lib/logger';
+import { missingFieldsResponse, validationErrorResponse } from '@/lib/api-response';
 
 export async function POST(request: NextRequest) {
   try {
@@ -32,52 +33,53 @@ export async function POST(request: NextRequest) {
     const delayProofUrl = formData.get('delayProofUrl') as string;
 
     // Validate required form fields
-    if (
-      !firstName ||
-      !lastName ||
-      !email ||
-      !flightNumber ||
-      !airline ||
-      !departureDate ||
-      !departureAirport ||
-      !arrivalAirport ||
-      !delayDuration ||
-      !paymentIntentId
-    ) {
-      return NextResponse.json(
-        { error: 'Missing required fields' },
-        { status: 400 }
-      );
+    const missingFields: string[] = [];
+    if (!firstName) missingFields.push('firstName');
+    if (!lastName) missingFields.push('lastName');
+    if (!email) missingFields.push('email');
+    if (!flightNumber) missingFields.push('flightNumber');
+    if (!airline) missingFields.push('airline');
+    if (!departureDate) missingFields.push('departureDate');
+    if (!departureAirport) missingFields.push('departureAirport');
+    if (!arrivalAirport) missingFields.push('arrivalAirport');
+    if (!delayDuration) missingFields.push('delayDuration');
+    if (!paymentIntentId) missingFields.push('paymentIntentId');
+
+    if (missingFields.length > 0) {
+      return missingFieldsResponse(missingFields);
     }
 
     // Validate required documents
     if (!boardingPassUrl || !delayProofUrl) {
-      return NextResponse.json(
-        { error: 'Missing required documents' },
-        { status: 400 }
+      return validationErrorResponse(
+        'documents',
+        'Please upload both your boarding pass and delay proof documents',
+        400
       );
     }
 
-    // Validate file types (if files are provided as File objects)
-    const boardingPassFile = formData.get('boardingPass') as File;
-    const delayProofFile = formData.get('delayProof') as File;
+    // Validate file types (if files are provided)
+    const boardingPassFile = formData.get('boardingPass') as any;
+    const delayProofFile = formData.get('delayProof') as any;
     
     if (boardingPassFile && boardingPassFile.size > 0) {
       const allowedTypes = ['image/jpeg', 'image/png', 'image/jpg', 'application/pdf'];
       if (!allowedTypes.includes(boardingPassFile.type)) {
-        return NextResponse.json(
-          { error: 'Invalid file type for boarding pass. Please upload a JPEG, PNG, or PDF file.' },
-          { status: 400 }
+        return validationErrorResponse(
+          'boardingPass',
+          'Invalid file type for boarding pass. Please upload a JPEG, PNG, or PDF file.',
+          400
         );
       }
     }
-    
+
     if (delayProofFile && delayProofFile.size > 0) {
       const allowedTypes = ['image/jpeg', 'image/png', 'image/jpg', 'application/pdf'];
       if (!allowedTypes.includes(delayProofFile.type)) {
-        return NextResponse.json(
-          { error: 'Invalid file type for delay proof. Please upload a JPEG, PNG, or PDF file.' },
-          { status: 400 }
+        return validationErrorResponse(
+          'delayProof',
+          'Invalid file type for delay proof. Please upload a JPEG, PNG, or PDF file.',
+          400
         );
       }
     }
@@ -89,12 +91,10 @@ export async function POST(request: NextRequest) {
 
       if (paymentIntent.status !== 'succeeded') {
         logger.warn('Payment not completed', { paymentIntentId, email });
-        return NextResponse.json(
-          {
-            error:
-              'Payment has not been completed. Please complete payment before submitting your claim.',
-          },
-          { status: 400 }
+        return validationErrorResponse(
+          'payment',
+          'Payment has not been completed. Please complete payment before submitting your claim.',
+          400
         );
       }
 
@@ -106,9 +106,10 @@ export async function POST(request: NextRequest) {
         tags: { operation: 'verify_payment', paymentIntentId },
         extra: { email },
       });
-      return NextResponse.json(
-        { error: 'Failed to verify payment. Please contact support.' },
-        { status: 400 }
+      return validationErrorResponse(
+        'payment',
+        'Unable to verify your payment. Please try again or contact support if the issue persists.',
+        400
       );
     }
 

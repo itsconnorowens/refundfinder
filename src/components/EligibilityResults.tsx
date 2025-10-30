@@ -4,6 +4,7 @@ import { useState } from 'react';
 import posthog from 'posthog-js';
 import { CheckEligibilityResponse, FlightData, EligibilityData } from '../types/api';
 import PaymentForm from './PaymentForm';
+import { parseApiError, formatErrorForDisplay } from '@/lib/error-messages';
 
 interface EligibilityResultsProps {
   results: CheckEligibilityResponse;
@@ -27,6 +28,10 @@ export default function EligibilityResults({ results }: EligibilityResultsProps)
   };
 
   if (!results.success) {
+    // Parse the error to get user-friendly details
+    const errorDetails = parseApiError(results);
+    const { title, message, guidanceList } = formatErrorForDisplay(errorDetails);
+
     return (
       <div className="bg-red-50 border border-red-200 rounded-lg p-6">
         <div className="flex items-center mb-4">
@@ -36,12 +41,33 @@ export default function EligibilityResults({ results }: EligibilityResultsProps)
             </svg>
           </div>
           <div className="ml-3">
-            <h3 className="text-lg font-medium text-red-800">Unable to Check Eligibility</h3>
+            <h3 className="text-lg font-medium text-red-800">{title}</h3>
           </div>
         </div>
         <div className="text-red-700">
-          <p>{results.error || 'An unexpected error occurred while checking your eligibility.'}</p>
-          <p className="mt-2 text-sm">Please try again or contact support if the problem persists.</p>
+          <p className="font-medium">{message}</p>
+
+          {/* Display guidance if available */}
+          {guidanceList && guidanceList.length > 0 && (
+            <div className="mt-4 bg-red-100 border border-red-300 rounded-lg p-4">
+              <h4 className="text-sm font-semibold text-red-900 mb-2">What to do next:</h4>
+              <ul className="text-sm space-y-1.5">
+                {guidanceList.map((guidance, index) => (
+                  <li key={index} className="flex items-start">
+                    <span className="mr-2 text-red-600">•</span>
+                    <span>{guidance}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
+
+          {/* Rate limit specific info */}
+          {results.retryAfter && (
+            <p className="mt-3 text-sm font-medium">
+              Try again in {Math.ceil(results.retryAfter / 60)} minute{Math.ceil(results.retryAfter / 60) > 1 ? 's' : ''}
+            </p>
+          )}
         </div>
       </div>
     );
