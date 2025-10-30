@@ -35,15 +35,18 @@ export function PWAInstaller() {
     window.addEventListener('beforeinstallprompt', handler);
 
     // Listen for app installed event
-    window.addEventListener('appinstalled', () => {
+    const appInstalledHandler = () => {
       console.log('[PWA] App installed');
       setIsInstalled(true);
       setIsInstallable(false);
       setDeferredPrompt(null);
-    });
+    };
+
+    window.addEventListener('appinstalled', appInstalledHandler);
 
     return () => {
       window.removeEventListener('beforeinstallprompt', handler);
+      window.removeEventListener('appinstalled', appInstalledHandler);
     };
   }, []);
 

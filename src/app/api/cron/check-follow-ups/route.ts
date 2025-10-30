@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
+import * as Sentry from '@sentry/nextjs';
 import { getClaimsNeedingFollowUp, getOverdueClaims } from '@/lib/airtable';
 import {
   sendAdminOverdueAlert,
@@ -10,15 +11,27 @@ import { withErrorTracking, addBreadcrumb, captureError } from '@/lib/error-trac
  * Daily cron job to check claims needing follow-up and send alerts
  */
 export const POST = withErrorTracking(async (request: NextRequest) => {
-  // Verify cron secret for security
-  const authHeader = request.headers.get('authorization');
-  const cronSecret = process.env.CRON_SECRET;
+  const monitorSlug = 'check-follow-ups';
+  const checkInId = Sentry.captureCheckIn({
+    monitorSlug,
+    status: 'in_progress',
+  });
 
-  if (!cronSecret || authHeader !== `Bearer ${cronSecret}`) {
-    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-  }
+  try {
+    // Verify cron secret for security
+    const authHeader = request.headers.get('authorization');
+    const cronSecret = process.env.CRON_SECRET;
 
-  addBreadcrumb('Starting follow-up check cron job', 'cron');
+    if (!cronSecret || authHeader !== `Bearer ${cronSecret}`) {
+      Sentry.captureCheckIn({
+        checkInId,
+        monitorSlug,
+        status: 'error',
+      });
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
+
+    addBreadcrumb('Starting follow-up check cron job', 'cron');
 
   const adminEmail = process.env.ADMIN_EMAIL;
   if (!adminEmail) {
@@ -107,11 +120,27 @@ export const POST = withErrorTracking(async (request: NextRequest) => {
 
   results.alertsSent = alertsSent;
 
-  return NextResponse.json({
-    success: true,
-    message: `Follow-up check completed. ${alertsSent} alerts sent.`,
-    results,
-  });
+    // Mark cron job as successful
+    Sentry.captureCheckIn({
+      checkInId,
+      monitorSlug,
+      status: 'ok',
+    });
+
+    return NextResponse.json({
+      success: true,
+      message: `Follow-up check completed. ${alertsSent} alerts sent.`,
+      results,
+    });
+  } catch (error) {
+    // Mark cron job as failed
+    Sentry.captureCheckIn({
+      checkInId,
+      monitorSlug,
+      status: 'error',
+    });
+    throw error; // Re-throw to let withErrorTracking handle it
+  }
 }, { route: '/api/cron/check-follow-ups', tags: { service: 'cron', operation: 'follow_ups' } });
 
 /**

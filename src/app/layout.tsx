@@ -4,6 +4,7 @@ import { PWAInstaller } from '@/components/PWAInstaller'
 import { ClientPostHogProvider } from '@/components/ClientPostHog'
 import { ErrorBoundary } from '@/components/ErrorBoundary'
 import { ClientToaster } from '@/components/ClientToaster'
+import { SentryFeedbackWidget } from '@/components/SentryFeedback'
 
 export const metadata: Metadata = {
   title: 'Flghtly - Flight Delay Compensation',
@@ -36,6 +37,7 @@ export default function RootLayout({
           <ClientPostHogProvider>
             {children}
             <PWAInstaller />
+            <SentryFeedbackWidget />
             <ClientToaster />
           </ClientPostHogProvider>
         </ErrorBoundary>

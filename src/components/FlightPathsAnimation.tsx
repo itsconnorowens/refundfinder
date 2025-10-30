@@ -246,22 +246,28 @@ function cubicBezier(t: number, p1x: number, p1y: number, p2x: number, p2y: numb
 }
 
 // Particle system for ambient effect with GPU acceleration
-function ParticleSystem({ 
-  shouldAnimate, 
-  count 
-}: { 
+function ParticleSystem({
+  shouldAnimate,
+  count
+}: {
   shouldAnimate: boolean;
   count: number;
 }) {
+  // Simple pseudo-random generator using id as seed for consistent SSR/client rendering
+  const pseudoRandom = (seed: number, max: number) => {
+    return ((seed * 9301 + 49297) % 233280) / 233280 * max;
+  };
+
   // Memoize particles to prevent recalculation on every render (React purity rules)
-  const particles = useMemo(() => 
+  // Using deterministic values instead of Math.random() to prevent hydration mismatch
+  const particles = useMemo(() =>
     Array.from({ length: count }, (_, i) => ({
       id: i,
-      x: Math.random() * 1200,
-      y: 600 + Math.random() * 100,
-      duration: 15 + Math.random() * 10,
-      delay: Math.random() * 5,
-      size: 1 + Math.random() * 2,
+      x: pseudoRandom(i, 1200),
+      y: 600 + pseudoRandom(i + 1000, 100),
+      duration: 15 + pseudoRandom(i + 2000, 10),
+      delay: pseudoRandom(i + 3000, 5),
+      size: 1 + pseudoRandom(i + 4000, 2),
     })),
     [count] // Recalculate only when count changes
   );

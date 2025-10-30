@@ -56,11 +56,14 @@ export default function PaymentStep({
     setErrorMessage(null);
 
     try {
+      // Get origin safely for SSR compatibility
+      const origin = typeof window !== 'undefined' ? window.location.origin : '';
+
       // Confirm payment
       const { error, paymentIntent } = await stripe.confirmPayment({
         elements,
         confirmParams: {
-          return_url: `${window.location.origin}/claim-submitted`,
+          return_url: `${origin}/claim-submitted`,
           receipt_email: email,
         },
         redirect: 'if_required',

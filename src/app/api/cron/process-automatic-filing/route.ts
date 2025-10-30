@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
+import * as Sentry from '@sentry/nextjs';
 import {
   processAutomaticClaimFiling,
 } from '@/lib/claim-filing-service';
@@ -11,15 +12,27 @@ import { withErrorTracking, addBreadcrumb } from '@/lib/error-tracking';
  * This should be called by a cron service (e.g., Vercel Cron, GitHub Actions, etc.)
  */
 export const POST = withErrorTracking(async (request: NextRequest) => {
-  // Verify this is a legitimate cron request
-  const authHeader = request.headers.get('authorization');
-  const cronSecret = process.env.CRON_SECRET;
+  const monitorSlug = 'process-automatic-filing';
+  const checkInId = Sentry.captureCheckIn({
+    monitorSlug,
+    status: 'in_progress',
+  });
 
-  if (!cronSecret || authHeader !== `Bearer ${cronSecret}`) {
-    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-  }
+  try {
+    // Verify this is a legitimate cron request
+    const authHeader = request.headers.get('authorization');
+    const cronSecret = process.env.CRON_SECRET;
 
-  addBreadcrumb('Starting automatic filing cron job', 'cron');
+    if (!cronSecret || authHeader !== `Bearer ${cronSecret}`) {
+      Sentry.captureCheckIn({
+        checkInId,
+        monitorSlug,
+        status: 'error',
+      });
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
+
+    addBreadcrumb('Starting automatic filing cron job', 'cron');
 
   const results = {
     processedAt: new Date().toISOString(),
@@ -59,11 +72,27 @@ export const POST = withErrorTracking(async (request: NextRequest) => {
 
     console.log('Automatic filing cron job completed:', results.summary);
 
+    // Mark cron job as successful
+    Sentry.captureCheckIn({
+      checkInId,
+      monitorSlug,
+      status: 'ok',
+    });
+
     return NextResponse.json({
       success: true,
       message: 'Automatic filing processing completed',
       results,
     });
+  } catch (error) {
+    // Mark cron job as failed
+    Sentry.captureCheckIn({
+      checkInId,
+      monitorSlug,
+      status: 'error',
+    });
+    throw error; // Re-throw to let withErrorTracking handle it
+  }
 }, { route: '/api/cron/process-automatic-filing', tags: { service: 'cron', operation: 'automatic_filing' } });
 
 /**

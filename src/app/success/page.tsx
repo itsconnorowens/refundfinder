@@ -3,6 +3,7 @@
 import { useSearchParams, useRouter } from 'next/navigation';
 import { useEffect, useState, Suspense } from 'react';
 import posthog from 'posthog-js';
+import { setUser } from '@/lib/error-tracking';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -19,8 +20,16 @@ function SuccessPageContent() {
   const paymentIntentId = searchParams.get('payment_intent_id');
 
   useEffect(() => {
-    // Track payment completion
-    if (claimId && typeof window !== 'undefined') {
+    // Only run on client side
+    if (typeof window === 'undefined') return;
+
+    // Set user context in Sentry with claim ID
+    if (claimId) {
+      setUser({
+        id: claimId,
+      });
+
+      // Track payment completion
       posthog.capture('payment_completed', {
         claim_id: claimId,
         payment_intent_id: paymentIntentId || undefined,

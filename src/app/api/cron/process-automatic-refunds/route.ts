@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
+import * as Sentry from '@sentry/nextjs';
 import {
   getClaimsNeedingAutomaticRefunds,
   processBatchAutomaticRefunds,
@@ -14,15 +15,27 @@ import { withErrorTracking, addBreadcrumb } from '@/lib/error-tracking';
  * This should be called by a cron service (e.g., Vercel Cron, GitHub Actions, etc.)
  */
 export const POST = withErrorTracking(async (request: NextRequest) => {
-  // Verify this is a legitimate cron request
-  const authHeader = request.headers.get('authorization');
-  const cronSecret = process.env.CRON_SECRET;
+  const monitorSlug = 'process-automatic-refunds';
+  const checkInId = Sentry.captureCheckIn({
+    monitorSlug,
+    status: 'in_progress',
+  });
 
-  if (!cronSecret || authHeader !== `Bearer ${cronSecret}`) {
-    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-  }
+  try {
+    // Verify this is a legitimate cron request
+    const authHeader = request.headers.get('authorization');
+    const cronSecret = process.env.CRON_SECRET;
 
-  addBreadcrumb('Starting automatic refund cron job', 'cron', { timestamp: new Date().toISOString() });
+    if (!cronSecret || authHeader !== `Bearer ${cronSecret}`) {
+      Sentry.captureCheckIn({
+        checkInId,
+        monitorSlug,
+        status: 'error',
+      });
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
+
+    addBreadcrumb('Starting automatic refund cron job', 'cron', { timestamp: new Date().toISOString() });
 
   const results = {
     processedAt: new Date().toISOString(),
@@ -145,12 +158,28 @@ export const POST = withErrorTracking(async (request: NextRequest) => {
       // In production, you might send these to Slack, email, or other monitoring systems
     }
 
+    // Mark cron job as successful
+    Sentry.captureCheckIn({
+      checkInId,
+      monitorSlug,
+      status: 'ok',
+    });
+
     return NextResponse.json({
       success: true,
       message: 'Automatic refund processing completed',
       results,
       alerts: alerts.length > 0 ? alerts : undefined,
     });
+  } catch (error) {
+    // Mark cron job as failed
+    Sentry.captureCheckIn({
+      checkInId,
+      monitorSlug,
+      status: 'error',
+    });
+    throw error; // Re-throw to let withErrorTracking handle it
+  }
 }, { route: '/api/cron/process-automatic-refunds', tags: { service: 'cron', operation: 'automatic_refunds' } });
 
 /**

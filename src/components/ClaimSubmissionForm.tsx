@@ -21,6 +21,7 @@ import TrustSignal from '@/components/TrustSignal';
 import AirlineAutocomplete from '@/components/AirlineAutocomplete';
 import { MobileStepIndicator } from '@/components/MobileStepIndicator';
 import { showError, showSuccess } from '@/lib/toast';
+import { setUser } from '@/lib/error-tracking';
 import {
   validateFlightNumber,
   validateAirportCode,
@@ -103,6 +104,9 @@ export default function ClaimSubmissionForm() {
 
   // Load form data from localStorage on mount and pre-fill from URL params
   useEffect(() => {
+    // Only run on client side
+    if (typeof window === 'undefined') return;
+
     // First, try to pre-fill from URL parameters
     const urlFlightNumber = searchParams.get('flightNumber');
     const urlAirline = searchParams.get('airline');
@@ -147,6 +151,8 @@ export default function ClaimSubmissionForm() {
 
   // Save form data to localStorage whenever it changes
   useEffect(() => {
+    // Only run on client side
+    if (typeof window === 'undefined') return;
     localStorage.setItem('claimFormData', JSON.stringify(formData));
   }, [formData]);
 
@@ -228,6 +234,14 @@ export default function ClaimSubmissionForm() {
         posthog.capture('claim_step_completed', {
           step_number: currentStep,
           step_name: stepNames[currentStep - 1],
+        });
+      }
+
+      // Set user context in Sentry after personal info is completed
+      if (currentStep === 1 && formData.email && formData.firstName) {
+        setUser({
+          email: formData.email,
+          username: `${formData.firstName} ${formData.lastName}`.trim(),
         });
       }
 

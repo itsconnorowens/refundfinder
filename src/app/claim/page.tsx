@@ -25,23 +25,28 @@ function ClaimPageContent() {
   }, []);
 
   // Pre-fill localStorage with flight data if provided
-  if (flightNumber && airline && departureDate && departureAirport && arrivalAirport && delayDuration) {
-    const prefillData = {
-      flightNumber,
-      airline,
-      departureDate,
-      departureAirport,
-      arrivalAirport,
-      delayDuration,
-      // Set step to 1 to start at flight details
-      currentStep: 1
-    };
+  useEffect(() => {
+    // Only run on client side
+    if (typeof window === 'undefined') return;
 
-    // Only set if not already set (don't overwrite user's progress)
-    if (!localStorage.getItem('claimFormData')) {
-      localStorage.setItem('claimFormData', JSON.stringify(prefillData));
+    if (flightNumber && airline && departureDate && departureAirport && arrivalAirport && delayDuration) {
+      const prefillData = {
+        flightNumber,
+        airline,
+        departureDate,
+        departureAirport,
+        arrivalAirport,
+        delayDuration,
+        // Set step to 1 to start at flight details
+        currentStep: 1
+      };
+
+      // Only set if not already set (don't overwrite user's progress)
+      if (!localStorage.getItem('claimFormData')) {
+        localStorage.setItem('claimFormData', JSON.stringify(prefillData));
+      }
     }
-  }
+  }, [flightNumber, airline, departureDate, departureAirport, arrivalAirport, delayDuration]);
 
   // Track claim form started
   useEffect(() => {
