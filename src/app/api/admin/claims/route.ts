@@ -15,13 +15,13 @@ import {
   processAutomaticClaimPreparation,
 } from '@/lib/claim-filing-service';
 import { getAllAirlineConfigs } from '@/lib/airline-config';
+import { withErrorTracking, addBreadcrumb } from '@/lib/error-tracking';
 
 /**
  * GET /api/admin/claims
  * List claims with filters
  */
-export async function GET(request: NextRequest) {
-  try {
+export const GET = withErrorTracking(async (request: NextRequest) => {
     const { searchParams } = new URL(request.url);
     const status = searchParams.get('status') as ClaimStatus | null;
     const airline = searchParams.get('airline');
@@ -91,14 +91,7 @@ export async function GET(request: NextRequest) {
         hasMore: offset + limit < claims.length,
       },
     });
-  } catch (error) {
-    console.error('Error fetching claims:', error);
-    return NextResponse.json(
-      { error: 'Failed to fetch claims' },
-      { status: 500 }
-    );
-  }
-}
+}, { route: '/api/admin/claims', tags: { service: 'admin', operation: 'claim_management' } });
 
 /**
  * GET /api/admin/claims/ready-to-file

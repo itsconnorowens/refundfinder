@@ -8,35 +8,37 @@ import {
   checkRefundAlerts,
   getRefundDashboardData,
 } from '@/lib/refund-analytics';
+import { withErrorTracking, addBreadcrumb } from '@/lib/error-tracking';
 
 /**
  * POST /api/cron/process-automatic-refunds
  * Cron job endpoint to process automatic refunds
  * This should be called by a cron service (e.g., Vercel Cron, GitHub Actions, etc.)
  */
-export async function POST(request: NextRequest) {
-  try {
-    // Verify this is a legitimate cron request
-    const authHeader = request.headers.get('authorization');
-    const cronSecret = process.env.CRON_SECRET;
+export const POST = withErrorTracking(async (request: NextRequest) => {
+  // Verify this is a legitimate cron request
+  const authHeader = request.headers.get('authorization');
+  const cronSecret = process.env.CRON_SECRET;
 
-    if (!cronSecret || authHeader !== `Bearer ${cronSecret}`) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-    }
+  if (!cronSecret || authHeader !== `Bearer ${cronSecret}`) {
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+  }
 
-    const results = {
-      processedAt: new Date().toISOString(),
-      summary: {
-        totalProcessed: 0,
-        totalSuccessful: 0,
-        totalFailed: 0,
-        totalAmount: 0,
-      },
-      details: [] as any[],
-    };
+  addBreadcrumb('Starting automatic refund cron job', 'cron', { timestamp: new Date().toISOString() });
 
-    // Get claims needing automatic refunds
-    const claimsNeedingRefunds = await getClaimsNeedingAutomaticRefunds();
+  const results = {
+    processedAt: new Date().toISOString(),
+    summary: {
+      totalProcessed: 0,
+      totalSuccessful: 0,
+      totalFailed: 0,
+      totalAmount: 0,
+    },
+    details: [] as any[],
+  };
+
+  // Get claims needing automatic refunds
+  const claimsNeedingRefunds = await getClaimsNeedingAutomaticRefunds();
 
     // Process overdue claims (not filed within deadline)
     if (claimsNeedingRefunds.overdueClaims.length > 0) {
@@ -151,14 +153,7 @@ export async function POST(request: NextRequest) {
       results,
       alerts: alerts.length > 0 ? alerts : undefined,
     });
-  } catch (error) {
-    console.error('Error in automatic refund cron job:', error);
-    return NextResponse.json(
-      { error: 'Internal server error' },
-      { status: 500 }
-    );
-  }
-}
+}, { route: '/api/cron/process-automatic-refunds', tags: { service: 'cron', operation: 'automatic_refunds' } });
 
 /**
  * GET /api/cron/process-automatic-refunds

@@ -4,41 +4,43 @@ import {
   sendAdminOverdueAlert,
   sendAdminReadyToFileAlert,
 } from '@/lib/email-service';
+import { withErrorTracking, addBreadcrumb, captureError } from '@/lib/error-tracking';
 
 /**
  * POST /api/cron/check-follow-ups
  * Daily cron job to check claims needing follow-up and send alerts
  */
-export async function POST(request: NextRequest) {
+export const POST = withErrorTracking(async (request: NextRequest) => {
+  // Verify cron secret for security
+  const authHeader = request.headers.get('authorization');
+  const cronSecret = process.env.CRON_SECRET;
+
+  if (!cronSecret || authHeader !== `Bearer ${cronSecret}`) {
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+  }
+
+  addBreadcrumb('Starting follow-up check cron job', 'cron');
+
+  const adminEmail = process.env.ADMIN_EMAIL;
+  if (!adminEmail) {
+    console.log('No admin email configured, skipping alerts');
+    return NextResponse.json({
+      success: true,
+      message: 'No admin email configured, alerts skipped',
+    });
+  }
+
+  let alertsSent = 0;
+  const results = {
+    overdueClaims: 0,
+    followUpClaims: 0,
+    alertsSent: 0,
+    errors: [] as string[],
+  };
+
+  // Check for overdue claims (past 48-hour deadline)
   try {
-    // Verify cron secret for security
-    const authHeader = request.headers.get('authorization');
-    const cronSecret = process.env.CRON_SECRET;
-
-    if (!cronSecret || authHeader !== `Bearer ${cronSecret}`) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-    }
-
-    const adminEmail = process.env.ADMIN_EMAIL;
-    if (!adminEmail) {
-      console.log('No admin email configured, skipping alerts');
-      return NextResponse.json({
-        success: true,
-        message: 'No admin email configured, alerts skipped',
-      });
-    }
-
-    let alertsSent = 0;
-    const results = {
-      overdueClaims: 0,
-      followUpClaims: 0,
-      alertsSent: 0,
-      errors: [] as string[],
-    };
-
-    // Check for overdue claims (past 48-hour deadline)
-    try {
-      const overdueClaims = await getOverdueClaims(2); // Claims overdue by 2 days
+    const overdueClaims = await getOverdueClaims(2); // Claims overdue by 2 days
       results.overdueClaims = overdueClaims.length;
 
       if (overdueClaims.length > 0) {
@@ -57,10 +59,11 @@ export async function POST(request: NextRequest) {
         alertsSent++;
         console.log(`Sent overdue alert for ${overdueClaims.length} claims`);
       }
-    } catch (error) {
-      console.error('Error checking overdue claims:', error);
-      results.errors.push('Failed to check overdue claims');
-    }
+  } catch (error) {
+    captureError(error, { level: 'warning', tags: { cron_task: 'overdue_claims' } });
+    console.error('Error checking overdue claims:', error);
+    results.errors.push('Failed to check overdue claims');
+  }
 
     // Check for claims needing follow-up
     try {
@@ -97,26 +100,20 @@ export async function POST(request: NextRequest) {
         alertsSent++;
         console.log(`Sent follow-up alert for ${followUpClaims.length} claims`);
       }
-    } catch (error) {
-      console.error('Error checking follow-up claims:', error);
-      results.errors.push('Failed to check follow-up claims');
-    }
-
-    results.alertsSent = alertsSent;
-
-    return NextResponse.json({
-      success: true,
-      message: `Follow-up check completed. ${alertsSent} alerts sent.`,
-      results,
-    });
   } catch (error) {
-    console.error('Error in follow-up cron job:', error);
-    return NextResponse.json(
-      { error: 'Follow-up check failed' },
-      { status: 500 }
-    );
+    captureError(error, { level: 'warning', tags: { cron_task: 'follow_up_claims' } });
+    console.error('Error checking follow-up claims:', error);
+    results.errors.push('Failed to check follow-up claims');
   }
-}
+
+  results.alertsSent = alertsSent;
+
+  return NextResponse.json({
+    success: true,
+    message: `Follow-up check completed. ${alertsSent} alerts sent.`,
+    results,
+  });
+}, { route: '/api/cron/check-follow-ups', tags: { service: 'cron', operation: 'follow_ups' } });
 
 /**
  * GET /api/cron/check-follow-ups

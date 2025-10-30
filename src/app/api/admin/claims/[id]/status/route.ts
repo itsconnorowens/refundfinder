@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { updateClaimStatus as updateClaimStatusService } from '@/lib/claim-filing-service';
 import { ClaimStatus } from '@/lib/airtable';
+import { addBreadcrumb } from '@/lib/error-tracking';
 
 /**
  * PUT /api/admin/claims/[id]/status
@@ -22,6 +23,8 @@ export async function PUT(
       );
     }
 
+    addBreadcrumb('Updating claim status', 'admin', { claimId, newStatus: status });
+
     const success = await updateClaimStatusService(
       claimId,
       status as ClaimStatus,
@@ -40,10 +43,8 @@ export async function PUT(
       message: 'Claim status updated successfully',
     });
   } catch (error) {
-    console.error('Error updating claim status:', error);
-    return NextResponse.json(
-      { error: 'Failed to update claim status' },
-      { status: 500 }
-    );
+    const { captureError } = await import('@/lib/error-tracking');
+    captureError(error, { level: 'error', tags: { service: 'admin', operation: 'claim_status_update', route: '/api/admin/claims/[id]/status' } });
+    return NextResponse.json({ error: 'Failed to update claim status' }, { status: 500 });
   }
 }

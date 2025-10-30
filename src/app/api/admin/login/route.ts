@@ -4,33 +4,33 @@ import {
   createAdminSession,
   clearAdminSession,
 } from '@/lib/admin-auth';
+import { withErrorTracking, addBreadcrumb, captureMessage } from '@/lib/error-tracking';
 
 /**
  * POST /api/admin/login
  * Admin login endpoint
  */
-export async function POST(request: NextRequest) {
-  try {
-    const body = await request.json();
-    const { password } = body;
+export const POST = withErrorTracking(async (request: NextRequest) => {
+  const body = await request.json();
+  const { password } = body;
 
-    if (!password) {
-      return NextResponse.json(
-        { error: 'Password is required' },
-        { status: 400 }
-      );
-    }
-
-    if (!verifyAdminPassword(password)) {
-      return NextResponse.json({ error: 'Invalid password' }, { status: 401 });
-    }
-
-    return createAdminSession();
-  } catch (error) {
-    console.error('Error in admin login:', error);
-    return NextResponse.json({ error: 'Login failed' }, { status: 500 });
+  if (!password) {
+    return NextResponse.json(
+      { error: 'Password is required' },
+      { status: 400 }
+    );
   }
-}
+
+  addBreadcrumb('Admin login attempt', 'auth');
+
+  if (!verifyAdminPassword(password)) {
+    captureMessage('Failed admin login attempt', { level: 'warning', tags: { reason: 'invalid_password' } });
+    return NextResponse.json({ error: 'Invalid password' }, { status: 401 });
+  }
+
+  addBreadcrumb('Admin login successful', 'auth');
+  return createAdminSession();
+}, { route: '/api/admin/login', tags: { service: 'admin', operation: 'authentication' } });
 
 /**
  * POST /api/admin/logout

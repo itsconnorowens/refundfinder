@@ -14,6 +14,7 @@ import { TrustBadges } from '../components/TrustBadges';
 import { TrustMetrics } from '../components/TrustMetrics';
 import { StepIcon } from '../components/icons';
 import { MobileMenu } from '../components/MobileMenu';
+import { InlineErrorBoundary } from '../components/ErrorBoundary';
 
 export default function Home() {
   const [activeTab, setActiveTab] = useState<'flight' | 'email'>('flight');
@@ -175,18 +176,20 @@ export default function Home() {
             </div>
 
             {/* Forms */}
-            {activeTab === 'flight' ? (
-              <FlightLookupForm onResults={handleResults} onLoading={handleLoading} />
-            ) : (
-              <EmailParsingForm onResults={handleResults} onLoading={handleLoading} />
-            )}
+            <InlineErrorBoundary context="eligibility-form">
+              {activeTab === 'flight' ? (
+                <FlightLookupForm onResults={handleResults} onLoading={handleLoading} />
+              ) : (
+                <EmailParsingForm onResults={handleResults} onLoading={handleLoading} />
+              )}
 
-            {/* Results */}
-            {results && (
-              <div className="mt-8">
-                <EligibilityResults results={results} />
-              </div>
-            )}
+              {/* Results */}
+              {results && (
+                <div className="mt-8">
+                  <EligibilityResults results={results} />
+                </div>
+              )}
+            </InlineErrorBoundary>
 
             {/* Loading State */}
             {loading && (

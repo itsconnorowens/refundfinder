@@ -1,0 +1,92 @@
+name: Documentation Health Check
+
+on:
+  pull_request:
+    paths:
+      - '**.md'
+      - 'docs/**'
+  push:
+    branches:
+      - main
+    paths:
+      - '**.md'
+      - 'docs/**'
+
+jobs:
+  check-docs:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Make check script executable
+        run: chmod +x ./scripts/check-docs.sh
+
+      - name: Run documentation health check
+        run: ./scripts/check-docs.sh
+
+      - name: Check for docs at root (except allowed)
+        run: |
+          # Find .md files at root excluding allowed ones
+          ALLOWED="README.md|DEVELOPER_GUIDE.md|DEVELOPMENT.md|QUICK_START.md|DOCUMENTATION_INDEX.md|DOCUMENTATION_OPTIMIZATION_SUMMARY.md|CHANGELOG.md|CONTRIBUTING.md|LICENSE.md"
+          DISALLOWED=$(find . -maxdepth 1 -name "*.md" | grep -v -E "$ALLOWED" || true)
+
+          if [ -n "$DISALLOWED" ]; then
+            echo "❌ Found documentation files at root that should be in /docs:"
+            echo "$DISALLOWED"
+            echo ""
+            echo "Please move these files to appropriate /docs subdirectories."
+            echo "See docs/DOCUMENTATION_GUIDELINES.md for guidance."
+            exit 1
+          else
+            echo "✅ No unauthorized documentation at root"
+          fi
+
+      - name: Check for missing frontmatter in /docs
+        run: |
+          MISSING=$(find ./docs -name "*.md" -type f | while read -r file; do
+            if ! head -1 "$file" | grep -q "^---"; then
+              echo "$file"
+            fi
+          done)
+
+          if [ -n "$MISSING" ]; then
+            echo "⚠️ The following docs are missing frontmatter:"
+            echo "$MISSING"
+            echo ""
+            echo "Add frontmatter to these files:"
+            echo "---"
+            echo "last_updated: $(date +%Y-%m-%d)"
+            echo "status: current"
+            echo "owner: @username"
+            echo "---"
+            exit 1
+          else
+            echo "✅ All docs have frontmatter"
+          fi
+
+      - name: Check for old brand references
+        run: |
+          OLD_BRAND=$(grep -ri "refundfinder" --include="*.md" . || true)
+
+          if [ -n "$OLD_BRAND" ]; then
+            echo "❌ Found old brand references (refundfinder):"
+            echo "$OLD_BRAND"
+            echo ""
+            echo "Please replace with 'Flghtly' or appropriate new branding."
+            exit 1
+          else
+            echo "✅ No old brand references found"
+          fi
+
+      - name: Summary
+        if: success()
+        run: |
+          echo "✅ All documentation checks passed!"
+          echo ""
+          echo "Documentation is:"
+          echo "  - Properly organized"
+          echo "  - Has required metadata"
+          echo "  - Uses correct branding"
+          echo "  - Passes health checks"

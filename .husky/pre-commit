@@ -19,4 +19,15 @@ npm run type-check
 echo "🧪 Running tests..."
 npm test
 
+# Check documentation health if any .md files changed
+if git diff --cached --name-only | grep -q "\.md$"; then
+  echo "📝 Checking documentation..."
+  ./scripts/check-docs.sh || {
+    echo ""
+    echo "❌ Documentation check failed!"
+    echo "See docs/DOCUMENTATION_GUIDELINES.md for help"
+    exit 1
+  }
+fi
+
 echo "✅ All pre-commit checks passed!"

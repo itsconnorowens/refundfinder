@@ -4,12 +4,12 @@
 
 import { NextRequest, NextResponse } from 'next/server';
 import { initializeRealTimeServices } from '../../../lib/real-time-services-config';
+import { withErrorTracking } from '@/lib/error-tracking';
 
 // Initialize services
 const { monitor, config } = initializeRealTimeServices();
 
-export async function GET(request: NextRequest) {
-  try {
+export const GET = withErrorTracking(async (request: NextRequest) => {
     const { searchParams } = new URL(request.url);
     const endpoint = searchParams.get('endpoint');
 
@@ -35,18 +35,7 @@ export async function GET(request: NextRequest) {
           { status: 400 }
         );
     }
-  } catch (error) {
-    console.error('Monitoring API error:', error);
-
-    return NextResponse.json(
-      {
-        error: 'Failed to fetch monitoring data',
-        details: error instanceof Error ? error.message : 'Unknown error',
-      },
-      { status: 500 }
-    );
-  }
-}
+}, { route: '/api/monitoring', tags: { service: 'monitoring', operation: 'system_monitoring' } });
 
 async function getMetrics() {
   const metrics = monitor.getMetrics();

@@ -8,10 +8,10 @@
 
 import { NextRequest, NextResponse } from 'next/server';
 import { flightValidationService } from '@/lib/flight-validation';
+import { withErrorTracking, addBreadcrumb } from '@/lib/error-tracking';
 
-export async function POST(request: NextRequest) {
-  try {
-    const body = await request.json();
+export const POST = withErrorTracking(async (request: NextRequest) => {
+  const body = await request.json();
     const {
       flightNumber,
       flightDate,
@@ -65,25 +65,19 @@ export async function POST(request: NextRequest) {
       });
     }
 
-    // Perform flight validation
-    const validationResult = await flightValidationService.validateFlight({
-      flightNumber: flightNumber.trim().toUpperCase(),
-      flightDate,
-      userReportedDelay: delayHours,
-      userReportedType,
-      departureAirport,
-      arrivalAirport,
-    });
+  // Perform flight validation
+  addBreadcrumb('Validating flight', 'flight_validation', { flightNumber: flightNumber.trim().toUpperCase(), flightDate });
+  const validationResult = await flightValidationService.validateFlight({
+    flightNumber: flightNumber.trim().toUpperCase(),
+    flightDate,
+    userReportedDelay: delayHours,
+    userReportedType,
+    departureAirport,
+    arrivalAirport,
+  });
 
-    return NextResponse.json(validationResult);
-  } catch (error) {
-    console.error('Flight verification error:', error);
-    return NextResponse.json(
-      { error: 'Internal server error during flight verification' },
-      { status: 500 }
-    );
-  }
-}
+  return NextResponse.json(validationResult);
+}, { route: '/api/verify-flight', tags: { service: 'flight_validation' } });
 
 export async function GET(request: NextRequest) {
   try {

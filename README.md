@@ -42,7 +42,7 @@ A Next.js application that helps users check their eligibility for flight delay 
 - **Production Ready**: ⚠️ Needs airline/airport expansion and distance fixes
 - **Enterprise Ready**: ❌ Needs comprehensive coverage and validation
 
-See [DEVELOPMENT_ROADMAP.md](./DEVELOPMENT_ROADMAP.md) for detailed improvement plans.
+See [DEVELOPMENT_ROADMAP.md](docs/planning/DEVELOPMENT_ROADMAP.md) for detailed improvement plans.
 
 ## Getting Started
 
@@ -187,20 +187,32 @@ Open [http://localhost:3000](http://localhost:3000) with your browser to see the
 
 ## 📚 Documentation
 
-### **Development & Quality**
-- [Developer Guide](./DEVELOPER_GUIDE.md) - Complete developer onboarding and workflow
-- [Code Quality Safeguards](./CODE_QUALITY_SAFEGUARDS.md) - Prevention strategies and best practices
-- [Session Summary](./SESSION_SUMMARY_CODE_QUALITY_CLEANUP.md) - Recent improvements and fixes
+**📖 Start Here:** [Documentation Index](./DOCUMENTATION_INDEX.md) - Master directory of all project documentation
 
-### **Project Documentation**
-- [Implementation Summary](./IMPLEMENTATION_SUMMARY.md) - Current implementation status
-- [Development Roadmap](./DEVELOPMENT_ROADMAP.md) - Future development plans
-- [API Strategy](./API_STRATEGY_UPDATE.md) - API design and integration strategy
+### **Quick Links**
 
-### **Feature Documentation**
-- [Payment Implementation](./PAYMENT_IMPLEMENTATION_SUMMARY.md) - Stripe integration details
-- [Email System](./EMAIL_SYSTEM_README.md) - Email parsing and notification system
-- [Flight Validation](./FLIGHT_VALIDATION_IMPLEMENTATION_SUMMARY.md) - Flight verification system
+**Development & Quality:**
+- [Developer Guide](DEVELOPER_GUIDE.md) - Complete developer onboarding and workflow
+- [Code Quality](docs/development/CODE_QUALITY_SAFEGUARDS.md) - Prevention strategies and best practices
+- [Testing Guide](docs/development/INTEGRATION_TESTING_GUIDE.md) - Integration testing procedures
+
+**Project Planning:**
+- [Development Roadmap](docs/planning/DEVELOPMENT_ROADMAP.md) - Future development plans (Phase 1-3)
+- [Implementation Summary](docs/planning/IMPLEMENTATION_SUMMARY.md) - Current implementation status
+
+**Feature Documentation:**
+- [Payment System](docs/features/payment-system.md) - Complete Stripe payment infrastructure
+- [Email System](docs/features/email-system.md) - Email notifications and workflows
+- [Flight Lookup](docs/features/FLIGHT_LOOKUP_README.md) - Flight validation system
+- [UI Components](docs/features/ui-components.md) - Flight animation, hero, responsive design
+- [Automated Refunds](docs/features/AUTOMATED_REFUND_SYSTEM.md) - Automatic refund processing
+
+**Setup Guides:**
+- [Stripe Setup](docs/setup/STRIPE_PAYMENT_SETUP.md) - Payment processing configuration
+- [Airtable Setup](docs/setup/AIRTABLE_SETUP_GUIDE.md) - Database configuration
+- [Monitoring Setup](docs/setup/MONITORING_SETUP.md) - Error tracking and observability
+
+For a complete list of all documentation, see [DOCUMENTATION_INDEX.md](DOCUMENTATION_INDEX.md)
 
 ## Learn More
 

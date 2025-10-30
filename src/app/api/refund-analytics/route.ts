@@ -8,13 +8,13 @@ import {
   RefundAlert,
   AnalyticsPeriod,
 } from '@/lib/refund-analytics';
+import { withErrorTracking } from '@/lib/error-tracking';
 
 /**
  * GET /api/refund-analytics
  * Get refund analytics data based on query parameters
  */
-export async function GET(request: NextRequest) {
-  try {
+export const GET = withErrorTracking(async (request: NextRequest) => {
     const { searchParams } = new URL(request.url);
     const type = searchParams.get('type');
 
@@ -61,21 +61,13 @@ export async function GET(request: NextRequest) {
         data: dashboardData,
       });
     }
-  } catch (error) {
-    console.error('Error getting refund analytics:', error);
-    return NextResponse.json(
-      { error: 'Internal server error' },
-      { status: 500 }
-    );
-  }
-}
+}, { route: '/api/refund-analytics', tags: { service: 'analytics', operation: 'refund_analytics' } });
 
 /**
  * POST /api/refund-analytics/alerts/acknowledge
  * Acknowledge a refund alert
  */
-export async function POST(request: NextRequest) {
-  try {
+export const POST = withErrorTracking(async (request: NextRequest) => {
     const body = await request.json();
     const { alertId, acknowledgedBy } = body;
 
@@ -101,15 +93,8 @@ export async function POST(request: NextRequest) {
 
     const acknowledgedAlert = acknowledgeAlert(mockAlert, acknowledgedBy);
 
-    return NextResponse.json({
-      success: true,
-      data: acknowledgedAlert,
-    });
-  } catch (error) {
-    console.error('Error acknowledging alert:', error);
-    return NextResponse.json(
-      { error: 'Internal server error' },
-      { status: 500 }
-    );
-  }
-}
+  return NextResponse.json({
+    success: true,
+    data: acknowledgedAlert,
+  });
+}, { route: '/api/refund-analytics', tags: { service: 'analytics', operation: 'acknowledge_alert' } });

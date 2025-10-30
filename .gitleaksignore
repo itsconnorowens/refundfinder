@@ -17,6 +17,9 @@ AIRTABLE_SETUP_GUIDE.md:airtable-api-key:119
 AIRTABLE_SETUP_GUIDE.md:airtable-api-key:120
 PAYMENT_QUICK_START.md:generic-api-key:10
 PAYMENT_QUICK_START.md:generic-api-key:11
+docs/features/AUTOMATED_REFUND_SYSTEM.md:curl-auth-header:166
+docs/setup/AIRTABLE_SETUP_GUIDE.md:airtable-api-key:125
+docs/setup/AIRTABLE_SETUP_GUIDE.md:airtable-api-key:126
 
 # E2E test files with mock/test secrets
 e2e/automated-claim-system.spec.ts:generic-api-key:68
@@ -35,10 +38,19 @@ e2e/automated-claim-system.spec.ts:generic-api-key:68
 .next/server/middleware/middleware-manifest.json:generic-api-key:22
 .next/server/middleware/middleware-manifest.json:generic-api-key:24
 .next/server/middleware/middleware-manifest.json:generic-api-key:25
+.next/server/middleware/middleware-manifest.json:generic-api-key:26
+.next/server/middleware/middleware-manifest.json:generic-api-key:28
+.next/server/middleware/middleware-manifest.json:generic-api-key:29
+.next/server/middleware/middleware-manifest.json:generic-api-key:31
+.next/server/middleware/middleware-manifest.json:generic-api-key:32
 .next/server/middleware-manifest.json:generic-api-key:25
 .next/server/middleware-manifest.json:generic-api-key:27
 .next/server/middleware-manifest.json:generic-api-key:28
+.next/server/middleware-manifest.json:generic-api-key:29
+.next/server/middleware-manifest.json:generic-api-key:31
+.next/server/middleware-manifest.json:generic-api-key:32
 .next/server/server-reference-manifest.json:generic-api-key:4
+.next/server/chunks/Desktop_flghtly_ba4c2ff2._.js:square-access-token:20
 
 # PostHog public key (safe to commit as NEXT_PUBLIC_ variable)
 .env.local:generic-api-key:32

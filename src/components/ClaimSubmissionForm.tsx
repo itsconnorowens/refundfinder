@@ -1,7 +1,8 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useSearchParams } from 'next/navigation';
+import posthog from 'posthog-js';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -12,6 +13,7 @@ import { ChevronLeft, ChevronRight, Upload, FileText, CheckCircle, AlertCircle, 
 import StripeProvider from '@/components/StripeProvider';
 import PaymentStep from '@/components/PaymentStep';
 import VerificationVisualization from '@/components/VerificationVisualization';
+import { PaymentErrorBoundary } from '@/components/PaymentErrorBoundary';
 import VerificationScoreCard from '@/components/VerificationScoreCard';
 import DocumentUploadZone from '@/components/DocumentUploadZone';
 import StickyPricingBadge from '@/components/StickyPricingBadge';
@@ -220,11 +222,20 @@ export default function ClaimSubmissionForm() {
 
   const handleNext = async () => {
     if (validateStep(currentStep)) {
+      // Track step completion
+      if (typeof window !== 'undefined') {
+        const stepNames = ['personal_info', 'flight_details', 'verification', 'documentation', 'review', 'payment'];
+        posthog.capture('claim_step_completed', {
+          step_number: currentStep,
+          step_name: stepNames[currentStep - 1],
+        });
+      }
+
       // If moving from step 2 to step 3, perform flight verification
       if (currentStep === 2) {
         await performFlightVerification();
       }
-      
+
       // If moving from review to payment, create payment intent
       if (currentStep === 5 && !paymentClientSecret) {
         await createPaymentIntent();
@@ -256,6 +267,14 @@ export default function ClaimSubmissionForm() {
       setPaymentClientSecret(data.clientSecret);
       setPaymentIntentId(data.paymentIntentId);
       setClaimId(data.claimId); // Receive claim ID from server
+
+      // Track payment initiated
+      if (typeof window !== 'undefined') {
+        posthog.capture('payment_initiated', {
+          amount_cents: 4900,
+          claim_id: data.claimId,
+        });
+      }
     } catch (error) {
       console.error('Error creating payment intent:', error);
       showError('Failed to initialize payment. Please try again.');
@@ -370,7 +389,16 @@ export default function ClaimSubmissionForm() {
           [`${type}Url`]: result.url
         }));
         setErrors(prev => ({ ...prev, [type]: '' }));
-        
+
+        // Track document uploaded
+        if (typeof window !== 'undefined') {
+          posthog.capture('document_uploaded', {
+            document_type: type === 'boardingPass' ? 'boarding_pass' : 'delay_proof',
+            file_size_kb: Math.round(file.size / 1024),
+            file_type: file.type,
+          });
+        }
+
         // Show success message
         console.log(`${type} uploaded successfully`);
       } else {
@@ -378,10 +406,20 @@ export default function ClaimSubmissionForm() {
       }
     } catch (error) {
       console.error('Upload error:', error);
-      setErrors(prev => ({ 
-        ...prev, 
-        [type]: 'Failed to upload file. Please try again.' 
+      setErrors(prev => ({
+        ...prev,
+        [type]: 'Failed to upload file. Please try again.'
       }));
+
+      // Track upload error
+      if (typeof window !== 'undefined') {
+        posthog.capture('form_error_occurred', {
+          error_type: 'upload',
+          error_field: type,
+          error_message: error instanceof Error ? error.message : 'Upload failed',
+          step_number: currentStep,
+        });
+      }
     } finally {
       setIsUploading(prev => ({ ...prev, [type]: false }));
     }
@@ -451,6 +489,15 @@ export default function ClaimSubmissionForm() {
       const result = await response.json();
 
       if (response.ok) {
+        // Track payment completed
+        if (typeof window !== 'undefined') {
+          posthog.capture('payment_completed', {
+            claim_id: result.claimId,
+            payment_intent_id: paymentIntentId,
+            amount_cents: 4900,
+          });
+        }
+
         // Clear form data from localStorage
         localStorage.removeItem('claimFormData');
         // Show success message
@@ -966,15 +1013,20 @@ export default function ClaimSubmissionForm() {
                 </div>
               ) : paymentClientSecret ? (
                 <StripeProvider clientSecret={paymentClientSecret}>
-                  <PaymentStep
-                    email={formData.email}
-                    firstName={formData.firstName}
-                    lastName={formData.lastName}
-                    claimId={claimId}
-                    amount={4900}
-                    onPaymentSuccess={handlePaymentSuccess}
-                    onBack={handleBack}
-                  />
+                  <PaymentErrorBoundary
+                    onRetry={() => window.location.reload()}
+                    onCancel={handleBack}
+                  >
+                    <PaymentStep
+                      email={formData.email}
+                      firstName={formData.firstName}
+                      lastName={formData.lastName}
+                      claimId={claimId}
+                      amount={4900}
+                      onPaymentSuccess={handlePaymentSuccess}
+                      onBack={handleBack}
+                    />
+                  </PaymentErrorBoundary>
                 </StripeProvider>
               ) : (
                 <div className="text-center py-8">

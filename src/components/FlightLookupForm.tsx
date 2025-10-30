@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { motion } from 'framer-motion';
+import posthog from 'posthog-js';
 import { CheckEligibilityResponse } from '../types/api';
 import AirportAutocomplete from './AirportAutocomplete';
 import AirlineAutocomplete from './AirlineAutocomplete';
@@ -200,9 +201,18 @@ export default function FlightLookupForm({ onResults, onLoading }: FlightLookupF
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (!validateForm()) {
       return;
+    }
+
+    // Track eligibility check started
+    if (typeof window !== 'undefined') {
+      posthog.capture('eligibility_check_started', {
+        method: 'flight',
+        disruption_type: formData.disruptionType,
+        airline: formData.airline.trim(),
+      });
     }
 
     onLoading(true);
@@ -254,6 +264,20 @@ export default function FlightLookupForm({ onResults, onLoading }: FlightLookupF
       });
 
       const result: CheckEligibilityResponse = await response.json();
+
+      // Track eligibility check completed
+      if (typeof window !== 'undefined' && result.success && result.data?.eligibility) {
+        posthog.capture('eligibility_check_completed', {
+          eligible: result.data.eligibility.isEligible,
+          compensation_amount: result.data.eligibility.compensationAmount,
+          regulation: result.data.eligibility.regulation,
+          disruption_type: formData.disruptionType,
+          airline: formData.airline.trim(),
+          confidence: result.data.eligibility.confidence,
+          method: 'flight',
+        });
+      }
+
       onResults(result);
     } catch (error) {
       console.error('Error checking eligibility:', error);

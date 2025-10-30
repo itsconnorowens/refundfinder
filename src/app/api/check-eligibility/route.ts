@@ -6,12 +6,12 @@ import {
   getClientIdentifier,
   ELIGIBILITY_RATE_LIMIT,
 } from '@/lib/rate-limit';
+import { withErrorTracking, addBreadcrumb, captureError } from '@/lib/error-tracking';
 
-export async function POST(request: NextRequest) {
+export const POST = withErrorTracking(async (request: NextRequest) => {
   console.log('🔍 Eligibility Check API - Request received');
 
-  try {
-    // Check rate limit
+  // Check rate limit
     const clientId = getClientIdentifier(request);
     console.log('📊 Rate limit check for client:', clientId);
 
@@ -40,8 +40,8 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const body = await request.json();
-    console.log('📝 Request body received:', JSON.stringify(body, null, 2));
+  const body = await request.json();
+  console.log('📝 Request body received:', JSON.stringify(body, null, 2));
 
     // Extract all fields from body (with backward compatibility defaults)
     const {
@@ -149,40 +149,45 @@ export async function POST(request: NextRequest) {
       JSON.stringify(flightDetails, null, 2)
     );
 
-    // Check eligibility
-    console.log('🔍 Checking eligibility...');
-    const result = await checkEligibility(flightDetails);
-    console.log('📊 Eligibility result:', JSON.stringify(result, null, 2));
+  // Check eligibility
+  addBreadcrumb('Checking flight eligibility', 'eligibility', {
+    flightNumber: flightDetails.flightNumber,
+    disruptionType: flightDetails.disruptionType
+  });
+  console.log('🔍 Checking eligibility...');
+  const result = await checkEligibility(flightDetails);
+  console.log('📊 Eligibility result:', JSON.stringify(result, null, 2));
 
-    // Store check in Airtable
-    try {
-      const checkId = `check-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
-      const eligibilityCheck: EligibilityCheckRecord = {
-        checkId,
-        flightNumber: flightDetails.flightNumber,
-        airline: flightDetails.airline,
-        departureDate: flightDetails.departureDate,
-        departureAirport: flightDetails.departureAirport,
-        arrivalAirport: flightDetails.arrivalAirport,
-        delayDuration: flightDetails.delayDuration,
-        delayReason: flightDetails.delayReason || '',
-        eligible: result.eligible,
-        amount: result.amount,
-        confidence: result.confidence,
-        message: result.message,
-        regulation: result.regulation,
-        reason: result.reason || '',
-        ipAddress: getClientIP(request),
-        userAgent: request.headers.get('user-agent') || '',
-        createdAt: new Date().toISOString(),
-      };
+  // Store check in Airtable
+  try {
+    const checkId = `check-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+    const eligibilityCheck: EligibilityCheckRecord = {
+      checkId,
+      flightNumber: flightDetails.flightNumber,
+      airline: flightDetails.airline,
+      departureDate: flightDetails.departureDate,
+      departureAirport: flightDetails.departureAirport,
+      arrivalAirport: flightDetails.arrivalAirport,
+      delayDuration: flightDetails.delayDuration,
+      delayReason: flightDetails.delayReason || '',
+      eligible: result.eligible,
+      amount: result.amount,
+      confidence: result.confidence,
+      message: result.message,
+      regulation: result.regulation,
+      reason: result.reason || '',
+      ipAddress: getClientIP(request),
+      userAgent: request.headers.get('user-agent') || '',
+      createdAt: new Date().toISOString(),
+    };
 
-      await createEligibilityCheck(eligibilityCheck);
-      console.log(`Eligibility check ${checkId} stored successfully`);
-    } catch (error) {
-      console.error('Error storing eligibility check:', error);
-      // Continue even if storage fails
-    }
+    await createEligibilityCheck(eligibilityCheck);
+    console.log(`Eligibility check ${checkId} stored successfully`);
+  } catch (error) {
+    captureError(error, { level: 'warning', tags: { service: 'airtable', operation: 'eligibility_check_storage' } });
+    console.error('Error storing eligibility check:', error);
+    // Continue even if storage fails
+  }
 
     return NextResponse.json(
       {
@@ -235,14 +240,7 @@ export async function POST(request: NextRequest) {
         },
       }
     );
-  } catch (error) {
-    console.error('Error checking eligibility:', error);
-    return NextResponse.json(
-      { error: 'Internal server error' },
-      { status: 500 }
-    );
-  }
-}
+}, { route: '/api/check-eligibility', tags: { service: 'eligibility' } });
 
 export async function GET() {
   return NextResponse.json({

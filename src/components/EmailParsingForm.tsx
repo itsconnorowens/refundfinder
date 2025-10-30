@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { motion } from 'framer-motion';
+import posthog from 'posthog-js';
 import { CheckEligibilityResponse } from '../types/api';
 
 interface EmailParsingFormProps {
@@ -94,9 +95,17 @@ export default function EmailParsingForm({ onResults, onLoading }: EmailParsingF
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (!validateForm()) {
       return;
+    }
+
+    // Track eligibility check started
+    if (typeof window !== 'undefined') {
+      posthog.capture('eligibility_check_started', {
+        method: 'email',
+        disruption_type: formData.disruptionType,
+      });
     }
 
     onLoading(true);
@@ -131,6 +140,19 @@ export default function EmailParsingForm({ onResults, onLoading }: EmailParsingF
       });
 
       const result: CheckEligibilityResponse = await response.json();
+
+      // Track eligibility check completed
+      if (typeof window !== 'undefined' && result.success && result.data?.eligibility) {
+        posthog.capture('eligibility_check_completed', {
+          eligible: result.data.eligibility.isEligible,
+          compensation_amount: result.data.eligibility.compensationAmount,
+          regulation: result.data.eligibility.regulation,
+          disruption_type: formData.disruptionType,
+          confidence: result.data.eligibility.confidence,
+          method: 'email',
+        });
+      }
+
       onResults(result);
     } catch (error) {
       console.error('Error checking eligibility:', error);

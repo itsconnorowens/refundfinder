@@ -1,12 +1,17 @@
 'use client';
 
 import { useSearchParams } from 'next/navigation';
-import { Suspense } from 'react';
+import { Suspense, useEffect, useState, useRef } from 'react';
+import posthog from 'posthog-js';
 import ClaimSubmissionForm from '@/components/ClaimSubmissionForm';
+import { FormErrorBoundary } from '@/components/FormErrorBoundary';
 
 function ClaimPageContent() {
   const searchParams = useSearchParams();
-  
+  const formStartTime = useRef<number>(Date.now());
+  const [lastStepReached, setLastStepReached] = useState(1);
+  const [hadErrors, setHadErrors] = useState(false);
+
   // Get pre-filled data from URL params
   const flightNumber = searchParams.get('flightNumber') || '';
   const airline = searchParams.get('airline') || '';
@@ -27,17 +32,51 @@ function ClaimPageContent() {
       // Set step to 1 to start at flight details
       currentStep: 1
     };
-    
+
     // Only set if not already set (don't overwrite user's progress)
     if (!localStorage.getItem('claimFormData')) {
       localStorage.setItem('claimFormData', JSON.stringify(prefillData));
     }
   }
 
+  // Track claim form started
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const hasPrefill = !!(flightNumber && airline && departureDate);
+      posthog.capture('claim_form_started', {
+        has_prefill: hasPrefill,
+        source: hasPrefill ? 'eligibility_result' : 'direct_link',
+      });
+    }
+  }, []);
+
+  // Track claim form abandoned
+  useEffect(() => {
+    const handleBeforeUnload = () => {
+      const timeOnForm = (Date.now() - formStartTime.current) / 1000;
+      // Only track abandonment if user spent at least 10 seconds on form
+      if (typeof window !== 'undefined' && timeOnForm > 10) {
+        posthog.capture('claim_form_abandoned', {
+          last_step_reached: lastStepReached,
+          time_on_form_seconds: Math.round(timeOnForm),
+          had_errors: hadErrors,
+        });
+      }
+    };
+
+    window.addEventListener('beforeunload', handleBeforeUnload);
+    return () => window.removeEventListener('beforeunload', handleBeforeUnload);
+  }, [lastStepReached, hadErrors]);
+
   return (
     <div className="min-h-screen bg-slate-950">
       <div className="container mx-auto px-4 py-8">
-        <ClaimSubmissionForm />
+        <FormErrorBoundary
+          formName="claim-submission"
+          onRetry={() => window.location.reload()}
+        >
+          <ClaimSubmissionForm />
+        </FormErrorBoundary>
       </div>
     </div>
   );

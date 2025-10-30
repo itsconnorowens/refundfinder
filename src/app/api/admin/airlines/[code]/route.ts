@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getAllAirlineConfigs, getAirlineConfig } from '@/lib/airline-config';
+import { addBreadcrumb } from '@/lib/error-tracking';
 
 /**
  * GET /api/admin/airlines/[code]
@@ -11,6 +12,8 @@ export async function GET(
 ) {
   try {
     const { code: airlineCode } = await params;
+    addBreadcrumb('Fetching airline configuration', 'admin', { airlineCode });
+
     const config = getAirlineConfig(airlineCode);
 
     if (!config) {
@@ -25,6 +28,8 @@ export async function GET(
       data: config,
     });
   } catch (error) {
+    const { captureError } = await import('@/lib/error-tracking');
+    captureError(error, { level: 'error', tags: { service: 'admin', operation: 'airline_config', route: '/api/admin/airlines/[code]' } });
     console.error('Error fetching airline config:', error);
     return NextResponse.json(
       { error: 'Failed to fetch airline configuration' },
@@ -43,6 +48,8 @@ export async function PUT(
 ) {
   try {
     const { code } = await params;
+    addBreadcrumb('Updating airline configuration', 'admin', { airlineCode: code });
+
     // For now, return not implemented
     // In the future, this could update airline configs in a database
     return NextResponse.json(
@@ -50,6 +57,8 @@ export async function PUT(
       { status: 501 }
     );
   } catch (error) {
+    const { captureError } = await import('@/lib/error-tracking');
+    captureError(error, { level: 'error', tags: { service: 'admin', operation: 'airline_config_update', route: '/api/admin/airlines/[code]' } });
     console.error('Error updating airline config:', error);
     return NextResponse.json(
       { error: 'Failed to update airline configuration' },

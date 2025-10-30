@@ -7,22 +7,24 @@ import {
   updateClaim,
   createRefund as createRefundRecord,
 } from '@/lib/airtable';
+import { withErrorTracking, setUser, addBreadcrumb } from '@/lib/error-tracking';
 
-export async function POST(request: NextRequest) {
-  try {
-    const body = await request.json();
-    const { claimId, reason, processedBy, internalNotes } = body;
+export const POST = withErrorTracking(async (request: NextRequest) => {
+  const body = await request.json();
+  const { claimId, reason, processedBy, internalNotes } = body;
 
-    // Validate required fields
-    if (!claimId) {
-      return NextResponse.json(
-        { error: 'Missing required field: claimId' },
-        { status: 400 }
-      );
-    }
+  // Validate required fields
+  if (!claimId) {
+    return NextResponse.json(
+      { error: 'Missing required field: claimId' },
+      { status: 400 }
+    );
+  }
 
-    // Get claim from Airtable
-    const claimRecord = await getClaimByClaimId(claimId);
+  addBreadcrumb('Processing refund request', 'refund', { claimId, reason });
+
+  // Get claim from Airtable
+  const claimRecord = await getClaimByClaimId(claimId);
     if (!claimRecord) {
       return NextResponse.json({ error: 'Claim not found' }, { status: 404 });
     }
@@ -117,17 +119,7 @@ export async function POST(request: NextRequest) {
         status: refund.status,
       },
     });
-  } catch (error) {
-    console.error('Error processing refund:', error);
-    return NextResponse.json(
-      {
-        error: 'Failed to process refund',
-        details: error instanceof Error ? error.message : 'Unknown error',
-      },
-      { status: 500 }
-    );
-  }
-}
+}, { route: '/api/process-refund', tags: { service: 'stripe', operation: 'refund' } });
 
 /**
  * GET endpoint to check refund eligibility

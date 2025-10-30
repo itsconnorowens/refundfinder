@@ -1,3 +1,9 @@
+---
+last_updated: 2025-10-29
+status: current
+owner: @connorowens
+---
+
 # Development Process Guidelines
 
 ## 🎯 Core Principle

@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import posthog from 'posthog-js';
 import { CheckEligibilityResponse, FlightData, EligibilityData } from '../types/api';
 import PaymentForm from './PaymentForm';
 
@@ -10,6 +11,20 @@ interface EligibilityResultsProps {
 
 export default function EligibilityResults({ results }: EligibilityResultsProps) {
   const [showPaymentForm, setShowPaymentForm] = useState(false);
+
+  const handleFileClaimClick = () => {
+    // Track file claim button click
+    if (typeof window !== 'undefined' && results.data?.eligibility) {
+      const eligibilityData = results.data.eligibility as EligibilityData;
+      posthog.capture('file_claim_clicked', {
+        compensation_amount: eligibilityData.compensationAmount,
+        regulation: eligibilityData.regulation,
+        disruption_type: eligibilityData.disruptionType,
+        confidence: eligibilityData.confidence,
+      });
+    }
+    setShowPaymentForm(true);
+  };
 
   if (!results.success) {
     return (
@@ -273,7 +288,7 @@ export default function EligibilityResults({ results }: EligibilityResultsProps)
           {!showPaymentForm ? (
             <div>
               <button
-                onClick={() => setShowPaymentForm(true)}
+                onClick={handleFileClaimClick}
                 className="px-8 py-4 bg-green-600 text-white font-semibold rounded-lg hover:bg-green-700 focus:ring-4 focus:ring-green-200 transition-colors"
               >
                 Proceed with Claim - $49 Success Fee

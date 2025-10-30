@@ -1,5 +1,26 @@
 # 👨‍💻 Developer Guide - Flghtly
 
+## 📚 **Documentation Standards**
+
+**⚠️ IMPORTANT:** Before creating or updating documentation, read [docs/DOCUMENTATION_GUIDELINES.md](./docs/DOCUMENTATION_GUIDELINES.md)
+
+### Quick Documentation Rules
+
+✅ **DO:**
+- Place docs in `/docs` subdirectories (not at root)
+- Add frontmatter metadata to all docs
+- Update `DOCUMENTATION_INDEX.md` for major docs
+- Run `./scripts/check-docs.sh` before committing
+
+❌ **DON'T:**
+- Create docs at project root (except README, DEVELOPER_GUIDE, etc.)
+- Duplicate existing documentation
+- Leave placeholder text (TODO, FIXME)
+
+**Complete guide:** [Documentation Guidelines](./docs/DOCUMENTATION_GUIDELINES.md)
+
+---
+
 ## 🚀 **Quick Start**
 
 ### Prerequisites
@@ -231,9 +252,9 @@ AIRTABLE_BASE_ID=
 - [Vitest Testing](https://vitest.dev/)
 
 ### Internal Documentation
-- [Code Quality Safeguards](./CODE_QUALITY_SAFEGUARDS.md)
-- [API Documentation](./API_DOCUMENTATION.md)
-- [Deployment Guide](./DEPLOYMENT.md)
+- [Code Quality Safeguards](docs/development/CODE_QUALITY_SAFEGUARDS.md)
+- [API Routes](README.md#api-routes) - See README for API documentation
+- Deployment Guide - Auto-deployed to Vercel on push to main
 
 ## 🆘 **Getting Help**
 

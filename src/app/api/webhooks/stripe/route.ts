@@ -5,6 +5,7 @@ import { updateClaim, updatePayment, getClaimByClaimId } from '@/lib/airtable';
 import { sendPaymentConfirmation } from '@/lib/email';
 import { processAutomaticClaimPreparation } from '@/lib/claim-filing-service';
 import { sendAdminReadyToFileAlert } from '@/lib/email-service';
+import { withErrorTracking, addBreadcrumb, captureError, setUser } from '@/lib/error-tracking';
 
 // Initialize Stripe only if environment variables are available
 const stripe = process.env.STRIPE_SECRET_KEY
@@ -15,14 +16,13 @@ const stripe = process.env.STRIPE_SECRET_KEY
 
 const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET;
 
-export async function POST(request: NextRequest) {
-  try {
-    if (!stripe || !webhookSecret) {
-      return NextResponse.json(
-        { error: 'Stripe not configured' },
-        { status: 503 }
-      );
-    }
+export const POST = withErrorTracking(async (request: NextRequest) => {
+  if (!stripe || !webhookSecret) {
+    return NextResponse.json(
+      { error: 'Stripe not configured' },
+      { status: 503 }
+    );
+  }
 
     const body = await request.text();
     const headersList = await headers();
@@ -35,24 +35,36 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    let event: Stripe.Event;
+  let event: Stripe.Event;
 
-    try {
-      event = stripe.webhooks.constructEvent(body, signature, webhookSecret);
-    } catch (err) {
-      console.error('Webhook signature verification failed:', err);
-      return NextResponse.json({ error: 'Invalid signature' }, { status: 400 });
-    }
+  try {
+    event = stripe.webhooks.constructEvent(body, signature, webhookSecret);
+  } catch (err) {
+    captureError(err, { level: 'warning', tags: { service: 'stripe', error_type: 'signature_verification' } });
+    console.error('Webhook signature verification failed:', err);
+    return NextResponse.json({ error: 'Invalid signature' }, { status: 400 });
+  }
 
-    // Handle the event
-    switch (event.type) {
-      case 'payment_intent.succeeded':
-        const paymentIntent = event.data.object as Stripe.PaymentIntent;
-        console.log('Payment succeeded:', paymentIntent.id);
+  // Handle the event
+  addBreadcrumb('Processing Stripe webhook event', 'webhook', { event_type: event.type });
 
-        try {
-          // Update payment status in Airtable
-          await updatePayment(paymentIntent.id, {
+  switch (event.type) {
+    case 'payment_intent.succeeded':
+      const paymentIntent = event.data.object as Stripe.PaymentIntent;
+      console.log('Payment succeeded:', paymentIntent.id);
+
+      // Set user context from payment metadata
+      if (paymentIntent.metadata?.email) {
+        setUser({
+          email: paymentIntent.metadata.email,
+          name: `${paymentIntent.metadata.firstName} ${paymentIntent.metadata.lastName}`
+        });
+      }
+
+      try {
+        // Update payment status in Airtable
+        addBreadcrumb('Updating payment status', 'airtable', { paymentIntentId: paymentIntent.id });
+        await updatePayment(paymentIntent.id, {
             status: 'succeeded',
             succeededAt: new Date().toISOString(),
             stripePaymentIntentId: paymentIntent.id,
@@ -123,6 +135,7 @@ export async function POST(request: NextRequest) {
                         });
                         console.log(`Admin alert sent for claim ${claimId}`);
                       } catch (alertError) {
+                        captureError(alertError, { level: 'warning', tags: { service: 'email', claim_id: claimId, alert_type: 'admin' } });
                         console.error('Error sending admin alert:', alertError);
                         // Don't fail the webhook if admin alert fails
                       }
@@ -133,6 +146,7 @@ export async function POST(request: NextRequest) {
                     );
                   }
                 } catch (preparationError) {
+                  captureError(preparationError, { level: 'warning', tags: { service: 'claim_filing', claim_id: claimId } });
                   console.error(
                     'Error in automatic claim preparation:',
                     preparationError
@@ -141,6 +155,7 @@ export async function POST(request: NextRequest) {
                 }
               }
             } catch (emailError) {
+              captureError(emailError, { level: 'warning', tags: { service: 'email', claim_id: claimId } });
               console.error(
                 'Error sending payment confirmation email:',
                 emailError
@@ -149,17 +164,27 @@ export async function POST(request: NextRequest) {
             }
           }
         } catch (error) {
+          captureError(error, { level: 'error', tags: { service: 'airtable', event_type: 'payment_succeeded' } });
           console.error('Error updating payment/claim status:', error);
           // Don't fail the webhook - log error but return success
         }
-        break;
+      break;
 
-      case 'payment_intent.payment_failed':
-        const failedPayment = event.data.object as Stripe.PaymentIntent;
-        console.log('Payment failed:', failedPayment.id);
+    case 'payment_intent.payment_failed':
+      const failedPayment = event.data.object as Stripe.PaymentIntent;
+      console.log('Payment failed:', failedPayment.id);
 
-        try {
-          // Update payment status in Airtable
+      // Set user context from payment metadata
+      if (failedPayment.metadata?.email) {
+        setUser({
+          email: failedPayment.metadata.email,
+          name: `${failedPayment.metadata.firstName} ${failedPayment.metadata.lastName}`
+        });
+      }
+
+      try {
+        // Update payment status in Airtable
+        addBreadcrumb('Updating failed payment status', 'airtable', { paymentIntentId: failedPayment.id });
           await updatePayment(failedPayment.id, {
             status: 'failed',
             stripePaymentIntentId: failedPayment.id,
@@ -172,23 +197,17 @@ export async function POST(request: NextRequest) {
               status: 'submitted',
             });
 
-            console.log(`Claim ${claimId} marked as failed payment`);
-          }
-        } catch (error) {
-          console.error('Error updating failed payment status:', error);
+          console.log(`Claim ${claimId} marked as failed payment`);
         }
-        break;
+      } catch (error) {
+        captureError(error, { level: 'error', tags: { service: 'airtable', event_type: 'payment_failed' } });
+        console.error('Error updating failed payment status:', error);
+      }
+      break;
 
-      default:
-        console.log(`Unhandled event type: ${event.type}`);
-    }
-
-    return NextResponse.json({ received: true });
-  } catch (error) {
-    console.error('Webhook processing failed:', error);
-    return NextResponse.json(
-      { error: 'Webhook processing failed' },
-      { status: 500 }
-    );
+    default:
+      console.log(`Unhandled event type: ${event.type}`);
   }
-}
+
+  return NextResponse.json({ received: true });
+}, { route: '/api/webhooks/stripe', tags: { service: 'stripe', type: 'webhook' } });

@@ -4,39 +4,41 @@ import {
   processClaimFollowUps,
 } from '@/lib/claim-filing-service';
 import { processAutomatedFollowUps } from '@/lib/follow-up-service';
+import { withErrorTracking, addBreadcrumb } from '@/lib/error-tracking';
 
 /**
  * POST /api/cron/process-automatic-filing
  * Cron job endpoint to process automatic claim filing and follow-ups
  * This should be called by a cron service (e.g., Vercel Cron, GitHub Actions, etc.)
  */
-export async function POST(request: NextRequest) {
-  try {
-    // Verify this is a legitimate cron request
-    const authHeader = request.headers.get('authorization');
-    const cronSecret = process.env.CRON_SECRET;
+export const POST = withErrorTracking(async (request: NextRequest) => {
+  // Verify this is a legitimate cron request
+  const authHeader = request.headers.get('authorization');
+  const cronSecret = process.env.CRON_SECRET;
 
-    if (!cronSecret || authHeader !== `Bearer ${cronSecret}`) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-    }
+  if (!cronSecret || authHeader !== `Bearer ${cronSecret}`) {
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+  }
 
-    const results = {
-      processedAt: new Date().toISOString(),
-      summary: {
-        claimsFiled: 0,
-        claimsFailed: 0,
-        followUpsProcessed: 0,
-        followUpsFailed: 0,
-      },
-      details: {
-        filing: [] as any[],
-        followUps: [] as any[],
-      },
-    };
+  addBreadcrumb('Starting automatic filing cron job', 'cron');
 
-    // Process automatic claim filing
-    console.log('Processing automatic claim filing...');
-    const filingResults = await processAutomaticClaimFiling();
+  const results = {
+    processedAt: new Date().toISOString(),
+    summary: {
+      claimsFiled: 0,
+      claimsFailed: 0,
+      followUpsProcessed: 0,
+      followUpsFailed: 0,
+    },
+    details: {
+      filing: [] as any[],
+      followUps: [] as any[],
+    },
+  };
+
+  // Process automatic claim filing
+  console.log('Processing automatic claim filing...');
+  const filingResults = await processAutomaticClaimFiling();
 
     results.summary.claimsFiled = filingResults.filter((r) => r.success).length;
     results.summary.claimsFailed = filingResults.filter(
@@ -63,14 +65,7 @@ export async function POST(request: NextRequest) {
       message: 'Automatic filing processing completed',
       results,
     });
-  } catch (error) {
-    console.error('Error in automatic filing cron job:', error);
-    return NextResponse.json(
-      { error: 'Internal server error' },
-      { status: 500 }
-    );
-  }
-}
+}, { route: '/api/cron/process-automatic-filing', tags: { service: 'cron', operation: 'automatic_filing' } });
 
 /**
  * GET /api/cron/process-automatic-filing

@@ -1,3 +1,9 @@
+---
+last_updated: 2025-10-29
+status: current
+owner: @connorowens
+---
+
 # Airtable Setup Guide for Refund Finder
 
 ## Overview

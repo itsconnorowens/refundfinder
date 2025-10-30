@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { ClaimStatus } from '@/lib/airtable';
 import { getAirlineConfig } from '@/lib/airline-config';
 import { showError, showSuccess } from '@/lib/toast';
+import { ErrorBoundary } from '@/components/ErrorBoundary';
 
 interface Claim {
   id: string;
@@ -221,9 +222,10 @@ export default function ClaimDetailPage({ params }: { params: { id: string } }) 
   const airlineConfig = getAirlineConfig(claim.airline);
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      {/* Header */}
-      <div className="bg-white shadow">
+    <ErrorBoundary context="admin-claim-detail">
+      <div className="min-h-screen bg-gray-50">
+        {/* Header */}
+        <div className="bg-white shadow">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="py-6">
             <div className="flex items-center justify-between">
@@ -500,6 +502,7 @@ export default function ClaimDetailPage({ params }: { params: { id: string } }) 
           </div>
         </div>
       </div>
-    </div>
+      </div>
+    </ErrorBoundary>
   );
 }

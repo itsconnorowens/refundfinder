@@ -7,6 +7,7 @@ import {
   updateClaimStatus as updateClaimStatusService,
   scheduleFollowUp,
 } from '@/lib/claim-filing-service';
+import { addBreadcrumb } from '@/lib/error-tracking';
 
 /**
  * GET /api/admin/claims/[id]
@@ -18,6 +19,8 @@ export async function GET(
 ) {
   try {
     const { id: claimId } = await params;
+
+    addBreadcrumb('Fetching claim details', 'admin', { claimId });
     const claim = await getClaimByClaimId(claimId);
 
     if (!claim) {
@@ -32,11 +35,9 @@ export async function GET(
       },
     });
   } catch (error) {
-    console.error('Error fetching claim:', error);
-    return NextResponse.json(
-      { error: 'Failed to fetch claim' },
-      { status: 500 }
-    );
+    const { captureError } = await import('@/lib/error-tracking');
+    captureError(error, { level: 'error', tags: { service: 'admin', operation: 'claim_management', route: '/api/admin/claims/[id]' } });
+    return NextResponse.json({ error: 'Failed to fetch claim' }, { status: 500 });
   }
 }
 
