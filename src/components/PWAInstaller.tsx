@@ -9,11 +9,14 @@ interface BeforeInstallPromptEvent extends Event {
 }
 
 export function PWAInstaller() {
+  const [mounted, setMounted] = useState(false);
   const [deferredPrompt, setDeferredPrompt] = useState<BeforeInstallPromptEvent | null>(null);
   const [isInstallable, setIsInstallable] = useState(false);
   const [isInstalled, setIsInstalled] = useState(false);
 
   useEffect(() => {
+    setMounted(true);
+
     // Register service worker
     registerServiceWorker();
 
@@ -71,7 +74,8 @@ export function PWAInstaller() {
     setDeferredPrompt(null);
   };
 
-  if (isInstalled || !isInstallable) {
+  // Don't render anything until mounted to avoid hydration issues
+  if (!mounted || isInstalled || !isInstallable) {
     return null;
   }
 
@@ -84,13 +88,13 @@ export function PWAInstaller() {
               <span className="text-2xl">📱</span>
             </div>
           </div>
-          
+
           <div className="flex-1">
             <h3 className="font-semibold text-white mb-1">Install Flghtly</h3>
             <p className="text-sm text-slate-400 mb-3">
               Add to your home screen for a faster, app-like experience with offline support.
             </p>
-            
+
             <div className="flex gap-2">
               <button
                 onClick={handleInstallClick}
@@ -111,4 +115,3 @@ export function PWAInstaller() {
     </div>
   );
 }
-
