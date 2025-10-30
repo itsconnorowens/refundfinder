@@ -49,6 +49,7 @@ next-env.d.ts
 !CODE_QUALITY_SAFEGUARDS.md
 !DEVELOPER_GUIDE.md
 !SESSION_SUMMARY_CODE_QUALITY_CLEANUP.md
+!MONITORING_*.md
 
 # Sentry
 .sentryclirc

@@ -2,6 +2,7 @@
 
 import { useSearchParams, useRouter } from 'next/navigation';
 import { useEffect, useState, Suspense } from 'react';
+import posthog from 'posthog-js';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -18,9 +19,18 @@ function SuccessPageContent() {
   const paymentIntentId = searchParams.get('payment_intent_id');
 
   useEffect(() => {
+    // Track payment completion
+    if (claimId && typeof window !== 'undefined') {
+      posthog.capture('payment_completed', {
+        claim_id: claimId,
+        payment_intent_id: paymentIntentId || undefined,
+        session_id: sessionId || undefined,
+      });
+    }
+
     // Clear any stored form data
     localStorage.removeItem('claimFormData');
-  }, []);
+  }, [claimId, paymentIntentId, sessionId]);
 
   // Show error if claim ID is missing
   if (!claimId) {

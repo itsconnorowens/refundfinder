@@ -6,6 +6,7 @@ import { sendPaymentConfirmation } from '@/lib/email';
 import { processAutomaticClaimPreparation } from '@/lib/claim-filing-service';
 import { sendAdminReadyToFileAlert } from '@/lib/email-service';
 import { withErrorTracking, addBreadcrumb, captureError, setUser } from '@/lib/error-tracking';
+import { trackServerEvent } from '@/lib/posthog';
 
 // Initialize Stripe only if environment variables are available
 const stripe = process.env.STRIPE_SECRET_KEY
@@ -85,6 +86,18 @@ export const POST = withErrorTracking(async (request: NextRequest) => {
 
             console.log(
               `Claim ${claimId} marked as validated after successful payment`
+            );
+
+            // Track payment completion in PostHog
+            trackServerEvent(
+              paymentIntent.metadata?.email || paymentIntent.id,
+              'payment_completed',
+              {
+                claim_id: claimId,
+                payment_intent_id: paymentIntent.id,
+                amount_cents: paymentIntent.amount,
+                currency: paymentIntent.currency,
+              }
             );
 
             // Send payment confirmation email

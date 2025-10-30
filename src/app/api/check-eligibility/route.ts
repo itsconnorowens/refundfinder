@@ -8,6 +8,7 @@ import {
 } from '@/lib/rate-limit';
 import { withErrorTracking, addBreadcrumb, captureError } from '@/lib/error-tracking';
 import { missingFieldsResponse, rateLimitResponse } from '@/lib/api-response';
+import { trackServerEvent } from '@/lib/posthog';
 
 export const POST = withErrorTracking(async (request: NextRequest) => {
   console.log('🔍 Eligibility Check API - Request received');
@@ -132,6 +133,20 @@ export const POST = withErrorTracking(async (request: NextRequest) => {
   console.log('🔍 Checking eligibility...');
   const result = await checkEligibility(flightDetails);
   console.log('📊 Eligibility result:', JSON.stringify(result, null, 2));
+
+  // Track eligibility check completion in PostHog
+  trackServerEvent(
+    clientId,
+    'eligibility_check_completed',
+    {
+      eligible: result.eligible,
+      compensation_amount: result.amount,
+      airline: flightDetails.airline,
+      disruption_type: flightDetails.disruptionType,
+      flight_number: flightDetails.flightNumber,
+      confidence: result.confidence,
+    }
+  );
 
   // Store check in Airtable
   try {
