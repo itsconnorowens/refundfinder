@@ -1,17 +1,22 @@
+import { PlaneIcon } from './icons';
+
 export default function Footer() {
   return (
     <footer className="bg-gray-900 text-white">
       <div className="container mx-auto px-4 py-8">
         <div className="grid md:grid-cols-4 gap-8">
           <div>
-            <div className="flex items-center space-x-2 mb-4">
-              <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center">
-                <span className="text-white font-bold text-sm">F</span>
+            <div className="flex items-center space-x-3 mb-4">
+              <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-xl flex items-center justify-center shadow-md">
+                <PlaneIcon size={22} className="text-white" />
               </div>
-              <h3 className="text-xl font-bold">Flghtly</h3>
+              <div>
+                <h3 className="text-xl font-bold">Flghtly</h3>
+                <p className="text-xs text-gray-400 -mt-0.5">Compensation made simple</p>
+              </div>
             </div>
             <p className="text-gray-400">
-              Find and claim your refunds effortlessly.
+              Get the compensation you deserve for flight delays and cancellations.
             </p>
           </div>
           

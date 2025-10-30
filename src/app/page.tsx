@@ -46,37 +46,49 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
       {/* Header */}
-      <header className="bg-white/95 backdrop-blur-sm shadow-sm border-b border-gray-100">
+      <header className="sticky top-0 z-50 bg-white/95 backdrop-blur-md shadow-sm border-b border-gray-100 transition-all duration-300">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center py-4">
+            {/* Logo */}
             <div className="flex items-center">
               <div className="flex-shrink-0">
                 <div className="flex items-center space-x-3">
-                  <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-lg flex items-center justify-center">
-                    <PlaneIcon size={20} className="text-white" />
+                  <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-xl flex items-center justify-center shadow-md">
+                    <PlaneIcon size={22} className="text-white" />
                   </div>
                   <div>
                     <h1 className="text-xl font-bold text-gray-900">Flghtly</h1>
-                    <p className="text-xs text-gray-500 -mt-1">Flight Compensation</p>
+                    <p className="text-xs text-gray-500 -mt-0.5">Compensation made simple</p>
                   </div>
                 </div>
               </div>
             </div>
-            <div className="hidden md:flex items-center space-x-8">
-              <nav className="flex space-x-8">
-                <a href="#how-it-works" className="text-gray-600 hover:text-blue-600 transition-colors font-medium">How It Works</a>
-                <a href="#pricing" className="text-gray-600 hover:text-blue-600 transition-colors font-medium">Pricing</a>
-                <a href="#contact" className="text-gray-600 hover:text-blue-600 transition-colors font-medium">Contact</a>
-              </nav>
-              <div className="flex items-center space-x-2 text-sm text-gray-500">
-                <CheckIcon size={16} className="text-green-500" />
-                <span>Trusted by 320+ travelers</span>
-              </div>
+
+            {/* Desktop Navigation */}
+            <nav className="hidden md:flex items-center space-x-8">
+              <a href="#how-it-works" className="text-gray-600 hover:text-blue-600 transition-colors font-medium">How It Works</a>
+              <a href="#pricing" className="text-gray-600 hover:text-blue-600 transition-colors font-medium">Pricing</a>
+              <a href="#faq" className="text-gray-600 hover:text-blue-600 transition-colors font-medium">FAQ</a>
+            </nav>
+
+            {/* CTA Button */}
+            <div className="hidden md:flex items-center space-x-4">
+              <button
+                onClick={() => {
+                  const formSection = document.querySelector('#eligibility-form');
+                  formSection?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                }}
+                className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white px-6 py-2.5 rounded-lg font-medium transition-all duration-200 shadow-md hover:shadow-lg"
+              >
+                Check Eligibility
+              </button>
             </div>
+
+            {/* Mobile Menu Button */}
             <div className="md:hidden">
               <button
                 onClick={() => setMobileMenuOpen(true)}
-                className="text-gray-600 hover:text-gray-900 p-3"
+                className="text-gray-600 hover:text-gray-900 p-2"
                 aria-label="Open menu"
               >
                 <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -133,7 +145,7 @@ export default function Home() {
       </section>
 
       {/* Main Form Section */}
-      <section className="py-8">
+      <section id="eligibility-form" className="py-8">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-8">
             <h2 className="text-2xl font-bold text-gray-900 mb-2">Check Your Eligibility — Free & Instant</h2>
@@ -357,7 +369,7 @@ export default function Home() {
           </div>
           
           {/* Pricing Callout */}
-          <div className="mt-16 max-w-md mx-auto bg-white rounded-2xl shadow-xl p-8">
+          <div id="pricing" className="mt-16 max-w-md mx-auto bg-white rounded-2xl shadow-xl p-8">
             <div className="text-center">
               <h3 className="text-2xl font-bold text-gray-900 mb-2">Success Fee Only</h3>
               <div className="text-4xl font-bold text-blue-600 mb-4">$49</div>
@@ -371,7 +383,7 @@ export default function Home() {
       </section>
 
       {/* FAQ Section */}
-      <section className="py-20 bg-gray-50">
+      <section id="faq" className="py-20 bg-gray-50">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
             <h2 className="text-3xl font-bold text-gray-900 mb-4">Frequently Asked Questions</h2>
@@ -429,7 +441,15 @@ export default function Home() {
       <footer className="bg-gray-900 text-white py-12">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center">
-            <h3 className="text-2xl font-bold mb-4">✈️ Flghtly</h3>
+            <div className="flex items-center justify-center space-x-3 mb-4">
+              <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-xl flex items-center justify-center shadow-md">
+                <PlaneIcon size={24} className="text-white" />
+              </div>
+              <div className="text-left">
+                <h3 className="text-2xl font-bold">Flghtly</h3>
+                <p className="text-sm text-gray-400 -mt-0.5">Compensation made simple</p>
+              </div>
+            </div>
             <p className="text-gray-400 mb-6">Get the compensation you deserve for flight delays and cancellations</p>
             <div className="flex flex-wrap justify-center gap-6 mb-6">
               <a 

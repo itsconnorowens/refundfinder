@@ -2,6 +2,7 @@
 
 import { X } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { PlaneIcon } from './icons';
 
 interface MobileMenuProps {
   isOpen: boolean;
@@ -9,6 +10,12 @@ interface MobileMenuProps {
 }
 
 export function MobileMenu({ isOpen, onClose }: MobileMenuProps) {
+  const handleCTAClick = () => {
+    const formSection = document.querySelector('#eligibility-form');
+    formSection?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    onClose();
+  };
+
   return (
     <AnimatePresence>
       {isOpen && (
@@ -28,25 +35,36 @@ export function MobileMenu({ isOpen, onClose }: MobileMenuProps) {
             animate={{ x: 0 }}
             exit={{ x: '100%' }}
             transition={{ type: 'tween', duration: 0.3 }}
-            className="fixed top-0 right-0 bottom-0 w-64 bg-white shadow-xl z-50"
+            className="fixed top-0 right-0 bottom-0 w-72 bg-white shadow-xl z-50"
           >
-            {/* Close Button */}
-            <button
-              onClick={onClose}
-              className="absolute top-4 right-4 p-3 text-gray-600 hover:text-gray-900"
-              aria-label="Close menu"
-            >
-              <X size={24} />
-            </button>
+            {/* Logo & Close Button */}
+            <div className="flex items-center justify-between p-6 border-b border-gray-100">
+              <div className="flex items-center space-x-3">
+                <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-xl flex items-center justify-center shadow-md">
+                  <PlaneIcon size={22} className="text-white" />
+                </div>
+                <div>
+                  <h2 className="text-lg font-bold text-gray-900">Flghtly</h2>
+                  <p className="text-xs text-gray-500 -mt-0.5">Compensation made simple</p>
+                </div>
+              </div>
+              <button
+                onClick={onClose}
+                className="p-2 text-gray-600 hover:text-gray-900"
+                aria-label="Close menu"
+              >
+                <X size={24} />
+              </button>
+            </div>
 
             {/* Navigation Links */}
-            <nav className="mt-16 px-6">
-              <ul className="space-y-4">
+            <nav className="mt-4 px-6">
+              <ul className="space-y-2">
                 <li>
                   <a
                     href="#how-it-works"
                     onClick={onClose}
-                    className="block py-3 text-lg font-medium text-gray-900 hover:text-blue-600"
+                    className="block py-3 text-base font-medium text-gray-900 hover:text-blue-600 transition-colors"
                   >
                     How It Works
                   </a>
@@ -55,27 +73,31 @@ export function MobileMenu({ isOpen, onClose }: MobileMenuProps) {
                   <a
                     href="#pricing"
                     onClick={onClose}
-                    className="block py-3 text-lg font-medium text-gray-900 hover:text-blue-600"
+                    className="block py-3 text-base font-medium text-gray-900 hover:text-blue-600 transition-colors"
                   >
                     Pricing
                   </a>
                 </li>
                 <li>
                   <a
-                    href="#contact"
+                    href="#faq"
                     onClick={onClose}
-                    className="block py-3 text-lg font-medium text-gray-900 hover:text-blue-600"
+                    className="block py-3 text-base font-medium text-gray-900 hover:text-blue-600 transition-colors"
                   >
-                    Contact
+                    FAQ
                   </a>
                 </li>
-                <li className="pt-4 border-t border-gray-200">
-                  <div className="flex items-center gap-2 text-sm text-gray-500">
-                    <span className="text-green-500">✓</span>
-                    Trusted by 320+ travelers
-                  </div>
-                </li>
               </ul>
+
+              {/* CTA Button */}
+              <div className="mt-6">
+                <button
+                  onClick={handleCTAClick}
+                  className="w-full bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white px-6 py-3 rounded-lg font-medium transition-all duration-200 shadow-md hover:shadow-lg"
+                >
+                  Check Eligibility
+                </button>
+              </div>
             </nav>
           </motion.div>
         </>
