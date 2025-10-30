@@ -22,6 +22,7 @@ export default function Home() {
   const [results, setResults] = useState<CheckEligibilityResponse | null>(null);
   const [loading, setLoading] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
 
   const handleResults = (response: CheckEligibilityResponse) => {
     setResults(response);
@@ -30,6 +31,16 @@ export default function Home() {
   const handleLoading = (isLoading: boolean) => {
     setLoading(isLoading);
   };
+
+  // Handle scroll events for header transformation
+  useEffect(() => {
+    const handleScroll = () => {
+      setScrolled(window.scrollY > 20);
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
 
   // Handle keyboard events (Escape to close menu)
   useEffect(() => {
@@ -46,55 +57,105 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
       {/* Header */}
-      <header className="sticky top-0 z-50 bg-white/95 backdrop-blur-md shadow-sm border-b border-gray-100 transition-all duration-300">
+      <motion.header
+        className={`sticky top-0 z-50 backdrop-blur-md border-b transition-all duration-300 ${
+          scrolled
+            ? 'bg-white/98 shadow-lg border-gray-200 py-2'
+            : 'bg-white/95 shadow-sm border-gray-100 py-4'
+        }`}
+        initial={{ y: -100, opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        transition={{ duration: 0.6, ease: "easeOut" }}
+      >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center py-4">
+          <div className={`flex justify-between items-center transition-all duration-300 ${
+            scrolled ? 'py-2' : 'py-4'
+          }`}>
             {/* Logo */}
             <div className="flex items-center">
               <div className="flex-shrink-0">
                 <div className="flex items-center space-x-3">
-                  <img
+                  <motion.img
                     src="/icon-192.png"
                     alt="Flghtly Logo"
-                    className="w-10 h-10 rounded-xl shadow-md"
+                    className="w-10 h-10 rounded-full shadow-md"
+                    initial={{ scale: 0, rotate: -180 }}
+                    animate={{ scale: 1, rotate: 0 }}
+                    transition={{
+                      duration: 0.6,
+                      delay: 0.2,
+                      type: "spring",
+                      stiffness: 200,
+                      damping: 15
+                    }}
+                    whileHover={{
+                      scale: 1.1,
+                      rotate: 5,
+                      transition: { duration: 0.3 }
+                    }}
                   />
-                  <div>
+                  <motion.div
+                    initial={{ opacity: 0, x: -20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ duration: 0.6, delay: 0.3 }}
+                  >
                     <h1 className="text-xl font-bold text-gray-900">Flghtly</h1>
                     <p className="text-xs text-gray-500 -mt-0.5">Compensation made simple</p>
-                  </div>
+                  </motion.div>
                 </div>
               </div>
             </div>
 
             {/* Desktop Navigation */}
             <nav className="hidden md:flex items-center space-x-8">
-              <button
+              <motion.button
                 onClick={() => {
                   const section = document.querySelector('#how-it-works');
                   section?.scrollIntoView({ behavior: 'smooth', block: 'center' });
                 }}
-                className="text-gray-600 hover:text-blue-600 transition-colors font-medium"
+                className="relative text-gray-600 hover:text-blue-600 transition-colors font-medium group"
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
               >
                 How It Works
-              </button>
-              <button
+                <motion.span
+                  className="absolute bottom-0 left-0 w-0 h-0.5 bg-blue-600 group-hover:w-full transition-all duration-300"
+                  initial={{ width: 0 }}
+                  whileHover={{ width: '100%' }}
+                />
+              </motion.button>
+              <motion.button
                 onClick={() => {
-                  const section = document.querySelector('#pricing');
+                  const section = document.querySelector('#success-stories');
                   section?.scrollIntoView({ behavior: 'smooth', block: 'center' });
                 }}
-                className="text-gray-600 hover:text-blue-600 transition-colors font-medium"
+                className="relative text-gray-600 hover:text-blue-600 transition-colors font-medium group"
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
               >
-                Pricing
-              </button>
-              <button
+                Success Stories
+                <motion.span
+                  className="absolute bottom-0 left-0 w-0 h-0.5 bg-blue-600 group-hover:w-full transition-all duration-300"
+                  initial={{ width: 0 }}
+                  whileHover={{ width: '100%' }}
+                />
+              </motion.button>
+              <motion.button
                 onClick={() => {
                   const section = document.querySelector('#faq');
                   section?.scrollIntoView({ behavior: 'smooth', block: 'center' });
                 }}
-                className="text-gray-600 hover:text-blue-600 transition-colors font-medium"
+                className="relative text-gray-600 hover:text-blue-600 transition-colors font-medium group"
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
               >
                 FAQ
-              </button>
+                <motion.span
+                  className="absolute bottom-0 left-0 w-0 h-0.5 bg-blue-600 group-hover:w-full transition-all duration-300"
+                  initial={{ width: 0 }}
+                  whileHover={{ width: '100%' }}
+                />
+              </motion.button>
             </nav>
 
             {/* CTA Button */}
@@ -124,7 +185,7 @@ export default function Home() {
             </div>
           </div>
         </div>
-      </header>
+      </motion.header>
 
       {/* Mobile Menu */}
       <MobileMenu isOpen={mobileMenuOpen} onClose={() => setMobileMenuOpen(false)} />
@@ -251,118 +312,6 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Trust Metrics Dashboard */}
-      <section className="py-12 bg-gray-50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <TrustMetrics />
-        </div>
-      </section>
-
-      {/* Success Stories Section */}
-      <section className="py-20 bg-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-16">
-            <h2 className="text-3xl font-bold text-gray-900 mb-4">Success Stories</h2>
-            <p className="text-xl text-gray-600">We've helped travelers recover over €147,000 in compensation</p>
-          </div>
-          
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 md:gap-8">
-            <motion.div 
-              className="bg-gray-50 rounded-lg p-6 hover:shadow-lg transition-shadow cursor-pointer"
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0 }}
-              viewport={{ once: true, margin: "-50px" }}
-              whileHover={{ 
-                scale: 1.02,
-                transition: { duration: 0.2 }
-              }}
-            >
-              <div className="flex items-center mb-4">
-                <Avatar initials="SJ" color="blue" className="mr-3" />
-                <div>
-                  <h4 className="font-semibold">Sarah J.</h4>
-                  <p className="text-sm text-gray-600">London → Paris</p>
-                  <StarRating rating={5} size={14} className="mt-1" />
-                </div>
-              </div>
-              <p className="text-gray-700 mb-4">
-                "My flight was delayed 4 hours due to technical issues. Flghtly handled everything and I got €400 compensation within 3 weeks!"
-              </p>
-              <div className="flex justify-between items-center">
-                <span className="text-green-600 font-semibold">€400 recovered</span>
-                <span className="text-sm text-gray-500">3 weeks</span>
-              </div>
-            </motion.div>
-
-            <motion.div 
-              className="bg-gray-50 rounded-lg p-6 hover:shadow-lg transition-shadow cursor-pointer"
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.1 }}
-              viewport={{ once: true, margin: "-50px" }}
-              whileHover={{ 
-                scale: 1.02,
-                transition: { duration: 0.2 }
-              }}
-            >
-              <div className="flex items-center mb-4">
-                <Avatar initials="MR" color="green" className="mr-3" />
-                <div>
-                  <h4 className="font-semibold">Michael R.</h4>
-                  <p className="text-sm text-gray-600">Frankfurt → New York</p>
-                  <StarRating rating={5} size={14} className="mt-1" />
-                </div>
-              </div>
-              <p className="text-gray-700 mb-4">
-                "Flight was cancelled with only 2 days notice. The team was professional and I received €600 compensation."
-              </p>
-              <div className="flex justify-between items-center">
-                <span className="text-green-600 font-semibold">€600 recovered</span>
-                <span className="text-sm text-gray-500">2 weeks</span>
-              </div>
-            </motion.div>
-
-            <motion.div 
-              className="bg-gray-50 rounded-lg p-6 hover:shadow-lg transition-shadow cursor-pointer"
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.2 }}
-              viewport={{ once: true, margin: "-50px" }}
-              whileHover={{ 
-                scale: 1.02,
-                transition: { duration: 0.2 }
-              }}
-            >
-              <div className="flex items-center mb-4">
-                <Avatar initials="AL" color="purple" className="mr-3" />
-                <div>
-                  <h4 className="font-semibold">Anna L.</h4>
-                  <p className="text-sm text-gray-600">Amsterdam → Barcelona</p>
-                  <StarRating rating={5} size={14} className="mt-1" />
-                </div>
-              </div>
-              <p className="text-gray-700 mb-4">
-                "I was skeptical at first, but they made the process so easy. Got €250 for my 3-hour delay!"
-              </p>
-              <div className="flex justify-between items-center">
-                <span className="text-green-600 font-semibold">€250 recovered</span>
-                <span className="text-sm text-gray-500">4 weeks</span>
-              </div>
-            </motion.div>
-          </div>
-
-          <div className="text-center mt-12">
-            <div className="bg-blue-50 rounded-lg p-6 max-w-2xl mx-auto">
-              <h3 className="text-xl font-semibold text-blue-900 mb-2">Join 320+ Successful Travelers</h3>
-              <p className="text-blue-800">
-                Average compensation: €450 • Success rate: 94% • Average processing time: 3.2 weeks
-              </p>
-            </div>
-          </div>
-        </div>
-      </section>
-
       {/* How It Works Section */}
       <section id="how-it-works" className="py-20 bg-gray-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -393,9 +342,20 @@ export default function Home() {
               <p className="text-gray-600">Receive €250-€600 compensation directly from the airline in 4-8 weeks.</p>
             </div>
           </div>
-          
-          {/* Pricing Callout */}
-          <div id="pricing" className="mt-16 max-w-md mx-auto bg-white rounded-2xl shadow-xl p-8">
+        </div>
+      </section>
+
+      {/* Trust Metrics Dashboard */}
+      <section className="py-12 bg-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <TrustMetrics />
+        </div>
+      </section>
+
+      {/* Pricing Section */}
+      <section className="py-12 bg-gray-50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="max-w-md mx-auto bg-white rounded-2xl shadow-xl p-8">
             <div className="text-center">
               <h3 className="text-2xl font-bold text-gray-900 mb-2">Success Fee Only</h3>
               <div className="text-4xl font-bold text-blue-600 mb-4">$49</div>
@@ -403,6 +363,111 @@ export default function Home() {
               <div className="bg-green-50 rounded-lg p-4">
                 <p className="text-green-800 font-medium">✓ No win, no fee guarantee</p>
               </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Success Stories Section */}
+      <section id="success-stories" className="py-20 bg-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-16">
+            <h2 className="text-3xl font-bold text-gray-900 mb-4">Success Stories</h2>
+            <p className="text-xl text-gray-600">We've helped travelers recover over €147,000 in compensation</p>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 md:gap-8">
+            <motion.div
+              className="bg-gray-50 rounded-lg p-6 hover:shadow-lg transition-shadow cursor-pointer"
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0 }}
+              viewport={{ once: true, margin: "-50px" }}
+              whileHover={{
+                scale: 1.02,
+                transition: { duration: 0.2 }
+              }}
+            >
+              <div className="flex items-center mb-4">
+                <Avatar initials="SJ" color="blue" className="mr-3" />
+                <div>
+                  <h4 className="font-semibold">Sarah J.</h4>
+                  <p className="text-sm text-gray-600">London → Paris</p>
+                  <StarRating rating={5} size={14} className="mt-1" />
+                </div>
+              </div>
+              <p className="text-gray-700 mb-4">
+                "My flight was delayed 4 hours due to technical issues. Flghtly handled everything and I got €400 compensation within 3 weeks!"
+              </p>
+              <div className="flex justify-between items-center">
+                <span className="text-green-600 font-semibold">€400 recovered</span>
+                <span className="text-sm text-gray-500">3 weeks</span>
+              </div>
+            </motion.div>
+
+            <motion.div
+              className="bg-gray-50 rounded-lg p-6 hover:shadow-lg transition-shadow cursor-pointer"
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.1 }}
+              viewport={{ once: true, margin: "-50px" }}
+              whileHover={{
+                scale: 1.02,
+                transition: { duration: 0.2 }
+              }}
+            >
+              <div className="flex items-center mb-4">
+                <Avatar initials="MR" color="green" className="mr-3" />
+                <div>
+                  <h4 className="font-semibold">Michael R.</h4>
+                  <p className="text-sm text-gray-600">Frankfurt → New York</p>
+                  <StarRating rating={5} size={14} className="mt-1" />
+                </div>
+              </div>
+              <p className="text-gray-700 mb-4">
+                "Flight was cancelled with only 2 days notice. The team was professional and I received €600 compensation."
+              </p>
+              <div className="flex justify-between items-center">
+                <span className="text-green-600 font-semibold">€600 recovered</span>
+                <span className="text-sm text-gray-500">2 weeks</span>
+              </div>
+            </motion.div>
+
+            <motion.div
+              className="bg-gray-50 rounded-lg p-6 hover:shadow-lg transition-shadow cursor-pointer"
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.2 }}
+              viewport={{ once: true, margin: "-50px" }}
+              whileHover={{
+                scale: 1.02,
+                transition: { duration: 0.2 }
+              }}
+            >
+              <div className="flex items-center mb-4">
+                <Avatar initials="AL" color="purple" className="mr-3" />
+                <div>
+                  <h4 className="font-semibold">Anna L.</h4>
+                  <p className="text-sm text-gray-600">Amsterdam → Barcelona</p>
+                  <StarRating rating={5} size={14} className="mt-1" />
+                </div>
+              </div>
+              <p className="text-gray-700 mb-4">
+                "I was skeptical at first, but they made the process so easy. Got €250 for my 3-hour delay!"
+              </p>
+              <div className="flex justify-between items-center">
+                <span className="text-green-600 font-semibold">€250 recovered</span>
+                <span className="text-sm text-gray-500">4 weeks</span>
+              </div>
+            </motion.div>
+          </div>
+
+          <div className="text-center mt-12">
+            <div className="bg-blue-50 rounded-lg p-6 max-w-2xl mx-auto">
+              <h3 className="text-xl font-semibold text-blue-900 mb-2">Join 320+ Successful Travelers</h3>
+              <p className="text-blue-800">
+                Average compensation: €450 • Success rate: 94% • Average processing time: 3.2 weeks
+              </p>
             </div>
           </div>
         </div>
@@ -464,21 +529,21 @@ export default function Home() {
       <TrustDisclosure />
 
       {/* Footer */}
-      <footer className="bg-gray-900 text-white py-12">
+      <footer className="bg-blue-50 py-12">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center">
             <div className="flex items-center justify-center space-x-3 mb-4">
               <img
                 src="/icon-192.png"
                 alt="Flghtly Logo"
-                className="w-12 h-12 rounded-xl shadow-md"
+                className="w-12 h-12 rounded-full shadow-md"
               />
               <div className="text-left">
-                <h3 className="text-2xl font-bold">Flghtly</h3>
-                <p className="text-sm text-gray-400 -mt-0.5">Compensation made simple</p>
+                <h3 className="text-2xl font-bold text-gray-900">Flghtly</h3>
+                <p className="text-sm text-gray-600 -mt-0.5">Compensation made simple</p>
               </div>
             </div>
-            <p className="text-gray-400 mb-6">Get the compensation you deserve for flight delays and cancellations</p>
+            <p className="text-gray-600 mb-6">Get the compensation you deserve for flight delays and cancellations</p>
             <div className="flex flex-wrap justify-center gap-6 mb-6">
               <a 
                 href="/terms" 

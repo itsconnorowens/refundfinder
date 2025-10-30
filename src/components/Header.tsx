@@ -7,7 +7,7 @@ export default function Header() {
             <img
               src="/icon-192.png"
               alt="Flghtly Logo"
-              className="w-10 h-10 rounded-xl shadow-md"
+              className="w-10 h-10 rounded-full shadow-md"
             />
             <div>
               <h1 className="text-xl font-bold text-gray-900">Flghtly</h1>

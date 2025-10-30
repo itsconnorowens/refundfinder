@@ -48,7 +48,7 @@ export function MobileMenu({ isOpen, onClose }: MobileMenuProps) {
                 <img
                   src="/icon-192.png"
                   alt="Flghtly Logo"
-                  className="w-10 h-10 rounded-xl shadow-md"
+                  className="w-10 h-10 rounded-full shadow-md"
                 />
                 <div>
                   <h2 className="text-lg font-bold text-gray-900">Flghtly</h2>
@@ -77,10 +77,10 @@ export function MobileMenu({ isOpen, onClose }: MobileMenuProps) {
                 </li>
                 <li>
                   <button
-                    onClick={() => handleNavClick('#pricing')}
+                    onClick={() => handleNavClick('#success-stories')}
                     className="block w-full text-left py-3 text-base font-medium text-gray-900 hover:text-blue-600 transition-colors"
                   >
-                    Pricing
+                    Success Stories
                   </button>
                 </li>
                 <li>
