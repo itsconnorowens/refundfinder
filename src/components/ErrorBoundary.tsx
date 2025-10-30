@@ -188,19 +188,19 @@ export class InlineErrorBoundary extends Component<
   }
 
   componentDidCatch(error: Error, errorInfo: React.ErrorInfo) {
-    Sentry.captureException(error, {
-      contexts: {
-        react: {
-          componentStack: errorInfo.componentStack,
-        },
-      },
-      tags: {
-        errorBoundary: true,
-        boundaryType: 'inline',
-        context: this.props.context || 'unknown',
-      },
-      level: 'warning',
-    });
+    // Sentry.captureException(error, {
+    //   contexts: {
+    //     react: {
+    //       componentStack: errorInfo.componentStack,
+    //     },
+    //   },
+    //   tags: {
+    //     errorBoundary: true,
+    //     boundaryType: 'inline',
+    //     context: this.props.context || 'unknown',
+    //   },
+    //   level: 'warning',
+    // });
 
     this.props.onError?.(error, errorInfo);
     this.setState({ error, errorInfo });

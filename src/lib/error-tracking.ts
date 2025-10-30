@@ -4,6 +4,7 @@ import { NextRequest, NextResponse } from 'next/server';
 /**
  * Error tracking service for Flghtly
  * Wraps API routes and captures errors to Sentry
+
  */
 
 export type ErrorSeverity = 'fatal' | 'error' | 'warning' | 'info' | 'debug';
@@ -67,6 +68,7 @@ export function setUser(user: {
   name?: string;
 } | null) {
   Sentry.setUser(user);
+  console.log('[Error Tracking] Set user:', user);
 }
 
 /**
@@ -83,6 +85,7 @@ export function addBreadcrumb(
     data,
     timestamp: Date.now() / 1000,
   });
+  console.log('[Breadcrumb]', message, category, data);
 }
 
 /**
@@ -180,6 +183,7 @@ export function trackPerformance(
   });
 
   if (duration > 5000) {
+    console.warn(`Slow operation: ${operation} took ${duration}ms`, tags);
     captureMessage(`Slow operation: ${operation} took ${duration}ms`, {
       level: 'warning',
       tags: {
@@ -201,6 +205,7 @@ export function startTransaction(name: string, op: string) {
     return Sentry.startSpan({ name, op }, (span) => span);
   }
   // Fallback: return a mock object if API not available
+  console.log('[Transaction]', name, op);
   return {
     finish: () => {},
     setTag: () => {},
