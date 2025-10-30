@@ -15,6 +15,7 @@ import { TrustMetrics } from '../components/TrustMetrics';
 import { StepIcon } from '../components/icons';
 import { MobileMenu } from '../components/MobileMenu';
 import { InlineErrorBoundary } from '../components/ErrorBoundary';
+import TrustDisclosure from '../components/trust-disclosure';
 
 export default function Home() {
   const [activeTab, setActiveTab] = useState<'flight' | 'email'>('flight');
@@ -421,82 +422,8 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Legal Disclaimer Section */}
-      <section className="py-16 bg-gray-50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="max-w-4xl mx-auto">
-            <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-6">
-              <h3 className="text-lg font-semibold text-yellow-800 mb-3">
-                Important Legal Disclaimer
-              </h3>
-              <div className="text-yellow-700 text-sm space-y-2">
-                <p>
-                  <strong>Service Nature:</strong> Flghtly provides assistance services only. We are not a law firm and do not provide legal advice or representation.
-                </p>
-                <p>
-                  <strong>Eligibility:</strong> Compensation eligibility depends on various factors including flight route, delay duration, and circumstances. We provide initial assessments, but final determination rests with the airline.
-                </p>
-                <p>
-                  <strong>International Compliance:</strong> We comply with applicable consumer protection laws including GDPR (EU), UK GDPR (UK), and other relevant regulations. See our <a href="/privacy" className="underline hover:text-yellow-900">Privacy Policy</a> and <a href="/terms" className="underline hover:text-yellow-900">Terms of Service</a> for details.
-                </p>
-                <p>
-                  <strong>Consumer Rights:</strong> EU/UK residents have the right to withdraw from this service within 14 days of purchase. See our <a href="/gdpr" className="underline hover:text-yellow-900">GDPR Rights page</a> for more information.
-                </p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* GDPR Compliance Section */}
-      <section className="py-16 bg-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold text-gray-900 mb-4">Your Data Protection Rights</h2>
-            <p className="text-xl text-gray-600">We respect your privacy and comply with international data protection laws</p>
-          </div>
-          
-          <div className="grid md:grid-cols-2 gap-8 max-w-5xl mx-auto">
-            <div className="bg-blue-50 rounded-lg p-6 border border-blue-200">
-              <h3 className="text-xl font-semibold text-blue-900 mb-3">EU/UK GDPR Rights</h3>
-              <ul className="text-blue-800 space-y-2 text-sm">
-                <li>• <strong>Access:</strong> Request a copy of your personal data</li>
-                <li>• <strong>Correction:</strong> Correct inaccurate or incomplete data</li>
-                <li>• <strong>Deletion:</strong> Request deletion of your data</li>
-                <li>• <strong>Portability:</strong> Export your data in a machine-readable format</li>
-                <li>• <strong>Withdrawal:</strong> Withdraw consent within 14 days</li>
-              </ul>
-              <div className="mt-4">
-                <a 
-                  href="/gdpr" 
-                  className="inline-flex items-center px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-md hover:bg-blue-700 transition-colors"
-                >
-                  Exercise Your Rights
-                </a>
-              </div>
-            </div>
-
-            <div className="bg-green-50 rounded-lg p-6 border border-green-200">
-              <h3 className="text-xl font-semibold text-green-900 mb-3">Data Security & Privacy</h3>
-              <ul className="text-green-800 space-y-2 text-sm">
-                <li>• <strong>Encryption:</strong> All data encrypted in transit and at rest</li>
-                <li>• <strong>Minimal Collection:</strong> Only collect necessary flight data</li>
-                <li>• <strong>Secure Storage:</strong> Data stored in EU-compliant servers</li>
-                <li>• <strong>No Sharing:</strong> Never sell or share your personal data</li>
-                <li>• <strong>Retention:</strong> Data deleted after claim completion</li>
-              </ul>
-              <div className="mt-4">
-                <a 
-                  href="/privacy" 
-                  className="inline-flex items-center px-4 py-2 bg-green-600 text-white text-sm font-medium rounded-md hover:bg-green-700 transition-colors"
-                >
-                  Read Privacy Policy
-                </a>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
+      {/* Trust & Compliance Disclosure */}
+      <TrustDisclosure />
 
       {/* Footer */}
       <footer className="bg-gray-900 text-white py-12">
