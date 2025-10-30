@@ -2,7 +2,6 @@
 
 import { X } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { PlaneIcon } from './icons';
 
 interface MobileMenuProps {
   isOpen: boolean;
@@ -13,6 +12,12 @@ export function MobileMenu({ isOpen, onClose }: MobileMenuProps) {
   const handleCTAClick = () => {
     const formSection = document.querySelector('#eligibility-form');
     formSection?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    onClose();
+  };
+
+  const handleNavClick = (sectionId: string) => {
+    const section = document.querySelector(sectionId);
+    section?.scrollIntoView({ behavior: 'smooth', block: 'center' });
     onClose();
   };
 
@@ -40,9 +45,11 @@ export function MobileMenu({ isOpen, onClose }: MobileMenuProps) {
             {/* Logo & Close Button */}
             <div className="flex items-center justify-between p-6 border-b border-gray-100">
               <div className="flex items-center space-x-3">
-                <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-xl flex items-center justify-center shadow-md">
-                  <PlaneIcon size={22} className="text-white" />
-                </div>
+                <img
+                  src="/icon-192.png"
+                  alt="Flghtly Logo"
+                  className="w-10 h-10 rounded-xl shadow-md"
+                />
                 <div>
                   <h2 className="text-lg font-bold text-gray-900">Flghtly</h2>
                   <p className="text-xs text-gray-500 -mt-0.5">Compensation made simple</p>
@@ -61,31 +68,28 @@ export function MobileMenu({ isOpen, onClose }: MobileMenuProps) {
             <nav className="mt-4 px-6">
               <ul className="space-y-2">
                 <li>
-                  <a
-                    href="#how-it-works"
-                    onClick={onClose}
-                    className="block py-3 text-base font-medium text-gray-900 hover:text-blue-600 transition-colors"
+                  <button
+                    onClick={() => handleNavClick('#how-it-works')}
+                    className="block w-full text-left py-3 text-base font-medium text-gray-900 hover:text-blue-600 transition-colors"
                   >
                     How It Works
-                  </a>
+                  </button>
                 </li>
                 <li>
-                  <a
-                    href="#pricing"
-                    onClick={onClose}
-                    className="block py-3 text-base font-medium text-gray-900 hover:text-blue-600 transition-colors"
+                  <button
+                    onClick={() => handleNavClick('#pricing')}
+                    className="block w-full text-left py-3 text-base font-medium text-gray-900 hover:text-blue-600 transition-colors"
                   >
                     Pricing
-                  </a>
+                  </button>
                 </li>
                 <li>
-                  <a
-                    href="#faq"
-                    onClick={onClose}
-                    className="block py-3 text-base font-medium text-gray-900 hover:text-blue-600 transition-colors"
+                  <button
+                    onClick={() => handleNavClick('#faq')}
+                    className="block w-full text-left py-3 text-base font-medium text-gray-900 hover:text-blue-600 transition-colors"
                   >
                     FAQ
-                  </a>
+                  </button>
                 </li>
               </ul>
 

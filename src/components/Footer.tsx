@@ -1,5 +1,3 @@
-import { PlaneIcon } from './icons';
-
 export default function Footer() {
   return (
     <footer className="bg-gray-900 text-white">
@@ -7,9 +5,11 @@ export default function Footer() {
         <div className="grid md:grid-cols-4 gap-8">
           <div>
             <div className="flex items-center space-x-3 mb-4">
-              <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-xl flex items-center justify-center shadow-md">
-                <PlaneIcon size={22} className="text-white" />
-              </div>
+              <img
+                src="/icon-192.png"
+                alt="Flghtly Logo"
+                className="w-10 h-10 rounded-xl shadow-md"
+              />
               <div>
                 <h3 className="text-xl font-bold">Flghtly</h3>
                 <p className="text-xs text-gray-400 -mt-0.5">Compensation made simple</p>

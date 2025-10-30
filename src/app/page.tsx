@@ -53,9 +53,11 @@ export default function Home() {
             <div className="flex items-center">
               <div className="flex-shrink-0">
                 <div className="flex items-center space-x-3">
-                  <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-xl flex items-center justify-center shadow-md">
-                    <PlaneIcon size={22} className="text-white" />
-                  </div>
+                  <img
+                    src="/icon-192.png"
+                    alt="Flghtly Logo"
+                    className="w-10 h-10 rounded-xl shadow-md"
+                  />
                   <div>
                     <h1 className="text-xl font-bold text-gray-900">Flghtly</h1>
                     <p className="text-xs text-gray-500 -mt-0.5">Compensation made simple</p>
@@ -66,9 +68,33 @@ export default function Home() {
 
             {/* Desktop Navigation */}
             <nav className="hidden md:flex items-center space-x-8">
-              <a href="#how-it-works" className="text-gray-600 hover:text-blue-600 transition-colors font-medium">How It Works</a>
-              <a href="#pricing" className="text-gray-600 hover:text-blue-600 transition-colors font-medium">Pricing</a>
-              <a href="#faq" className="text-gray-600 hover:text-blue-600 transition-colors font-medium">FAQ</a>
+              <button
+                onClick={() => {
+                  const section = document.querySelector('#how-it-works');
+                  section?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                }}
+                className="text-gray-600 hover:text-blue-600 transition-colors font-medium"
+              >
+                How It Works
+              </button>
+              <button
+                onClick={() => {
+                  const section = document.querySelector('#pricing');
+                  section?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                }}
+                className="text-gray-600 hover:text-blue-600 transition-colors font-medium"
+              >
+                Pricing
+              </button>
+              <button
+                onClick={() => {
+                  const section = document.querySelector('#faq');
+                  section?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                }}
+                className="text-gray-600 hover:text-blue-600 transition-colors font-medium"
+              >
+                FAQ
+              </button>
             </nav>
 
             {/* CTA Button */}
@@ -442,9 +468,11 @@ export default function Home() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center">
             <div className="flex items-center justify-center space-x-3 mb-4">
-              <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-xl flex items-center justify-center shadow-md">
-                <PlaneIcon size={24} className="text-white" />
-              </div>
+              <img
+                src="/icon-192.png"
+                alt="Flghtly Logo"
+                className="w-12 h-12 rounded-xl shadow-md"
+              />
               <div className="text-left">
                 <h3 className="text-2xl font-bold">Flghtly</h3>
                 <p className="text-sm text-gray-400 -mt-0.5">Compensation made simple</p>
