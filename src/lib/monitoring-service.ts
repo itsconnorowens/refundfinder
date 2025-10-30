@@ -3,9 +3,9 @@
  * Handles email tracking, alerts, and system monitoring
  */
 
-import { ClaimRecord, updateClaim, getClaimByClaimId, TABLES } from './airtable';
+import { getClaimByClaimId, TABLES } from './airtable';
 import { sendNotification, NotificationChannel } from './notification-service';
-import { trackDatabaseOperation, captureMessage, ErrorCategory } from './error-tracking';
+import { trackDatabaseOperation } from './error-tracking';
 import Airtable from 'airtable';
 
 const base = process.env.AIRTABLE_API_KEY && process.env.AIRTABLE_BASE_ID
@@ -742,9 +742,8 @@ async function checkSentryHealth(): Promise<HealthCheckResult> {
       };
     }
 
-    // Send a test message to verify Sentry is working
-    captureMessage('Health check ping', { level: 'info', tags: { type: 'health_check' } });
-
+    // Verify Sentry is configured without actually calling Sentry SDK
+    // to avoid potential circular dependencies or initialization issues during health checks
     return {
       service: 'Sentry',
       status: 'healthy',

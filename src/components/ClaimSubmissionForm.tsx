@@ -241,7 +241,7 @@ export default function ClaimSubmissionForm() {
       if (currentStep === 1 && formData.email && formData.firstName) {
         setUser({
           email: formData.email,
-          username: `${formData.firstName} ${formData.lastName}`.trim(),
+          name: `${formData.firstName} ${formData.lastName}`.trim(),
         });
       }
 

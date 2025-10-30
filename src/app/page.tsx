@@ -23,6 +23,7 @@ export default function Home() {
   const [loading, setLoading] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const [prefersReducedMotion, setPrefersReducedMotion] = useState(false);
 
   const handleResults = (response: CheckEligibilityResponse) => {
     setResults(response);
@@ -31,6 +32,19 @@ export default function Home() {
   const handleLoading = (isLoading: boolean) => {
     setLoading(isLoading);
   };
+
+  // Check for reduced motion preference
+  useEffect(() => {
+    const mediaQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
+    setPrefersReducedMotion(mediaQuery.matches);
+
+    const handleChange = (e: MediaQueryListEvent) => {
+      setPrefersReducedMotion(e.matches);
+    };
+
+    mediaQuery.addEventListener('change', handleChange);
+    return () => mediaQuery.removeEventListener('change', handleChange);
+  }, []);
 
   // Handle scroll events for header transformation
   useEffect(() => {
@@ -63,9 +77,9 @@ export default function Home() {
             ? 'bg-white/98 shadow-lg border-gray-200 py-2'
             : 'bg-white/95 shadow-sm border-gray-100 py-4'
         }`}
-        initial={{ y: -100, opacity: 0 }}
+        initial={prefersReducedMotion ? { opacity: 1 } : { y: -100, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
-        transition={{ duration: 0.6, ease: "easeOut" }}
+        transition={prefersReducedMotion ? { duration: 0 } : { duration: 0.6, ease: "easeOut" }}
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className={`flex justify-between items-center transition-all duration-300 ${
@@ -79,25 +93,33 @@ export default function Home() {
                     src="/icon-192.png"
                     alt="Flghtly Logo"
                     className="w-10 h-10 rounded-full shadow-md"
-                    initial={{ scale: 0, rotate: -180 }}
+                    initial={prefersReducedMotion ? { scale: 1, rotate: 0 } : { scale: 0, rotate: -180 }}
                     animate={{ scale: 1, rotate: 0 }}
-                    transition={{
-                      duration: 0.6,
-                      delay: 0.2,
-                      type: "spring",
-                      stiffness: 200,
-                      damping: 15
-                    }}
-                    whileHover={{
-                      scale: 1.1,
-                      rotate: 5,
-                      transition: { duration: 0.3 }
-                    }}
+                    transition={
+                      prefersReducedMotion
+                        ? { duration: 0 }
+                        : {
+                            duration: 0.6,
+                            delay: 0.2,
+                            type: "spring",
+                            stiffness: 200,
+                            damping: 15
+                          }
+                    }
+                    whileHover={
+                      prefersReducedMotion
+                        ? {}
+                        : {
+                            scale: 1.1,
+                            rotate: 5,
+                            transition: { duration: 0.3 }
+                          }
+                    }
                   />
                   <motion.div
-                    initial={{ opacity: 0, x: -20 }}
+                    initial={prefersReducedMotion ? { opacity: 1, x: 0 } : { opacity: 0, x: -20 }}
                     animate={{ opacity: 1, x: 0 }}
-                    transition={{ duration: 0.6, delay: 0.3 }}
+                    transition={prefersReducedMotion ? { duration: 0 } : { duration: 0.6, delay: 0.3 }}
                   >
                     <h1 className="text-xl font-bold text-gray-900">Flghtly</h1>
                     <p className="text-xs text-gray-500 -mt-0.5">Compensation made simple</p>
@@ -114,14 +136,14 @@ export default function Home() {
                   section?.scrollIntoView({ behavior: 'smooth', block: 'center' });
                 }}
                 className="relative text-gray-600 hover:text-blue-600 transition-colors font-medium group"
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
+                whileHover={prefersReducedMotion ? {} : { scale: 1.05 }}
+                whileTap={prefersReducedMotion ? {} : { scale: 0.95 }}
               >
                 How It Works
                 <motion.span
                   className="absolute bottom-0 left-0 w-0 h-0.5 bg-blue-600 group-hover:w-full transition-all duration-300"
                   initial={{ width: 0 }}
-                  whileHover={{ width: '100%' }}
+                  whileHover={prefersReducedMotion ? {} : { width: '100%' }}
                 />
               </motion.button>
               <motion.button
@@ -130,14 +152,14 @@ export default function Home() {
                   section?.scrollIntoView({ behavior: 'smooth', block: 'center' });
                 }}
                 className="relative text-gray-600 hover:text-blue-600 transition-colors font-medium group"
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
+                whileHover={prefersReducedMotion ? {} : { scale: 1.05 }}
+                whileTap={prefersReducedMotion ? {} : { scale: 0.95 }}
               >
                 Success Stories
                 <motion.span
                   className="absolute bottom-0 left-0 w-0 h-0.5 bg-blue-600 group-hover:w-full transition-all duration-300"
                   initial={{ width: 0 }}
-                  whileHover={{ width: '100%' }}
+                  whileHover={prefersReducedMotion ? {} : { width: '100%' }}
                 />
               </motion.button>
               <motion.button
@@ -146,29 +168,42 @@ export default function Home() {
                   section?.scrollIntoView({ behavior: 'smooth', block: 'center' });
                 }}
                 className="relative text-gray-600 hover:text-blue-600 transition-colors font-medium group"
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
+                whileHover={prefersReducedMotion ? {} : { scale: 1.05 }}
+                whileTap={prefersReducedMotion ? {} : { scale: 0.95 }}
               >
                 FAQ
                 <motion.span
                   className="absolute bottom-0 left-0 w-0 h-0.5 bg-blue-600 group-hover:w-full transition-all duration-300"
                   initial={{ width: 0 }}
-                  whileHover={{ width: '100%' }}
+                  whileHover={prefersReducedMotion ? {} : { width: '100%' }}
                 />
               </motion.button>
             </nav>
 
             {/* CTA Button */}
             <div className="hidden md:flex items-center space-x-4">
-              <button
+              <motion.button
                 onClick={() => {
                   const formSection = document.querySelector('#eligibility-form');
                   formSection?.scrollIntoView({ behavior: 'smooth', block: 'center' });
                 }}
                 className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white px-6 py-2.5 rounded-lg font-medium transition-all duration-200 shadow-md hover:shadow-lg"
+                initial={prefersReducedMotion ? { opacity: 1, scale: 1 } : { opacity: 0, scale: 0.8 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={prefersReducedMotion ? { duration: 0 } : { duration: 0.5, delay: 0.4 }}
+                whileHover={
+                  prefersReducedMotion
+                    ? {}
+                    : {
+                        scale: 1.05,
+                        boxShadow: "0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)",
+                        transition: { duration: 0.2 }
+                      }
+                }
+                whileTap={prefersReducedMotion ? {} : { scale: 0.98 }}
               >
                 Check Eligibility
-              </button>
+              </motion.button>
             </div>
 
             {/* Mobile Menu Button */}
