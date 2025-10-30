@@ -1,10 +1,9 @@
 import type { Metadata } from 'next'
 import './globals.css'
 import { PWAInstaller } from '@/components/PWAInstaller'
-import { PostHogProvider, PostHogPageView } from '@/components/PostHogProvider'
+import { ClientPostHogProvider } from '@/components/ClientPostHog'
 import { ErrorBoundary } from '@/components/ErrorBoundary'
-import { Suspense } from 'react'
-import { Toaster } from 'sonner'
+import { ClientToaster } from '@/components/ClientToaster'
 
 export const metadata: Metadata = {
   title: 'Flghtly - Flight Delay Compensation',
@@ -34,26 +33,11 @@ export default function RootLayout({
       </head>
       <body className="antialiased">
         <ErrorBoundary context="root-layout">
-          <PostHogProvider>
-            <Suspense fallback={null}>
-              <PostHogPageView />
-            </Suspense>
+          <ClientPostHogProvider>
             {children}
             <PWAInstaller />
-            <Toaster
-              position="top-right"
-              toastOptions={{
-                style: {
-                  background: '#1e293b',
-                  color: '#f8fafc',
-                  border: '1px solid #334155',
-                },
-                className: 'sonner-toast',
-                duration: 4000,
-              }}
-              richColors
-            />
-          </PostHogProvider>
+            <ClientToaster />
+          </ClientPostHogProvider>
         </ErrorBoundary>
       </body>
     </html>
