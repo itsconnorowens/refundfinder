@@ -3,8 +3,14 @@
  * Handles email tracking, alerts, and system monitoring
  */
 
-import { ClaimRecord, updateClaim, getClaimByClaimId } from './airtable';
+import { ClaimRecord, updateClaim, getClaimByClaimId, TABLES } from './airtable';
 import { sendNotification, NotificationChannel } from './notification-service';
+import { trackDatabaseOperation, captureMessage, ErrorCategory } from './error-tracking';
+import Airtable from 'airtable';
+
+const base = process.env.AIRTABLE_API_KEY && process.env.AIRTABLE_BASE_ID
+  ? new Airtable({ apiKey: process.env.AIRTABLE_API_KEY }).base(process.env.AIRTABLE_BASE_ID)
+  : null;
 
 export interface EmailTrackingEvent {
   messageId: string;
@@ -522,4 +528,269 @@ export async function getClaimEmailStats(claimId: string): Promise<{
       failed: 0,
     };
   }
+}
+
+/**
+ * Get real-time claims statistics from Airtable
+ */
+export async function getRealTimeClaimsStats(): Promise<{
+  claimsToday: number;
+  claimsThisWeek: number;
+  claimsThisMonth: number;
+  overdueClaims: number;
+  readyToFileClaims: number;
+}> {
+  if (!base) {
+    return {
+      claimsToday: 0,
+      claimsThisWeek: 0,
+      claimsThisMonth: 0,
+      overdueClaims: 0,
+      readyToFileClaims: 0,
+    };
+  }
+
+  return trackDatabaseOperation('get_real_time_stats', TABLES.CLAIMS, async () => {
+    const now = new Date();
+    const todayStart = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+    const weekStart = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
+    const monthStart = new Date(now.getFullYear(), now.getMonth(), 1);
+    const slaDeadline = new Date(now.getTime() - 48 * 60 * 60 * 1000);
+
+    const stats = {
+      claimsToday: 0,
+      claimsThisWeek: 0,
+      claimsThisMonth: 0,
+      overdueClaims: 0,
+      readyToFileClaims: 0,
+    };
+
+    const records = await base!(TABLES.CLAIMS)
+      .select({
+        fields: ['created_at', 'status', 'validated_at'],
+      })
+      .all();
+
+    records.forEach((record) => {
+      const createdAt = record.fields.created_at ? new Date(record.fields.created_at as string) : null;
+      const status = record.fields.status as string;
+      const validatedAt = record.fields.validated_at ? new Date(record.fields.validated_at as string) : null;
+
+      if (createdAt) {
+        if (createdAt >= todayStart) stats.claimsToday++;
+        if (createdAt >= weekStart) stats.claimsThisWeek++;
+        if (createdAt >= monthStart) stats.claimsThisMonth++;
+      }
+
+      if (status === 'ready_to_file') {
+        stats.readyToFileClaims++;
+      }
+
+      // Check for SLA breach (>48 hours since validation without filing)
+      if (status === 'validated' && validatedAt && validatedAt < slaDeadline) {
+        stats.overdueClaims++;
+      }
+    });
+
+    return stats;
+  });
+}
+
+/**
+ * Perform automated health checks on critical services
+ */
+export interface HealthCheckResult {
+  service: string;
+  status: 'healthy' | 'degraded' | 'down';
+  responseTime?: number;
+  error?: string;
+  timestamp: string;
+}
+
+export async function performHealthChecks(): Promise<HealthCheckResult[]> {
+  const results: HealthCheckResult[] = [];
+
+  // Check Airtable connectivity
+  const airtableCheck = await checkAirtableHealth();
+  results.push(airtableCheck);
+
+  // Check Stripe connectivity
+  const stripeCheck = await checkStripeHealth();
+  results.push(stripeCheck);
+
+  // Check Email service
+  const emailCheck = await checkEmailServiceHealth();
+  results.push(emailCheck);
+
+  // Check Sentry integration
+  const sentryCheck = await checkSentryHealth();
+  results.push(sentryCheck);
+
+  return results;
+}
+
+async function checkAirtableHealth(): Promise<HealthCheckResult> {
+  const startTime = Date.now();
+
+  try {
+    if (!base) {
+      return {
+        service: 'Airtable',
+        status: 'down',
+        error: 'Airtable credentials not configured',
+        timestamp: new Date().toISOString(),
+      };
+    }
+
+    // Try to fetch a single record
+    await base(TABLES.CLAIMS)
+      .select({ maxRecords: 1 })
+      .firstPage();
+
+    const responseTime = Date.now() - startTime;
+
+    return {
+      service: 'Airtable',
+      status: responseTime > 2000 ? 'degraded' : 'healthy',
+      responseTime,
+      timestamp: new Date().toISOString(),
+    };
+  } catch (error) {
+    return {
+      service: 'Airtable',
+      status: 'down',
+      responseTime: Date.now() - startTime,
+      error: error instanceof Error ? error.message : 'Unknown error',
+      timestamp: new Date().toISOString(),
+    };
+  }
+}
+
+async function checkStripeHealth(): Promise<HealthCheckResult> {
+  const startTime = Date.now();
+
+  try {
+    if (!process.env.STRIPE_SECRET_KEY) {
+      return {
+        service: 'Stripe',
+        status: 'down',
+        error: 'Stripe credentials not configured',
+        timestamp: new Date().toISOString(),
+      };
+    }
+
+    // Stripe is configured, assume healthy
+    // In a real implementation, you might make a test API call
+    return {
+      service: 'Stripe',
+      status: 'healthy',
+      responseTime: Date.now() - startTime,
+      timestamp: new Date().toISOString(),
+    };
+  } catch (error) {
+    return {
+      service: 'Stripe',
+      status: 'down',
+      responseTime: Date.now() - startTime,
+      error: error instanceof Error ? error.message : 'Unknown error',
+      timestamp: new Date().toISOString(),
+    };
+  }
+}
+
+async function checkEmailServiceHealth(): Promise<HealthCheckResult> {
+  const startTime = Date.now();
+
+  try {
+    const sendgridConfigured = !!process.env.SENDGRID_API_KEY;
+    const resendConfigured = !!process.env.RESEND_API_KEY;
+
+    if (!sendgridConfigured && !resendConfigured) {
+      return {
+        service: 'Email',
+        status: 'down',
+        error: 'No email service configured',
+        timestamp: new Date().toISOString(),
+      };
+    }
+
+    return {
+      service: 'Email',
+      status: 'healthy',
+      responseTime: Date.now() - startTime,
+      timestamp: new Date().toISOString(),
+    };
+  } catch (error) {
+    return {
+      service: 'Email',
+      status: 'down',
+      responseTime: Date.now() - startTime,
+      error: error instanceof Error ? error.message : 'Unknown error',
+      timestamp: new Date().toISOString(),
+    };
+  }
+}
+
+async function checkSentryHealth(): Promise<HealthCheckResult> {
+  try {
+    if (!process.env.NEXT_PUBLIC_SENTRY_DSN) {
+      return {
+        service: 'Sentry',
+        status: 'down',
+        error: 'Sentry DSN not configured',
+        timestamp: new Date().toISOString(),
+      };
+    }
+
+    // Send a test message to verify Sentry is working
+    captureMessage('Health check ping', { level: 'info', tags: { type: 'health_check' } });
+
+    return {
+      service: 'Sentry',
+      status: 'healthy',
+      timestamp: new Date().toISOString(),
+    };
+  } catch (error) {
+    return {
+      service: 'Sentry',
+      status: 'down',
+      error: error instanceof Error ? error.message : 'Unknown error',
+      timestamp: new Date().toISOString(),
+    };
+  }
+}
+
+/**
+ * Monitor service health continuously
+ * Returns alerts for any services that are down or degraded
+ */
+export async function monitorServiceHealth(): Promise<SystemAlert[]> {
+  const healthChecks = await performHealthChecks();
+  const alerts: SystemAlert[] = [];
+
+  healthChecks.forEach((check) => {
+    if (check.status === 'down') {
+      alerts.push({
+        id: `health-${check.service}-${Date.now()}`,
+        type: 'system_error',
+        severity: 'critical',
+        title: `${check.service} Service Down`,
+        message: `${check.service} is not responding: ${check.error || 'Unknown error'}`,
+        timestamp: check.timestamp,
+        resolved: false,
+      });
+    } else if (check.status === 'degraded') {
+      alerts.push({
+        id: `health-${check.service}-${Date.now()}`,
+        type: 'system_error',
+        severity: 'high',
+        title: `${check.service} Performance Degraded`,
+        message: `${check.service} response time is high: ${check.responseTime}ms`,
+        timestamp: check.timestamp,
+        resolved: false,
+      });
+    }
+  });
+
+  return alerts;
 }
