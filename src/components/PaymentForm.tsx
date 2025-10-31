@@ -3,6 +3,8 @@
 import { Elements, CardElement, useStripe, useElements } from '@stripe/react-stripe-js';
 import { loadStripe } from '@stripe/stripe-js';
 import { useState } from 'react';
+import { useCurrency } from '@/contexts/CurrencyContext';
+import { getServiceFeeFormatted } from '@/lib/currency';
 
 interface PaymentFormProps {
   onSuccess: () => void;
@@ -15,6 +17,7 @@ const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY 
 function PaymentFormContent({ onSuccess, onCancel }: PaymentFormProps) {
   const stripe = useStripe();
   const elements = useElements();
+  const { currency } = useCurrency();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -39,7 +42,8 @@ function PaymentFormContent({ onSuccess, onCancel }: PaymentFormProps) {
           email: 'user@example.com', // This would come from form data
           claimId: `claim_${Date.now()}`, // This would be generated
           firstName: 'John', // This would come from form data
-          lastName: 'Doe' // This would come from form data
+          lastName: 'Doe', // This would come from form data
+          currency
         }),
       });
 
@@ -171,7 +175,7 @@ function PaymentFormContent({ onSuccess, onCancel }: PaymentFormProps) {
             disabled={!stripe || loading}
             className="flex-1 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
           >
-            {loading ? 'Processing...' : 'Pay $49'}
+            {loading ? 'Processing...' : `Pay ${getServiceFeeFormatted(currency)}`}
           </button>
         </div>
       </form>

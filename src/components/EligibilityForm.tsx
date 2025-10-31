@@ -14,6 +14,8 @@ import {
   validateFlightDate,
   validateDelayDuration
 } from '@/lib/validation';
+import { useCurrency } from '@/contexts/CurrencyContext';
+import { formatCompensationRange, getServiceFeeFormatted } from '@/lib/currency';
 
 interface EligibilityFormData {
   // Option 1: Email paste
@@ -31,6 +33,7 @@ interface EligibilityFormData {
 
 export function EligibilityForm() {
   const router = useRouter();
+  const { currency, isEURegion } = useCurrency();
   const [formData, setFormData] = useState<EligibilityFormData>({
     emailText: '',
     flightNumber: '',
@@ -254,15 +257,15 @@ export function EligibilityForm() {
                 <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-white">
                   Flight Delayed 3+ Hours?
                   <br />
-                  <span className="text-[#00D9B5]">Get Your €250-€600</span>
+                  <span className="text-[#00D9B5]">Get Your {formatCompensationRange(250, 600, currency, isEURegion)}</span>
                   <br />
                   Compensation in 30 Days
                 </h1>
 
                 <p className="text-lg text-slate-400">
-                  We handle the airline paperwork so you don't have to. 
+                  We handle the airline paperwork so you don't have to.
                   <br />
-                  <span className="text-[#00D9B5] font-semibold">Pay $49 upfront with 100% money-back guarantee.</span>
+                  <span className="text-[#00D9B5] font-semibold">Pay {getServiceFeeFormatted(currency)} upfront with 100% money-back guarantee.</span>
                 </p>
 
                 {/* Input Method Selection */}

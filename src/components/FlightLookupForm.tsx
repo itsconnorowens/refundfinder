@@ -13,6 +13,8 @@ import {
   validateDelayDuration,
   validateEmail
 } from '@/lib/validation';
+import { useCurrency } from '@/contexts/CurrencyContext';
+import { formatCurrency, convertCompensationAmount } from '@/lib/currency';
 
 interface FlightLookupFormProps {
   onResults: (results: CheckEligibilityResponse) => void;
@@ -20,6 +22,7 @@ interface FlightLookupFormProps {
 }
 
 export default function FlightLookupForm({ onResults, onLoading }: FlightLookupFormProps) {
+  const { currency, isEURegion } = useCurrency();
   const [formData, setFormData] = useState({
     flightNumber: '',
     airline: '',
@@ -875,8 +878,8 @@ export default function FlightLookupForm({ onResults, onLoading }: FlightLookupF
             <div className="md:col-span-2 bg-green-50 border border-green-200 rounded-lg p-4">
               <h4 className="font-medium text-green-900 mb-2">EU Regulation 261/2004 - Denied Boarding Rights</h4>
               <ul className="text-sm text-green-800 space-y-1">
-                <li>• Up to €600 compensation for involuntary denied boarding</li>
-                <li>• Distance-based: €250 (under 1,500km), €400 (1,500-3,500km), €600 (over 3,500km)</li>
+                <li>• Up to {formatCurrency(isEURegion ? 600 : convertCompensationAmount(600, currency), currency)} compensation for involuntary denied boarding</li>
+                <li>• Distance-based: {formatCurrency(isEURegion ? 250 : convertCompensationAmount(250, currency), currency)} (under 1,500km), {formatCurrency(isEURegion ? 400 : convertCompensationAmount(400, currency), currency)} (1,500-3,500km), {formatCurrency(isEURegion ? 600 : convertCompensationAmount(600, currency), currency)} (over 3,500km)</li>
                 <li>• 50% reduction if alternative arrives within 2-4 hours of original</li>
                 <li>• Right to care: meals, hotel, transport during waiting time</li>
                 <li>• Choice between refund or alternative flight to final destination</li>

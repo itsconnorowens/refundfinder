@@ -29,6 +29,8 @@ import {
   validateDelayDuration,
   validateEmail
 } from '@/lib/validation';
+import { useCurrency } from '@/contexts/CurrencyContext';
+import { getServiceFee } from '@/lib/currency';
 
 interface FormData {
   // Step 1: Personal Info
@@ -77,6 +79,7 @@ const STEPS = [
 
 export default function ClaimSubmissionForm() {
   const searchParams = useSearchParams();
+  const { currency } = useCurrency();
   const [currentStep, setCurrentStep] = useState(1);
   const [formData, setFormData] = useState<FormData>({
     firstName: '',
@@ -270,6 +273,7 @@ export default function ClaimSubmissionForm() {
           email: formData.email,
           firstName: formData.firstName,
           lastName: formData.lastName,
+          currency,
         }),
       });
 
@@ -285,7 +289,8 @@ export default function ClaimSubmissionForm() {
       // Track payment initiated
       if (typeof window !== 'undefined') {
         posthog.capture('payment_initiated', {
-          amount_cents: 4900,
+          amount_cents: getServiceFee(currency),
+          currency,
           claim_id: data.claimId,
         });
       }

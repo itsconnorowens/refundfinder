@@ -10,6 +10,8 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { AlertCircle, CheckCircle, Lock, ShieldCheck, Users, Clock, DollarSign } from 'lucide-react';
 import { TrustBadgeRow } from './TrustBadge';
+import { useCurrency } from '@/contexts/CurrencyContext';
+import { formatCurrency, convertCompensationAmount } from '@/lib/currency';
 
 interface PaymentStepProps {
   email: string;
@@ -32,6 +34,7 @@ export default function PaymentStep({
 }: PaymentStepProps) {
   const stripe = useStripe();
   const elements = useElements();
+  const { currency, isEURegion } = useCurrency();
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [isProcessing, setIsProcessing] = useState(false);
   const [paymentReady, setPaymentReady] = useState(false);
@@ -86,12 +89,13 @@ export default function PaymentStep({
     }
   };
 
-  const formatAmount = (cents: number) => {
-    return new Intl.NumberFormat('en-US', {
-      style: 'currency',
-      currency: 'USD',
-    }).format(cents / 100);
+  // Format amount based on user's currency
+  const formatAmountDisplay = (cents: number) => {
+    return formatCurrency(cents / 100, currency);
   };
+
+  // Get average payout in user's currency
+  const averagePayout = isEURegion ? 450 : convertCompensationAmount(450, currency);
 
   return (
     <div className="space-y-6">
@@ -120,7 +124,7 @@ export default function PaymentStep({
             <div className="text-xs text-gray-500">Filing Time</div>
           </div>
           <div>
-            <div className="text-2xl font-bold text-blue-600">€450</div>
+            <div className="text-2xl font-bold text-blue-600">{formatCurrency(averagePayout, currency)}</div>
             <div className="text-xs text-gray-500">Avg Payout</div>
           </div>
         </div>
@@ -142,7 +146,7 @@ export default function PaymentStep({
             <div className="flex justify-between items-center py-3 border-b border-blue-200">
               <span className="text-gray-700">Service Fee</span>
               <span className="text-2xl font-bold text-gray-900">
-                {formatAmount(amount)}
+                {formatAmountDisplay(amount)}
               </span>
             </div>
             
@@ -260,7 +264,7 @@ export default function PaymentStep({
                   </>
                 ) : (
                   <>
-                    Pay {formatAmount(amount)}
+                    Pay {formatAmountDisplay(amount)}
                     <CheckCircle className="w-4 h-4 ml-2" />
                   </>
                 )}

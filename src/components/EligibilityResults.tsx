@@ -5,12 +5,15 @@ import posthog from 'posthog-js';
 import { CheckEligibilityResponse, FlightData, EligibilityData } from '../types/api';
 import PaymentForm from './PaymentForm';
 import { parseApiError, formatErrorForDisplay } from '@/lib/error-messages';
+import { useCurrency } from '@/contexts/CurrencyContext';
+import { formatCurrency, convertCompensationAmount } from '@/lib/currency';
 
 interface EligibilityResultsProps {
   results: CheckEligibilityResponse;
 }
 
 export default function EligibilityResults({ results }: EligibilityResultsProps) {
+  const { currency, isEURegion } = useCurrency();
   const [showPaymentForm, setShowPaymentForm] = useState(false);
 
   const handleFileClaimClick = () => {
@@ -102,6 +105,48 @@ export default function EligibilityResults({ results }: EligibilityResultsProps)
   const compensationAmount = eligibilityData?.compensationAmount;
   const reason = eligibilityData?.reason || 'Unknown';
 
+  // Format compensation amount based on user's currency
+  const getFormattedCompensation = () => {
+    if (!compensationAmount) {
+      // Default to max compensation if not specified
+      const eurAmount = 600;
+      if (isEURegion) {
+        return formatCurrency(eurAmount, 'EUR');
+      } else {
+        const convertedAmount = convertCompensationAmount(eurAmount, currency);
+        return `${formatCurrency(convertedAmount, currency)} (${formatCurrency(eurAmount, 'EUR')})`;
+      }
+    }
+
+    // Parse EUR amount from string like "€600" or "600"
+    if (typeof compensationAmount === 'string') {
+      const eurAmountMatch = compensationAmount.match(/\d+/);
+      if (eurAmountMatch) {
+        const eurAmount = parseInt(eurAmountMatch[0]);
+        if (isEURegion) {
+          return formatCurrency(eurAmount, 'EUR');
+        } else {
+          const convertedAmount = convertCompensationAmount(eurAmount, currency);
+          return `${formatCurrency(convertedAmount, currency)} (${formatCurrency(eurAmount, 'EUR')})`;
+        }
+      }
+      return compensationAmount;
+    }
+
+    // If it's a number, treat it as EUR amount
+    const eurAmount = Number(compensationAmount);
+    if (!isNaN(eurAmount)) {
+      if (isEURegion) {
+        return formatCurrency(eurAmount, 'EUR');
+      } else {
+        const convertedAmount = convertCompensationAmount(eurAmount, currency);
+        return `${formatCurrency(convertedAmount, currency)} (${formatCurrency(eurAmount, 'EUR')})`;
+      }
+    }
+
+    return String(compensationAmount);
+  };
+
   return (
     <div className="space-y-6">
       {/* Results Header */}
@@ -141,7 +186,7 @@ export default function EligibilityResults({ results }: EligibilityResultsProps)
           {isEligible ? (
             <div>
               <p className="text-lg font-semibold mb-2">
-                Potential Compensation: {compensationAmount || 'Up to €600'}
+                Potential Compensation: Up to {getFormattedCompensation()}
               </p>
 
               {/* Disruption Type Specific Information */}

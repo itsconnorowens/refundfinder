@@ -90,10 +90,9 @@ export default function TrustDisclosure() {
                 <div className="mt-4">
                   <Link
                     href="/terms"
-                    className="text-sm text-blue-600 hover:text-blue-700 font-medium inline-flex items-center gap-1"
+                    className="inline-flex items-center justify-center px-4 py-2 bg-purple-600 text-white text-sm font-medium rounded-md hover:bg-purple-700 transition-colors w-full sm:w-auto"
                   >
                     Read Terms of Service
-                    <span aria-hidden="true">→</span>
                   </Link>
                 </div>
               </div>
@@ -156,10 +155,6 @@ export default function TrustDisclosure() {
                         <span className="text-green-600 font-bold">✓</span>
                         <span><strong>Strict no-sharing policy</strong> - never sell your data</span>
                       </li>
-                      <li className="flex items-start gap-2">
-                        <span className="text-green-600 font-bold">✓</span>
-                        <span><strong>Automatic deletion</strong> after claim completion</span>
-                      </li>
                     </ul>
                   </div>
                 </div>
@@ -172,24 +167,6 @@ export default function TrustDisclosure() {
                   </Link>
                 </div>
               </div>
-            </div>
-
-            {/* Footer Links */}
-            <div className="mt-6 text-center text-sm text-gray-600">
-              <p>
-                View:{' '}
-                <Link href="/privacy" className="text-blue-600 hover:text-blue-700 font-medium">
-                  Privacy Policy
-                </Link>
-                {' • '}
-                <Link href="/terms" className="text-blue-600 hover:text-blue-700 font-medium">
-                  Terms of Service
-                </Link>
-                {' • '}
-                <Link href="/gdpr" className="text-blue-600 hover:text-blue-700 font-medium">
-                  GDPR Rights
-                </Link>
-              </p>
             </div>
           </div>
         </div>

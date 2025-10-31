@@ -1,4 +1,5 @@
 import Stripe from 'stripe';
+import { Currency, getServiceFee } from './currency';
 
 // Lazy initialization of Stripe to avoid build-time environment variable checks
 let stripeInstance: Stripe | null = null;
@@ -44,13 +45,17 @@ export const STRIPE_PRICE_ID = process.env.STRIPE_PRICE_ID;
 export async function createPaymentIntent(
   email: string,
   claimId: string,
+  currency: Currency = 'EUR',
   metadata?: Record<string, string>
 ): Promise<Stripe.PaymentIntent> {
   try {
     const stripe = getStripe();
+    const amount = getServiceFee(currency);
+    const currencyCode = currency.toLowerCase();
+
     const paymentIntent = await stripe.paymentIntents.create({
-      amount: SERVICE_FEE_AMOUNT,
-      currency: SERVICE_FEE_CURRENCY,
+      amount,
+      currency: currencyCode,
       automatic_payment_methods: {
         enabled: true,
       },
@@ -58,6 +63,7 @@ export async function createPaymentIntent(
       metadata: {
         claimId,
         service: 'flghtly',
+        currency: currency,
         priceId: STRIPE_PRICE_ID || '',
         productId: process.env.STRIPE_PRODUCT_ID || '',
         ...metadata,

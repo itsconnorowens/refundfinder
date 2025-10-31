@@ -16,8 +16,11 @@ import { StepIcon } from '../components/icons';
 import { MobileMenu } from '../components/MobileMenu';
 import { InlineErrorBoundary } from '../components/ErrorBoundary';
 import TrustDisclosure from '../components/trust-disclosure';
+import { useCurrency } from '../contexts/CurrencyContext';
+import { formatCurrency, getServiceFeeFormatted, formatCompensationRange, convertCompensationAmount } from '../lib/currency';
 
 export default function Home() {
+  const { currency, isEURegion } = useCurrency();
   const [activeTab, setActiveTab] = useState<'flight' | 'email'>('flight');
   const [results, setResults] = useState<CheckEligibilityResponse | null>(null);
   const [loading, setLoading] = useState(false);
@@ -72,10 +75,10 @@ export default function Home() {
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
       {/* Header */}
       <motion.header
-        className={`sticky top-0 z-50 backdrop-blur-md border-b transition-all duration-300 ${
+        className={`sticky top-0 z-50 border-b transition-all duration-300 ${
           scrolled
-            ? 'bg-white/98 shadow-lg border-gray-200 py-2'
-            : 'bg-white/95 shadow-sm border-gray-100 py-4'
+            ? 'bg-white shadow-md border-gray-200'
+            : 'bg-white shadow-sm border-gray-100'
         }`}
         initial={prefersReducedMotion ? { opacity: 1 } : { y: -100, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
@@ -87,12 +90,15 @@ export default function Home() {
           }`}>
             {/* Logo */}
             <div className="flex items-center">
-              <div className="flex-shrink-0">
+              <button
+                onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+                className="flex-shrink-0 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 rounded-lg"
+              >
                 <div className="flex items-center space-x-3">
                   <motion.img
                     src="/icon-192.png"
                     alt="Flghtly Logo"
-                    className="w-10 h-10 rounded-full shadow-md"
+                    className="w-10 h-10 rounded-full shadow-md cursor-pointer"
                     initial={prefersReducedMotion ? { scale: 1, rotate: 0 } : { scale: 0, rotate: -180 }}
                     animate={{ scale: 1, rotate: 0 }}
                     transition={
@@ -125,7 +131,7 @@ export default function Home() {
                     <p className="text-xs text-gray-500 -mt-0.5">Compensation made simple</p>
                   </motion.div>
                 </div>
-              </div>
+              </button>
             </div>
 
             {/* Desktop Navigation */}
@@ -239,7 +245,7 @@ export default function Home() {
         <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center">
             <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-gray-900 mb-6">
-              Get Up to €600 for Your Delayed Flight
+              Get Up to {formatCurrency(isEURegion ? 600 : convertCompensationAmount(600, currency), currency)} for Your Delayed Flight
             </h1>
             <p className="text-base sm:text-lg md:text-xl text-gray-600 mb-8 max-w-3xl mx-auto">
               Check if you're eligible for compensation under EU Regulation 261/2004. 
@@ -252,7 +258,7 @@ export default function Home() {
               </div>
               <div className="bg-blue-100 text-blue-800 px-4 py-2 rounded-full text-sm font-medium flex items-center gap-2">
                 <MoneyIcon size={16} />
-                Up to €600 compensation
+                Up to {formatCurrency(isEURegion ? 600 : convertCompensationAmount(600, currency), currency)} compensation
               </div>
               <div className="bg-purple-100 text-purple-800 px-4 py-2 rounded-full text-sm font-medium flex items-center gap-2">
                 <BoltIcon size={16} />
@@ -367,14 +373,14 @@ export default function Home() {
                 <StepIcon step={2} size={24} />
               </div>
               <h3 className="text-xl font-semibold mb-2">We File Your Claim</h3>
-              <p className="text-gray-600">If eligible, pay $49 and we'll submit your claim within 48 hours.</p>
+              <p className="text-gray-600">If eligible, pay {getServiceFeeFormatted(currency)} and we'll submit your claim within 48 hours.</p>
             </div>
             <div className="text-center">
               <div className="bg-blue-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
                 <StepIcon step={3} size={24} />
               </div>
               <h3 className="text-xl font-semibold mb-2">Get Your Money</h3>
-              <p className="text-gray-600">Receive €250-€600 compensation directly from the airline in 4-8 weeks.</p>
+              <p className="text-gray-600">Receive {formatCompensationRange(250, 600, currency, isEURegion)} compensation directly from the airline in 4-8 weeks.</p>
             </div>
           </div>
         </div>
@@ -393,7 +399,7 @@ export default function Home() {
           <div className="max-w-md mx-auto bg-white rounded-2xl shadow-xl p-8">
             <div className="text-center">
               <h3 className="text-2xl font-bold text-gray-900 mb-2">Success Fee Only</h3>
-              <div className="text-4xl font-bold text-blue-600 mb-4">$49</div>
+              <div className="text-4xl font-bold text-blue-600 mb-4">{getServiceFeeFormatted(currency)}</div>
               <p className="text-gray-600 mb-6">Only if we win your case</p>
               <div className="bg-green-50 rounded-lg p-4">
                 <p className="text-green-800 font-medium">✓ No win, no fee guarantee</p>
@@ -408,7 +414,7 @@ export default function Home() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
             <h2 className="text-3xl font-bold text-gray-900 mb-4">Success Stories</h2>
-            <p className="text-xl text-gray-600">We've helped travelers recover over €147,000 in compensation</p>
+            <p className="text-xl text-gray-600">We've helped travelers recover over {formatCurrency(isEURegion ? 147000 : convertCompensationAmount(147000, currency), currency)} in compensation</p>
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 md:gap-8">
@@ -501,7 +507,7 @@ export default function Home() {
             <div className="bg-blue-50 rounded-lg p-6 max-w-2xl mx-auto">
               <h3 className="text-xl font-semibold text-blue-900 mb-2">Join 320+ Successful Travelers</h3>
               <p className="text-blue-800">
-                Average compensation: €450 • Success rate: 94% • Average processing time: 3.2 weeks
+                Average compensation: {formatCurrency(isEURegion ? 450 : convertCompensationAmount(450, currency), currency)} • Success rate: 94% • Average processing time: 3.2 weeks
               </p>
             </div>
           </div>

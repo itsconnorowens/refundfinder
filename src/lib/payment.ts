@@ -1,4 +1,5 @@
 import Stripe from "stripe";
+import { Currency, getServiceFee } from "./currency";
 
 // Initialize Stripe (with fallback for testing)
 const stripe = process.env.STRIPE_SECRET_KEY
@@ -12,6 +13,7 @@ export interface PaymentData {
   claimId: string;
   firstName: string;
   lastName: string;
+  currency?: Currency;
 }
 
 export interface PaymentIntentResponse {
@@ -90,14 +92,18 @@ export async function createPaymentIntent(
     throw new Error("Stripe not configured");
   }
 
+  const currency = data.currency || 'EUR';
+  const amount = getServiceFee(currency);
+
   const paymentIntent = await stripe.paymentIntents.create({
-    amount: 4900, // $49.00 in cents
-    currency: "usd",
+    amount,
+    currency: currency.toLowerCase(),
     metadata: {
       claimId: data.claimId,
       email: data.email,
       firstName: data.firstName,
       lastName: data.lastName,
+      currency,
     },
     automatic_payment_methods: {
       enabled: true,

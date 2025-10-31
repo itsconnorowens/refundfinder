@@ -1,3 +1,5 @@
+import CurrencySelector from './CurrencySelector';
+
 export default function Footer() {
   return (
     <footer className="bg-blue-50">
@@ -48,8 +50,11 @@ export default function Footer() {
           </div>
         </div>
 
-        <div className="border-t border-gray-200 mt-8 pt-8 text-center text-gray-600">
-          <p>&copy; 2024 Flghtly. All rights reserved.</p>
+        <div className="border-t border-gray-200 mt-8 pt-8">
+          <div className="flex flex-col md:flex-row justify-between items-center gap-4">
+            <p className="text-gray-600">&copy; 2024 Flghtly. All rights reserved.</p>
+            <CurrencySelector />
+          </div>
         </div>
       </div>
     </footer>

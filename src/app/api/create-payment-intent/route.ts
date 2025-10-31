@@ -3,6 +3,7 @@ import Stripe from "stripe";
 import { generateClaimId } from "@/lib/claim-id";
 import { logger } from "@/lib/logger";
 import { withErrorTracking, setUser, addBreadcrumb } from "@/lib/error-tracking";
+import { Currency, getServiceFee } from "@/lib/currency";
 
 // Initialize Stripe only if environment variables are available
 const stripe = process.env.STRIPE_SECRET_KEY
@@ -21,7 +22,7 @@ export const POST = withErrorTracking(async (request: NextRequest) => {
   }
 
   const body = await request.json();
-  const { email, firstName, lastName } = body;
+  const { email, firstName, lastName, currency = 'EUR' } = body;
 
   // Set user context for error tracking
   setUser({ email, name: `${firstName} ${lastName}` });
@@ -31,6 +32,15 @@ export const POST = withErrorTracking(async (request: NextRequest) => {
     logger.warn('Missing required fields for payment intent', { email, firstName, lastName });
     return NextResponse.json(
       { error: "Missing required fields" },
+      { status: 400 }
+    );
+  }
+
+  // Validate currency
+  if (!['EUR', 'USD', 'GBP'].includes(currency)) {
+    logger.warn('Invalid currency', { currency });
+    return NextResponse.json(
+      { error: "Invalid currency" },
       { status: 400 }
     );
   }
@@ -48,18 +58,22 @@ export const POST = withErrorTracking(async (request: NextRequest) => {
   // Generate claim ID for payment intent metadata
   const claimId = generateClaimId();
 
-  addBreadcrumb('Generating payment intent', 'payment', { claimId, email });
-  logger.info('Creating payment intent', { claimId, email, firstName, lastName });
+  // Get service fee for the currency
+  const amount = getServiceFee(currency as Currency);
+
+  addBreadcrumb('Generating payment intent', 'payment', { claimId, email, currency, amount });
+  logger.info('Creating payment intent', { claimId, email, firstName, lastName, currency, amount });
 
   // Create payment intent
   const paymentIntent = await stripe.paymentIntents.create({
-    amount: 4900, // $49.00 in cents
-    currency: "usd",
+    amount,
+    currency: currency.toLowerCase(),
     metadata: {
       claimId,
       email,
       firstName,
       lastName,
+      currency,
     },
     automatic_payment_methods: {
       enabled: true,
