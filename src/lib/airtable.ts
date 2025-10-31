@@ -313,7 +313,7 @@ export async function createClaim(claim: ClaimRecord): Promise<string> {
     const record = await base(TABLES.CLAIMS).create(fields);
 
     return record.id;
-  } catch (error) {
+  } catch (error: unknown) {
     logger.error('Error creating claim in Airtable:', error);
     throw error;
   }
@@ -371,7 +371,7 @@ export async function updateClaim(
       fields['rejection_reason'] = updates.rejectionReason;
 
     await base(TABLES.CLAIMS).update(recordId, fields);
-  } catch (error) {
+  } catch (error: unknown) {
     logger.error('Error updating claim in Airtable:', error);
     throw error;
   }
@@ -394,7 +394,7 @@ export async function getClaimByClaimId(claimId: string): Promise<any> {
       .firstPage();
 
     return records[0] || null;
-  } catch (error) {
+  } catch (error: unknown) {
     logger.error('Error fetching claim from Airtable:', error);
     throw error;
   }
@@ -424,7 +424,7 @@ export async function createPayment(payment: PaymentRecord): Promise<string> {
     });
 
     return record.id;
-  } catch (error) {
+  } catch (error: unknown) {
     logger.error('Error creating payment in Airtable:', error);
     throw error;
   }
@@ -455,7 +455,7 @@ export async function updatePayment(
     if (updates.cardLast4) fields['card_last_4'] = updates.cardLast4;
 
     await base(TABLES.PAYMENTS).update(recordId, fields);
-  } catch (error) {
+  } catch (error: unknown) {
     logger.error('Error updating payment in Airtable:', error);
     throw error;
   }
@@ -478,7 +478,7 @@ export async function getPaymentByIntentId(intentId: string): Promise<any> {
       .firstPage();
 
     return records[0] || null;
-  } catch (error) {
+  } catch (error: unknown) {
     logger.error('Error fetching payment from Airtable:', error);
     throw error;
   }
@@ -501,7 +501,7 @@ export async function getPaymentByPaymentId(paymentId: string): Promise<any> {
       .firstPage();
 
     return records[0] || null;
-  } catch (error) {
+  } catch (error: unknown) {
     logger.error('Error fetching payment from Airtable:', error);
     throw error;
   }
@@ -531,7 +531,7 @@ export async function createRefund(refund: RefundRecord): Promise<string> {
     });
 
     return record.id;
-  } catch (error) {
+  } catch (error: unknown) {
     logger.error('Error creating refund in Airtable:', error);
     throw error;
   }
@@ -556,7 +556,7 @@ export async function updateRefund(
     if (updates.internalNotes) fields['internal_notes'] = updates.internalNotes;
 
     await base(TABLES.REFUNDS).update(recordId, fields);
-  } catch (error) {
+  } catch (error: unknown) {
     logger.error('Error updating refund in Airtable:', error);
     throw error;
   }
@@ -581,7 +581,7 @@ export async function getClaimsByStatus(
       .all();
 
     return records;
-  } catch (error) {
+  } catch (error: unknown) {
     console.error(
       `Error fetching claims with status ${status} from Airtable:`,
       error
@@ -615,7 +615,7 @@ export async function getOverdueClaims(
       .all();
 
     return records;
-  } catch (error) {
+  } catch (error: unknown) {
     logger.error('Error fetching overdue claims from Airtable:', error);
     throw error;
   }
@@ -650,7 +650,7 @@ export async function getClaimsNeedingFollowUp(): Promise<readonly any[]> {
       .all();
 
     return records;
-  } catch (error) {
+  } catch (error: unknown) {
     console.error(
       'Error fetching claims needing follow-up from Airtable:',
       error
@@ -678,7 +678,7 @@ export async function getClaimsNeedingRefund(): Promise<readonly any[]> {
       .all();
 
     return records;
-  } catch (error) {
+  } catch (error: unknown) {
     logger.error('Error fetching claims needing refund from Airtable:', error);
     throw error;
   }
@@ -716,7 +716,7 @@ export async function createEligibilityCheck(
     });
 
     return record.id;
-  } catch (error) {
+  } catch (error: unknown) {
     logger.error('Error creating eligibility check in Airtable:', error);
     throw error;
   }

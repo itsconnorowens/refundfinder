@@ -2,11 +2,11 @@
  * Tests for Airline Monitoring Service
  */
 
-import { describe, it, expect, beforeEach } from 'vitest';
+import { describe, it, expect } from 'vitest';
 import { URLValidator, ClaimTracker } from '../url-validator';
 import {
   AirlineMonitoringService,
-  airlineMonitoringService,
+  airlineMonitoringService as _airlineMonitoringService,
 } from '../airline-monitoring';
 import { AIRLINE_CONFIGS } from '../airline-config';
 

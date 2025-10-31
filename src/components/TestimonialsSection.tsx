@@ -2,6 +2,8 @@ import { testimonials } from '@/lib/testimonials';
 import { Card, CardContent } from '@/components/ui/card';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { useState } from 'react';
+import { useCurrency } from '@/contexts/CurrencyContext';
+import { formatCompensationAmount, convertCompensationAmount } from '@/lib/currency';
 
 interface TestimonialsSectionProps {
   className?: string;
@@ -9,6 +11,7 @@ interface TestimonialsSectionProps {
 
 export function TestimonialsSection({ className = "" }: TestimonialsSectionProps) {
   const [currentIndex, setCurrentIndex] = useState(0);
+  const { currency, isEURegion } = useCurrency();
 
   const nextTestimonial = () => {
     setCurrentIndex((prev) => (prev + 1) % testimonials.length);
@@ -19,6 +22,12 @@ export function TestimonialsSection({ className = "" }: TestimonialsSectionProps
   };
 
   const currentTestimonial = testimonials[currentIndex];
+
+  // Calculate total recovered amount dynamically
+  const totalRecoveredEur = 147000;
+  const totalRecovered = isEURegion
+    ? totalRecoveredEur
+    : convertCompensationAmount(totalRecoveredEur, currency);
 
   return (
     <section className={`bg-slate-950 py-20 ${className}`}>
@@ -35,7 +44,9 @@ export function TestimonialsSection({ className = "" }: TestimonialsSectionProps
         {/* Statistics Grid */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mb-16">
           <div className="text-center">
-            <div className="text-3xl font-bold text-[#00D9B5] mb-2">€147,000</div>
+            <div className="text-3xl font-bold text-[#00D9B5] mb-2">
+              {formatCompensationAmount(totalRecovered, currency, isEURegion)}
+            </div>
             <div className="text-slate-400">Total Recovered</div>
           </div>
           <div className="text-center">
@@ -74,7 +85,7 @@ export function TestimonialsSection({ className = "" }: TestimonialsSectionProps
                     {currentTestimonial.route} • {currentTestimonial.airline}
                   </div>
                   <div className="text-[#00D9B5] font-semibold">
-                    {currentTestimonial.amount} recovered in {currentTestimonial.timeline}
+                    {formatCompensationAmount(currentTestimonial.amountEur, currency, isEURegion)} recovered in {currentTestimonial.timeline}
                   </div>
                 </div>
 

@@ -206,7 +206,7 @@ export default function EmailParsingForm({ onResults, onLoading }: EmailParsingF
       markCompleted();
 
       onResults(result);
-    } catch (error) {
+    } catch (error: unknown) {
       console.error('Error checking eligibility:', error);
 
       // Track parsing failure

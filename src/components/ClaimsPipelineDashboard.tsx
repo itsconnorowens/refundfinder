@@ -86,7 +86,7 @@ export default function ClaimsPipelineDashboard() {
       setMonitoringStats(monitoringData.data);
 
       setLastUpdated(new Date());
-    } catch (error) {
+    } catch (error: unknown) {
       console.error('Error fetching dashboard data:', error);
     } finally {
       setLoading(false);

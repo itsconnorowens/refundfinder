@@ -110,7 +110,7 @@ export async function POST(request: NextRequest) {
       success: true,
       data: flightData.data,
     });
-  } catch (error) {
+  } catch (error: unknown) {
     // Log error for debugging
     logger.error('Error in parse-flight-email API route:', error);
 

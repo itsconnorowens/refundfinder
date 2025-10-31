@@ -78,7 +78,7 @@ export function CurrencyProvider({ children }: { children: ReactNode }) {
 
         setCurrencyState(detectedCurrency);
         setIsEURegion(isEU);
-      } catch (error) {
+      } catch (error: unknown) {
         // Fallback to EUR if detection fails
         console.error('Currency detection failed:', error);
         setCurrencyState('EUR');

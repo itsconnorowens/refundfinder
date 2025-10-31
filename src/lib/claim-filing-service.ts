@@ -139,7 +139,7 @@ export async function validateClaimForFiling(
       airlineConfig,
       error: errors.length > 0 ? errors[0] : undefined,
     };
-  } catch (error) {
+  } catch (error: unknown) {
     logger.error('Error validating claim for filing:', error);
     return {
       success: false,
@@ -218,7 +218,7 @@ export async function generateAirlineSubmission(
       },
       airlineConfig,
     };
-  } catch (error) {
+  } catch (error: unknown) {
     logger.error('Error generating airline submission:', error);
     return {
       success: false,
@@ -265,7 +265,7 @@ export async function markClaimAsFiled(
     }
 
     return true;
-  } catch (error) {
+  } catch (error: unknown) {
     logger.error('Error marking claim as filed:', error);
     return false;
   }
@@ -332,7 +332,7 @@ export async function updateClaimStatus(
     }
 
     return true;
-  } catch (error) {
+  } catch (error: unknown) {
     logger.error('Error updating claim status:', error);
     return false;
   }
@@ -348,7 +348,7 @@ export async function getClaimsByStatus(status: ClaimStatus): Promise<any[]> {
       id: record.id,
       ...record.fields,
     }));
-  } catch (error) {
+  } catch (error: unknown) {
     console.error(`Error fetching claims with status ${status}:`, error);
     return [];
   }
@@ -364,7 +364,7 @@ export async function getAllClaimsReadyToFile(): Promise<any[]> {
       id: record.id,
       ...record.fields,
     }));
-  } catch (error) {
+  } catch (error: unknown) {
     logger.error('Error fetching claims ready to file:', error);
     return [];
   }
@@ -380,7 +380,7 @@ export async function getClaimsNeedingFollowUp(): Promise<any[]> {
       id: record.id,
       ...record.fields,
     }));
-  } catch (error) {
+  } catch (error: unknown) {
     logger.error('Error fetching claims needing follow-up:', error);
     return [];
   }
@@ -409,7 +409,7 @@ export async function scheduleFollowUp(
     });
 
     return true;
-  } catch (error) {
+  } catch (error: unknown) {
     logger.error('Error scheduling follow-up:', error);
     return false;
   }
@@ -450,7 +450,7 @@ export async function processAutomaticClaimPreparation(
 
     logger.info('Claim  automatically prepared for filing', { claimId: claimId });
     return true;
-  } catch (error) {
+  } catch (error: unknown) {
     console.error(
       `Error processing automatic claim preparation for ${claimId}:`,
       error
@@ -542,7 +542,7 @@ export async function processAutomaticClaimFiling(
       success: r.result.success,
       error: r.result.error,
     }));
-  } catch (error) {
+  } catch (error: unknown) {
     logger.error('Error processing automatic claim filing:', error);
     return [];
   }
@@ -593,7 +593,7 @@ export async function processClaimFollowUps(): Promise<
           action,
           success,
         });
-      } catch (error) {
+      } catch (error: unknown) {
         console.error(
           `Error processing follow-up for claim ${claim.claimId}:`,
           error
@@ -607,7 +607,7 @@ export async function processClaimFollowUps(): Promise<
     }
 
     return results;
-  } catch (error) {
+  } catch (error: unknown) {
     logger.error('Error processing claim follow-ups:', error);
     return [];
   }
@@ -662,7 +662,7 @@ export async function getClaimFilingStats(): Promise<{
       overdue: overdue.length,
       needingFollowUp: needingFollowUp.length,
     };
-  } catch (error) {
+  } catch (error: unknown) {
     logger.error('Error getting claim filing stats:', error);
     return {
       total: 0,

@@ -1023,7 +1023,7 @@ async function isExtraordinaryCircumstance(
       additionalContext
     );
     return analysis.isExtraordinary;
-  } catch (error) {
+  } catch (error: unknown) {
     logger.error('Error analyzing extraordinary circumstances:', error);
     // Fallback to simple keyword detection
     return fallbackExtraordinaryDetection(reason);
@@ -1069,7 +1069,7 @@ function fallbackExtraordinaryDetection(reason: string): boolean {
  * @param arrival IATA code of arrival airport
  * @returns Distance in kilometers, or 1000km fallback if airports not found
  */
-function calculateFlightDistance(departure: string, arrival: string): number {
+function _calculateFlightDistance(departure: string, arrival: string): number {
   const distance = getDistanceBetweenAirports(departure, arrival);
 
   if (distance === null) {

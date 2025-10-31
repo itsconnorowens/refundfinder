@@ -90,7 +90,7 @@ export async function GET(_request: NextRequest) {
       service: serviceStatus,
       stats,
     });
-  } catch (error) {
+  } catch (error: unknown) {
     logger.error('Flight verification status error:', error);
     return NextResponse.json(
       { error: 'Internal server error' },

@@ -2,17 +2,17 @@
  * Test Suite for Flight Status Integration and Airport Operational Data
  */
 
-import { describe, it, expect, beforeEach, vi } from 'vitest';
+import { describe, it, expect, vi } from 'vitest';
 import {
   FlightStatusManager,
-  FlightStatusProvider,
+  FlightStatusProvider as _FlightStatusProvider,
   FlightStatus,
-  FlightStatusError,
+  FlightStatusError as _FlightStatusError,
 } from '../flight-status-service';
 import {
   AirportStatusManager,
-  WeatherProvider,
-  OperationalProvider,
+  WeatherProvider as _WeatherProvider,
+  OperationalProvider as _OperationalProvider,
   WeatherConditions,
   OperationalStatus,
   WeatherClassificationEngine,
@@ -21,22 +21,22 @@ import {
 import {
   FlightRadar24Provider,
   AviationStackProvider,
-  FlightAPIProvider,
+  FlightAPIProvider as _FlightAPIProvider,
 } from '../providers/flight-status-providers';
 import {
-  OpenWeatherMapProvider,
-  AviationWeatherCenterProvider,
-  WeatherAPIProvider,
+  OpenWeatherMapProvider as _OpenWeatherMapProvider,
+  AviationWeatherCenterProvider as _AviationWeatherCenterProvider,
+  WeatherAPIProvider as _WeatherAPIProvider,
 } from '../providers/weather-providers';
 import {
-  FAAOperationalProvider,
-  EurocontrolOperationalProvider,
-  BasicOperationalProvider,
+  FAAOperationalProvider as _FAAOperationalProvider,
+  EurocontrolOperationalProvider as _EurocontrolOperationalProvider,
+  BasicOperationalProvider as _BasicOperationalProvider,
 } from '../providers/operational-providers';
 import {
   EnhancedClaimProcessingService,
-  ParsedFlightData,
-  EligibilityResult,
+  ParsedFlightData as _ParsedFlightData,
+  EligibilityResult as _EligibilityResult,
 } from '../enhanced-claim-processing';
 
 describe('Flight Status Integration', () => {

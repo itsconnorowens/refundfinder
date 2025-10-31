@@ -39,6 +39,7 @@ export default function AdminDashboard() {
   useEffect(() => {
     fetchClaims();
     fetchStats();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedStatus, selectedAirline]);
 
   const fetchClaims = async () => {

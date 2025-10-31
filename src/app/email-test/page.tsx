@@ -37,7 +37,7 @@ export default function EmailTestPage() {
       }
 
       setResult(data);
-    } catch (err) {
+    } catch (err: unknown) {
       setError(err instanceof Error ? err.message : 'An error occurred');
     } finally {
       setIsLoading(false);
@@ -61,7 +61,7 @@ export default function EmailTestPage() {
       }
 
       setResult(data);
-    } catch (err) {
+    } catch (err: unknown) {
       setError(err instanceof Error ? err.message : 'An error occurred');
     } finally {
       setIsLoading(false);
@@ -85,7 +85,7 @@ export default function EmailTestPage() {
       }
 
       setResult(data);
-    } catch (err) {
+    } catch (err: unknown) {
       setError(err instanceof Error ? err.message : 'An error occurred');
     } finally {
       setIsLoading(false);

@@ -36,7 +36,7 @@ export async function POST(
       success: true,
       message: 'Claim marked as filed successfully',
     });
-  } catch (error) {
+  } catch (error: unknown) {
     logger.error('Error marking claim as filed:', error);
     return NextResponse.json(
       { error: 'Failed to mark claim as filed' },

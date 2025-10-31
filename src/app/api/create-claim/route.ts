@@ -119,7 +119,7 @@ export async function POST(request: NextRequest) {
       }
 
       logger.info('Payment verified successfully', { paymentIntentId, amount: paymentIntent.amount });
-    } catch (error) {
+    } catch (error: unknown) {
       logger.error('Error verifying payment', error as Error, { paymentIntentId, email });
       captureError(error, {
         level: 'error',
@@ -178,7 +178,7 @@ export async function POST(request: NextRequest) {
         succeededAt: new Date().toISOString(),
       });
       logger.info('Payment record created', { paymentId, claimId, amount: paymentIntent.amount });
-    } catch (error) {
+    } catch (error: unknown) {
       logger.error('Error creating payment record', error as Error, { paymentId, claimId, email, amount: paymentIntent.amount });
       captureError(error, {
         level: 'error',
@@ -252,7 +252,7 @@ export async function POST(request: NextRequest) {
       });
 
       logger.info('Claim created successfully', { claimId, airline, flightNumber, estimatedCompensation });
-    } catch (error) {
+    } catch (error: unknown) {
       logger.error('Error creating claim record', error as Error, { claimId, email, airline, flightNumber });
       captureError(error, {
         level: 'error',
@@ -320,7 +320,7 @@ export async function POST(request: NextRequest) {
       refundGuarantee:
         "If we're unable to file your claim successfully, you'll receive a 100% refund automatically.",
     });
-  } catch (error) {
+  } catch (error: unknown) {
     logger.error('Error processing claim', error as Error, {
       url: request.url,
       method: request.method,

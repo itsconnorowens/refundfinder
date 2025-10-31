@@ -20,6 +20,19 @@ interface AdaptiveProgressIndicatorProps {
   className?: string;
 }
 
+const StepIcon = ({ stepId: _stepId, status }: { stepId: number; status: string }) => {
+  const iconProps = { size: 20 };
+
+  switch (status) {
+    case 'completed':
+      return <CheckCircle {...iconProps} className="text-green-500" />;
+    case 'current':
+      return <Circle {...iconProps} className="text-blue-500 fill-current" />;
+    default:
+      return <Circle {...iconProps} className="text-gray-400" />;
+  }
+};
+
 export const AdaptiveProgressIndicator: React.FC<AdaptiveProgressIndicatorProps> = ({
   steps,
   currentStep,
@@ -44,21 +57,8 @@ export const AdaptiveProgressIndicator: React.FC<AdaptiveProgressIndicatorProps>
     return remainingSteps * avgTimePerStep;
   };
 
-  const StepIcon = ({ stepId: _stepId, status }: { stepId: number; status: string }) => {
-    const iconProps = { size: 20 };
-    
-    switch (status) {
-      case 'completed':
-        return <CheckCircle {...iconProps} className="text-green-500" />;
-      case 'current':
-        return <Circle {...iconProps} className="text-blue-500 fill-current" />;
-      default:
-        return <Circle {...iconProps} className="text-gray-400" />;
-    }
-  };
-
   // Desktop Vertical Sidebar
-  const DesktopProgress = () => (
+  const desktopProgress = (
     <motion.div
       initial={{ opacity: 0, x: -20 }}
       animate={{ opacity: 1, x: 0 }}
@@ -142,7 +142,7 @@ export const AdaptiveProgressIndicator: React.FC<AdaptiveProgressIndicatorProps>
   );
 
   // Mobile Horizontal Compact
-  const MobileProgress = () => (
+  const mobileProgress = (
     <div className="md:hidden bg-white border-b border-gray-200 sticky top-0 z-20">
       <div className="px-4 py-3">
         {/* Current Step Header */}
@@ -229,8 +229,8 @@ export const AdaptiveProgressIndicator: React.FC<AdaptiveProgressIndicatorProps>
 
   return (
     <div className={cn("", className)}>
-      <DesktopProgress />
-      <MobileProgress />
+      {desktopProgress}
+      {mobileProgress}
     </div>
   );
 };

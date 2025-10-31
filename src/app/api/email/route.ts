@@ -61,7 +61,7 @@ export async function GET(request: NextRequest) {
           },
         });
     }
-  } catch (error) {
+  } catch (error: unknown) {
     logger.error('Error in email management API:', error);
     return NextResponse.json(
       { error: 'Internal server error' },
@@ -109,7 +109,7 @@ export async function POST(request: NextRequest) {
       default:
         return NextResponse.json({ error: 'Invalid action' }, { status: 400 });
     }
-  } catch (error) {
+  } catch (error: unknown) {
     logger.error('Error in email management POST:', error);
     return NextResponse.json(
       { error: 'Internal server error' },

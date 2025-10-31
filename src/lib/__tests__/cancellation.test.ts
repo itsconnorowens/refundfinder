@@ -520,6 +520,7 @@ describe('Integration Tests - End-to-End Cancellation Scenarios', () => {
   beforeEach(() => {
     vi.clearAllMocks();
     // Reset mocks to default behavior
+    // eslint-disable-next-line @typescript-eslint/no-require-imports
     const { analyzeExtraordinaryCircumstances } = require('../extraordinary-circumstances');
     vi.mocked(analyzeExtraordinaryCircumstances).mockResolvedValue({
       isExtraordinary: false,

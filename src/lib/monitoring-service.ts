@@ -90,7 +90,7 @@ export async function updateEmailTracking(
       `Updated email tracking for claim ${claimId}: ${trackingEvent.event}`
     );
     return true;
-  } catch (error) {
+  } catch (error: unknown) {
     logger.error('Error updating email tracking:', error);
     return false;
   }
@@ -133,7 +133,7 @@ export async function createSystemAlert(
     });
 
     return alertId;
-  } catch (error) {
+  } catch (error: unknown) {
     logger.error('Error creating system alert:', error);
     return '';
   }
@@ -164,7 +164,7 @@ export async function checkSLABreaches(): Promise<SystemAlert[]> {
     alerts.push(slaBreachAlert);
 
     return alerts;
-  } catch (error) {
+  } catch (error: unknown) {
     logger.error('Error checking SLA breaches:', error);
     return [];
   }
@@ -193,7 +193,7 @@ export async function checkEmailDeliveryIssues(): Promise<SystemAlert[]> {
     alerts.push(emailAlert);
 
     return alerts;
-  } catch (error) {
+  } catch (error: unknown) {
     logger.error('Error checking email delivery issues:', error);
     return [];
   }
@@ -222,7 +222,7 @@ export async function checkSystemErrors(): Promise<SystemAlert[]> {
     alerts.push(systemAlert);
 
     return alerts;
-  } catch (error) {
+  } catch (error: unknown) {
     logger.error('Error checking system errors:', error);
     return [];
   }
@@ -251,7 +251,7 @@ export async function checkHighVolumeAlerts(): Promise<SystemAlert[]> {
     alerts.push(volumeAlert);
 
     return alerts;
-  } catch (error) {
+  } catch (error: unknown) {
     logger.error('Error checking high volume alerts:', error);
     return [];
   }
@@ -289,7 +289,7 @@ export async function getComprehensiveMonitoringStats(): Promise<MonitoringStats
     };
 
     return stats;
-  } catch (error) {
+  } catch (error: unknown) {
     logger.error('Error getting comprehensive monitoring stats:', error);
     return {
       emailDeliveryRate: 0,
@@ -314,7 +314,7 @@ export async function resolveAlert(
     // In a real implementation, this would update the database
     console.log(`Alert ${alertId} resolved by ${resolvedBy}`, resolutionNotes);
     return true;
-  } catch (error) {
+  } catch (error: unknown) {
     logger.error('Error resolving alert:', error);
     return false;
   }
@@ -353,7 +353,7 @@ export async function sendAlertNotification(
     }
 
     return true;
-  } catch (error) {
+  } catch (error: unknown) {
     logger.error('Error sending alert notification:', error);
     return false;
   }
@@ -375,7 +375,7 @@ export async function getMonitoringStats(): Promise<MonitoringStats> {
     };
 
     return stats;
-  } catch (error) {
+  } catch (error: unknown) {
     logger.error('Error getting monitoring stats:', error);
     return {
       emailDeliveryRate: 0,
@@ -425,7 +425,7 @@ export async function processEmailWebhook(
     logger.info('Email webhook processed:', { trackingEvent: trackingEvent });
 
     return true;
-  } catch (error) {
+  } catch (error: unknown) {
     logger.error('Error processing email webhook:', error);
     return false;
   }
@@ -519,7 +519,7 @@ export async function getClaimEmailStats(claimId: string): Promise<{
     });
 
     return stats;
-  } catch (error) {
+  } catch (error: unknown) {
     logger.error('Error getting claim email stats:', error);
     return {
       totalEmails: 0,
@@ -656,7 +656,7 @@ async function checkAirtableHealth(): Promise<HealthCheckResult> {
       responseTime,
       timestamp: new Date().toISOString(),
     };
-  } catch (error) {
+  } catch (error: unknown) {
     return {
       service: 'Airtable',
       status: 'down',
@@ -688,7 +688,7 @@ async function checkStripeHealth(): Promise<HealthCheckResult> {
       responseTime: Date.now() - startTime,
       timestamp: new Date().toISOString(),
     };
-  } catch (error) {
+  } catch (error: unknown) {
     return {
       service: 'Stripe',
       status: 'down',
@@ -721,7 +721,7 @@ async function checkEmailServiceHealth(): Promise<HealthCheckResult> {
       responseTime: Date.now() - startTime,
       timestamp: new Date().toISOString(),
     };
-  } catch (error) {
+  } catch (error: unknown) {
     return {
       service: 'Email',
       status: 'down',
@@ -750,7 +750,7 @@ async function checkSentryHealth(): Promise<HealthCheckResult> {
       status: 'healthy',
       timestamp: new Date().toISOString(),
     };
-  } catch (error) {
+  } catch (error: unknown) {
     return {
       service: 'Sentry',
       status: 'down',

@@ -170,7 +170,7 @@ export const POST = withErrorTracking(async (request: NextRequest) => {
 
     await createEligibilityCheck(eligibilityCheck);
     logger.info('Eligibility check  stored successfully', { checkId: checkId });
-  } catch (error) {
+  } catch (error: unknown) {
     captureError(error, { level: 'warning', tags: { service: 'airtable', operation: 'eligibility_check_storage' } });
     logger.error('Error storing eligibility check:', error);
 

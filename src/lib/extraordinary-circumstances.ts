@@ -87,7 +87,7 @@ export async function analyzeExtraordinaryCircumstances(
     }
 
     return result;
-  } catch (error) {
+  } catch (error: unknown) {
     logger.error('Error analyzing extraordinary circumstances:', error);
 
     // Fallback to keyword-based detection on error

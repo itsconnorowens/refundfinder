@@ -70,7 +70,7 @@ export function MobileFileUpload({
       setUploadedFile(file);
       setUploadedUrl(result.url);
       onFileUploaded(file, result.url);
-    } catch (error) {
+    } catch (error: unknown) {
       console.error('Upload error:', error);
       showError('Upload failed. Please try again.');
     } finally {

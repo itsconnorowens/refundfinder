@@ -17,7 +17,7 @@ import { InlineErrorBoundary } from '../components/ErrorBoundary';
 import TrustDisclosure from '../components/trust-disclosure';
 import CurrencySelector from '../components/CurrencySelector';
 import { useCurrency } from '../contexts/CurrencyContext';
-import { formatCurrency, getServiceFeeFormatted, formatCompensationRange, convertCompensationAmount } from '../lib/currency';
+import { formatCurrency, getServiceFeeFormatted, formatCompensationRange, convertCompensationAmount, formatCompensationAmount } from '../lib/currency';
 import { useFeatureFlag } from '../hooks/useFeatureFlag';
 
 export default function Home() {
@@ -158,7 +158,7 @@ export default function Home() {
               <motion.button
                 onClick={() => {
                   const section = document.querySelector('#how-it-works');
-                  section?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                  section?.scrollIntoView({ behavior: 'smooth', block: 'start' });
                 }}
                 className="relative text-gray-600 hover:text-blue-600 transition-colors font-medium group"
                 whileHover={prefersReducedMotion ? {} : { scale: 1.05 }}
@@ -174,7 +174,7 @@ export default function Home() {
               <motion.button
                 onClick={() => {
                   const section = document.querySelector('#success-stories');
-                  section?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                  section?.scrollIntoView({ behavior: 'smooth', block: 'start' });
                 }}
                 className="relative text-gray-600 hover:text-blue-600 transition-colors font-medium group"
                 whileHover={prefersReducedMotion ? {} : { scale: 1.05 }}
@@ -190,7 +190,7 @@ export default function Home() {
               <motion.button
                 onClick={() => {
                   const section = document.querySelector('#faq');
-                  section?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                  section?.scrollIntoView({ behavior: 'smooth', block: 'start' });
                 }}
                 className="relative text-gray-600 hover:text-blue-600 transition-colors font-medium group"
                 whileHover={prefersReducedMotion ? {} : { scale: 1.05 }}
@@ -209,8 +209,8 @@ export default function Home() {
             <div className="hidden md:flex items-center space-x-4">
               <motion.button
                 onClick={() => {
-                  const formSection = document.querySelector('#eligibility-form');
-                  formSection?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                  const formSection = document.querySelector('#check-eligibility');
+                  formSection?.scrollIntoView({ behavior: 'smooth', block: 'start' });
                 }}
                 className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white px-6 py-2.5 rounded-lg font-medium transition-all duration-200 shadow-md hover:shadow-lg"
                 initial={prefersReducedMotion ? { opacity: 1, scale: 1 } : { opacity: 0, scale: 0.8 }}
@@ -259,8 +259,12 @@ export default function Home() {
               Get Up to {formatCurrency(isEURegion ? 600 : convertCompensationAmount(600, currency), currency)} for Your Delayed Flight
             </h1>
             <p className="text-base sm:text-lg md:text-xl text-gray-600 mb-8 max-w-3xl mx-auto">
-              Check if you're eligible for compensation under EU Regulation 261/2004. 
-              We handle the entire process for you - no hassle, no risk.
+              {isEURegion
+                ? "Check if you're eligible for compensation under EU Regulation 261/2004. We handle the entire process for you - no hassle, no risk."
+                : currency === 'GBP'
+                ? "Check if you're eligible for compensation under UK CAA regulations. We handle the entire process for you - no hassle, no risk."
+                : "Check if you're eligible for compensation under US DOT and international regulations. We handle the entire process for you - no hassle, no risk."
+              }
             </p>
             <div className="flex flex-col sm:flex-row gap-3 justify-center mb-6">
               <div className="bg-green-100 text-green-800 px-4 py-2 rounded-full text-sm font-medium flex items-center gap-2">
@@ -284,7 +288,7 @@ export default function Home() {
       </section>
 
       {/* Main Form Section */}
-      <section id="eligibility-form" className="py-8">
+      <section id="check-eligibility" className="py-8 scroll-mt-20">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-8">
             <h2 className="text-2xl font-bold text-gray-900 mb-2">Check Your Eligibility — Free & Instant</h2>
@@ -365,7 +369,7 @@ export default function Home() {
       </section>
 
       {/* How It Works Section */}
-      <section id="how-it-works" className="py-20 bg-gray-50">
+      <section id="how-it-works" className="py-20 bg-gray-50 scroll-mt-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
             <h2 className="text-3xl font-bold text-gray-900 mb-4">How It Works</h2>
@@ -414,8 +418,8 @@ export default function Home() {
               <p className="text-gray-600 mb-6">100% risk-free. Keep 100% if we don't succeed.</p>
               <motion.button
                 onClick={() => {
-                  const formSection = document.querySelector('#eligibility-form');
-                  formSection?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                  const formSection = document.querySelector('#check-eligibility');
+                  formSection?.scrollIntoView({ behavior: 'smooth', block: 'start' });
                 }}
                 className="w-full bg-green-50 rounded-lg p-4 cursor-pointer border-2 border-transparent hover:border-green-200 transition-colors focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2"
                 whileHover={
@@ -440,7 +444,7 @@ export default function Home() {
       </section>
 
       {/* Success Stories Section */}
-      <section id="success-stories" className="py-20 bg-white">
+      <section id="success-stories" className="py-20 bg-white scroll-mt-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
             <h2 className="text-3xl font-bold text-gray-900 mb-4">Success Stories</h2>
@@ -470,10 +474,10 @@ export default function Home() {
                 </div>
               </div>
               <p className="text-gray-700 mb-4">
-                "My flight was delayed 4 hours due to technical issues. Flghtly handled everything and I got €400 compensation within 3 weeks!"
+                "My flight was delayed 4 hours due to technical issues. Flghtly handled everything and I got {formatCompensationAmount(400, currency, isEURegion)} compensation within 3 weeks!"
               </p>
               <div className="flex justify-between items-center">
-                <span className="text-green-600 font-semibold">€400 recovered</span>
+                <span className="text-green-600 font-semibold">{formatCompensationAmount(400, currency, isEURegion)} recovered</span>
                 <span className="text-sm text-gray-500">3 weeks</span>
               </div>
             </motion.div>
@@ -498,10 +502,10 @@ export default function Home() {
                 </div>
               </div>
               <p className="text-gray-700 mb-4">
-                "Flight was cancelled with only 2 days notice. The team was professional and I received €600 compensation."
+                "Flight was cancelled with only 2 days notice. The team was professional and I received {formatCompensationAmount(600, currency, isEURegion)} compensation."
               </p>
               <div className="flex justify-between items-center">
-                <span className="text-green-600 font-semibold">€600 recovered</span>
+                <span className="text-green-600 font-semibold">{formatCompensationAmount(600, currency, isEURegion)} recovered</span>
                 <span className="text-sm text-gray-500">2 weeks</span>
               </div>
             </motion.div>
@@ -526,10 +530,10 @@ export default function Home() {
                 </div>
               </div>
               <p className="text-gray-700 mb-4">
-                "I was skeptical at first, but they made the process so easy. Got €250 for my 3-hour delay!"
+                "I was skeptical at first, but they made the process so easy. Got {formatCompensationAmount(250, currency, isEURegion)} for my 3-hour delay!"
               </p>
               <div className="flex justify-between items-center">
-                <span className="text-green-600 font-semibold">€250 recovered</span>
+                <span className="text-green-600 font-semibold">{formatCompensationAmount(250, currency, isEURegion)} recovered</span>
                 <span className="text-sm text-gray-500">4 weeks</span>
               </div>
             </motion.div>
@@ -539,7 +543,7 @@ export default function Home() {
             <div className="bg-blue-50 rounded-lg p-6 max-w-2xl mx-auto">
               <h3 className="text-xl font-semibold text-blue-900 mb-2">Join 320+ Successful Travelers</h3>
               <p className="text-blue-800">
-                Average compensation: {currency === 'EUR' ? '€450' : currency === 'USD' ? '$485' : '£385'} • Success rate: 94% • Average processing time: 3.2 weeks
+                Average compensation: {formatCompensationAmount(450, currency, isEURegion)} • Success rate: 94% • Average processing time: 3.2 weeks
               </p>
             </div>
           </div>
@@ -547,7 +551,7 @@ export default function Home() {
       </section>
 
       {/* FAQ Section */}
-      <section id="faq" className="py-20 bg-gray-50">
+      <section id="faq" className="py-20 bg-gray-50 scroll-mt-20">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
             <h2 className="text-3xl font-bold text-gray-900 mb-4">Frequently Asked Questions</h2>

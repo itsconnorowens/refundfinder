@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeEach } from 'vitest';
+import { describe, it, expect } from 'vitest';
 import {
   generateDocumentSubmission,
   generateCoverLetter,
@@ -6,8 +6,8 @@ import {
   generateDocumentChecklist,
   generateAllDocuments,
   generateAdminNotificationEmail,
-  DocumentSubmission,
-  GeneratedDocument,
+  DocumentSubmission as _DocumentSubmission,
+  GeneratedDocument as _GeneratedDocument,
 } from '../document-generator';
 import { ClaimRecord } from '../airtable';
 import { AirlineConfig } from '../airline-config';

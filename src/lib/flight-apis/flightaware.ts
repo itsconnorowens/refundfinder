@@ -155,7 +155,7 @@ export class FlightAwareProvider {
       }
 
       return data.flights[0];
-    } catch (error) {
+    } catch (error: unknown) {
       logger.error('FlightAware API error:', error);
       throw error;
     }
@@ -201,7 +201,7 @@ export class FlightAwareProvider {
       const data: FlightAwareResponse = await response.json();
 
       return data.flights || [];
-    } catch (error) {
+    } catch (error: unknown) {
       logger.error('FlightAware API error:', error);
       throw error;
     }
@@ -318,7 +318,7 @@ export class FlightAwareProvider {
       });
 
       return response.ok;
-    } catch (error) {
+    } catch {
       return false;
     }
   }

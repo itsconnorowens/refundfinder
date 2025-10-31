@@ -58,7 +58,7 @@ export class FlightValidationService {
       );
 
       return this.formatValidationResponse(result);
-    } catch (error) {
+    } catch (error: unknown) {
       logger.error('Flight validation error:', error);
       return {
         verified: false,

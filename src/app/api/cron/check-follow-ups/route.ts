@@ -72,7 +72,7 @@ export const POST = withErrorTracking(async (request: NextRequest) => {
         alertsSent++;
         logger.info('Sent overdue alert for  claims', { length: overdueClaims.length });
       }
-  } catch (error) {
+  } catch (error: unknown) {
     captureError(error, { level: 'warning', tags: { cron_task: 'overdue_claims' } });
     logger.error('Error checking overdue claims:', error);
     results.errors.push('Failed to check overdue claims');
@@ -113,7 +113,7 @@ export const POST = withErrorTracking(async (request: NextRequest) => {
         alertsSent++;
         logger.info('Sent follow-up alert for  claims', { length: followUpClaims.length });
       }
-  } catch (error) {
+  } catch (error: unknown) {
     captureError(error, { level: 'warning', tags: { cron_task: 'follow_up_claims' } });
     logger.error('Error checking follow-up claims:', error);
     results.errors.push('Failed to check follow-up claims');
@@ -133,7 +133,7 @@ export const POST = withErrorTracking(async (request: NextRequest) => {
       message: `Follow-up check completed. ${alertsSent} alerts sent.`,
       results,
     });
-  } catch (error) {
+  } catch (error: unknown) {
     // Mark cron job as failed
     Sentry.captureCheckIn({
       checkInId,

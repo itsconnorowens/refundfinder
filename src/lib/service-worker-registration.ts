@@ -34,7 +34,7 @@ export async function registerServiceWorker(): Promise<ServiceWorkerRegistration
     ); // Check once per day
 
     return registration;
-  } catch (error) {
+  } catch (error: unknown) {
     logger.error('[Service Worker] Registration failed:', error);
     return null;
   }
@@ -56,7 +56,7 @@ export async function unregisterServiceWorker(): Promise<boolean> {
       return true;
     }
     return false;
-  } catch (error) {
+  } catch (error: unknown) {
     logger.error('[Service Worker] Unregister failed:', error);
     return false;
   }

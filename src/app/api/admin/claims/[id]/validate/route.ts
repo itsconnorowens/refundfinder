@@ -14,7 +14,7 @@ export async function POST(
       success: true,
       data: validation,
     });
-  } catch (error) {
+  } catch (error: unknown) {
     logger.error('Error validating claim:', error);
     return NextResponse.json(
       { error: 'Failed to validate claim' },

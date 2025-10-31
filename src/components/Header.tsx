@@ -3,7 +3,7 @@ export default function Header() {
     <header className="sticky top-0 z-50 bg-white/95 backdrop-blur-md shadow-sm border-b border-gray-100 transition-all duration-300">
       <div className="container mx-auto px-4 py-4">
         <div className="flex items-center justify-between">
-          <a href="#" className="flex items-center space-x-3 focus:outline-none focus:ring-0 active:outline-none">
+          <a href="/" className="flex items-center space-x-3 focus:outline-none focus:ring-0 active:outline-none">
             <img
               src="/icon-192.png"
               alt="Flghtly Logo"
@@ -16,15 +16,15 @@ export default function Header() {
           </a>
 
           <nav className="hidden md:flex space-x-8">
-            <a href="#" className="text-gray-600 hover:text-blue-600 transition-colors font-medium">
+            <button className="text-gray-600 hover:text-blue-600 transition-colors font-medium">
               Dashboard
-            </a>
-            <a href="#" className="text-gray-600 hover:text-blue-600 transition-colors font-medium">
+            </button>
+            <button className="text-gray-600 hover:text-blue-600 transition-colors font-medium">
               Claims
-            </a>
-            <a href="#" className="text-gray-600 hover:text-blue-600 transition-colors font-medium">
+            </button>
+            <button className="text-gray-600 hover:text-blue-600 transition-colors font-medium">
               Settings
-            </a>
+            </button>
           </nav>
 
           <div className="flex items-center space-x-4">

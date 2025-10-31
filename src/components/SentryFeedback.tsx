@@ -12,7 +12,6 @@ import { MessageSquare } from 'lucide-react';
  */
 export function SentryFeedbackWidget() {
   const [mounted, setMounted] = useState(false);
-  const [_feedbackOpen, _setFeedbackOpen] = useState(false);
 
   useEffect(() => {
     setMounted(true);
@@ -100,7 +99,7 @@ export function InlineFeedbackForm() {
 
       // Reset after 3 seconds
       setTimeout(() => setSubmitted(false), 3000);
-    } catch (err) {
+    } catch (err: unknown) {
       setError('Failed to submit feedback. Please try again.');
       console.error('Feedback submission error:', err);
     }

@@ -237,7 +237,7 @@ export class AirportStatusManager {
       });
 
       return status;
-    } catch (error) {
+    } catch (error: unknown) {
       console.error(`Failed to get airport status for ${airportCode}:`, error);
       throw error;
     }
@@ -265,7 +265,7 @@ export class AirportStatusManager {
           });
           return weather;
         }
-      } catch (error) {
+      } catch (error: unknown) {
         console.warn(`Weather provider ${provider.name} failed:`, error);
         continue;
       }
@@ -282,7 +282,7 @@ export class AirportStatusManager {
         if (await this.rateLimiter.canMakeRequest(provider)) {
           return await provider.getOperationalStatus(airportCode);
         }
-      } catch (error) {
+      } catch (error: unknown) {
         console.warn(`Operational provider ${provider.name} failed:`, error);
         continue;
       }
@@ -292,7 +292,7 @@ export class AirportStatusManager {
     return this.getBasicOperationalStatus(airportCode);
   }
 
-  private getBasicOperationalStatus(airportCode: string): OperationalStatus {
+  private getBasicOperationalStatus(_airportCode: string): OperationalStatus {
     return {
       status: 'normal',
       runwayStatus: [],

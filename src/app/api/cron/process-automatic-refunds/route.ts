@@ -172,7 +172,7 @@ export const POST = withErrorTracking(async (request: NextRequest) => {
       results,
       alerts: alerts.length > 0 ? alerts : undefined,
     });
-  } catch (error) {
+  } catch (error: unknown) {
     // Mark cron job as failed
     Sentry.captureCheckIn({
       checkInId,
@@ -207,7 +207,7 @@ export async function GET() {
           claimsNeedingRefunds.ineligibleClaims.length,
       },
     });
-  } catch (error) {
+  } catch (error: unknown) {
     logger.error('Error in cron job health check:', error);
     return NextResponse.json(
       { error: 'Internal server error' },

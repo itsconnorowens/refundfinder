@@ -176,7 +176,7 @@ export class AirlineMonitoringService {
       }
 
       return { isHealthy: true };
-    } catch (error) {
+    } catch (error: unknown) {
       return {
         isHealthy: false,
         alert: {

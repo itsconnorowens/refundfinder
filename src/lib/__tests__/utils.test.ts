@@ -10,7 +10,8 @@ describe('Utils', () => {
     });
 
     it('should handle conditional class names', () => {
-      const result = cn('base', false && 'conditional', 'always');
+      const condition = false;
+      const result = cn('base', condition && 'conditional', 'always');
       expect(result).toContain('base');
       expect(result).toContain('always');
       expect(result).not.toContain('conditional');

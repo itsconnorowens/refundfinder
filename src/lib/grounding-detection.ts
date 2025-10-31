@@ -4,7 +4,7 @@
  */
 
 import { FlightData } from './flight-apis';
-import { calculateFlightDistance } from './distance-calculator';
+import { calculateFlightDistance as _calculateFlightDistance } from './distance-calculator';
 import { logger } from '@/lib/logger';
 
 export interface GroundingStatus {
@@ -133,7 +133,7 @@ export class RealTimeGroundingService {
           timestamp: new Date(),
         };
       }
-    } catch (error) {
+    } catch (error: unknown) {
       logger.warn('Free API failed, falling back to web scraping', { error: error });
     }
 
@@ -149,7 +149,7 @@ export class RealTimeGroundingService {
           timestamp: new Date(),
         };
       }
-    } catch (error) {
+    } catch (error: unknown) {
       logger.warn('Web scraping failed, falling back to paid API', { error: error });
     }
 
@@ -185,7 +185,7 @@ export class RealTimeGroundingService {
       }
 
       return null;
-    } catch (error) {
+    } catch {
       return null;
     }
   }
@@ -212,7 +212,7 @@ export class RealTimeGroundingService {
         source: 'FAA',
         timestamp: new Date(),
       };
-    } catch (error) {
+    } catch {
       return null;
     }
   }
@@ -239,7 +239,7 @@ export class RealTimeGroundingService {
         source: 'Transport Canada',
         timestamp: new Date(),
       };
-    } catch (error) {
+    } catch {
       return null;
     }
   }
@@ -249,7 +249,7 @@ export class RealTimeGroundingService {
    */
   private async checkWebScraping(
     flightData: FlightData,
-    airportCode: string
+    _airportCode: string
   ): Promise<GroundingStatus | null> {
     try {
       // Check FlightAware (free scraping)
@@ -261,7 +261,7 @@ export class RealTimeGroundingService {
       if (flightradarData) return flightradarData;
 
       return null;
-    } catch (error) {
+    } catch {
       return null;
     }
   }
@@ -270,7 +270,7 @@ export class RealTimeGroundingService {
    * Scrape FlightAware for flight status
    */
   private async scrapeFlightAware(
-    flightData: FlightData
+    _flightData: FlightData
   ): Promise<GroundingStatus | null> {
     try {
       // Mock scraping (replace with actual implementation)
@@ -281,7 +281,7 @@ export class RealTimeGroundingService {
         source: 'FlightAware (scraped)',
         timestamp: new Date(),
       };
-    } catch (error) {
+    } catch {
       return null;
     }
   }
@@ -290,7 +290,7 @@ export class RealTimeGroundingService {
    * Scrape Flightradar24 for flight status
    */
   private async scrapeFlightradar24(
-    flightData: FlightData
+    _flightData: FlightData
   ): Promise<GroundingStatus | null> {
     try {
       // Mock scraping (replace with actual implementation)
@@ -301,7 +301,7 @@ export class RealTimeGroundingService {
         source: 'Flightradar24 (scraped)',
         timestamp: new Date(),
       };
-    } catch (error) {
+    } catch {
       return null;
     }
   }
@@ -310,8 +310,8 @@ export class RealTimeGroundingService {
    * Check paid APIs as last resort
    */
   private async checkPaidAPIs(
-    flightData: FlightData,
-    airportCode: string
+    _flightData: FlightData,
+    _airportCode: string
   ): Promise<GroundingStatus> {
     // This would call AviationStack or FlightLabs APIs
     // For now, return mock data
@@ -355,7 +355,7 @@ export class RealTimeGroundingService {
           timestamp: new Date(),
         };
       }
-    } catch (error) {
+    } catch (error: unknown) {
       logger.warn('Free weather API failed', { error: error });
     }
 
@@ -374,7 +374,7 @@ export class RealTimeGroundingService {
    * Get free weather data (government APIs)
    */
   private async getFreeWeatherData(
-    airportCode: string
+    _airportCode: string
   ): Promise<WeatherContext> {
     // Mock free weather API call
     return {
@@ -390,7 +390,7 @@ export class RealTimeGroundingService {
    * Get paid weather data (fallback)
    */
   private async getPaidWeatherData(
-    airportCode: string
+    _airportCode: string
   ): Promise<WeatherContext> {
     // Mock paid weather API call
     return {

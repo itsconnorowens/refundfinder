@@ -190,7 +190,7 @@ export async function GET(request: NextRequest) {
         ? 'Claim is eligible for refund'
         : `Claim status '${claimStatus}' is not eligible for refund`,
     });
-  } catch (error) {
+  } catch (error: unknown) {
     logger.error('Error checking refund eligibility:', error);
     return NextResponse.json(
       { error: 'Failed to check refund eligibility' },

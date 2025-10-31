@@ -1,5 +1,5 @@
 // Flight number: AA123, BA456, LH1234
-export function validateFlightNumber(value: string): { valid: boolean; error?: string } {
+export function validateFlightNumber(value: string): { valid: boolean; error?: string; airlineCode?: string } {
   const regex = /^[A-Z]{2}[0-9]{1,4}[A-Z]?$/;
   if (!value) return { valid: false, error: 'Flight number is required' };
   if (!regex.test(value.toUpperCase())) {
@@ -8,7 +8,18 @@ export function validateFlightNumber(value: string): { valid: boolean; error?: s
       error: 'Flight number should be airline code (2 letters) followed by 1-4 digits (e.g., BA123)'
     };
   }
-  return { valid: true };
+
+  // Extract the airline code (first 2 letters)
+  const airlineCode = value.toUpperCase().substring(0, 2);
+
+  return { valid: true, airlineCode };
+}
+
+// Extract airline code from flight number
+export function extractAirlineCode(flightNumber: string): string | null {
+  const regex = /^([A-Z]{2})[0-9]{1,4}[A-Z]?$/;
+  const match = flightNumber.toUpperCase().match(regex);
+  return match ? match[1] : null;
 }
 
 // Airport code: LHR, JFK, CDG
@@ -74,6 +85,18 @@ export function validateDelayDuration(value: string): { valid: boolean; error?: 
     : `${normalizedHours}h`;
 
   return { valid: true, normalized };
+}
+
+// Airline: validates airline name or code
+export function validateAirline(value: string): { valid: boolean; error?: string } {
+  if (!value) return { valid: false, error: 'Airline is required' };
+
+  const trimmed = value.trim();
+  if (trimmed.length < 2) {
+    return { valid: false, error: 'Please enter at least 2 characters' };
+  }
+
+  return { valid: true };
 }
 
 // Email with typo suggestions

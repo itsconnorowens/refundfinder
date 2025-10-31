@@ -24,7 +24,7 @@ export async function GET(request: NextRequest) {
       success: true,
       data: analysis,
     });
-  } catch (error) {
+  } catch (error: unknown) {
     logger.error('Error analyzing refund eligibility:', error);
     return NextResponse.json(
       { error: 'Internal server error' },

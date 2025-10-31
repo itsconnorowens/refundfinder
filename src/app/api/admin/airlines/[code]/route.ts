@@ -28,7 +28,7 @@ export async function GET(
       success: true,
       data: config,
     });
-  } catch (error) {
+  } catch (error: unknown) {
     const { captureError } = await import('@/lib/error-tracking');
     captureError(error, { level: 'error', tags: { service: 'admin', operation: 'airline_config', route: '/api/admin/airlines/[code]' } });
     logger.error('Error fetching airline config:', error);
@@ -57,7 +57,7 @@ export async function PUT(
       { error: 'Airline configuration updates not implemented yet' },
       { status: 501 }
     );
-  } catch (error) {
+  } catch (error: unknown) {
     const { captureError } = await import('@/lib/error-tracking');
     captureError(error, { level: 'error', tags: { service: 'admin', operation: 'airline_config_update', route: '/api/admin/airlines/[code]' } });
     logger.error('Error updating airline config:', error);

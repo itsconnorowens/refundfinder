@@ -179,7 +179,7 @@ export default function ClaimSubmissionForm() {
         try {
           const parsed = JSON.parse(savedData);
           setFormData(parsed);
-        } catch (error) {
+        } catch (error: unknown) {
           console.error('Error parsing saved form data:', error);
         }
       }
@@ -352,7 +352,7 @@ export default function ClaimSubmissionForm() {
           claim_id: data.claimId,
         });
       }
-    } catch (error) {
+    } catch (error: unknown) {
       console.error('Error creating payment intent:', error);
       showError('Failed to initialize payment. Please try again.');
     } finally {
@@ -396,7 +396,7 @@ export default function ClaimSubmissionForm() {
         actualDelayMinutes: verificationResult.actualData?.delayMinutes
       }));
 
-    } catch (error) {
+    } catch (error: unknown) {
       console.error('Flight verification error:', error);
       // Set verification as failed but allow user to proceed
       setFormData(prev => ({
@@ -481,7 +481,7 @@ export default function ClaimSubmissionForm() {
       } else {
         throw new Error(result.error || 'Upload failed');
       }
-    } catch (error) {
+    } catch (error: unknown) {
       console.error('Upload error:', error);
       setErrors(prev => ({
         ...prev,
@@ -575,7 +575,7 @@ export default function ClaimSubmissionForm() {
       } else {
         throw new Error(result.error || 'Failed to submit claim');
       }
-    } catch (error) {
+    } catch (error: unknown) {
       console.error('Error submitting claim:', error);
       showError('Failed to submit claim. Please contact support with your payment confirmation.');
     }

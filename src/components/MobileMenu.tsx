@@ -10,14 +10,14 @@ interface MobileMenuProps {
 
 export function MobileMenu({ isOpen, onClose }: MobileMenuProps) {
   const handleCTAClick = () => {
-    const formSection = document.querySelector('#eligibility-form');
-    formSection?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    const formSection = document.querySelector('#check-eligibility');
+    formSection?.scrollIntoView({ behavior: 'smooth', block: 'start' });
     onClose();
   };
 
   const handleNavClick = (sectionId: string) => {
     const section = document.querySelector(sectionId);
-    section?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    section?.scrollIntoView({ behavior: 'smooth', block: 'start' });
     onClose();
   };
 

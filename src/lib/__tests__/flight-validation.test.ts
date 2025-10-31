@@ -3,7 +3,7 @@
  * Tests all components: airports, airlines, distance calculation, flight validation
  */
 
-import { describe, it, expect, beforeEach, afterEach } from 'vitest';
+import { describe, it, expect, afterEach } from 'vitest';
 import {
   airports,
   getAirportByCode,
@@ -28,9 +28,9 @@ import {
   getRouteType,
   clearDistanceCache,
 } from './distance-calculator';
-import { flightLookupService, FlightLookupService } from './flight-apis';
+import { flightLookupService as _flightLookupService, FlightLookupService } from './flight-apis';
 import {
-  flightValidationService,
+  flightValidationService as _flightValidationService,
   FlightValidationService,
 } from './flight-validation';
 
@@ -450,7 +450,7 @@ describe('Integration Tests', () => {
       expect(result.validationResult).toBeDefined();
       expect(result.recommendations).toBeDefined();
       expect(Array.isArray(result.recommendations)).toBe(true);
-    } catch (error) {
+    } catch (error: unknown) {
       // Should handle API errors gracefully
       expect(error).toBeDefined();
     }

@@ -119,7 +119,7 @@ class EmailService {
           logger.info('Email sent successfully via ', { provider: provider.provider });
           return result;
         }
-      } catch (error) {
+      } catch (error: unknown) {
         console.error(`Failed to send email via ${provider.provider}:`, error);
         continue;
       }
@@ -164,6 +164,7 @@ class EmailService {
       throw new Error('SendGrid API key not provided');
     }
 
+    // eslint-disable-next-line @typescript-eslint/no-require-imports
     const sgMail = require('@sendgrid/mail');
     sgMail.setApiKey(provider.apiKey);
 
@@ -233,6 +234,7 @@ class EmailService {
       throw new Error('SMTP configuration not provided');
     }
 
+    // eslint-disable-next-line @typescript-eslint/no-require-imports
     const nodemailer = require('nodemailer');
 
     const transporter = nodemailer.createTransporter({

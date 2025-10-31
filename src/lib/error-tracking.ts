@@ -344,7 +344,7 @@ export function withErrorTracking(
       }
 
       return response;
-    } catch (error) {
+    } catch (error: unknown) {
       // Capture the error with context
       captureError(error, {
         level: error instanceof AppError && error.isOperational ? 'warning' : 'error',
@@ -467,7 +467,7 @@ export async function trackDatabaseOperation<T>(
     }
 
     return result;
-  } catch (error) {
+  } catch (error: unknown) {
     const duration = Date.now() - startTime;
 
     // Track failed operation
@@ -513,7 +513,7 @@ export async function trackAPICall<T>(
     }
 
     return result;
-  } catch (error) {
+  } catch (error: unknown) {
     const duration = Date.now() - startTime;
 
     // Track failed API call
@@ -555,7 +555,7 @@ export async function trackEmailDelivery<T>(
     logger.info('[Email] Successfully sent ${emailType} to ${recipient} in ms', { duration: duration });
 
     return result;
-  } catch (error) {
+  } catch (error: unknown) {
     const duration = Date.now() - startTime;
 
     // Track failed email delivery

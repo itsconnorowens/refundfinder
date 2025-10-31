@@ -60,20 +60,20 @@ describe('Admin Authentication', () => {
     });
 
     it('should generate unique session tokens', () => {
-      const response1 = createAdminSession();
+      const _response1 = createAdminSession();
       const token1 = getAdminSession()?.token;
       
       // Clear the session first
       clearAdminSession();
       
-      const response2 = createAdminSession();
+      const _response2 = createAdminSession();
       const token2 = getAdminSession()?.token;
 
       expect(token1).not.toEqual(token2);
     });
 
     it('should set proper cookie attributes', () => {
-      const response = createAdminSession();
+      const _response = createAdminSession();
       // Note: Cookie testing is complex in test environment
       // The important part is that the session is created
       expect(isAdminAuthenticated()).toBe(true);

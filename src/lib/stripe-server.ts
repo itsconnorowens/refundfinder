@@ -73,7 +73,7 @@ export async function createPaymentIntent(
     });
 
     return paymentIntent;
-  } catch (error) {
+  } catch (error: unknown) {
     logger.error('Error creating payment intent:', error);
     throw error;
   }
@@ -88,7 +88,7 @@ export async function retrievePaymentIntent(
   try {
     const stripe = getStripe();
     return await stripe.paymentIntents.retrieve(paymentIntentId);
-  } catch (error) {
+  } catch (error: unknown) {
     logger.error('Error retrieving payment intent:', error);
     throw error;
   }
@@ -114,7 +114,7 @@ export async function processRefund(
     });
 
     return refund;
-  } catch (error) {
+  } catch (error: unknown) {
     logger.error('Error processing refund:', error);
     throw error;
   }
@@ -142,7 +142,7 @@ export async function processPartialRefund(
     });
 
     return refund;
-  } catch (error) {
+  } catch (error: unknown) {
     logger.error('Error processing partial refund:', error);
     throw error;
   }
@@ -159,7 +159,7 @@ export function verifyWebhookSignature(
   try {
     const stripe = getStripe();
     return stripe.webhooks.constructEvent(payload, signature, secret);
-  } catch (error) {
+  } catch (error: unknown) {
     logger.error('Error verifying webhook signature:', error);
     throw error;
   }
@@ -174,7 +174,7 @@ export async function getPaymentMethodDetails(
   try {
     const stripe = getStripe();
     return await stripe.paymentMethods.retrieve(paymentMethodId);
-  } catch (error) {
+  } catch (error: unknown) {
     logger.error('Error retrieving payment method:', error);
     throw error;
   }
@@ -198,7 +198,7 @@ export async function createCustomer(
         ...metadata,
       },
     });
-  } catch (error) {
+  } catch (error: unknown) {
     logger.error('Error creating customer:', error);
     throw error;
   }
@@ -218,7 +218,7 @@ export async function findCustomerByEmail(
     });
 
     return customers.data[0] || null;
-  } catch (error) {
+  } catch (error: unknown) {
     logger.error('Error finding customer:', error);
     throw error;
   }

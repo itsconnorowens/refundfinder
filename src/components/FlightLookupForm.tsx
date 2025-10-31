@@ -107,6 +107,7 @@ export default function FlightLookupForm({ onResults, onLoading }: FlightLookupF
         calculated_value: formData.noticeGiven
       });
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [showManualNoticeEdit]);
 
   // Track info box expansions
@@ -163,6 +164,21 @@ export default function FlightLookupForm({ onResults, onLoading }: FlightLookupF
           setEmailSuggestion('');
         }
         break;
+      case 'firstName':
+      case 'lastName': {
+        // Simple validation: must not be empty and should contain only letters, spaces, hyphens, and apostrophes
+        const trimmedValue = value.trim();
+        if (!trimmedValue) {
+          result = { valid: false, error: `${field === 'firstName' ? 'First' : 'Last'} name is required` };
+        } else if (trimmedValue.length < 2) {
+          result = { valid: false, error: `${field === 'firstName' ? 'First' : 'Last'} name must be at least 2 characters` };
+        } else if (!/^[a-zA-Z\s\-']+$/.test(trimmedValue)) {
+          result = { valid: false, error: 'Name should only contain letters, spaces, hyphens, and apostrophes' };
+        } else {
+          result = { valid: true };
+        }
+        break;
+      }
     }
 
     if (result.error) {
@@ -297,6 +313,8 @@ export default function FlightLookupForm({ onResults, onLoading }: FlightLookupF
 
     // Track validation errors if any
     if (Object.keys(newErrors).length > 0 && typeof window !== 'undefined') {
+      console.error('📋 Validation errors:', newErrors);
+
       // Track each validation error
       Object.entries(newErrors).forEach(([field, error]) => {
         posthog.capture('form_validation_error', {
@@ -314,9 +332,14 @@ export default function FlightLookupForm({ onResults, onLoading }: FlightLookupF
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
+    console.log('🚀 Form submitted with data:', formData);
+
     if (!validateForm()) {
+      console.error('❌ Form validation failed. Check errors above.');
       return;
     }
+
+    console.log('✅ Form validation passed, submitting...');
 
     // Track eligibility check started
     if (typeof window !== 'undefined') {
@@ -478,7 +501,7 @@ export default function FlightLookupForm({ onResults, onLoading }: FlightLookupF
       markCompleted();
 
       onResults(result);
-    } catch (error) {
+    } catch (error: unknown) {
       console.error('Error checking eligibility:', error);
 
       // Parse network/fetch errors
@@ -1682,17 +1705,23 @@ export default function FlightLookupForm({ onResults, onLoading }: FlightLookupF
             <label htmlFor="firstName" className="block text-sm font-medium text-gray-700 mb-2">
               First Name
             </label>
-            <input
-              type="text"
-              id="firstName"
-              value={formData.firstName}
-              onChange={(e) => handleInputChange('firstName', e.target.value)}
-              placeholder="John"
-              data-ph-capture-attribute-name-mask="true"
-              className={`w-full px-4 py-4 md:py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-base ${
-                errors.firstName ? 'border-red-500' : 'border-gray-300'
-              }`}
-            />
+            <div className="relative">
+              <input
+                type="text"
+                id="firstName"
+                value={formData.firstName}
+                onChange={(e) => handleInputChange('firstName', e.target.value)}
+                onBlur={(e) => validateField('firstName', e.target.value)}
+                placeholder="John"
+                data-ph-capture-attribute-name-mask="true"
+                className={`w-full px-4 py-4 md:py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-base ${
+                  errors.firstName ? 'border-red-500' : fieldValid.firstName ? 'border-green-500' : 'border-gray-300'
+                }`}
+              />
+              {fieldValid.firstName && !errors.firstName && (
+                <span className="absolute right-3 top-1/2 -translate-y-1/2 text-green-600 text-xl">✓</span>
+              )}
+            </div>
             {errors.firstName && (
               <p className="mt-1 text-sm text-red-600">{errors.firstName}</p>
             )}
@@ -1702,17 +1731,23 @@ export default function FlightLookupForm({ onResults, onLoading }: FlightLookupF
             <label htmlFor="lastName" className="block text-sm font-medium text-gray-700 mb-2">
               Last Name
             </label>
-            <input
-              type="text"
-              id="lastName"
-              value={formData.lastName}
-              onChange={(e) => handleInputChange('lastName', e.target.value)}
-              placeholder="Doe"
-              data-ph-capture-attribute-name-mask="true"
-              className={`w-full px-4 py-4 md:py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-base ${
-                errors.lastName ? 'border-red-500' : 'border-gray-300'
-              }`}
-            />
+            <div className="relative">
+              <input
+                type="text"
+                id="lastName"
+                value={formData.lastName}
+                onChange={(e) => handleInputChange('lastName', e.target.value)}
+                onBlur={(e) => validateField('lastName', e.target.value)}
+                placeholder="Doe"
+                data-ph-capture-attribute-name-mask="true"
+                className={`w-full px-4 py-4 md:py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-base ${
+                  errors.lastName ? 'border-red-500' : fieldValid.lastName ? 'border-green-500' : 'border-gray-300'
+                }`}
+              />
+              {fieldValid.lastName && !errors.lastName && (
+                <span className="absolute right-3 top-1/2 -translate-y-1/2 text-green-600 text-xl">✓</span>
+              )}
+            </div>
             {errors.lastName && (
               <p className="mt-1 text-sm text-red-600">{errors.lastName}</p>
             )}

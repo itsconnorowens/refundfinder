@@ -59,7 +59,7 @@ export async function POST(request: NextRequest) {
         version: '1.0.0',
       },
     });
-  } catch (error) {
+  } catch (error: unknown) {
     logger.error('Enhanced claim processing error:', error);
 
     // Record error metrics
@@ -130,7 +130,7 @@ export async function GET(request: NextRequest) {
         },
       });
     }
-  } catch (error) {
+  } catch (error: unknown) {
     logger.error('Real-time data fetch error:', error);
 
     monitor.recordApiCall('real-time-data', 'enhanced', false, 0);

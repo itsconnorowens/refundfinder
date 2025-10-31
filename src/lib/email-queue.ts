@@ -94,7 +94,7 @@ class EmailQueue {
         await new Promise((resolve) =>
           setTimeout(resolve, this.config.processingInterval)
         );
-      } catch (error) {
+      } catch (error: unknown) {
         logger.error('Error in email queue processing:', error);
         await new Promise((resolve) =>
           setTimeout(resolve, this.config.processingInterval)
@@ -160,7 +160,7 @@ class EmailQueue {
       } else {
         throw new Error(result.error || 'Unknown email error');
       }
-    } catch (error) {
+    } catch (error: unknown) {
       console.error(`Failed to send email ${email.id}:`, error);
 
       email.error = error instanceof Error ? error.message : 'Unknown error';

@@ -84,7 +84,7 @@ export default function CheckEligibilityPage() {
         setError('Could not extract flight details. Please enter them manually.');
         setInputMethod('manual');
       }
-    } catch (error) {
+    } catch (error: unknown) {
       console.error('Error parsing email:', error);
       setError('Failed to parse email. Please enter details manually.');
       setInputMethod('manual');
@@ -143,7 +143,7 @@ export default function CheckEligibilityPage() {
       } else {
         setError(data.error || 'Failed to check eligibility');
       }
-    } catch (error) {
+    } catch (error: unknown) {
       console.error('Error checking eligibility:', error);
       setError('Failed to check eligibility. Please try again.');
     } finally {

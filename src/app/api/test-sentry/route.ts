@@ -28,7 +28,7 @@ export async function GET(_request: NextRequest) {
         '3. Uncomment the throw error line to test error tracking',
       ],
     });
-  } catch (error) {
+  } catch (error: unknown) {
     captureError(error, {
       level: 'error',
       tags: {

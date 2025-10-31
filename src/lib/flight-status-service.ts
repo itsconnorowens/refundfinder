@@ -114,7 +114,7 @@ class FlightStatusService {
         userReportedDelay,
         userReportedType
       );
-    } catch (error) {
+    } catch (error: unknown) {
       logger.error('Flight verification API error:', error);
       return {
         verified: false,
@@ -387,7 +387,7 @@ class FlightStatusService {
       // This would integrate with Airtable API
       // For now, just log to console
       logger.info('API Usage Log:', { logEntry: logEntry });
-    } catch (error) {
+    } catch (error: unknown) {
       logger.error('Failed to log API usage to Airtable:', error);
     }
   }
@@ -411,7 +411,7 @@ class FlightStatusService {
         const data = JSON.parse(stored);
         this.cache = new Map(Object.entries(data));
       }
-    } catch (error) {
+    } catch (error: unknown) {
       logger.error('Failed to load cache from storage:', error);
     }
   }
@@ -425,7 +425,7 @@ class FlightStatusService {
     try {
       const data = Object.fromEntries(this.cache);
       localStorage.setItem('flight_status_cache', JSON.stringify(data));
-    } catch (error) {
+    } catch (error: unknown) {
       logger.error('Failed to save cache to storage:', error);
     }
   }
@@ -442,7 +442,7 @@ class FlightStatusService {
         const data = JSON.parse(stored);
         this.monthlyUsage = new Map(Object.entries(data));
       }
-    } catch (error) {
+    } catch (error: unknown) {
       logger.error('Failed to load usage from storage:', error);
     }
   }
@@ -456,7 +456,7 @@ class FlightStatusService {
     try {
       const data = Object.fromEntries(this.monthlyUsage);
       localStorage.setItem('api_usage_log', JSON.stringify(data));
-    } catch (error) {
+    } catch (error: unknown) {
       logger.error('Failed to save usage to storage:', error);
     }
   }

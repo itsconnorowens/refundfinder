@@ -15,7 +15,7 @@ export async function POST(request: NextRequest) {
       results,
       message: `Processed ${results.length} claims for filing`,
     });
-  } catch (error) {
+  } catch (error: unknown) {
     logger.error('Error processing automatic claim filing:', error);
     return NextResponse.json(
       { error: 'Failed to process automatic filing' },
@@ -34,7 +34,7 @@ export async function GET() {
       results,
       message: `Processed ${results.length} claims for filing`,
     });
-  } catch (error) {
+  } catch (error: unknown) {
     logger.error('Error processing automatic claim filing:', error);
     return NextResponse.json(
       { error: 'Failed to process automatic filing' },

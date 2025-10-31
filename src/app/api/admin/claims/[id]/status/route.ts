@@ -36,7 +36,7 @@ export async function PUT(
       success: true,
       message: 'Claim status updated successfully',
     });
-  } catch (error) {
+  } catch (error: unknown) {
     logger.error('Error updating claim status:', error);
     return NextResponse.json(
       { error: 'Failed to update claim status' },

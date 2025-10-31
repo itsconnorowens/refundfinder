@@ -63,7 +63,7 @@ export function PostHogProvider({ children }: { children: React.ReactNode }) {
           });
           (posthog as any).__flghtly_loaded = true;
         }
-      } catch (error) {
+      } catch (error: unknown) {
         console.error('Failed to load PostHog:', error);
       }
     };

@@ -139,7 +139,7 @@ export async function analyzeRefundEligibility(
     } else {
       return await analyzeAutomaticTriggers(claim, payment, submittedAt);
     }
-  } catch (error) {
+  } catch (error: unknown) {
     logger.error('Error analyzing refund eligibility:', error);
     return {
       shouldRefund: false,
@@ -209,7 +209,7 @@ function analyzeSpecificTrigger(
       }
       break;
 
-    case 'insufficient_documentation':
+    case 'insufficient_documentation': {
       const boardingPassUrl = claim.get('boarding_pass_url');
       const delayProofUrl = claim.get('delay_proof_url');
       if (!boardingPassUrl || !delayProofUrl) {
@@ -222,8 +222,9 @@ function analyzeSpecificTrigger(
         };
       }
       break;
+    }
 
-    case 'ineligible_flight':
+    case 'ineligible_flight': {
       const estimatedCompensation = claim.get('estimated_compensation');
       if (estimatedCompensation === 'Not eligible (delay less than 3 hours)') {
         return {
@@ -235,6 +236,7 @@ function analyzeSpecificTrigger(
         };
       }
       break;
+    }
 
     case 'system_error':
       // This would be triggered by system monitoring
@@ -458,7 +460,7 @@ export async function processAutomaticRefund(
       amount: stripeRefund.amount,
       decision,
     };
-  } catch (error) {
+  } catch (error: unknown) {
     logger.error('Error processing automatic refund:', error);
     return {
       success: false,
@@ -516,7 +518,7 @@ export async function getClaimsNeedingAutomaticRefunds(): Promise<{
       insufficientDocClaims: insufficientDocClaims as any[],
       ineligibleClaims: ineligibleClaims as any[],
     };
-  } catch (error) {
+  } catch (error: unknown) {
     logger.error('Error getting claims needing automatic refunds:', error);
     throw error;
   }

@@ -144,7 +144,7 @@ export async function parseFlightEmail(
       parsingTime,
       retryCount,
     };
-  } catch (error) {
+  } catch (error: unknown) {
     logger.error('Error parsing flight email:', error);
 
     // Retry on certain errors
@@ -464,7 +464,7 @@ export function validateFlightEmailData(data: FlightEmailData): {
   // Date reasonableness check
   if (data.departureDate) {
     const departureDate = new Date(data.departureDate);
-    const today = new Date();
+    const _today = new Date();
     const oneYearAgo = new Date();
     oneYearAgo.setFullYear(oneYearAgo.getFullYear() - 1);
     const oneYearFromNow = new Date();

@@ -6,7 +6,7 @@ import { logger } from '@/lib/logger';
 
 import {
   flightStatusService,
-  FlightStatusResult,
+  FlightStatusResult as _FlightStatusResult,
   VerificationResult,
 } from './flight-status-service';
 import {
@@ -84,7 +84,7 @@ export class EnhancedEmailParser {
         departureStatus,
         arrivalStatus
       );
-    } catch (error) {
+    } catch (error: unknown) {
       logger.warn('Flight status verification failed:', { error: error });
       return basicData; // Fallback to email-only data
     }
@@ -117,7 +117,7 @@ export class EnhancedEmailParser {
     const arrivalAirport = airportMatch?.[2] || 'UNKNOWN';
 
     const dateMatch = emailContent.match(
-      /(\d{1,2})[\/\-](\d{1,2})[\/\-](\d{4})/
+      /(\d{1,2})[/-](\d{1,2})[/-](\d{4})/
     );
     const flightDate = dateMatch
       ? new Date(
@@ -143,11 +143,11 @@ export class EnhancedEmailParser {
     emailData: ParsedFlightData,
     flightStatus: VerificationResult,
     departureStatus: any,
-    arrivalStatus: any
+    _arrivalStatus: any
   ): Promise<ParsedFlightData> {
     // 1. Verify delay information
     const verifiedDelay = flightStatus.actualData?.actualDelayMinutes || 0;
-    const delayDiscrepancy = Math.abs(emailData.delayMinutes - verifiedDelay);
+    const _delayDiscrepancy = Math.abs(emailData.delayMinutes - verifiedDelay);
 
     // 2. Get delay attribution
     const delayAttribution = await this.delayAttributionEngine.attributeDelay(
@@ -219,7 +219,7 @@ export class WeatherAwareEligibilityCalculator {
     // 2. Get airport status for departure and arrival
     let delayAttribution = null;
     try {
-      const [departureStatus, arrivalStatus] = await Promise.all([
+      const [departureStatus, _arrivalStatus] = await Promise.all([
         this.airportStatusManager.getAirportStatus(flightData.departureAirport),
         this.airportStatusManager.getAirportStatus(flightData.arrivalAirport),
       ]);
@@ -229,7 +229,7 @@ export class WeatherAwareEligibilityCalculator {
         flightData,
         departureStatus
       );
-    } catch (error) {
+    } catch (error: unknown) {
       logger.warn('Airport status verification failed:', { error: error });
       // Continue with basic eligibility if airport status fails
     }

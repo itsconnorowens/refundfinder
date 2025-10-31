@@ -6,19 +6,23 @@ import { searchAirports, getAirportByCode, Airport } from '@/lib/airports';
 interface AirportAutocompleteProps {
   value: string;
   onChange: (value: string) => void;
+  onBlur?: (value: string) => void;
   placeholder?: string;
   error?: string;
   label: string;
   required?: boolean;
+  isValid?: boolean;
 }
 
-export default function AirportAutocomplete({ 
-  value, 
-  onChange, 
-  placeholder = "e.g., LHR, JFK", 
+export default function AirportAutocomplete({
+  value,
+  onChange,
+  onBlur,
+  placeholder = "e.g., LHR, JFK",
   error,
   label,
-  required: _required = false
+  required: _required = false,
+  isValid = false
 }: AirportAutocompleteProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
@@ -38,6 +42,7 @@ export default function AirportAutocomplete({
         setSelectedAirport(null);
       }
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [value]);
 
   const filteredAirports = searchAirports(searchQuery);
@@ -66,6 +71,13 @@ export default function AirportAutocomplete({
     // Delay closing to allow click on dropdown items
     setTimeout(() => {
       setIsOpen(false);
+      // Call the onBlur prop if provided
+      if (onBlur) {
+        // Extract just the code if a selection was made
+        const codeMatch = searchQuery.match(/^([A-Z]{3})/);
+        const code = codeMatch ? codeMatch[1] : searchQuery;
+        onBlur(code);
+      }
     }, 150);
   };
 
@@ -105,15 +117,18 @@ export default function AirportAutocomplete({
           placeholder={placeholder}
           maxLength={3}
           className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${
-            error ? 'border-red-500' : 'border-gray-300'
+            error ? 'border-red-500' : isValid ? 'border-green-500' : 'border-gray-300'
           }`}
         />
+        {isValid && !error && (
+          <span className="absolute right-3 top-1/2 -translate-y-1/2 text-green-600 text-xl">✓</span>
+        )}
         
         {/* Dropdown */}
         {isOpen && filteredAirports.length > 0 && (
           <div className="absolute z-50 w-full mt-1 bg-white border border-gray-300 rounded-lg shadow-lg max-h-60 overflow-y-auto">
             {filteredAirports.map((airport) => (
-              <div
+              <button type="button"
                 key={airport.code}
                 onClick={() => handleAirportSelect(airport)}
                 className="px-4 py-3 hover:bg-gray-50 cursor-pointer border-b border-gray-100 last:border-b-0"
@@ -131,7 +146,7 @@ export default function AirportAutocomplete({
                     {airport.region}
                   </div>
                 </div>
-              </div>
+              </button>
             ))}
           </div>
         )}

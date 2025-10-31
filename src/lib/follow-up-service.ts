@@ -231,7 +231,7 @@ async function sendFollowUpEmail(
         error: emailResult.error || 'Failed to send follow-up email',
       };
     }
-  } catch (error) {
+  } catch (error: unknown) {
     logger.error('Error sending follow-up email:', error);
     return {
       success: false,
@@ -339,7 +339,7 @@ export async function processAutomatedFollowUps(): Promise<
 
         // Add delay between follow-ups to avoid rate limiting
         await new Promise((resolve) => setTimeout(resolve, 2000));
-      } catch (error) {
+      } catch (error: unknown) {
         console.error(
           `Error processing follow-up for claim ${claim.claimId}:`,
           error
@@ -354,7 +354,7 @@ export async function processAutomatedFollowUps(): Promise<
     }
 
     return results;
-  } catch (error) {
+  } catch (error: unknown) {
     logger.error('Error processing automated follow-ups:', error);
     return [];
   }
@@ -460,7 +460,7 @@ export async function getFollowUpStats(): Promise<{
     });
 
     return stats;
-  } catch (error) {
+  } catch (error: unknown) {
     logger.error('Error getting follow-up stats:', error);
     return {
       totalFollowUps: 0,

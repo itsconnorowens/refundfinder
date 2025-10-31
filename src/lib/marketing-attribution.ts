@@ -64,7 +64,7 @@ export function getAttribution(): MarketingAttribution | null {
 
   try {
     return JSON.parse(decodeURIComponent(cookieValue));
-  } catch (error) {
+  } catch (error: unknown) {
     logger.warn('Failed to parse attribution cookie', { error });
     return null;
   }
@@ -203,7 +203,7 @@ export async function trackAttributionEvent(attribution: MarketingAttribution): 
 
       logger.debug('Attribution event tracked in PostHog and set as super properties', { attribution });
     }
-  } catch (error) {
+  } catch (error: unknown) {
     // Silently fail if PostHog not available
     logger.warn('Failed to track attribution in PostHog', { error });
   }

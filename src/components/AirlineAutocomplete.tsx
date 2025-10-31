@@ -6,19 +6,23 @@ import { searchAirlines, getAirlineByName, Airline } from '@/lib/airlines';
 interface AirlineAutocompleteProps {
   value: string;
   onChange: (value: string) => void;
+  onBlur?: (value: string) => void;
   placeholder?: string;
   error?: string;
   label: string;
   required?: boolean;
+  isValid?: boolean;
 }
 
-export default function AirlineAutocomplete({ 
-  value, 
-  onChange, 
-  placeholder = "e.g., British Airways, BA", 
+export default function AirlineAutocomplete({
+  value,
+  onChange,
+  onBlur,
+  placeholder = "e.g., British Airways, BA",
   error,
   label,
-  required: _required = false
+  required: _required = false,
+  isValid = false
 }: AirlineAutocompleteProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
@@ -71,6 +75,10 @@ export default function AirlineAutocomplete({
     // Delay closing to allow click on dropdown items
     setTimeout(() => {
       setIsOpen(false);
+      // Call the onBlur prop if provided
+      if (onBlur) {
+        onBlur(searchQuery);
+      }
     }, 150);
   };
 
@@ -109,9 +117,12 @@ export default function AirlineAutocomplete({
           onKeyDown={handleKeyDown}
           placeholder={placeholder}
           className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${
-            error ? 'border-red-500' : 'border-gray-300'
+            error ? 'border-red-500' : isValid ? 'border-green-500' : 'border-gray-300'
           }`}
         />
+        {isValid && !error && (
+          <span className="absolute right-3 top-1/2 -translate-y-1/2 text-green-600 text-xl">✓</span>
+        )}
         
         {/* Dropdown */}
         {isOpen && filteredAirlines.length > 0 && (

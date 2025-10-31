@@ -14,9 +14,9 @@ if (sendGridApiKey) {
 
 // Initialize Resend
 const resendApiKey = process.env.RESEND_API_KEY;
-let resend: Resend | null = null;
+let _resend: Resend | null = null;
 if (resendApiKey) {
-  resend = new Resend(resendApiKey);
+  _resend = new Resend(resendApiKey);
 } else {
   console.warn(
     'Resend API key not configured. Resend email sending will be disabled.'
@@ -312,7 +312,7 @@ export async function sendEmail(
     await sgMail.send(msg);
     logger.info('Email sent successfully to ', { to: to });
     return true;
-  } catch (error) {
+  } catch (error: unknown) {
     logger.error('Error sending email:', error);
     return false;
   }

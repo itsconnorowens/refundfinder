@@ -41,7 +41,7 @@ export const POST = withErrorTracking(async (request: NextRequest) => {
 
   try {
     event = stripe.webhooks.constructEvent(body, signature, webhookSecret);
-  } catch (err) {
+  } catch (err: unknown) {
     captureError(err, { level: 'warning', tags: { service: 'stripe', error_type: 'signature_verification' } });
     logger.error('Webhook signature verification failed', err);
     return NextResponse.json({ error: 'Invalid signature' }, { status: 400 });
@@ -166,7 +166,7 @@ export const POST = withErrorTracking(async (request: NextRequest) => {
               // Don't fail the webhook if email fails
             }
           }
-        } catch (error) {
+        } catch (error: unknown) {
           captureError(error, { level: 'error', tags: { service: 'airtable', event_type: 'payment_succeeded' } });
           logger.error('Error updating payment/claim status', error);
           // Don't fail the webhook - log error but return success
@@ -202,7 +202,7 @@ export const POST = withErrorTracking(async (request: NextRequest) => {
 
           logger.info('Claim marked as failed payment', { claimId });
         }
-      } catch (error) {
+      } catch (error: unknown) {
         captureError(error, { level: 'error', tags: { service: 'airtable', event_type: 'payment_failed' } });
         logger.error('Error updating failed payment status', error);
       }

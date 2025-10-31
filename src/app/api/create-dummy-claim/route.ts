@@ -97,7 +97,7 @@ export async function POST(request: NextRequest) {
       },
       { status: 201 }
     );
-  } catch (error) {
+  } catch (error: unknown) {
     logger.error('❌ Error creating claim in Airtable:', error);
 
     // Log detailed error information
@@ -155,7 +155,7 @@ export async function GET() {
       },
       { status: 200 }
     );
-  } catch (error) {
+  } catch (error: unknown) {
     logger.error('❌ Error reading claims from Airtable:', error);
 
     // Log detailed error information

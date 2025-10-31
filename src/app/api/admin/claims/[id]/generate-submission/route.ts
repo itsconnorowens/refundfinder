@@ -18,7 +18,7 @@ export async function POST(
       success: true,
       data: result,
     });
-  } catch (error) {
+  } catch (error: unknown) {
     logger.error('Error generating submission:', error);
     return NextResponse.json(
       { error: 'Failed to generate submission' },

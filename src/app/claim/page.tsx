@@ -59,6 +59,7 @@ function ClaimPageContent() {
         ...getAttributionProperties(), // Include marketing attribution
       });
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   // Track claim form abandoned

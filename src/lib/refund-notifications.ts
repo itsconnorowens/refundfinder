@@ -1,10 +1,13 @@
 import { logger } from '@/lib/logger';
 
 // Optional Resend import - will be undefined if not installed
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 let Resend: any;
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 let resend: any;
 
 try {
+  // eslint-disable-next-line @typescript-eslint/no-require-imports
   const resendModule = require('resend');
   Resend = resendModule.Resend;
   resend = new Resend(process.env.RESEND_API_KEY);
@@ -242,7 +245,7 @@ export async function sendRefundNotification(
     }
 
     return { success: true, messageId: result.data?.id };
-  } catch (error) {
+  } catch (error: unknown) {
     logger.error('Error sending refund notification:', error);
     return {
       success: false,

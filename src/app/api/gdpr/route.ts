@@ -152,7 +152,7 @@ export async function POST(request: NextRequest) {
         euRepresentative: GDPR_CONFIG.euRepresentativeEmail,
       },
     });
-  } catch (error) {
+  } catch (error: unknown) {
     logger.error('Error processing GDPR request:', error);
     return NextResponse.json(
       { error: 'Internal server error' },

@@ -180,11 +180,13 @@ export class RealTimeServicesFactory {
   }
 
   createFlightStatusManager() {
+    // eslint-disable-next-line @typescript-eslint/no-require-imports
     const {
       FlightRadar24Provider,
       AviationStackProvider,
       FlightAPIProvider,
     } = require('./providers/flight-status-providers');
+    // eslint-disable-next-line @typescript-eslint/no-require-imports
     const { FlightStatusManager } = require('./flight-status-service');
 
     const providers = [];
@@ -221,16 +223,19 @@ export class RealTimeServicesFactory {
   }
 
   createAirportStatusManager() {
+    // eslint-disable-next-line @typescript-eslint/no-require-imports
     const {
       OpenWeatherMapProvider,
       AviationWeatherCenterProvider,
       WeatherAPIProvider,
     } = require('./providers/weather-providers');
+    // eslint-disable-next-line @typescript-eslint/no-require-imports
     const {
       FAAOperationalProvider,
       EurocontrolOperationalProvider,
       BasicOperationalProvider,
     } = require('./providers/operational-providers');
+    // eslint-disable-next-line @typescript-eslint/no-require-imports
     const { AirportStatusManager } = require('./airport-status-service');
 
     const weatherProviders = [];
@@ -271,6 +276,7 @@ export class RealTimeServicesFactory {
   }
 
   createDelayAttributionEngine() {
+    // eslint-disable-next-line @typescript-eslint/no-require-imports
     const {
       WeatherClassificationEngine,
       DelayAttributionEngine,
@@ -281,6 +287,7 @@ export class RealTimeServicesFactory {
   }
 
   createEnhancedClaimProcessingService() {
+    // eslint-disable-next-line @typescript-eslint/no-require-imports
     const {
       EnhancedClaimProcessingService,
     } = require('./enhanced-claim-processing');

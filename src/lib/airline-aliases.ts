@@ -291,7 +291,7 @@ export function areSameAirline(code1: string, code2: string): boolean {
   }
 
   // Check parent company relationships
-  for (const [parent, airlines] of Object.entries(PARENT_COMPANIES)) {
+  for (const [_parent, airlines] of Object.entries(PARENT_COMPANIES)) {
     if (
       airlines.includes(code1.toUpperCase()) &&
       airlines.includes(code2.toUpperCase())
@@ -309,7 +309,7 @@ export function areSameAirline(code1: string, code2: string): boolean {
 export function getSisterAirlines(code: string): string[] {
   const upperCode = code.toUpperCase();
 
-  for (const [parent, airlines] of Object.entries(PARENT_COMPANIES)) {
+  for (const [_parent, airlines] of Object.entries(PARENT_COMPANIES)) {
     if (airlines.includes(upperCode)) {
       return airlines.filter((airline) => airline !== upperCode);
     }

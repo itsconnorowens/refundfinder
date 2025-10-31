@@ -20,7 +20,7 @@ import {
   checkDowngradingEligibility,
   calculateClassDifference,
   FlightDetails,
-  SeatClass,
+  SeatClass as _SeatClass,
 } from '../eligibility';
 
 describe('Seat Downgrading - EU261 Article 10 Compliance', () => {

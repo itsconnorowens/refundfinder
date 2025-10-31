@@ -67,7 +67,7 @@ export class URLValidator {
 
       this.validationCache.set(url, result);
       return result;
-    } catch (error) {
+    } catch (error: unknown) {
       const responseTime = Date.now() - startTime;
       const result: URLValidationResult = {
         url,

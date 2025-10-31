@@ -133,7 +133,7 @@ export function EligibilityForm() {
         setError('Could not extract flight details. Please enter them manually.');
         setInputMethod('manual');
       }
-    } catch (error) {
+    } catch (error: unknown) {
       console.error('Error parsing email:', error);
       setError('Failed to parse email. Please enter details manually.');
       setInputMethod('manual');
@@ -225,7 +225,7 @@ export function EligibilityForm() {
         const errorMessage = data.message || data.error || 'Failed to check eligibility';
         setError(errorMessage);
       }
-    } catch (error) {
+    } catch (error: unknown) {
       console.error('Error checking eligibility:', error);
       setError('Failed to check eligibility. Please try again.');
     } finally {

@@ -8,14 +8,20 @@ import { Badge } from '@/components/ui/badge';
 import { CheckCircle, XCircle, DollarSign, Plane, Clock, MapPin, Calendar, AlertTriangle } from 'lucide-react';
 import { getTestimonialByAmount, getRandomTestimonial } from '@/lib/testimonials';
 import { TrustBadgeRow } from '@/components/TrustBadge';
+import { useCurrency } from '@/contexts/CurrencyContext';
+import { formatCompensationAmount } from '@/lib/currency';
 
 function ResultsPageContent() {
   const searchParams = useSearchParams();
   const router = useRouter();
+  const { currency, isEURegion } = useCurrency();
 
   // Get results from URL params
   const eligible = searchParams.get('eligible') === 'true';
   const amount = searchParams.get('amount') || '€0';
+
+  // Parse amount to get EUR value (e.g., "€600" -> 600)
+  const amountEur = parseInt(amount.replace(/[^\d]/g, '')) || 0;
   const message = searchParams.get('message') || '';
   const regulation = searchParams.get('regulation') || '';
   const reason = searchParams.get('reason') || '';
@@ -45,7 +51,7 @@ function ResultsPageContent() {
   };
 
   // Get relevant testimonial for eligible claims
-  const relevantTestimonial = eligible ? getTestimonialByAmount(amount) || getRandomTestimonial() : null;
+  const relevantTestimonial = eligible ? getTestimonialByAmount(amountEur) || getRandomTestimonial() : null;
 
   return (
     <div className="min-h-screen bg-slate-950 py-12">
@@ -161,7 +167,7 @@ function ResultsPageContent() {
                 <div className="bg-slate-700/50 border border-slate-600 rounded-lg p-4 mb-4">
                   <div className="text-center">
                     <p className="text-slate-300 text-sm mb-2">
-                      <span className="text-[#00D9B5] font-semibold">{relevantTestimonial.name}</span> recovered {relevantTestimonial.amount} from {relevantTestimonial.airline}
+                      <span className="text-[#00D9B5] font-semibold">{relevantTestimonial.name}</span> recovered {formatCompensationAmount(relevantTestimonial.amountEur, currency, isEURegion)} from {relevantTestimonial.airline}
                     </p>
                     <p className="text-slate-400 text-xs italic">
                       "{relevantTestimonial.quote}"

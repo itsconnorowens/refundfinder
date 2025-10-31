@@ -84,7 +84,7 @@ export async function GET(request: NextRequest) {
       { error: 'Invalid type parameter. Use "flight" or "airport"' },
       { status: 400 }
     );
-  } catch (error) {
+  } catch (error: unknown) {
     logger.error('Real-time data API error:', error);
 
     monitor.recordApiCall('real-time-data', 'api', false, 0);
@@ -172,7 +172,7 @@ export async function POST(request: NextRequest) {
       { error: 'Invalid type. Use "flight" or "airport"' },
       { status: 400 }
     );
-  } catch (error) {
+  } catch (error: unknown) {
     logger.error('Real-time data POST API error:', error);
 
     monitor.recordApiCall('real-time-data', 'api', false, 0);

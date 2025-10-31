@@ -49,7 +49,7 @@ export function useFormAbandonment<T extends Record<string, any>>(
       window.removeEventListener('input', handleInteraction);
       window.removeEventListener('change', handleInteraction);
     };
-  }, [formName, additionalProperties]);
+  }, [formName, additionalProperties, attributionProperties]);
 
   useEffect(() => {
     const handleBeforeUnload = () => {
@@ -100,7 +100,7 @@ export function useFormAbandonment<T extends Record<string, any>>(
     return () => {
       window.removeEventListener('beforeunload', handleBeforeUnload);
     };
-  }, [formName, formData, additionalProperties]);
+  }, [formName, formData, additionalProperties, attributionProperties, startTime]);
 
   // Provide a method to mark form as completed (prevents abandonment tracking)
   const markCompleted = () => {

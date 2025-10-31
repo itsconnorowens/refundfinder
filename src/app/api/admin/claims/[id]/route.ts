@@ -28,7 +28,7 @@ export async function GET(
         ...claim.fields,
       },
     });
-  } catch (error) {
+  } catch (error: unknown) {
     const { captureError } = await import('@/lib/error-tracking');
     captureError(error, { level: 'error', tags: { service: 'admin', operation: 'claim_management', route: '/api/admin/claims/[id]' } });
     return NextResponse.json({ error: 'Failed to fetch claim' }, { status: 500 });
@@ -63,7 +63,7 @@ export async function PUT(
       success: true,
       message: 'Claim updated successfully',
     });
-  } catch (error) {
+  } catch (error: unknown) {
     logger.error('Error updating claim:', error);
     return NextResponse.json(
       { error: 'Failed to update claim' },

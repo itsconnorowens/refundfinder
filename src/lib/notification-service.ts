@@ -80,7 +80,7 @@ async function sendSlackNotification(
 
     logger.info('Slack notification sent successfully');
     return true;
-  } catch (error) {
+  } catch (error: unknown) {
     logger.error('Error sending Slack notification:', error);
     return false;
   }
@@ -134,7 +134,7 @@ async function sendEmailNotification(
 
     logger.info('Email notification sent successfully');
     return true;
-  } catch (error) {
+  } catch (error: unknown) {
     logger.error('Error sending email notification:', error);
     return false;
   }

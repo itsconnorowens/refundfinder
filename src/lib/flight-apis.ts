@@ -81,7 +81,7 @@ class AviationStackAPI {
 
       const flight = data.data[0];
       return this.parseAviationStackData(flight);
-    } catch (error) {
+    } catch (error: unknown) {
       logger.error('AviationStack API error:', error);
       return null;
     }
@@ -171,7 +171,7 @@ class FlightLabsAPI {
 
       const flight = data.data[0];
       return this.parseFlightLabsData(flight);
-    } catch (error) {
+    } catch (error: unknown) {
       logger.error('FlightLabs API error:', error);
       return null;
     }
@@ -290,7 +290,7 @@ export class FlightLookupService {
           sources,
         };
       }
-    } catch (error) {
+    } catch (error: unknown) {
       errors.push(
         `AviationStack: ${error instanceof Error ? error.message : 'Unknown error'}`
       );
@@ -312,7 +312,7 @@ export class FlightLookupService {
             sources,
           };
         }
-      } catch (error) {
+      } catch (error: unknown) {
         errors.push(
           `FlightLabs: ${error instanceof Error ? error.message : 'Unknown error'}`
         );

@@ -129,7 +129,7 @@ export async function submitClaimToAirline(
     }
 
     return result;
-  } catch (error) {
+  } catch (error: unknown) {
     logger.error('Error submitting claim to airline:', error);
     return {
       success: false,
@@ -212,7 +212,7 @@ async function submitViaEmail(
         },
       };
     }
-  } catch (error) {
+  } catch (error: unknown) {
     logger.error('Error submitting via email:', error);
     return {
       success: false,
@@ -253,7 +253,7 @@ async function submitViaWebForm(
       airlineReference: `WEBFORM-${Date.now()}`,
       method: 'web_form',
     };
-  } catch (error) {
+  } catch (error: unknown) {
     logger.error('Error preparing web form submission:', error);
     return {
       success: false,
@@ -294,7 +294,7 @@ async function submitViaPostal(
       airlineReference: `POSTAL-${Date.now()}`,
       method: 'postal',
     };
-  } catch (error) {
+  } catch (error: unknown) {
     logger.error('Error preparing postal submission:', error);
     return {
       success: false,
@@ -336,7 +336,7 @@ async function sendAirlineClaimEmail(
     });
 
     return result;
-  } catch (error) {
+  } catch (error: unknown) {
     logger.error('Error sending airline claim email:', error);
     return {
       success: false,
@@ -372,7 +372,7 @@ export async function processClaimsForFiling(
 
       // Add small delay between submissions to avoid rate limiting
       await new Promise((resolve) => setTimeout(resolve, 1000));
-    } catch (error) {
+    } catch (error: unknown) {
       console.error(`Error processing claim ${claimId}:`, error);
       results.push({
         claimId,
@@ -392,12 +392,7 @@ export async function processClaimsForFiling(
  * Get claims ready for automated filing
  */
 export async function getClaimsReadyForFiling(): Promise<string[]> {
-  try {
-    // This would typically query Airtable for claims with status 'ready_to_file'
-    // For now, return empty array - this will be implemented when we enhance the cron job
-    return [];
-  } catch (error) {
-    logger.error('Error getting claims ready for filing:', error);
-    return [];
-  }
+  // This would typically query Airtable for claims with status 'ready_to_file'
+  // For now, return empty array - this will be implemented when we enhance the cron job
+  return [];
 }

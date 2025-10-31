@@ -6,9 +6,9 @@ import {
   OperationalProvider,
   OperationalStatus,
   RunwayStatus,
-  OperationalStatusType,
-  RunwayStatusType,
-  SurfaceCondition,
+  OperationalStatusType as _OperationalStatusType,
+  RunwayStatusType as _RunwayStatusType,
+  SurfaceCondition as _SurfaceCondition,
 } from '../airport-status-service';
 
 export class FAAOperationalProvider implements OperationalProvider {
@@ -61,7 +61,7 @@ export class FAAOperationalProvider implements OperationalProvider {
     }
   }
 
-  private parseFAAStatus(data: string, airportCode: string): OperationalStatus {
+  private parseFAAStatus(data: string, _airportCode: string): OperationalStatus {
     // Simplified parsing - would need full implementation
     const status: OperationalStatus = {
       status: 'normal',
@@ -186,7 +186,7 @@ export class BasicOperationalProvider implements OperationalProvider {
     return this.getBasicRunwayStatus(airportCode);
   }
 
-  async getAirTrafficDelays(airportCode: string): Promise<boolean> {
+  async getAirTrafficDelays(_airportCode: string): Promise<boolean> {
     return false;
   }
 
@@ -306,7 +306,7 @@ export class MockOperationalProvider implements OperationalProvider {
     requestsPerDay: 100000,
   };
 
-  async getOperationalStatus(airportCode: string): Promise<OperationalStatus> {
+  async getOperationalStatus(_airportCode: string): Promise<OperationalStatus> {
     // Mock provider for testing
     return {
       status: 'normal',
@@ -324,7 +324,7 @@ export class MockOperationalProvider implements OperationalProvider {
     };
   }
 
-  async getRunwayStatus(airportCode: string): Promise<RunwayStatus[]> {
+  async getRunwayStatus(_airportCode: string): Promise<RunwayStatus[]> {
     return [
       {
         runway: '01/19',
@@ -336,7 +336,7 @@ export class MockOperationalProvider implements OperationalProvider {
     ];
   }
 
-  async getAirTrafficDelays(airportCode: string): Promise<boolean> {
+  async getAirTrafficDelays(_airportCode: string): Promise<boolean> {
     return false;
   }
 

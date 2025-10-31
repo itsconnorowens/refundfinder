@@ -60,7 +60,7 @@ export async function POST(_request: NextRequest) {
           failedCount++;
           errors.push(`Claim ${claim.claimId}: ${errorData.error}`);
         }
-      } catch (error) {
+      } catch (error: unknown) {
         console.error(`Error syncing claim ${claim.claimId}:`, error);
         await markClaimAsFailed(
           claim.claimId,
@@ -80,7 +80,7 @@ export async function POST(_request: NextRequest) {
       failed: failedCount,
       errors: errors.length > 0 ? errors : undefined,
     });
-  } catch (error) {
+  } catch (error: unknown) {
     logger.error('Error in sync-offline-claims endpoint:', error);
     return NextResponse.json(
       {

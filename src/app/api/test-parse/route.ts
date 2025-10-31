@@ -44,7 +44,7 @@ export async function GET() {
       },
       results,
     });
-  } catch (error) {
+  } catch (error: unknown) {
     logger.error('Error running parse tests:', error);
     return NextResponse.json(
       {
@@ -108,7 +108,7 @@ export async function POST(request: Request) {
         ? 'Successfully parsed flight details'
         : 'Could not parse flight details from the provided email',
     });
-  } catch (error) {
+  } catch (error: unknown) {
     logger.error('Error testing custom email:', error);
     return NextResponse.json(
       {

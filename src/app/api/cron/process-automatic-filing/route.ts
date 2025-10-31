@@ -85,7 +85,7 @@ export const POST = withErrorTracking(async (request: NextRequest) => {
       message: 'Automatic filing processing completed',
       results,
     });
-  } catch (error) {
+  } catch (error: unknown) {
     // Mark cron job as failed
     Sentry.captureCheckIn({
       checkInId,
@@ -109,7 +109,7 @@ export async function GET() {
       message: 'Automatic filing cron job health check passed',
       timestamp: new Date().toISOString(),
     });
-  } catch (error) {
+  } catch (error: unknown) {
     logger.error('Error in automatic filing cron job health check:', error);
     return NextResponse.json(
       { error: 'Internal server error' },

@@ -103,7 +103,7 @@ export default function PaymentStep({
         setErrorMessage('Payment could not be completed. Please try again.');
         setIsProcessing(false);
       }
-    } catch (err) {
+    } catch (err: unknown) {
       console.error('Payment error:', err);
       // Track unexpected error
       if (typeof window !== 'undefined') {

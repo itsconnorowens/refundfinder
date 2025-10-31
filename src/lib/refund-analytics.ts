@@ -113,7 +113,7 @@ export async function calculateRefundAnalytics(
     const mockData = generateMockAnalyticsData(period, totalDays);
 
     return mockData;
-  } catch (error) {
+  } catch (error: unknown) {
     logger.error('Error calculating refund analytics:', error);
     throw error;
   }

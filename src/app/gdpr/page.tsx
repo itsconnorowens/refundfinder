@@ -48,7 +48,7 @@ export default function GDPRCompliancePage() {
       }
 
       setResponse(data);
-    } catch (err) {
+    } catch (err: unknown) {
       setError(err instanceof Error ? err.message : 'An error occurred');
     } finally {
       setIsSubmitting(false);

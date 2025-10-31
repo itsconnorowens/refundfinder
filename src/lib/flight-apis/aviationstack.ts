@@ -106,7 +106,7 @@ export class AviationStackProvider {
       }
 
       return data.data[0];
-    } catch (error) {
+    } catch (error: unknown) {
       logger.error('AviationStack API error:', error);
       throw error;
     }
@@ -145,7 +145,7 @@ export class AviationStackProvider {
       const data: AviationStackResponse = await response.json();
 
       return data.data || [];
-    } catch (error) {
+    } catch (error: unknown) {
       logger.error('AviationStack API error:', error);
       throw error;
     }
@@ -242,7 +242,7 @@ export class AviationStackProvider {
       const response = await fetch(url);
 
       return response.ok;
-    } catch (error) {
+    } catch {
       return false;
     }
   }

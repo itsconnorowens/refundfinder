@@ -14,7 +14,7 @@ export async function GET() {
       success: true,
       data: { claims },
     });
-  } catch (error) {
+  } catch (error: unknown) {
     logger.error('Error fetching claims ready to file:', error);
     return NextResponse.json(
       { error: 'Failed to fetch claims ready to file' },

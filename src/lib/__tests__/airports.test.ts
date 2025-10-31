@@ -5,7 +5,7 @@
 import { describe, it, expect } from 'vitest';
 import {
   airports,
-  Airport,
+  Airport as _Airport,
   calculateHaversineDistance,
   getDistanceBetweenAirports,
   searchAirports,

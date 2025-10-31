@@ -198,7 +198,7 @@ export default function AddNewAirlinePage() {
       } else {
         console.error('Failed to save airline configuration');
       }
-    } catch (error) {
+    } catch (error: unknown) {
       console.error('Error saving airline configuration:', error);
     }
   };

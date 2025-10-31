@@ -36,7 +36,7 @@ export async function POST(
       success: true,
       message: 'Follow-up scheduled successfully',
     });
-  } catch (error) {
+  } catch (error: unknown) {
     logger.error('Error scheduling follow-up:', error);
     return NextResponse.json(
       { error: 'Failed to schedule follow-up' },

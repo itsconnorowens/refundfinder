@@ -50,9 +50,6 @@ export function AsyncErrorTest() {
       await new Promise((_, reject) =>
         setTimeout(() => reject(new Error('Async test error')), 1000)
       );
-    } catch (error) {
-      // Re-throw to test error boundary
-      throw error;
     } finally {
       setLoading(false);
     }

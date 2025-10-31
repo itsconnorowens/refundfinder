@@ -48,7 +48,7 @@ export async function POST(request: NextRequest) {
         { status: 400 }
       );
     }
-  } catch (error) {
+  } catch (error: unknown) {
     logger.error('Error processing automatic refund:', error);
     return NextResponse.json(
       { error: 'Internal server error' },
@@ -80,7 +80,7 @@ export async function GET(request: NextRequest) {
       success: true,
       decision,
     });
-  } catch (error) {
+  } catch (error: unknown) {
     logger.error('Error analyzing refund eligibility:', error);
     return NextResponse.json(
       { error: 'Internal server error' },
@@ -123,7 +123,7 @@ export async function PUT(request: NextRequest) {
       message: 'Batch refund processing completed',
       ...result,
     });
-  } catch (error) {
+  } catch (error: unknown) {
     logger.error('Error processing batch refunds:', error);
     return NextResponse.json(
       { error: 'Internal server error' },
