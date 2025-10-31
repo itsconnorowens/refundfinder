@@ -2,7 +2,6 @@ import * as Sentry from '@sentry/nextjs';
 import { NextRequest, NextResponse } from 'next/server';
 import { logger } from '@/lib/logger';
 import posthog from 'posthog-js';
-import { trackServerEvent } from '@/lib/posthog';
 
 /**
  * Error tracking service for Flghtly
@@ -267,10 +266,14 @@ export function captureError(
     // Try client-side PostHog first (if available)
     if (typeof window !== 'undefined' && posthog.__loaded) {
       posthog.capture('error_occurred', errorData);
-    } else {
-      // Fallback to server-side PostHog
+    } else if (typeof window === 'undefined') {
+      // Fallback to server-side PostHog (dynamic import to avoid bundling for client)
       const userId = context?.user?.email || context?.user?.id || 'anonymous';
-      trackServerEvent(userId, 'error_occurred', errorData);
+      import('@/lib/posthog').then(({ trackServerEvent }) => {
+        trackServerEvent(userId, 'error_occurred', errorData);
+      }).catch(() => {
+        // Silently fail if server-side tracking unavailable
+      });
     }
   } catch (posthogError: unknown) {
     // Don't let PostHog tracking errors break error handling
