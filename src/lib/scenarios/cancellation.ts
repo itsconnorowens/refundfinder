@@ -4,6 +4,8 @@
  * Supports EU261, UK CAA, and US DOT cancellation scenarios
  */
 
+import { calculateFlightDistance } from '../distance-calculator';
+
 export interface CancellationData {
   isCancelled: boolean;
   cancellationReason?: string;
@@ -353,7 +355,15 @@ export class CancellationCompensationCalculator {
     }
 
     // Full compensation otherwise
-    const distance = flightData?.distance || 1000; // Default distance
+    // Calculate distance between airports
+    let distance = 1000; // Default medium-haul distance
+    if (flightData?.departureAirport && flightData?.arrivalAirport) {
+      const distanceResult = calculateFlightDistance(
+        flightData.departureAirport,
+        flightData.arrivalAirport
+      );
+      distance = distanceResult.isValid ? distanceResult.distanceKm : 1000;
+    }
     let compensationAmount = 250; // Short haul default
 
     if (distance > 3500) {

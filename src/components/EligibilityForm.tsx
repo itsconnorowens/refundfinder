@@ -342,10 +342,31 @@ export function EligibilityForm() {
                       <div>
                         <AirlineAutocomplete
                           value={formData.airline}
-                          onChange={(value) => handleInputChange('airline', value)}
+                          onChange={(value) => {
+                            handleInputChange('airline', value);
+                            // Mark airline as valid when it has content
+                            if (value.trim().length >= 2) {
+                              setFieldValid(prev => ({ ...prev, airline: true }));
+                              setFieldErrors(prev => ({ ...prev, airline: '' }));
+                            } else {
+                              setFieldValid(prev => ({ ...prev, airline: false }));
+                            }
+                          }}
+                          onBlur={(value) => {
+                            // Validate on blur
+                            if (!value.trim()) {
+                              setFieldErrors(prev => ({ ...prev, airline: 'Airline is required' }));
+                              setFieldValid(prev => ({ ...prev, airline: false }));
+                            } else if (value.trim().length < 2) {
+                              setFieldErrors(prev => ({ ...prev, airline: 'Please enter at least 2 characters' }));
+                              setFieldValid(prev => ({ ...prev, airline: false }));
+                            }
+                          }}
                           label="Airline"
                           required={true}
                           placeholder="e.g., British Airways, BA"
+                          isValid={fieldValid.airline}
+                          error={fieldErrors.airline}
                         />
                       </div>
                       
@@ -452,13 +473,28 @@ export function EligibilityForm() {
                       <Label htmlFor="delayReason" className="text-sm font-medium text-white">
                         Reason for Delay (Optional)
                       </Label>
-                      <Input
-                        id="delayReason"
-                        value={formData.delayReason}
-                        onChange={(e) => handleInputChange('delayReason', e.target.value)}
-                        placeholder="e.g., Technical issues, weather"
-                        className="mt-1 bg-slate-800/50 border-slate-700 text-white placeholder-slate-500 focus:border-[#00D9B5]"
-                      />
+                      <div className="relative">
+                        <Input
+                          id="delayReason"
+                          value={formData.delayReason}
+                          onChange={(e) => {
+                            handleInputChange('delayReason', e.target.value);
+                            // For optional field, mark as valid when it has content
+                            if (e.target.value.trim()) {
+                              setFieldValid(prev => ({ ...prev, delayReason: true }));
+                            } else {
+                              setFieldValid(prev => ({ ...prev, delayReason: false }));
+                            }
+                          }}
+                          placeholder="e.g., Technical issues, weather"
+                          className={`mt-1 bg-slate-800/50 border-slate-700 text-white placeholder-slate-500 focus:border-[#00D9B5] ${
+                            formData.delayReason.trim() ? 'border-green-500' : ''
+                          }`}
+                        />
+                        {formData.delayReason.trim() && (
+                          <span className="absolute right-3 top-1/2 -translate-y-1/2 text-green-500">✓</span>
+                        )}
+                      </div>
                     </div>
                   </div>
                 )}

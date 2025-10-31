@@ -21,7 +21,7 @@ export default function AirlineAutocomplete({
   placeholder = "e.g., British Airways, BA",
   error,
   label,
-  required: _required = false,
+  required = false,
   isValid = false
 }: AirlineAutocompleteProps) {
   const [isOpen, setIsOpen] = useState(false);
@@ -103,8 +103,8 @@ export default function AirlineAutocomplete({
 
   return (
     <div className="relative">
-      <label className="block text-sm font-medium text-gray-700 mb-2">
-        {label}
+      <label className="block text-sm font-medium text-white mb-1">
+        {label} {required && '*'}
       </label>
       <div className="relative" ref={dropdownRef}>
         <input
@@ -116,12 +116,12 @@ export default function AirlineAutocomplete({
           onBlur={handleInputBlur}
           onKeyDown={handleKeyDown}
           placeholder={placeholder}
-          className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${
-            error ? 'border-red-500' : isValid ? 'border-green-500' : 'border-gray-300'
+          className={`w-full px-4 py-2.5 border rounded-lg bg-slate-800/50 text-white placeholder-slate-500 focus:border-[#00D9B5] focus:ring-0 outline-none ${
+            error ? 'border-red-500' : isValid ? 'border-green-500' : 'border-slate-700'
           }`}
         />
         {isValid && !error && (
-          <span className="absolute right-3 top-1/2 -translate-y-1/2 text-green-600 text-xl">✓</span>
+          <span className="absolute right-3 top-1/2 -translate-y-1/2 text-green-500">✓</span>
         )}
         
         {/* Dropdown */}
@@ -175,14 +175,14 @@ export default function AirlineAutocomplete({
           </div>
         )}
       </div>
-      
+
       {error && (
-        <p className="mt-1 text-sm text-red-600">{error}</p>
+        <p className="mt-1 text-sm text-red-400">{error}</p>
       )}
-      
+
       {/* Selected airline info */}
       {selectedAirline && (
-        <div className="mt-2 text-xs text-gray-600">
+        <div className="mt-2 text-xs text-slate-400">
           Selected: {selectedAirline.country} • {selectedAirline.iataCode}/{selectedAirline.icaoCode}
           {selectedAirline.alliance && ` • ${selectedAirline.alliance}`}
         </div>

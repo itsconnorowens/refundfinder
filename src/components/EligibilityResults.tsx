@@ -374,19 +374,6 @@ export default function EligibilityResults({ results }: EligibilityResultsProps)
         </div>
       )}
 
-      {/* Validation Details */}
-      {validation && (
-        <div className="bg-blue-50 border border-blue-200 rounded-lg p-6">
-          <h4 className="text-lg font-medium text-blue-900 mb-4">Validation Details</h4>
-          <div className="text-sm text-blue-800">
-            <p>Method: {results.method === 'email_parsing' ? 'Email Parsing' : 'Flight Lookup'}</p>
-            {validation && typeof validation === 'object' && 'isValid' in validation && (
-              <p>Data Valid: {validation.isValid ? 'Yes' : 'No'}</p>
-            )}
-          </div>
-        </div>
-      )}
-
       {/* Action Buttons */}
       {isEligible && (
         <div className="text-center space-y-4">
@@ -399,7 +386,7 @@ export default function EligibilityResults({ results }: EligibilityResultsProps)
                 Proceed with Claim - $49 Success Fee
               </button>
               <p className="mt-2 text-sm text-gray-600">
-                Only charged if we successfully get you compensation
+                Fully refunded if we don&apos;t secure your compensation
               </p>
             </div>
           ) : (
@@ -413,16 +400,6 @@ export default function EligibilityResults({ results }: EligibilityResultsProps)
           )}
         </div>
       )}
-
-      {/* Try Again Button */}
-      <div className="text-center">
-        <button
-          onClick={() => window.location.reload()}
-          className="px-6 py-2 text-blue-600 border border-blue-600 rounded-lg hover:bg-blue-50 transition-colors"
-        >
-          Check Another Flight
-        </button>
-      </div>
     </div>
   );
 }

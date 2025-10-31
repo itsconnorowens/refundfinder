@@ -56,7 +56,39 @@ export interface ApiUsageLog {
   costEstimate: number;
 }
 
-class FlightStatusService {
+// Types expected by tests
+export interface FlightStatus {
+  flightNumber: string;
+  airlineCode: string;
+  departureAirport: string;
+  arrivalAirport: string;
+  scheduledDeparture: Date;
+  actualDeparture?: Date;
+  scheduledArrival: Date;
+  actualArrival?: Date;
+  delayMinutes: number;
+  status: 'on-time' | 'delayed' | 'cancelled' | 'unknown';
+  lastUpdated: Date;
+}
+
+export interface FlightStatusProvider {
+  name: string;
+  priority: number;
+  rateLimit: {
+    requestsPerMinute: number;
+    requestsPerDay: number;
+  };
+  getFlightStatus(flightNumber: string, date: Date): Promise<FlightStatus>;
+}
+
+export class FlightStatusError extends Error {
+  constructor(message: string, public code?: string) {
+    super(message);
+    this.name = 'FlightStatusError';
+  }
+}
+
+export class FlightStatusManager {
   private cache: Map<string, CacheEntry> = new Map();
   private monthlyUsage: Map<string, number> = new Map();
   private readonly CACHE_DURATION_HOURS = 24;
@@ -486,4 +518,4 @@ class FlightStatusService {
 }
 
 // Export singleton instance
-export const flightStatusService = new FlightStatusService();
+export const flightStatusService = new FlightStatusManager();
