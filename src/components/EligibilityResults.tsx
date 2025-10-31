@@ -114,7 +114,7 @@ export default function EligibilityResults({ results }: EligibilityResultsProps)
         return formatCurrency(eurAmount, 'EUR');
       } else {
         const convertedAmount = convertCompensationAmount(eurAmount, currency);
-        return `${formatCurrency(convertedAmount, currency)} (${formatCurrency(eurAmount, 'EUR')})`;
+        return formatCurrency(convertedAmount, currency);
       }
     }
 
@@ -127,7 +127,7 @@ export default function EligibilityResults({ results }: EligibilityResultsProps)
           return formatCurrency(eurAmount, 'EUR');
         } else {
           const convertedAmount = convertCompensationAmount(eurAmount, currency);
-          return `${formatCurrency(convertedAmount, currency)} (${formatCurrency(eurAmount, 'EUR')})`;
+          return formatCurrency(convertedAmount, currency);
         }
       }
       return compensationAmount;
@@ -140,7 +140,7 @@ export default function EligibilityResults({ results }: EligibilityResultsProps)
         return formatCurrency(eurAmount, 'EUR');
       } else {
         const convertedAmount = convertCompensationAmount(eurAmount, currency);
-        return `${formatCurrency(convertedAmount, currency)} (${formatCurrency(eurAmount, 'EUR')})`;
+        return formatCurrency(convertedAmount, currency);
       }
     }
 

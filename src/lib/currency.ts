@@ -77,7 +77,7 @@ export function convertCompensationAmount(eurAmount: number, targetCurrency: Cur
   return Math.round(eurAmount * APPROX_CONVERSION_RATES[targetCurrency]);
 }
 
-// Format compensation amount with regulatory note for non-EU users
+// Format compensation amount - shows clean local currency
 export function formatCompensationAmount(
   eurAmount: number,
   displayCurrency: Currency,
@@ -88,15 +88,12 @@ export function formatCompensationAmount(
     return formatCurrency(eurAmount, 'EUR');
   }
 
-  // Non-EU users see local currency with EUR reference
+  // Non-EU users see clean local currency amount
   const convertedAmount = convertCompensationAmount(eurAmount, displayCurrency);
-  const localFormatted = formatCurrency(convertedAmount, displayCurrency);
-  const eurFormatted = formatCurrency(eurAmount, 'EUR');
-
-  return `${localFormatted} (${eurFormatted})`;
+  return formatCurrency(convertedAmount, displayCurrency);
 }
 
-// Format compensation range
+// Format compensation range - shows clean local currency
 export function formatCompensationRange(
   minEur: number,
   maxEur: number,
@@ -110,7 +107,7 @@ export function formatCompensationRange(
   const minConverted = convertCompensationAmount(minEur, displayCurrency);
   const maxConverted = convertCompensationAmount(maxEur, displayCurrency);
 
-  return `${formatCurrency(minConverted, displayCurrency)}-${formatCurrency(maxConverted, displayCurrency)} (${formatCurrency(minEur, 'EUR')}-${formatCurrency(maxEur, 'EUR')})`;
+  return `${formatCurrency(minConverted, displayCurrency)}-${formatCurrency(maxConverted, displayCurrency)}`;
 }
 
 // Simple compensation display (just the amount, no range)
@@ -128,6 +125,5 @@ export function getCompensationDisplay(
   const convertedAmount = convertCompensationAmount(eurAmount, displayCurrency);
   return {
     primary: formatCurrency(convertedAmount, displayCurrency),
-    secondary: formatCurrency(eurAmount, 'EUR'),
   };
 }
