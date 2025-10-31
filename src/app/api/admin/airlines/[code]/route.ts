@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getAirlineConfig } from '@/lib/airline-config';
 import { addBreadcrumb } from '@/lib/error-tracking';
+import { logger } from '@/lib/logger';
 
 /**
  * GET /api/admin/airlines/[code]
@@ -30,7 +31,7 @@ export async function GET(
   } catch (error) {
     const { captureError } = await import('@/lib/error-tracking');
     captureError(error, { level: 'error', tags: { service: 'admin', operation: 'airline_config', route: '/api/admin/airlines/[code]' } });
-    console.error('Error fetching airline config:', error);
+    logger.error('Error fetching airline config:', error);
     return NextResponse.json(
       { error: 'Failed to fetch airline configuration' },
       { status: 500 }
@@ -59,7 +60,7 @@ export async function PUT(
   } catch (error) {
     const { captureError } = await import('@/lib/error-tracking');
     captureError(error, { level: 'error', tags: { service: 'admin', operation: 'airline_config_update', route: '/api/admin/airlines/[code]' } });
-    console.error('Error updating airline config:', error);
+    logger.error('Error updating airline config:', error);
     return NextResponse.json(
       { error: 'Failed to update airline configuration' },
       { status: 500 }

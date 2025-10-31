@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import posthog from 'posthog-js';
 import { CheckEligibilityResponse } from '../types/api';
@@ -15,6 +15,7 @@ import {
 } from '@/lib/validation';
 import { useCurrency } from '@/contexts/CurrencyContext';
 import { formatCurrency, convertCompensationAmount } from '@/lib/currency';
+import { getAttributionProperties } from '@/lib/marketing-attribution';
 
 interface FlightLookupFormProps {
   onResults: (results: CheckEligibilityResponse) => void;
@@ -69,7 +70,9 @@ export default function FlightLookupForm({ onResults, onLoading }: FlightLookupF
     classPaidFor: '',
     classReceived: '',
     downgradeTiming: '',
-    downgradeReason: ''
+    downgradeReason: '',
+    // Ticket price helpers
+    isRoundTrip: false
   });
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [loading, setLoading] = useState(false);
@@ -77,6 +80,61 @@ export default function FlightLookupForm({ onResults, onLoading }: FlightLookupF
   const [emailSuggestion, setEmailSuggestion] = useState<string>('');
   const [showManualTimingEdit, setShowManualTimingEdit] = useState(false);
   const [showManualNoticeEdit, setShowManualNoticeEdit] = useState(false);
+  const [showCancellationRights, setShowCancellationRights] = useState(false);
+  const [showEURightsInfo, setShowEURightsInfo] = useState(false);
+  const [showUSRightsInfo, setShowUSRightsInfo] = useState(false);
+  const [showDowngradeInfo, setShowDowngradeInfo] = useState(false);
+
+  // Track disruption type selection
+  useEffect(() => {
+    if (formData.disruptionType && typeof window !== 'undefined') {
+      posthog.capture('disruption_type_selected', {
+        type: formData.disruptionType
+      });
+    }
+  }, [formData.disruptionType]);
+
+  // Track when users expand manual edit for notice period
+  useEffect(() => {
+    if (showManualNoticeEdit && typeof window !== 'undefined') {
+      posthog.capture('notice_period_manual_edit_opened', {
+        calculated_value: formData.noticeGiven
+      });
+    }
+  }, [showManualNoticeEdit]);
+
+  // Track info box expansions
+  useEffect(() => {
+    if (showCancellationRights && typeof window !== 'undefined') {
+      posthog.capture('info_box_expanded', {
+        type: 'cancellation_rights'
+      });
+    }
+  }, [showCancellationRights]);
+
+  useEffect(() => {
+    if (showEURightsInfo && typeof window !== 'undefined') {
+      posthog.capture('info_box_expanded', {
+        type: 'eu_denied_boarding_rights'
+      });
+    }
+  }, [showEURightsInfo]);
+
+  useEffect(() => {
+    if (showUSRightsInfo && typeof window !== 'undefined') {
+      posthog.capture('info_box_expanded', {
+        type: 'us_denied_boarding_rights'
+      });
+    }
+  }, [showUSRightsInfo]);
+
+  useEffect(() => {
+    if (showDowngradeInfo && typeof window !== 'undefined') {
+      posthog.capture('info_box_expanded', {
+        type: 'downgrade_info'
+      });
+    }
+  }, [showDowngradeInfo]);
 
   const validateField = (field: string, value: string) => {
     let result: { valid: boolean; error?: string; suggestion?: string } = { valid: true };
@@ -239,6 +297,7 @@ export default function FlightLookupForm({ onResults, onLoading }: FlightLookupF
         method: 'flight',
         disruption_type: formData.disruptionType,
         airline: formData.airline.trim(),
+        ...getAttributionProperties(), // Include marketing attribution
       });
     }
 
@@ -301,7 +360,9 @@ export default function FlightLookupForm({ onResults, onLoading }: FlightLookupF
           deniedBoardingReason: formData.deniedBoardingReason,
           alternativeArrivalDelay: formData.alternativeArrivalDelay, // Now structured radio button values
           checkInTime: formData.checkInTime,
-          ticketPrice: formData.ticketPrice ? parseFloat(formData.ticketPrice) : undefined,
+          ticketPrice: formData.ticketPrice
+            ? (formData.isRoundTrip ? parseFloat(formData.ticketPrice) / 2 : parseFloat(formData.ticketPrice))
+            : undefined,
           // Downgrade fields
           classPaidFor: formData.classPaidFor,
           classReceived: formData.classReceived,
@@ -322,6 +383,7 @@ export default function FlightLookupForm({ onResults, onLoading }: FlightLookupF
           airline: formData.airline.trim(),
           confidence: result.data.eligibility.confidence,
           method: 'flight',
+          ...getAttributionProperties(), // Include marketing attribution
         });
       }
 
@@ -527,25 +589,46 @@ export default function FlightLookupForm({ onResults, onLoading }: FlightLookupF
           error={errors.airline}
         />
 
-        {/* Departure Airport */}
-        <AirportAutocomplete
-          value={formData.departureAirport}
-          onChange={(value) => handleInputChange('departureAirport', value)}
-          placeholder="e.g., LHR, JFK"
-          error={errors.departureAirport}
-          label="Departure Airport"
-          required={true}
-        />
-
-        {/* Arrival Airport */}
-        <AirportAutocomplete
-          value={formData.arrivalAirport}
-          onChange={(value) => handleInputChange('arrivalAirport', value)}
-          placeholder="e.g., CDG, LAX"
-          error={errors.arrivalAirport}
-          label="Arrival Airport"
-          required={true}
-        />
+        {/* Route - Visual Grouping with Arrow */}
+        <div className="md:col-span-2">
+          <label className="block text-sm font-medium text-gray-700 mb-2">
+            Route *
+          </label>
+          <div className="flex items-center gap-3">
+            <div className="flex-1">
+              <AirportAutocomplete
+                value={formData.departureAirport}
+                onChange={(value) => handleInputChange('departureAirport', value)}
+                placeholder="Departure (e.g., LHR, JFK)"
+                error=""
+                label=""
+                required={false}
+              />
+            </div>
+            <div className="text-2xl text-blue-500 pb-2 hidden sm:block">
+              ✈️ →
+            </div>
+            <div className="text-lg text-blue-500 pb-2 sm:hidden">
+              ↓
+            </div>
+            <div className="flex-1">
+              <AirportAutocomplete
+                value={formData.arrivalAirport}
+                onChange={(value) => handleInputChange('arrivalAirport', value)}
+                placeholder="Arrival (e.g., CDG, LAX)"
+                error=""
+                label=""
+                required={false}
+              />
+            </div>
+          </div>
+          {(errors.departureAirport || errors.arrivalAirport) && (
+            <p className="mt-1 text-sm text-red-600">
+              {errors.departureAirport || errors.arrivalAirport}
+            </p>
+          )}
+          <p className="mt-1 text-xs text-gray-500">Your departure and arrival airports</p>
+        </div>
       </div>
 
       {/* Section 3: Scenario-Specific Fields */}
@@ -657,7 +740,19 @@ export default function FlightLookupForm({ onResults, onLoading }: FlightLookupF
                       <select
                         id="manualNoticeGiven"
                         value={formData.noticeGiven}
-                        onChange={(e) => handleInputChange('noticeGiven', e.target.value)}
+                        onChange={(e) => {
+                          const calculatedValue = calculateNoticePeriod(formData.notificationDate, formData.departureDate);
+                          handleInputChange('noticeGiven', e.target.value);
+
+                          // Track correction if value changed from calculated
+                          if (typeof window !== 'undefined' && calculatedValue !== e.target.value) {
+                            posthog.capture('notice_period_corrected', {
+                              calculated: calculatedValue,
+                              corrected_to: e.target.value,
+                              days_before: calculateDaysBetween(formData.notificationDate, formData.departureDate)
+                            });
+                          }
+                        }}
                         className="w-full px-3 py-2 border border-blue-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500"
                       >
                         <option value="< 7 days">Less than 7 days before departure</option>
@@ -878,15 +973,29 @@ export default function FlightLookupForm({ onResults, onLoading }: FlightLookupF
               <p className="mt-1 text-xs text-gray-500">This helps us understand your situation better</p>
             </div>
 
-            {/* Informational Box */}
-            <div className="md:col-span-2 bg-blue-50 border border-blue-200 rounded-lg p-4">
-              <h4 className="font-medium text-blue-900 mb-2">Your Rights for Cancellations</h4>
-              <ul className="text-sm text-blue-800 space-y-1">
-                <li>• Compensation depends on notice period and alternative flight timing</li>
-                <li>• Less than 7 days notice: Usually eligible for full compensation</li>
-                <li>• You always have the right to a refund OR alternative flight</li>
-                <li>• Airlines must provide care (meals, hotel) during waiting time</li>
-              </ul>
+            {/* Informational Box - Collapsible */}
+            <div className="md:col-span-2">
+              <button
+                type="button"
+                onClick={() => setShowCancellationRights(!showCancellationRights)}
+                className="w-full flex items-center justify-between p-4 bg-blue-50 border border-blue-200 rounded-lg hover:bg-blue-100 transition-colors"
+              >
+                <span className="font-medium text-blue-900">
+                  📖 Learn about your cancellation rights
+                </span>
+                <span className="text-blue-700 text-xl">{showCancellationRights ? '▲' : '▼'}</span>
+              </button>
+
+              {showCancellationRights && (
+                <div className="mt-2 bg-blue-50 border border-blue-200 border-t-0 rounded-b-lg p-4">
+                  <ul className="text-sm text-blue-800 space-y-1">
+                    <li>• Compensation depends on notice period and alternative flight timing</li>
+                    <li>• Less than 7 days notice: Usually eligible for full compensation</li>
+                    <li>• You always have the right to a refund OR alternative flight</li>
+                    <li>• Airlines must provide care (meals, hotel) during waiting time</li>
+                  </ul>
+                </div>
+              )}
             </div>
           </div>
         </div>
@@ -1083,50 +1192,92 @@ export default function FlightLookupForm({ onResults, onLoading }: FlightLookupF
             </div>
 
             {/* Ticket Price */}
-            <div>
+            <div className="md:col-span-2">
               <label htmlFor="ticketPrice" className="block text-sm font-medium text-gray-700 mb-2">
-                Ticket Price (USD) *
+                One-Way Ticket Price (USD) *
               </label>
-              <input
-                type="number"
-                id="ticketPrice"
-                value={formData.ticketPrice}
-                onChange={(e) => handleInputChange('ticketPrice', e.target.value)}
-                placeholder="e.g., 450"
-                min="0"
-                step="0.01"
-                className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${
-                  errors.ticketPrice ? 'border-red-500' : 'border-gray-300'
-                }`}
-              />
+              <div className="relative">
+                <span className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500 text-lg">$</span>
+                <input
+                  type="number"
+                  id="ticketPrice"
+                  value={formData.ticketPrice}
+                  onChange={(e) => handleInputChange('ticketPrice', e.target.value)}
+                  placeholder="450"
+                  min="0"
+                  step="0.01"
+                  className={`w-full pl-9 pr-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${
+                    errors.ticketPrice ? 'border-red-500' : 'border-gray-300'
+                  }`}
+                />
+              </div>
               {errors.ticketPrice && (
                 <p className="mt-1 text-sm text-red-600">{errors.ticketPrice}</p>
               )}
-              <p className="mt-1 text-xs text-gray-500">💰 Required for US DOT compensation calculation</p>
+              <div className="mt-2 space-y-1">
+                <p className="text-xs text-gray-600">💡 Enter the base fare shown on your ticket, before taxes and fees</p>
+                <label className="flex items-center text-xs text-gray-600">
+                  <input
+                    type="checkbox"
+                    checked={formData.isRoundTrip}
+                    onChange={(e) => setFormData(prev => ({ ...prev, isRoundTrip: e.target.checked }))}
+                    className="mr-2"
+                  />
+                  This was a round-trip ticket (we'll calculate one-way equivalent)
+                </label>
+              </div>
             </div>
 
-            {/* EU Rights Info Box */}
-            <div className="md:col-span-2 bg-green-50 border border-green-200 rounded-lg p-4">
-              <h4 className="font-medium text-green-900 mb-2">EU Regulation 261/2004 - Denied Boarding Rights</h4>
-              <ul className="text-sm text-green-800 space-y-1">
-                <li>• Up to {formatCurrency(isEURegion ? 600 : convertCompensationAmount(600, currency), currency)} compensation for involuntary denied boarding</li>
-                <li>• Distance-based: {formatCurrency(isEURegion ? 250 : convertCompensationAmount(250, currency), currency)} (under 1,500km), {formatCurrency(isEURegion ? 400 : convertCompensationAmount(400, currency), currency)} (1,500-3,500km), {formatCurrency(isEURegion ? 600 : convertCompensationAmount(600, currency), currency)} (over 3,500km)</li>
-                <li>• 50% reduction if alternative arrives within 2-4 hours of original</li>
-                <li>• Right to care: meals, hotel, transport during waiting time</li>
-                <li>• Choice between refund or alternative flight to final destination</li>
-              </ul>
+            {/* EU Rights Info Box - Collapsible */}
+            <div className="md:col-span-2">
+              <button
+                type="button"
+                onClick={() => setShowEURightsInfo(!showEURightsInfo)}
+                className="w-full flex items-center justify-between p-4 bg-green-50 border border-green-200 rounded-lg hover:bg-green-100 transition-colors"
+              >
+                <span className="font-medium text-green-900">
+                  🇪🇺 EU Regulation 261/2004 - Denied Boarding Rights
+                </span>
+                <span className="text-green-700 text-xl">{showEURightsInfo ? '▲' : '▼'}</span>
+              </button>
+
+              {showEURightsInfo && (
+                <div className="mt-2 bg-green-50 border border-green-200 border-t-0 rounded-b-lg p-4">
+                  <ul className="text-sm text-green-800 space-y-1">
+                    <li>• Up to €600 compensation for involuntary denied boarding</li>
+                    <li>• Distance-based: €250 (under 1,500km), €400 (1,500-3,500km), €600 (over 3,500km)</li>
+                    <li>• 50% reduction if alternative arrives within 2-4 hours of original</li>
+                    <li>• Right to care: meals, hotel, transport during waiting time</li>
+                    <li>• Choice between refund or alternative flight to final destination</li>
+                  </ul>
+                </div>
+              )}
             </div>
 
-            {/* US Rights Info Box */}
-            <div className="md:col-span-2 bg-blue-50 border border-blue-200 rounded-lg p-4">
-              <h4 className="font-medium text-blue-900 mb-2">US DOT - Involuntary Bumping Compensation</h4>
-              <ul className="text-sm text-blue-800 space-y-1">
-                <li>• Airlines must ask for volunteers before denying boarding involuntarily</li>
-                <li>• 0-1 hour delay: No compensation required</li>
-                <li>• 1-2 hours delay (domestic) / 1-4 hours (international): 200% of fare (max $775)</li>
-                <li>• 2+ hours delay (domestic) / 4+ hours (international): 400% of fare (max $1,550)</li>
-                <li>• Compensation must be paid immediately at the airport</li>
-              </ul>
+            {/* US Rights Info Box - Collapsible */}
+            <div className="md:col-span-2">
+              <button
+                type="button"
+                onClick={() => setShowUSRightsInfo(!showUSRightsInfo)}
+                className="w-full flex items-center justify-between p-4 bg-blue-50 border border-blue-200 rounded-lg hover:bg-blue-100 transition-colors"
+              >
+                <span className="font-medium text-blue-900">
+                  🇺🇸 US DOT - Involuntary Bumping Compensation
+                </span>
+                <span className="text-blue-700 text-xl">{showUSRightsInfo ? '▲' : '▼'}</span>
+              </button>
+
+              {showUSRightsInfo && (
+                <div className="mt-2 bg-blue-50 border border-blue-200 border-t-0 rounded-b-lg p-4">
+                  <ul className="text-sm text-blue-800 space-y-1">
+                    <li>• Airlines must ask for volunteers before denying boarding involuntarily</li>
+                    <li>• 0-1 hour delay: No compensation required</li>
+                    <li>• 1-2 hours delay (domestic) / 1-4 hours (international): 200% of fare (max $775)</li>
+                    <li>• 2+ hours delay (domestic) / 4+ hours (international): 400% of fare (max $1,550)</li>
+                    <li>• Compensation must be paid immediately at the airport</li>
+                  </ul>
+                </div>
+              )}
             </div>
           </div>
         </div>
@@ -1187,26 +1338,40 @@ export default function FlightLookupForm({ onResults, onLoading }: FlightLookupF
             </div>
 
             {/* Ticket Price */}
-            <div>
+            <div className="md:col-span-2">
               <label htmlFor="ticketPrice" className="block text-sm font-medium text-gray-700 mb-2">
-                Ticket Price (USD) *
+                One-Way Ticket Price (USD) *
               </label>
-              <input
-                type="number"
-                id="ticketPrice"
-                value={formData.ticketPrice}
-                onChange={(e) => handleInputChange('ticketPrice', e.target.value)}
-                placeholder="e.g., 2500"
-                min="0"
-                step="0.01"
-                className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${
-                  errors.ticketPrice ? 'border-red-500' : 'border-gray-300'
-                }`}
-              />
+              <div className="relative">
+                <span className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500 text-lg">$</span>
+                <input
+                  type="number"
+                  id="ticketPrice"
+                  value={formData.ticketPrice}
+                  onChange={(e) => handleInputChange('ticketPrice', e.target.value)}
+                  placeholder="2500"
+                  min="0"
+                  step="0.01"
+                  className={`w-full pl-9 pr-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${
+                    errors.ticketPrice ? 'border-red-500' : 'border-gray-300'
+                  }`}
+                />
+              </div>
               {errors.ticketPrice && (
                 <p className="mt-1 text-sm text-red-600">{errors.ticketPrice}</p>
               )}
-              <p className="mt-1 text-xs text-gray-500">💰 Required to calculate your refund amount</p>
+              <div className="mt-2 space-y-1">
+                <p className="text-xs text-gray-600">💡 Enter the base fare shown on your ticket, before taxes and fees</p>
+                <label className="flex items-center text-xs text-gray-600">
+                  <input
+                    type="checkbox"
+                    checked={formData.isRoundTrip}
+                    onChange={(e) => setFormData(prev => ({ ...prev, isRoundTrip: e.target.checked }))}
+                    className="mr-2"
+                  />
+                  This was a round-trip ticket (we'll calculate one-way equivalent)
+                </label>
+              </div>
             </div>
 
             {/* Live Compensation Preview */}
@@ -1302,16 +1467,30 @@ export default function FlightLookupForm({ onResults, onLoading }: FlightLookupF
               </select>
             </div>
 
-            {/* Informational Box */}
-            <div className="md:col-span-2 bg-purple-50 border border-purple-200 rounded-lg p-4">
-              <h4 className="font-medium text-purple-900 mb-2">Great News About Downgrades!</h4>
-              <ul className="text-sm text-purple-800 space-y-1">
-                <li>• Downgrades have NO extraordinary circumstances exemption</li>
-                <li>• You are ALWAYS eligible for a refund - no exceptions</li>
-                <li>• Refund amount: 30% (under 1,500km), 50% (1,500-3,500km), 75% (over 3,500km)</li>
-                <li>• Must be requested within 7 days for full refund rights</li>
-                <li>• This is IN ADDITION to any voluntary compensation from the airline</li>
-              </ul>
+            {/* Informational Box - Collapsible */}
+            <div className="md:col-span-2">
+              <button
+                type="button"
+                onClick={() => setShowDowngradeInfo(!showDowngradeInfo)}
+                className="w-full flex items-center justify-between p-4 bg-purple-50 border border-purple-200 rounded-lg hover:bg-purple-100 transition-colors"
+              >
+                <span className="font-medium text-purple-900">
+                  ✨ Great News About Downgrades!
+                </span>
+                <span className="text-purple-700 text-xl">{showDowngradeInfo ? '▲' : '▼'}</span>
+              </button>
+
+              {showDowngradeInfo && (
+                <div className="mt-2 bg-purple-50 border border-purple-200 border-t-0 rounded-b-lg p-4">
+                  <ul className="text-sm text-purple-800 space-y-1">
+                    <li>• Downgrades have NO extraordinary circumstances exemption</li>
+                    <li>• You are ALWAYS eligible for a refund - no exceptions</li>
+                    <li>• Refund amount: 30% (under 1,500km), 50% (1,500-3,500km), 75% (over 3,500km)</li>
+                    <li>• Must be requested within 7 days for full refund rights</li>
+                    <li>• This is IN ADDITION to any voluntary compensation from the airline</li>
+                  </ul>
+                </div>
+              )}
             </div>
           </div>
         </div>

@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { generateAirlineSubmission } from '@/lib/claim-filing-service';
+import { logger } from '@/lib/logger';
 
 export async function POST(
   _request: NextRequest,
@@ -18,7 +19,7 @@ export async function POST(
       data: result,
     });
   } catch (error) {
-    console.error('Error generating submission:', error);
+    logger.error('Error generating submission:', error);
     return NextResponse.json(
       { error: 'Failed to generate submission' },
       { status: 500 }

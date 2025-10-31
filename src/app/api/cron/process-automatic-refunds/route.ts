@@ -8,6 +8,7 @@ import {
   getRefundDashboardData,
 } from '@/lib/refund-analytics';
 import { withErrorTracking, addBreadcrumb } from '@/lib/error-tracking';
+import { logger } from '@/lib/logger';
 
 /**
  * POST /api/cron/process-automatic-refunds
@@ -154,7 +155,7 @@ export const POST = withErrorTracking(async (request: NextRequest) => {
     const alerts = dashboardData.alerts;
 
     if (alerts.length > 0) {
-      console.warn('Refund alerts detected:', alerts);
+      logger.warn('Refund alerts detected:', { alerts: alerts });
       // In production, you might send these to Slack, email, or other monitoring systems
     }
 
@@ -207,7 +208,7 @@ export async function GET() {
       },
     });
   } catch (error) {
-    console.error('Error in cron job health check:', error);
+    logger.error('Error in cron job health check:', error);
     return NextResponse.json(
       { error: 'Internal server error' },
       { status: 500 }

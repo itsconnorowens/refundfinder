@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { validateAirlineConfig } from '@/lib/airline-config-template';
 import { withErrorTracking, addBreadcrumb } from '@/lib/error-tracking';
+import { logger } from '@/lib/logger';
 
 /**
  * POST /api/admin/airlines
@@ -25,7 +26,7 @@ export const POST = withErrorTracking(async (request: NextRequest) => {
 
   // In a real implementation, this would save to the database
   // For now, we'll just return success
-  console.log('New airline configuration:', body);
+  logger.info('New airline configuration:', { body: body });
 
   return NextResponse.json({
     success: true,

@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { analyzeRefundEligibility } from '@/lib/automated-refund';
+import { logger } from '@/lib/logger';
 
 /**
  * GET /api/automated-refund/analyze
@@ -24,7 +25,7 @@ export async function GET(request: NextRequest) {
       data: analysis,
     });
   } catch (error) {
-    console.error('Error analyzing refund eligibility:', error);
+    logger.error('Error analyzing refund eligibility:', error);
     return NextResponse.json(
       { error: 'Internal server error' },
       { status: 500 }

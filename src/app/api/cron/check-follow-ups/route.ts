@@ -5,6 +5,7 @@ import {
   sendAdminOverdueAlert,
 } from '@/lib/email-service';
 import { withErrorTracking, addBreadcrumb, captureError } from '@/lib/error-tracking';
+import { logger } from '@/lib/logger';
 
 /**
  * POST /api/cron/check-follow-ups
@@ -35,7 +36,7 @@ export const POST = withErrorTracking(async (request: NextRequest) => {
 
   const adminEmail = process.env.ADMIN_EMAIL;
   if (!adminEmail) {
-    console.log('No admin email configured, skipping alerts');
+    logger.info('No admin email configured, skipping alerts');
     return NextResponse.json({
       success: true,
       message: 'No admin email configured, alerts skipped',
@@ -69,11 +70,11 @@ export const POST = withErrorTracking(async (request: NextRequest) => {
 
         await sendAdminOverdueAlert(adminEmail, { claims: claimsData });
         alertsSent++;
-        console.log(`Sent overdue alert for ${overdueClaims.length} claims`);
+        logger.info('Sent overdue alert for  claims', { length: overdueClaims.length });
       }
   } catch (error) {
     captureError(error, { level: 'warning', tags: { cron_task: 'overdue_claims' } });
-    console.error('Error checking overdue claims:', error);
+    logger.error('Error checking overdue claims:', error);
     results.errors.push('Failed to check overdue claims');
   }
 
@@ -110,11 +111,11 @@ export const POST = withErrorTracking(async (request: NextRequest) => {
           totalClaims: followUpClaims.length,
         });
         alertsSent++;
-        console.log(`Sent follow-up alert for ${followUpClaims.length} claims`);
+        logger.info('Sent follow-up alert for  claims', { length: followUpClaims.length });
       }
   } catch (error) {
     captureError(error, { level: 'warning', tags: { cron_task: 'follow_up_claims' } });
-    console.error('Error checking follow-up claims:', error);
+    logger.error('Error checking follow-up claims:', error);
     results.errors.push('Failed to check follow-up claims');
   }
 

@@ -1,4 +1,5 @@
 import Dexie, { Table } from 'dexie';
+import { logger } from '@/lib/logger';
 
 export interface OfflineClaim {
   id?: number;
@@ -40,7 +41,7 @@ export async function saveOfflineClaim(
       createdAt: new Date(),
     });
 
-    console.log('[Offline Storage] Saved claim:', claimData.claimId);
+    logger.info('[Offline Storage] Saved claim:', { claimId: claimData.claimId });
 
     // Trigger background sync
     if (typeof window !== 'undefined' && 'serviceWorker' in navigator) {
@@ -59,7 +60,7 @@ export async function saveOfflineClaim(
 
     return id;
   } catch (error) {
-    console.error('[Offline Storage] Error saving claim:', error);
+    logger.error('[Offline Storage] Error saving claim:', error);
     throw error;
   }
 }
@@ -73,7 +74,7 @@ export async function getPendingClaims(): Promise<OfflineClaim[]> {
 
     return claims;
   } catch (error) {
-    console.error('[Offline Storage] Error fetching pending claims:', error);
+    logger.error('[Offline Storage] Error fetching pending claims:', error);
     return [];
   }
 }
@@ -87,7 +88,7 @@ export async function getSyncedClaims(): Promise<OfflineClaim[]> {
 
     return claims;
   } catch (error) {
-    console.error('[Offline Storage] Error fetching synced claims:', error);
+    logger.error('[Offline Storage] Error fetching synced claims:', error);
     return [];
   }
 }
@@ -102,9 +103,9 @@ export async function markClaimAsSynced(claimId: string): Promise<void> {
       syncedAt: new Date(),
     });
 
-    console.log('[Offline Storage] Marked claim as synced:', claimId);
+    logger.info('[Offline Storage] Marked claim as synced:', { claimId: claimId });
   } catch (error) {
-    console.error('[Offline Storage] Error marking claim as synced:', error);
+    logger.error('[Offline Storage] Error marking claim as synced:', error);
     throw error;
   }
 }
@@ -122,9 +123,9 @@ export async function markClaimAsFailed(
       errorMessage,
     });
 
-    console.log('[Offline Storage] Marked claim as failed:', claimId);
+    logger.info('[Offline Storage] Marked claim as failed:', { claimId: claimId });
   } catch (error) {
-    console.error('[Offline Storage] Error marking claim as failed:', error);
+    logger.error('[Offline Storage] Error marking claim as failed:', error);
     throw error;
   }
 }
@@ -138,7 +139,7 @@ export async function markClaimAsSyncing(claimId: string): Promise<void> {
       status: 'syncing',
     });
   } catch (error) {
-    console.error('[Offline Storage] Error marking claim as syncing:', error);
+    logger.error('[Offline Storage] Error marking claim as syncing:', error);
     throw error;
   }
 }
@@ -168,10 +169,10 @@ export async function cleanupOldClaims(): Promise<void> {
     }
 
     if (deleted > 0) {
-      console.log(`[Offline Storage] Cleaned up ${deleted} old claims`);
+      logger.info('[Offline Storage] Cleaned up  old claims', { deleted: deleted });
     }
   } catch (error) {
-    console.error('[Offline Storage] Error cleaning up claims:', error);
+    logger.error('[Offline Storage] Error cleaning up claims:', error);
   }
 }
 
@@ -197,7 +198,7 @@ export async function getStorageStats(): Promise<{
       total,
     };
   } catch (error) {
-    console.error('[Offline Storage] Error getting stats:', error);
+    logger.error('[Offline Storage] Error getting stats:', error);
     return {
       pending: 0,
       synced: 0,
@@ -227,9 +228,9 @@ export function isOfflineStorageAvailable(): boolean {
 export async function clearOfflineStorage(): Promise<void> {
   try {
     await db.claims.clear();
-    console.log('[Offline Storage] Cleared all offline storage');
+    logger.info('[Offline Storage] Cleared all offline storage');
   } catch (error) {
-    console.error('[Offline Storage] Error clearing storage:', error);
+    logger.error('[Offline Storage] Error clearing storage:', error);
     throw error;
   }
 }

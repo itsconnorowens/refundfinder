@@ -1,4 +1,5 @@
 import { PostHog } from 'posthog-node';
+import { logger } from '@/lib/logger';
 
 /**
  * PostHog server-side tracking
@@ -9,7 +10,7 @@ let posthogServerInstance: PostHog | null = null;
 
 export function getPostHogServer(): PostHog | null {
   if (!process.env.NEXT_PUBLIC_POSTHOG_KEY) {
-    console.warn('PostHog API key not configured');
+    logger.warn('PostHog API key not configured');
     return null;
   }
 

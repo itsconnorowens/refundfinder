@@ -1,5 +1,6 @@
 import sgMail from '@sendgrid/mail';
 import { Resend } from 'resend';
+import { logger } from '@/lib/logger';
 
 // Initialize SendGrid
 const sendGridApiKey = process.env.SENDGRID_API_KEY;
@@ -292,7 +293,7 @@ export async function sendEmail(
   fromName: string = 'Flghtly'
 ): Promise<boolean> {
   if (!sendGridApiKey) {
-    console.warn('SendGrid not configured. Email not sent.');
+    logger.warn('SendGrid not configured. Email not sent.');
     return false;
   }
 
@@ -309,10 +310,10 @@ export async function sendEmail(
     };
 
     await sgMail.send(msg);
-    console.log(`Email sent successfully to ${to}`);
+    logger.info('Email sent successfully to ', { to: to });
     return true;
   } catch (error) {
-    console.error('Error sending email:', error);
+    logger.error('Error sending email:', error);
     return false;
   }
 }

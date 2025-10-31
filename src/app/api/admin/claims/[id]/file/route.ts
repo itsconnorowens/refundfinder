@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { markClaimAsFiled } from '@/lib/claim-filing-service';
+import { logger } from '@/lib/logger';
 
 export async function POST(
   request: NextRequest,
@@ -36,7 +37,7 @@ export async function POST(
       message: 'Claim marked as filed successfully',
     });
   } catch (error) {
-    console.error('Error marking claim as filed:', error);
+    logger.error('Error marking claim as filed:', error);
     return NextResponse.json(
       { error: 'Failed to mark claim as filed' },
       { status: 500 }

@@ -1,3 +1,5 @@
+import { logger } from '@/lib/logger';
+
 /**
  * AviationStack API Provider
  *
@@ -105,7 +107,7 @@ export class AviationStackProvider {
 
       return data.data[0];
     } catch (error) {
-      console.error('AviationStack API error:', error);
+      logger.error('AviationStack API error:', error);
       throw error;
     }
   }
@@ -144,7 +146,7 @@ export class AviationStackProvider {
 
       return data.data || [];
     } catch (error) {
-      console.error('AviationStack API error:', error);
+      logger.error('AviationStack API error:', error);
       throw error;
     }
   }

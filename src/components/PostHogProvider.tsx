@@ -2,6 +2,7 @@
 
 import { useEffect } from 'react';
 import { usePathname, useSearchParams } from 'next/navigation';
+import { initializeAttribution } from '@/lib/marketing-attribution';
 
 /**
  * PostHog client-side analytics provider
@@ -21,7 +22,27 @@ export function PostHogProvider({ children }: { children: React.ReactNode }) {
       try {
         const posthog = (await import('posthog-js')).default;
 
-        // Check if already initialized
+        // Check if PostHog was already initialized by the HTML snippet
+        // The snippet sets __loaded flag when initialization is complete
+        if ((window as any).posthog?.__loaded) {
+          // PostHog already initialized by HTML snippet, just configure additional options
+          if (process.env.NODE_ENV === 'development') {
+            const devEnabled = process.env.NEXT_PUBLIC_POSTHOG_DEV_ENABLED === 'true';
+            if (!devEnabled) {
+              posthog.opt_out_capturing();
+              console.log('PostHog: Already initialized by snippet. Development tracking disabled.');
+            } else {
+              console.log('PostHog: Already initialized by snippet. Development tracking enabled.');
+            }
+          }
+          // Enable autocapture if not already enabled
+          if (!posthog.get_config('autocapture')) {
+            posthog.set_config({ autocapture: true });
+          }
+          return;
+        }
+
+        // If not initialized by snippet, initialize via JS SDK (fallback)
         if (!(posthog as any).__flghtly_loaded) {
           posthog.init(posthogKey, {
             api_host: '/ingest',
@@ -31,8 +52,16 @@ export function PostHogProvider({ children }: { children: React.ReactNode }) {
             capture_pageleave: true,
             autocapture: true,
             loaded: (ph) => {
+              // Only opt out in development if explicitly disabled
+              // Set NEXT_PUBLIC_POSTHOG_DEV_ENABLED=true to enable tracking in dev
               if (process.env.NODE_ENV === 'development') {
-                ph.opt_out_capturing();
+                const devEnabled = process.env.NEXT_PUBLIC_POSTHOG_DEV_ENABLED === 'true';
+                if (!devEnabled) {
+                  ph.opt_out_capturing();
+                  console.log('PostHog: Development tracking disabled. Set NEXT_PUBLIC_POSTHOG_DEV_ENABLED=true to enable.');
+                } else {
+                  console.log('PostHog: Development tracking enabled');
+                }
               }
             },
           });
@@ -44,6 +73,10 @@ export function PostHogProvider({ children }: { children: React.ReactNode }) {
     };
 
     initPostHog();
+
+    // Initialize marketing attribution tracking
+    // This captures UTM parameters, referrer, and landing page
+    initializeAttribution();
   }, []);
 
   // Render children immediately to avoid hydration issues

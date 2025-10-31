@@ -1,3 +1,5 @@
+import { logger } from '@/lib/logger';
+
 // Optional Resend import - will be undefined if not installed
 let Resend: any;
 let resend: any;
@@ -7,7 +9,7 @@ try {
   Resend = resendModule.Resend;
   resend = new Resend(process.env.RESEND_API_KEY);
 } catch (error) {
-  console.warn('Resend not installed, email notifications will be disabled');
+  logger.warn('Resend not installed, email notifications will be disabled');
   resend = null;
 }
 
@@ -220,7 +222,7 @@ export async function sendRefundNotification(
 ): Promise<{ success: boolean; messageId?: string; error?: string }> {
   try {
     if (!resend || !process.env.RESEND_API_KEY) {
-      console.warn('Resend not configured, skipping email notification');
+      logger.warn('Resend not configured, skipping email notification');
       return { success: false, error: 'Email service not configured' };
     }
 
@@ -235,13 +237,13 @@ export async function sendRefundNotification(
     });
 
     if (result.error) {
-      console.error('Error sending refund notification:', result.error);
+      logger.error('Error sending refund notification:', result.error);
       return { success: false, error: result.error.message };
     }
 
     return { success: true, messageId: result.data?.id };
   } catch (error) {
-    console.error('Error sending refund notification:', error);
+    logger.error('Error sending refund notification:', error);
     return {
       success: false,
       error: error instanceof Error ? error.message : 'Unknown error',

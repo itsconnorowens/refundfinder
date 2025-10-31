@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { scheduleFollowUp } from '@/lib/claim-filing-service';
+import { logger } from '@/lib/logger';
 
 export async function POST(
   request: NextRequest,
@@ -36,7 +37,7 @@ export async function POST(
       message: 'Follow-up scheduled successfully',
     });
   } catch (error) {
-    console.error('Error scheduling follow-up:', error);
+    logger.error('Error scheduling follow-up:', error);
     return NextResponse.json(
       { error: 'Failed to schedule follow-up' },
       { status: 500 }

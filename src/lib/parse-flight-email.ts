@@ -1,5 +1,6 @@
 // Enhanced flight email parsing using Anthropic Claude with improved accuracy and error handling
 import Anthropic from '@anthropic-ai/sdk';
+import { logger } from '@/lib/logger';
 
 const anthropic = new Anthropic({
   apiKey: process.env.ANTHROPIC_API_KEY,
@@ -122,7 +123,7 @@ export async function parseFlightEmail(
     // Validate the parsed data
     const validation = validateFlightEmailData(parsedData);
     if (!validation.isValid && retryCount < 2) {
-      console.log(`Validation failed, retrying... (attempt ${retryCount + 1})`);
+      logger.info('Validation failed, retrying... (attempt )', { retryCount1: retryCount + 1 });
       return await parseFlightEmail(emailContent, retryCount + 1);
     }
 
@@ -144,7 +145,7 @@ export async function parseFlightEmail(
       retryCount,
     };
   } catch (error) {
-    console.error('Error parsing flight email:', error);
+    logger.error('Error parsing flight email:', error);
 
     // Retry on certain errors
     if (

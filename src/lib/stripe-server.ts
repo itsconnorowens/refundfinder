@@ -1,5 +1,6 @@
 import Stripe from 'stripe';
 import { Currency, getServiceFee } from './currency';
+import { logger } from '@/lib/logger';
 
 // Lazy initialization of Stripe to avoid build-time environment variable checks
 let stripeInstance: Stripe | null = null;
@@ -73,7 +74,7 @@ export async function createPaymentIntent(
 
     return paymentIntent;
   } catch (error) {
-    console.error('Error creating payment intent:', error);
+    logger.error('Error creating payment intent:', error);
     throw error;
   }
 }
@@ -88,7 +89,7 @@ export async function retrievePaymentIntent(
     const stripe = getStripe();
     return await stripe.paymentIntents.retrieve(paymentIntentId);
   } catch (error) {
-    console.error('Error retrieving payment intent:', error);
+    logger.error('Error retrieving payment intent:', error);
     throw error;
   }
 }
@@ -114,7 +115,7 @@ export async function processRefund(
 
     return refund;
   } catch (error) {
-    console.error('Error processing refund:', error);
+    logger.error('Error processing refund:', error);
     throw error;
   }
 }
@@ -142,7 +143,7 @@ export async function processPartialRefund(
 
     return refund;
   } catch (error) {
-    console.error('Error processing partial refund:', error);
+    logger.error('Error processing partial refund:', error);
     throw error;
   }
 }
@@ -159,7 +160,7 @@ export function verifyWebhookSignature(
     const stripe = getStripe();
     return stripe.webhooks.constructEvent(payload, signature, secret);
   } catch (error) {
-    console.error('Error verifying webhook signature:', error);
+    logger.error('Error verifying webhook signature:', error);
     throw error;
   }
 }
@@ -174,7 +175,7 @@ export async function getPaymentMethodDetails(
     const stripe = getStripe();
     return await stripe.paymentMethods.retrieve(paymentMethodId);
   } catch (error) {
-    console.error('Error retrieving payment method:', error);
+    logger.error('Error retrieving payment method:', error);
     throw error;
   }
 }
@@ -198,7 +199,7 @@ export async function createCustomer(
       },
     });
   } catch (error) {
-    console.error('Error creating customer:', error);
+    logger.error('Error creating customer:', error);
     throw error;
   }
 }
@@ -218,7 +219,7 @@ export async function findCustomerByEmail(
 
     return customers.data[0] || null;
   } catch (error) {
-    console.error('Error finding customer:', error);
+    logger.error('Error finding customer:', error);
     throw error;
   }
 }

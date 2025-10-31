@@ -4,6 +4,7 @@
  */
 
 import { sendEmail } from './email-service';
+import { logger } from '@/lib/logger';
 
 export type NotificationChannel = 'slack' | 'email' | 'console';
 
@@ -27,7 +28,7 @@ async function sendSlackNotification(
   const webhookUrl = process.env.SLACK_WEBHOOK_URL;
 
   if (!webhookUrl) {
-    console.warn('Slack webhook URL not configured, skipping Slack notification');
+    logger.warn('Slack webhook URL not configured, skipping Slack notification');
     return false;
   }
 
@@ -73,14 +74,14 @@ async function sendSlackNotification(
     });
 
     if (!response.ok) {
-      console.error('Failed to send Slack notification:', response.statusText);
+      logger.error('Failed to send Slack notification:', response.statusText);
       return false;
     }
 
-    console.log('Slack notification sent successfully');
+    logger.info('Slack notification sent successfully');
     return true;
   } catch (error) {
-    console.error('Error sending Slack notification:', error);
+    logger.error('Error sending Slack notification:', error);
     return false;
   }
 }
@@ -97,7 +98,7 @@ async function sendEmailNotification(
   const adminEmail = process.env.ADMIN_EMAIL;
 
   if (!adminEmail) {
-    console.warn('Admin email not configured, skipping email notification');
+    logger.warn('Admin email not configured, skipping email notification');
     return false;
   }
 
@@ -131,10 +132,10 @@ async function sendEmailNotification(
       category: 'alert',
     });
 
-    console.log('Email notification sent successfully');
+    logger.info('Email notification sent successfully');
     return true;
   } catch (error) {
-    console.error('Error sending email notification:', error);
+    logger.error('Error sending email notification:', error);
     return false;
   }
 }

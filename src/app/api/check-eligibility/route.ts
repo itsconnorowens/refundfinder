@@ -9,19 +9,20 @@ import {
 import { withErrorTracking, addBreadcrumb, captureError } from '@/lib/error-tracking';
 import { missingFieldsResponse, rateLimitResponse } from '@/lib/api-response';
 import { trackServerEvent } from '@/lib/posthog';
+import { logger } from '@/lib/logger';
 
 export const POST = withErrorTracking(async (request: NextRequest) => {
-  console.log('🔍 Eligibility Check API - Request received');
+  logger.info('🔍 Eligibility Check API - Request received');
 
   // Check rate limit
     const clientId = getClientIdentifier(request);
-    console.log('📊 Rate limit check for client:', clientId);
+    logger.info('📊 Rate limit check for client:', { clientId: clientId });
 
     const rateLimitResult = checkRateLimit(clientId, ELIGIBILITY_RATE_LIMIT);
-    console.log('📊 Rate limit result:', rateLimitResult);
+    logger.info('📊 Rate limit result:', { rateLimitResult: rateLimitResult });
 
     if (!rateLimitResult.allowed) {
-      console.log('❌ Rate limit exceeded');
+      logger.info('❌ Rate limit exceeded');
       return rateLimitResponse(
         rateLimitResult.retryAfter || 3600,
         rateLimitResult.remaining
@@ -29,7 +30,7 @@ export const POST = withErrorTracking(async (request: NextRequest) => {
     }
 
   const body = await request.json();
-  console.log('📝 Request body received:', JSON.stringify(body, null, 2));
+  logger.info('📝 Request body received:', { body: JSON.stringify(body, null, 2) });
 
     // Extract all fields from body (with backward compatibility defaults)
     const {
@@ -56,19 +57,15 @@ export const POST = withErrorTracking(async (request: NextRequest) => {
       fareDifference,
     } = body;
 
-    console.log('🔍 Field validation:');
-    console.log('  flightNumber:', flightNumber, typeof flightNumber);
-    console.log('  airline:', airline, typeof airline);
-    console.log('  departureDate:', departureDate, typeof departureDate);
-    console.log(
-      '  departureAirport:',
-      departureAirport,
-      typeof departureAirport
-    );
-    console.log('  arrivalAirport:', arrivalAirport, typeof arrivalAirport);
-    console.log('  delayDuration:', delayDuration, typeof delayDuration);
-    console.log('  delayReason:', delayReason, typeof delayReason);
-    console.log('  disruptionType:', disruptionType, typeof disruptionType);
+    logger.info('🔍 Field validation:');
+    logger.info('  flightNumber:', { flightNumber, type: typeof flightNumber });
+    logger.info('  airline:', { airline, type: typeof airline });
+    logger.info('  departureDate:', { departureDate, type: typeof departureDate });
+    logger.info('  departureAirport:', { departureAirport, type: typeof departureAirport });
+    logger.info('  arrivalAirport:', { arrivalAirport, type: typeof arrivalAirport });
+    logger.info('  delayDuration:', { delayDuration, type: typeof delayDuration });
+    logger.info('  delayReason:', { delayReason, type: typeof delayReason });
+    logger.info('  disruptionType:', { disruptionType, type: typeof disruptionType });
 
     // Validate required fields with better error messages
     const missingFields = [];
@@ -83,14 +80,14 @@ export const POST = withErrorTracking(async (request: NextRequest) => {
       missingFields.push('delayDuration');
     }
 
-    console.log('❌ Missing fields:', missingFields);
+    logger.info('❌ Missing fields:', { missingFields: missingFields });
 
     if (missingFields.length > 0) {
-      console.log('❌ Validation failed - returning error');
+      logger.info('❌ Validation failed - returning error');
       return missingFieldsResponse(missingFields);
     }
 
-    console.log('✅ All fields validated successfully');
+    logger.info('✅ All fields validated successfully');
 
     // Create flight details object with all fields
     const flightDetails: FlightDetails = {
@@ -130,9 +127,9 @@ export const POST = withErrorTracking(async (request: NextRequest) => {
     flightNumber: flightDetails.flightNumber,
     disruptionType: flightDetails.disruptionType
   });
-  console.log('🔍 Checking eligibility...');
+  logger.info('🔍 Checking eligibility...');
   const result = await checkEligibility(flightDetails);
-  console.log('📊 Eligibility result:', JSON.stringify(result, null, 2));
+  logger.info('📊 Eligibility result:', { result: JSON.stringify(result, null, 2) });
 
   // Track eligibility check completion in PostHog
   trackServerEvent(
@@ -172,10 +169,10 @@ export const POST = withErrorTracking(async (request: NextRequest) => {
     };
 
     await createEligibilityCheck(eligibilityCheck);
-    console.log(`Eligibility check ${checkId} stored successfully`);
+    logger.info('Eligibility check  stored successfully', { checkId: checkId });
   } catch (error) {
     captureError(error, { level: 'warning', tags: { service: 'airtable', operation: 'eligibility_check_storage' } });
-    console.error('Error storing eligibility check:', error);
+    logger.error('Error storing eligibility check:', error);
     // Continue even if storage fails
   }
 

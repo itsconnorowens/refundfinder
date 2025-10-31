@@ -1,5 +1,7 @@
 'use client';
 
+import { logger } from '@/lib/logger';
+
 /**
  * Register the service worker for PWA functionality
  */
@@ -9,7 +11,7 @@ export async function registerServiceWorker(): Promise<ServiceWorkerRegistration
   }
 
   if (!('serviceWorker' in navigator)) {
-    console.log('[Service Worker] Not supported in this browser');
+    logger.info('[Service Worker] Not supported in this browser');
     return null;
   }
 
@@ -33,7 +35,7 @@ export async function registerServiceWorker(): Promise<ServiceWorkerRegistration
 
     return registration;
   } catch (error) {
-    console.error('[Service Worker] Registration failed:', error);
+    logger.error('[Service Worker] Registration failed:', error);
     return null;
   }
 }
@@ -50,12 +52,12 @@ export async function unregisterServiceWorker(): Promise<boolean> {
     const registration = await navigator.serviceWorker.getRegistration();
     if (registration) {
       await registration.unregister();
-      console.log('[Service Worker] Unregistered successfully');
+      logger.info('[Service Worker] Unregistered successfully');
       return true;
     }
     return false;
   } catch (error) {
-    console.error('[Service Worker] Unregister failed:', error);
+    logger.error('[Service Worker] Unregister failed:', error);
     return false;
   }
 }

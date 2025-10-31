@@ -4,6 +4,7 @@ import { analyzeExtraordinaryCircumstances } from './extraordinary-circumstances
 import { checkDeniedBoardingEligibility } from './denied-boarding';
 
 import { getDistanceBetweenAirports } from './airports';
+import { logger } from '@/lib/logger';
 
 // Seat class types in descending order of quality
 export type SeatClass = 'first' | 'business' | 'premium_economy' | 'economy';
@@ -1023,7 +1024,7 @@ async function isExtraordinaryCircumstance(
     );
     return analysis.isExtraordinary;
   } catch (error) {
-    console.error('Error analyzing extraordinary circumstances:', error);
+    logger.error('Error analyzing extraordinary circumstances:', error);
     // Fallback to simple keyword detection
     return fallbackExtraordinaryDetection(reason);
   }

@@ -1,3 +1,5 @@
+import { logger } from '@/lib/logger';
+
 /**
  * Real-Time Services Configuration
  */
@@ -342,13 +344,13 @@ export class RealTimeServicesMonitor {
   recordCacheHit(cacheKey: string) {
     if (!this.config.monitoring.metrics.enabled) return;
 
-    console.log(`Cache Hit: ${cacheKey}`);
+    logger.info('Cache Hit: ', { cacheKey: cacheKey });
   }
 
   recordCacheMiss(cacheKey: string) {
     if (!this.config.monitoring.metrics.enabled) return;
 
-    console.log(`Cache Miss: ${cacheKey}`);
+    logger.info('Cache Miss: ', { cacheKey: cacheKey });
   }
 
   recordError(service: string, provider: string, error: Error) {
@@ -385,7 +387,7 @@ export class RealTimeServicesMonitor {
         body: JSON.stringify(alert),
       });
     } catch (alertError) {
-      console.error('Failed to send alert:', alertError);
+      logger.error('Failed to send alert:', alertError);
     }
   }
 }
@@ -423,7 +425,7 @@ export function validateEnvironmentVariables(): string[] {
 export function initializeRealTimeServices(config?: RealTimeServicesConfig) {
   const errors = validateEnvironmentVariables();
   if (errors.length > 0) {
-    console.warn('Configuration warnings:', errors);
+    logger.warn('Configuration warnings:', { errors: errors });
   }
 
   const factory = new RealTimeServicesFactory(config);

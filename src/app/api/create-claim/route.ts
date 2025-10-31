@@ -11,26 +11,49 @@ import { missingFieldsResponse, validationErrorResponse } from '@/lib/api-respon
 
 export async function POST(request: NextRequest) {
   try {
-    const formData = await request.formData();
+    // Handle both JSON and FormData requests
+    const contentType = request.headers.get('content-type') || '';
+    let firstName, lastName, email, flightNumber, airline, departureDate;
+    let departureAirport, arrivalAirport, delayDuration, delayReason;
+    let paymentIntentId, boardingPassUrl, delayProofUrl, attribution;
+    let boardingPassFile, delayProofFile;
 
-    // Extract form fields
-    const firstName = formData.get('firstName') as string;
-    const lastName = formData.get('lastName') as string;
-    const email = formData.get('email') as string;
-    const flightNumber = formData.get('flightNumber') as string;
-    const airline = formData.get('airline') as string;
-    const departureDate = formData.get('departureDate') as string;
-    const departureAirport = formData.get('departureAirport') as string;
-    const arrivalAirport = formData.get('arrivalAirport') as string;
-    const delayDuration = formData.get('delayDuration') as string;
-    const delayReason = formData.get('delayReason') as string;
-
-    // Extract payment information
-    const paymentIntentId = formData.get('paymentIntentId') as string;
-
-    // Extract file URLs (already uploaded to Vercel Blob)
-    const boardingPassUrl = formData.get('boardingPassUrl') as string;
-    const delayProofUrl = formData.get('delayProofUrl') as string;
+    if (contentType.includes('application/json')) {
+      // Handle JSON request
+      const body = await request.json();
+      firstName = body.firstName;
+      lastName = body.lastName;
+      email = body.email;
+      flightNumber = body.flightNumber;
+      airline = body.airline;
+      departureDate = body.departureDate;
+      departureAirport = body.departureAirport;
+      arrivalAirport = body.arrivalAirport;
+      delayDuration = body.delayDuration;
+      delayReason = body.delayReason;
+      paymentIntentId = body.paymentIntentId;
+      boardingPassUrl = body.boardingPassUrl;
+      delayProofUrl = body.delayProofUrl;
+      attribution = body.attribution; // Marketing attribution data
+    } else {
+      // Handle FormData request
+      const formData = await request.formData();
+      firstName = formData.get('firstName') as string;
+      lastName = formData.get('lastName') as string;
+      email = formData.get('email') as string;
+      flightNumber = formData.get('flightNumber') as string;
+      airline = formData.get('airline') as string;
+      departureDate = formData.get('departureDate') as string;
+      departureAirport = formData.get('departureAirport') as string;
+      arrivalAirport = formData.get('arrivalAirport') as string;
+      delayDuration = formData.get('delayDuration') as string;
+      delayReason = formData.get('delayReason') as string;
+      paymentIntentId = formData.get('paymentIntentId') as string;
+      boardingPassUrl = formData.get('boardingPassUrl') as string;
+      delayProofUrl = formData.get('delayProofUrl') as string;
+      boardingPassFile = formData.get('boardingPass') as any;
+      delayProofFile = formData.get('delayProof') as any;
+    }
 
     // Validate required form fields
     const missingFields: string[] = [];
@@ -58,10 +81,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Validate file types (if files are provided)
-    const boardingPassFile = formData.get('boardingPass') as any;
-    const delayProofFile = formData.get('delayProof') as any;
-    
+    // Validate file types (if files are provided via FormData)
     if (boardingPassFile && boardingPassFile.size > 0) {
       const allowedTypes = ['image/jpeg', 'image/png', 'image/jpg', 'application/pdf'];
       if (!allowedTypes.includes(boardingPassFile.type)) {
@@ -218,6 +238,8 @@ export async function POST(request: NextRequest) {
         estimatedCompensation,
         paymentAmount: paymentIntent.amount / 100, // Convert cents to dollars
         status: 'submitted',
+        // Include marketing attribution if available
+        ...(attribution || {}),
       });
 
       // Send real-time notification for new claim

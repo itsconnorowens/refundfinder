@@ -16,6 +16,7 @@ import { StepIcon } from '../components/icons';
 import { MobileMenu } from '../components/MobileMenu';
 import { InlineErrorBoundary } from '../components/ErrorBoundary';
 import TrustDisclosure from '../components/trust-disclosure';
+import CurrencySelector from '../components/CurrencySelector';
 import { useCurrency } from '../contexts/CurrencyContext';
 import { formatCurrency, getServiceFeeFormatted, formatCompensationRange, convertCompensationAmount } from '../lib/currency';
 
@@ -95,7 +96,7 @@ export default function Home() {
                 onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
                 className="flex-shrink-0 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 rounded-lg"
               >
-                <div className="flex items-center space-x-3">
+                <div className="flex items-center space-x-2">
                   <motion.img
                     src="/icon-192.png"
                     alt="Flghtly Logo"
@@ -238,9 +239,6 @@ export default function Home() {
         <div className="absolute inset-0 z-0 opacity-10 sm:opacity-20">
           <FlightPathsAnimation />
         </div>
-        
-        {/* Light overlay to maintain readability */}
-        <div className="absolute inset-0 z-5 bg-gradient-to-br from-blue-50/80 via-indigo-100/60 to-blue-50/80" />
         
         {/* Content */}
         <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -414,7 +412,7 @@ export default function Home() {
                     : {
                         scale: [1, 1.02, 1, 1.02, 1],
                         transition: {
-                          duration: 1,
+                          duration: 4,
                           repeat: Infinity,
                           ease: "easeInOut"
                         }
@@ -422,7 +420,7 @@ export default function Home() {
                 }
                 whileTap={{ scale: 0.98 }}
               >
-                <p className="text-green-800 font-medium">✓ No win, no fee guarantee</p>
+                <p className="text-green-800 font-semibold text-lg">Let's get paid →</p>
               </motion.button>
             </div>
           </div>
@@ -434,7 +432,9 @@ export default function Home() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
             <h2 className="text-3xl font-bold text-gray-900 mb-4">Success Stories</h2>
-            <p className="text-xl text-gray-600">We've helped travelers recover over {formatCurrency(isEURegion ? 147000 : convertCompensationAmount(147000, currency), currency)} in compensation</p>
+            <p className="text-xl text-gray-600">
+              We've helped travelers recover over {currency === 'EUR' ? '€147,000' : currency === 'USD' ? '$158,760' : '£125,000'} in compensation
+            </p>
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 md:gap-8">
@@ -527,7 +527,7 @@ export default function Home() {
             <div className="bg-blue-50 rounded-lg p-6 max-w-2xl mx-auto">
               <h3 className="text-xl font-semibold text-blue-900 mb-2">Join 320+ Successful Travelers</h3>
               <p className="text-blue-800">
-                Average compensation: {formatCurrency(isEURegion ? 450 : convertCompensationAmount(450, currency), currency)} • Success rate: 94% • Average processing time: 3.2 weeks
+                Average compensation: {currency === 'EUR' ? '€450' : currency === 'USD' ? '$485' : '£385'} • Success rate: 94% • Average processing time: 3.2 weeks
               </p>
             </div>
           </div>
@@ -726,33 +726,36 @@ export default function Home() {
             </div>
             <p className="text-gray-600 mb-6">Get the compensation you deserve for flight delays and cancellations</p>
             <div className="flex flex-wrap justify-center gap-6 mb-6">
-              <a 
-                href="/terms" 
+              <a
+                href="/terms"
                 className="text-gray-400 hover:text-white transition-colors"
               >
                 Terms of Service
               </a>
-              <a 
-                href="/privacy" 
+              <a
+                href="/privacy"
                 className="text-gray-400 hover:text-white transition-colors"
               >
                 Privacy Policy
               </a>
-              <a 
-                href="/gdpr" 
+              <a
+                href="/gdpr"
                 className="text-gray-400 hover:text-white transition-colors"
               >
                 GDPR Rights
               </a>
-              <a 
-                href="mailto:claims@flghtly.com" 
+              <a
+                href="mailto:claims@flghtly.com"
                 className="text-gray-400 hover:text-white transition-colors"
               >
                 Contact Support
               </a>
             </div>
-            <div className="text-sm text-gray-500">
-              © 2024 Flghtly. All rights reserved.
+            <div className="flex flex-col items-center gap-4">
+              <CurrencySelector />
+              <div className="text-sm text-gray-500">
+                © 2024 Flghtly. All rights reserved.
+              </div>
             </div>
           </div>
         </div>

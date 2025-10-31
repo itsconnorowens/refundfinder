@@ -6,6 +6,7 @@ import {
   DataSubjectRequest,
 } from '@/lib/gdpr';
 import { queueGDPRConfirmation } from '@/lib/email-queue';
+import { logger } from '@/lib/logger';
 
 export async function POST(request: NextRequest) {
   try {
@@ -134,9 +135,9 @@ export async function POST(request: NextRequest) {
         nextSteps: responseData.nextSteps as string[],
       });
 
-      console.log(`GDPR confirmation email queued: ${emailId}`);
+      logger.info('GDPR confirmation email queued: ', { emailId: emailId });
     } catch (emailError) {
-      console.error('Error queuing GDPR confirmation email:', emailError);
+      logger.error('Error queuing GDPR confirmation email:', emailError);
       // Continue processing even if email queuing fails
     }
 
@@ -152,7 +153,7 @@ export async function POST(request: NextRequest) {
       },
     });
   } catch (error) {
-    console.error('Error processing GDPR request:', error);
+    logger.error('Error processing GDPR request:', error);
     return NextResponse.json(
       { error: 'Internal server error' },
       { status: 500 }

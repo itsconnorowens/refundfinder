@@ -1,5 +1,6 @@
 import * as Sentry from '@sentry/nextjs';
 import { NextRequest, NextResponse } from 'next/server';
+import { logger } from '@/lib/logger';
 
 /**
  * Error tracking service for Flghtly
@@ -245,7 +246,7 @@ export function captureError(
   });
 
   // Also log to console for local development
-  console.error('[Error Tracking]', error, { tags: enrichedTags, extra: enrichedExtra });
+  logger.error('[Error Tracking]', error, { tags: enrichedTags, extra: enrichedExtra });
 
   return eventId;
 }
@@ -264,7 +265,7 @@ export function captureMessage(
     extra: context?.extra,
   });
 
-  console.log('[Error Tracking]', message, context);
+  logger.info('[Error Tracking]', { messagecontext: message, context });
 
   return eventId;
 }
@@ -278,7 +279,7 @@ export function setUser(user: {
   name?: string;
 } | null) {
   Sentry.setUser(user);
-  console.log('[Error Tracking] Set user:', user);
+  logger.info('[Error Tracking] Set user:', { user: user });
 }
 
 /**
@@ -295,7 +296,7 @@ export function addBreadcrumb(
     data,
     timestamp: Date.now() / 1000,
   });
-  console.log('[Breadcrumb]', message, category, data);
+  logger.info('[Breadcrumb]', { messagecategorydata: message, category, data });
 }
 
 /**
@@ -429,7 +430,7 @@ export function startTransaction(name: string, op: string) {
     return Sentry.startSpan({ name, op }, (span) => span);
   }
   // Fallback: return a mock object if API not available
-  console.log('[Transaction]', name, op);
+  logger.info('[Transaction]', { nameop: name, op });
   return {
     finish: () => {},
     setTag: () => {},
@@ -551,7 +552,7 @@ export async function trackEmailDelivery<T>(
     });
 
     // Log successful delivery
-    console.log(`[Email] Successfully sent ${emailType} to ${recipient} in ${duration}ms`);
+    logger.info('[Email] Successfully sent ${emailType} to ${recipient} in ms', { duration: duration });
 
     return result;
   } catch (error) {

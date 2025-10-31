@@ -7,6 +7,7 @@ import { getClaimByClaimId, TABLES } from './airtable';
 import { sendNotification, NotificationChannel } from './notification-service';
 import { trackDatabaseOperation } from './error-tracking';
 import Airtable from 'airtable';
+import { logger } from '@/lib/logger';
 
 const base = process.env.AIRTABLE_API_KEY && process.env.AIRTABLE_BASE_ID
   ? new Airtable({ apiKey: process.env.AIRTABLE_API_KEY }).base(process.env.AIRTABLE_BASE_ID)
@@ -90,7 +91,7 @@ export async function updateEmailTracking(
     );
     return true;
   } catch (error) {
-    console.error('Error updating email tracking:', error);
+    logger.error('Error updating email tracking:', error);
     return false;
   }
 }
@@ -133,7 +134,7 @@ export async function createSystemAlert(
 
     return alertId;
   } catch (error) {
-    console.error('Error creating system alert:', error);
+    logger.error('Error creating system alert:', error);
     return '';
   }
 }
@@ -164,7 +165,7 @@ export async function checkSLABreaches(): Promise<SystemAlert[]> {
 
     return alerts;
   } catch (error) {
-    console.error('Error checking SLA breaches:', error);
+    logger.error('Error checking SLA breaches:', error);
     return [];
   }
 }
@@ -193,7 +194,7 @@ export async function checkEmailDeliveryIssues(): Promise<SystemAlert[]> {
 
     return alerts;
   } catch (error) {
-    console.error('Error checking email delivery issues:', error);
+    logger.error('Error checking email delivery issues:', error);
     return [];
   }
 }
@@ -222,7 +223,7 @@ export async function checkSystemErrors(): Promise<SystemAlert[]> {
 
     return alerts;
   } catch (error) {
-    console.error('Error checking system errors:', error);
+    logger.error('Error checking system errors:', error);
     return [];
   }
 }
@@ -251,7 +252,7 @@ export async function checkHighVolumeAlerts(): Promise<SystemAlert[]> {
 
     return alerts;
   } catch (error) {
-    console.error('Error checking high volume alerts:', error);
+    logger.error('Error checking high volume alerts:', error);
     return [];
   }
 }
@@ -289,7 +290,7 @@ export async function getComprehensiveMonitoringStats(): Promise<MonitoringStats
 
     return stats;
   } catch (error) {
-    console.error('Error getting comprehensive monitoring stats:', error);
+    logger.error('Error getting comprehensive monitoring stats:', error);
     return {
       emailDeliveryRate: 0,
       averageResponseTime: 0,
@@ -314,7 +315,7 @@ export async function resolveAlert(
     console.log(`Alert ${alertId} resolved by ${resolvedBy}`, resolutionNotes);
     return true;
   } catch (error) {
-    console.error('Error resolving alert:', error);
+    logger.error('Error resolving alert:', error);
     return false;
   }
 }
@@ -334,7 +335,7 @@ export async function sendAlertNotification(
       type: alert.type,
     };
 
-    console.warn('ALERT NOTIFICATION:', notification);
+    logger.warn('ALERT NOTIFICATION:', { notification: notification });
 
     // Send to different channels based on severity
     if (alert.severity === 'critical') {
@@ -345,15 +346,15 @@ export async function sendAlertNotification(
       );
     } else if (alert.severity === 'high') {
       // Send to monitoring channel
-      console.warn('HIGH PRIORITY ALERT:', notification);
+      logger.warn('HIGH PRIORITY ALERT:', { notification: notification });
     } else {
       // Log for review
-      console.log('ALERT:', notification);
+      logger.info('ALERT:', { notification: notification });
     }
 
     return true;
   } catch (error) {
-    console.error('Error sending alert notification:', error);
+    logger.error('Error sending alert notification:', error);
     return false;
   }
 }
@@ -375,7 +376,7 @@ export async function getMonitoringStats(): Promise<MonitoringStats> {
 
     return stats;
   } catch (error) {
-    console.error('Error getting monitoring stats:', error);
+    logger.error('Error getting monitoring stats:', error);
     return {
       emailDeliveryRate: 0,
       averageResponseTime: 0,
@@ -414,18 +415,18 @@ export async function processEmailWebhook(
         details: webhookData.data?.error || '',
       };
     } else {
-      console.error('Unsupported email provider:', provider);
+      logger.error('Unsupported email provider:', provider);
       return false;
     }
 
     // Find claim by message ID and update tracking
     // In a real implementation, you'd need to store the mapping between messageId and claimId
     // For now, we'll log the event
-    console.log('Email webhook processed:', trackingEvent);
+    logger.info('Email webhook processed:', { trackingEvent: trackingEvent });
 
     return true;
   } catch (error) {
-    console.error('Error processing email webhook:', error);
+    logger.error('Error processing email webhook:', error);
     return false;
   }
 }
@@ -519,7 +520,7 @@ export async function getClaimEmailStats(claimId: string): Promise<{
 
     return stats;
   } catch (error) {
-    console.error('Error getting claim email stats:', error);
+    logger.error('Error getting claim email stats:', error);
     return {
       totalEmails: 0,
       delivered: 0,

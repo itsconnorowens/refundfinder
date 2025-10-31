@@ -22,6 +22,7 @@ import AirlineAutocomplete from '@/components/AirlineAutocomplete';
 import { MobileStepIndicator } from '@/components/MobileStepIndicator';
 import { showError, showSuccess } from '@/lib/toast';
 import { setUser } from '@/lib/error-tracking';
+import { getAttributionProperties } from '@/lib/marketing-attribution';
 import {
   validateFlightNumber,
   validateAirportCode,
@@ -502,6 +503,8 @@ export default function ClaimSubmissionForm() {
           paymentIntentId: paymentIntentId,
           boardingPassUrl: formData.boardingPassUrl,
           delayProofUrl: formData.delayProofUrl,
+          // Include marketing attribution for server-side tracking
+          attribution: getAttributionProperties(),
         }),
       });
 
@@ -514,6 +517,7 @@ export default function ClaimSubmissionForm() {
             claim_id: result.claimId,
             payment_intent_id: paymentIntentId,
             amount_cents: 4900,
+            ...getAttributionProperties(), // Include marketing attribution
           });
         }
 

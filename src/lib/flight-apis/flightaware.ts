@@ -1,3 +1,5 @@
+import { logger } from '@/lib/logger';
+
 /**
  * FlightAware AeroAPI Provider
  *
@@ -154,7 +156,7 @@ export class FlightAwareProvider {
 
       return data.flights[0];
     } catch (error) {
-      console.error('FlightAware API error:', error);
+      logger.error('FlightAware API error:', error);
       throw error;
     }
   }
@@ -200,7 +202,7 @@ export class FlightAwareProvider {
 
       return data.flights || [];
     } catch (error) {
-      console.error('FlightAware API error:', error);
+      logger.error('FlightAware API error:', error);
       throw error;
     }
   }

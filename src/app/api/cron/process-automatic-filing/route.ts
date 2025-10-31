@@ -5,6 +5,7 @@ import {
 } from '@/lib/claim-filing-service';
 import { processAutomatedFollowUps } from '@/lib/follow-up-service';
 import { withErrorTracking, addBreadcrumb } from '@/lib/error-tracking';
+import { logger } from '@/lib/logger';
 
 /**
  * POST /api/cron/process-automatic-filing
@@ -49,7 +50,7 @@ export const POST = withErrorTracking(async (request: NextRequest) => {
   };
 
   // Process automatic claim filing
-  console.log('Processing automatic claim filing...');
+  logger.info('Processing automatic claim filing...');
   const filingResults = await processAutomaticClaimFiling();
 
     results.summary.claimsFiled = filingResults.filter((r) => r.success).length;
@@ -59,7 +60,7 @@ export const POST = withErrorTracking(async (request: NextRequest) => {
     results.details.filing = filingResults;
 
     // Process automated follow-ups
-    console.log('Processing automated follow-ups...');
+    logger.info('Processing automated follow-ups...');
     const followUpResults = await processAutomatedFollowUps();
 
     results.summary.followUpsProcessed = followUpResults.filter(
@@ -70,7 +71,7 @@ export const POST = withErrorTracking(async (request: NextRequest) => {
     ).length;
     results.details.followUps = followUpResults;
 
-    console.log('Automatic filing cron job completed:', results.summary);
+    logger.info('Automatic filing cron job completed:', { summary: results.summary });
 
     // Mark cron job as successful
     Sentry.captureCheckIn({
@@ -109,7 +110,7 @@ export async function GET() {
       timestamp: new Date().toISOString(),
     });
   } catch (error) {
-    console.error('Error in automatic filing cron job health check:', error);
+    logger.error('Error in automatic filing cron job health check:', error);
     return NextResponse.json(
       { error: 'Internal server error' },
       { status: 500 }

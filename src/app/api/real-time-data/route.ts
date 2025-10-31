@@ -4,6 +4,7 @@
 
 import { NextRequest, NextResponse } from 'next/server';
 import { initializeRealTimeServices } from '../../../lib/real-time-services-config';
+import { logger } from '@/lib/logger';
 
 // Initialize services
 const { factory, monitor } = initializeRealTimeServices();
@@ -84,7 +85,7 @@ export async function GET(request: NextRequest) {
       { status: 400 }
     );
   } catch (error) {
-    console.error('Real-time data API error:', error);
+    logger.error('Real-time data API error:', error);
 
     monitor.recordApiCall('real-time-data', 'api', false, 0);
     monitor.recordError('real-time-data', 'api', error as Error);
@@ -172,7 +173,7 @@ export async function POST(request: NextRequest) {
       { status: 400 }
     );
   } catch (error) {
-    console.error('Real-time data POST API error:', error);
+    logger.error('Real-time data POST API error:', error);
 
     monitor.recordApiCall('real-time-data', 'api', false, 0);
     monitor.recordError('real-time-data', 'api', error as Error);

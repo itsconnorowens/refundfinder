@@ -7,6 +7,7 @@ import PaymentForm from './PaymentForm';
 import { parseApiError, formatErrorForDisplay } from '@/lib/error-messages';
 import { useCurrency } from '@/contexts/CurrencyContext';
 import { formatCurrency, convertCompensationAmount } from '@/lib/currency';
+import { getAttributionProperties } from '@/lib/marketing-attribution';
 
 interface EligibilityResultsProps {
   results: CheckEligibilityResponse;
@@ -25,6 +26,7 @@ export default function EligibilityResults({ results }: EligibilityResultsProps)
         regulation: eligibilityData.regulation,
         disruption_type: eligibilityData.disruptionType,
         confidence: eligibilityData.confidence,
+        ...getAttributionProperties(), // Include marketing attribution
       });
     }
     setShowPaymentForm(true);

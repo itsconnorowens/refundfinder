@@ -1,3 +1,5 @@
+import { logger } from '@/lib/logger';
+
 /**
  * Enhanced Email Parser with Flight Status Integration
  */
@@ -83,7 +85,7 @@ export class EnhancedEmailParser {
         arrivalStatus
       );
     } catch (error) {
-      console.warn('Flight status verification failed:', error);
+      logger.warn('Flight status verification failed:', { error: error });
       return basicData; // Fallback to email-only data
     }
   }
@@ -228,7 +230,7 @@ export class WeatherAwareEligibilityCalculator {
         departureStatus
       );
     } catch (error) {
-      console.warn('Airport status verification failed:', error);
+      logger.warn('Airport status verification failed:', { error: error });
       // Continue with basic eligibility if airport status fails
     }
 

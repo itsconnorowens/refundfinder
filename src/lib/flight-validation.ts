@@ -1,3 +1,5 @@
+import { logger } from '@/lib/logger';
+
 /**
  * Flight Validation Service
  *
@@ -57,7 +59,7 @@ export class FlightValidationService {
 
       return this.formatValidationResponse(result);
     } catch (error) {
-      console.error('Flight validation error:', error);
+      logger.error('Flight validation error:', error);
       return {
         verified: false,
         confidence: 0,

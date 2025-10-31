@@ -1,3 +1,5 @@
+import { logger } from '@/lib/logger';
+
 /**
  * Flight Status API Service
  *
@@ -113,7 +115,7 @@ class FlightStatusService {
         userReportedType
       );
     } catch (error) {
-      console.error('Flight verification API error:', error);
+      logger.error('Flight verification API error:', error);
       return {
         verified: false,
         confidence: 0,
@@ -384,9 +386,9 @@ class FlightStatusService {
     try {
       // This would integrate with Airtable API
       // For now, just log to console
-      console.log('API Usage Log:', logEntry);
+      logger.info('API Usage Log:', { logEntry: logEntry });
     } catch (error) {
-      console.error('Failed to log API usage to Airtable:', error);
+      logger.error('Failed to log API usage to Airtable:', error);
     }
   }
 
@@ -410,7 +412,7 @@ class FlightStatusService {
         this.cache = new Map(Object.entries(data));
       }
     } catch (error) {
-      console.error('Failed to load cache from storage:', error);
+      logger.error('Failed to load cache from storage:', error);
     }
   }
 
@@ -424,7 +426,7 @@ class FlightStatusService {
       const data = Object.fromEntries(this.cache);
       localStorage.setItem('flight_status_cache', JSON.stringify(data));
     } catch (error) {
-      console.error('Failed to save cache to storage:', error);
+      logger.error('Failed to save cache to storage:', error);
     }
   }
 
@@ -441,7 +443,7 @@ class FlightStatusService {
         this.monthlyUsage = new Map(Object.entries(data));
       }
     } catch (error) {
-      console.error('Failed to load usage from storage:', error);
+      logger.error('Failed to load usage from storage:', error);
     }
   }
 
@@ -455,7 +457,7 @@ class FlightStatusService {
       const data = Object.fromEntries(this.monthlyUsage);
       localStorage.setItem('api_usage_log', JSON.stringify(data));
     } catch (error) {
-      console.error('Failed to save usage to storage:', error);
+      logger.error('Failed to save usage to storage:', error);
     }
   }
 

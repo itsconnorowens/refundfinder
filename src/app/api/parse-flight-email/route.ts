@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { logger } from '@/lib/logger';
 import {
   parseFlightEmail,
   isAnthropicConfigured,
@@ -78,7 +79,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Parse the email using Claude
-    console.log('📧 Email parsing - Input email length:', emailText.length);
+    logger.info('📧 Email parsing - Input email length:', { length: emailText.length });
     const flightData = await parseFlightEmail(emailText);
     console.log(
       '📧 Email parsing - Raw result:',
@@ -87,7 +88,7 @@ export async function POST(request: NextRequest) {
 
     // Check if parsing was successful
     if (!flightData || !flightData.success) {
-      console.log('❌ Email parsing failed:', flightData?.error);
+      logger.info('❌ Email parsing failed:', { error: flightData?.error });
       return NextResponse.json(
         {
           success: false,
@@ -111,7 +112,7 @@ export async function POST(request: NextRequest) {
     });
   } catch (error) {
     // Log error for debugging
-    console.error('Error in parse-flight-email API route:', error);
+    logger.error('Error in parse-flight-email API route:', error);
 
     // Return generic error to client
     return NextResponse.json(

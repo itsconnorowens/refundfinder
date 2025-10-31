@@ -4,6 +4,7 @@
 
 import { NextRequest, NextResponse } from 'next/server';
 import { initializeRealTimeServices } from '../../../lib/real-time-services-config';
+import { logger } from '@/lib/logger';
 
 // Initialize services
 const { factory, monitor } = initializeRealTimeServices();
@@ -59,7 +60,7 @@ export async function POST(request: NextRequest) {
       },
     });
   } catch (error) {
-    console.error('Enhanced claim processing error:', error);
+    logger.error('Enhanced claim processing error:', error);
 
     // Record error metrics
     monitor.recordApiCall('claim-processing', 'enhanced', false, 0);
@@ -130,7 +131,7 @@ export async function GET(request: NextRequest) {
       });
     }
   } catch (error) {
-    console.error('Real-time data fetch error:', error);
+    logger.error('Real-time data fetch error:', error);
 
     monitor.recordApiCall('real-time-data', 'enhanced', false, 0);
     monitor.recordError('real-time-data', 'enhanced', error as Error);

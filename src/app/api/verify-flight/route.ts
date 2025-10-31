@@ -9,6 +9,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { flightValidationService } from '@/lib/flight-validation';
 import { withErrorTracking, addBreadcrumb } from '@/lib/error-tracking';
+import { logger } from '@/lib/logger';
 
 export const POST = withErrorTracking(async (request: NextRequest) => {
   const body = await request.json();
@@ -90,7 +91,7 @@ export async function GET(_request: NextRequest) {
       stats,
     });
   } catch (error) {
-    console.error('Flight verification status error:', error);
+    logger.error('Flight verification status error:', error);
     return NextResponse.json(
       { error: 'Internal server error' },
       { status: 500 }

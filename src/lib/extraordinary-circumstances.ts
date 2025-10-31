@@ -1,5 +1,6 @@
 // Enhanced extraordinary circumstances detection using Claude AI
 import Anthropic from '@anthropic-ai/sdk';
+import { logger } from '@/lib/logger';
 
 const anthropic = new Anthropic({
   apiKey: process.env.ANTHROPIC_API_KEY,
@@ -87,7 +88,7 @@ export async function analyzeExtraordinaryCircumstances(
 
     return result;
   } catch (error) {
-    console.error('Error analyzing extraordinary circumstances:', error);
+    logger.error('Error analyzing extraordinary circumstances:', error);
 
     // Fallback to keyword-based detection on error
     return fallbackKeywordDetection(delayReason);

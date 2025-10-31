@@ -1,3 +1,5 @@
+import { logger } from '@/lib/logger';
+
 import {
   getClaimByClaimId,
   getPaymentByPaymentId,
@@ -117,7 +119,7 @@ export async function calculateRefundAnalytics(
 
     return mockData;
   } catch (error) {
-    console.error('Error calculating refund analytics:', error);
+    logger.error('Error calculating refund analytics:', error);
     throw error;
   }
 }

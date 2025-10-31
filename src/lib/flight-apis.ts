@@ -1,3 +1,5 @@
+import { logger } from '@/lib/logger';
+
 // Flight API integration with AviationStack and FlightLabs
 // Using both APIs for improved data quality and reliability
 
@@ -80,7 +82,7 @@ class AviationStackAPI {
       const flight = data.data[0];
       return this.parseAviationStackData(flight);
     } catch (error) {
-      console.error('AviationStack API error:', error);
+      logger.error('AviationStack API error:', error);
       return null;
     }
   }
@@ -170,7 +172,7 @@ class FlightLabsAPI {
       const flight = data.data[0];
       return this.parseFlightLabsData(flight);
     } catch (error) {
-      console.error('FlightLabs API error:', error);
+      logger.error('FlightLabs API error:', error);
       return null;
     }
   }
@@ -252,7 +254,7 @@ export class FlightLookupService {
     if (flightLabsKey) {
       this.flightLabs = new FlightLabsAPI(flightLabsKey);
     } else {
-      console.warn('FlightLabs API key not provided, using AviationStack only');
+      logger.warn('FlightLabs API key not provided, using AviationStack only');
       this.flightLabs = null as any;
     }
   }

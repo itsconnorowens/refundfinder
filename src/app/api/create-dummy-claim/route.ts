@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import Airtable from 'airtable';
+import { logger } from '@/lib/logger';
 
 // Lazy initialization of Airtable to avoid build-time errors
 function getAirtableBase() {
@@ -87,7 +88,7 @@ export async function POST(request: NextRequest) {
     // Extract the Airtable record ID - this is our primary claim_id
     const airtableRecordId = records[0].id;
 
-    console.log(`✅ Successfully created claim: ${airtableRecordId}`);
+    logger.info('✅ Successfully created claim: ', { airtableRecordId: airtableRecordId });
 
     return NextResponse.json(
       {
@@ -97,21 +98,21 @@ export async function POST(request: NextRequest) {
       { status: 201 }
     );
   } catch (error) {
-    console.error('❌ Error creating claim in Airtable:', error);
+    logger.error('❌ Error creating claim in Airtable:', error);
 
     // Log detailed error information
     let errorMessage =
       'Failed to create claim. Please check server logs for details.';
 
     if (error instanceof Error) {
-      console.error('Error message:', error.message);
-      console.error('Error stack:', error.stack);
+      logger.error('Error message:', error.message);
+      logger.error('Error stack:', error.stack);
       errorMessage = error.message;
     }
 
     // Log any additional error properties (Airtable specific errors)
     if (typeof error === 'object' && error !== null) {
-      console.error('Full error object:', JSON.stringify(error, null, 2));
+      logger.error('Full error object:', JSON.stringify(error, null, 2));
     }
 
     return NextResponse.json(
@@ -144,7 +145,7 @@ export async function GET() {
       created_time: record.get('Created'),
     }));
 
-    console.log(`✅ Successfully retrieved ${claims.length} claims`);
+    logger.info('✅ Successfully retrieved  claims', { length: claims.length });
 
     return NextResponse.json(
       {
@@ -155,21 +156,21 @@ export async function GET() {
       { status: 200 }
     );
   } catch (error) {
-    console.error('❌ Error reading claims from Airtable:', error);
+    logger.error('❌ Error reading claims from Airtable:', error);
 
     // Log detailed error information
     let errorMessage =
       'Failed to retrieve claims. Please check server logs for details.';
 
     if (error instanceof Error) {
-      console.error('Error message:', error.message);
-      console.error('Error stack:', error.stack);
+      logger.error('Error message:', error.message);
+      logger.error('Error stack:', error.stack);
       errorMessage = error.message;
     }
 
     // Log any additional error properties (Airtable specific errors)
     if (typeof error === 'object' && error !== null) {
-      console.error('Full error object:', JSON.stringify(error, null, 2));
+      logger.error('Full error object:', JSON.stringify(error, null, 2));
     }
 
     return NextResponse.json(

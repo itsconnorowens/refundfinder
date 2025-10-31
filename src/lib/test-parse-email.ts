@@ -4,6 +4,7 @@
  */
 
 import { parseFlightEmail } from './parse-flight-email';
+import { logger } from '@/lib/logger';
 
 export const testEmailSamples = {
   united: `
@@ -61,13 +62,13 @@ export const testEmailSamples = {
  * Run tests with sample emails
  */
 export async function runParseTests() {
-  console.log('🧪 Testing Claude Flight Email Parser\n');
+  logger.info('🧪 Testing Claude Flight Email Parser\n');
   console.log('═'.repeat(60));
 
   const results: Record<string, any> = {};
 
   for (const [airline, email] of Object.entries(testEmailSamples)) {
-    console.log(`\n📧 Testing ${airline.toUpperCase()} email...`);
+    logger.info('\n📧 Testing  email...', { toUpperCase: airline.toUpperCase() });
     console.log('─'.repeat(60));
 
     const startTime = Date.now();
@@ -81,18 +82,18 @@ export async function runParseTests() {
     };
 
     if (result) {
-      console.log('✅ SUCCESS');
-      console.log(`⏱️  Duration: ${duration}ms`);
-      console.log('\nParsed Data:');
+      logger.info('✅ SUCCESS');
+      logger.info('⏱️  Duration: ms', { duration: duration });
+      logger.info('\nParsed Data:');
       console.log(JSON.stringify(result, null, 2));
     } else {
-      console.log('❌ FAILED - Could not parse email');
-      console.log(`⏱️  Duration: ${duration}ms`);
+      logger.info('❌ FAILED - Could not parse email');
+      logger.info('⏱️  Duration: ms', { duration: duration });
     }
   }
 
   console.log('\n' + '═'.repeat(60));
-  console.log('📊 SUMMARY\n');
+  logger.info('📊 SUMMARY\n');
 
   const successCount = Object.values(results).filter((r) => r.success).length;
   const totalCount = Object.keys(results).length;
@@ -102,7 +103,7 @@ export async function runParseTests() {
   console.log(
     `Success Rate: ${successCount}/${totalCount} (${Math.round((successCount / totalCount) * 100)}%)`
   );
-  console.log(`Average Duration: ${Math.round(avgDuration)}ms`);
+  logger.info('Average Duration: ms', { roundavgDuration: Math.round(avgDuration) });
   console.log('═'.repeat(60));
 
   return results;
@@ -112,9 +113,9 @@ export async function runParseTests() {
  * Test with a custom email string
  */
 export async function testCustomEmail(emailText: string) {
-  console.log('🧪 Testing custom email\n');
+  logger.info('🧪 Testing custom email\n');
   console.log('═'.repeat(60));
-  console.log('Email content:');
+  logger.info('Email content:');
   console.log(emailText.substring(0, 200) + '...\n');
   console.log('─'.repeat(60));
 
@@ -123,13 +124,13 @@ export async function testCustomEmail(emailText: string) {
   const duration = Date.now() - startTime;
 
   if (result) {
-    console.log('✅ SUCCESS');
-    console.log(`⏱️  Duration: ${duration}ms`);
-    console.log('\nParsed Data:');
+    logger.info('✅ SUCCESS');
+    logger.info('⏱️  Duration: ms', { duration: duration });
+    logger.info('\nParsed Data:');
     console.log(JSON.stringify(result, null, 2));
   } else {
-    console.log('❌ FAILED - Could not parse email');
-    console.log(`⏱️  Duration: ${duration}ms`);
+    logger.info('❌ FAILED - Could not parse email');
+    logger.info('⏱️  Duration: ms', { duration: duration });
   }
 
   console.log('═'.repeat(60));

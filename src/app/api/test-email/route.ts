@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { emailService } from '@/lib/email-service';
+import { logger } from '@/lib/logger';
 
 export async function POST(request: NextRequest) {
   try {
@@ -92,7 +93,7 @@ This is a test email from your Flghtly application.
       );
     }
   } catch (error: any) {
-    console.error('Error sending test email:', error);
+    logger.error('Error sending test email:', error);
     return NextResponse.json(
       {
         success: false,

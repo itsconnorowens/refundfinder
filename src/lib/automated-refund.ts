@@ -1,4 +1,5 @@
 import { processRefund } from './stripe-server';
+import { logger } from '@/lib/logger';
 import {
   getClaimByClaimId,
   getPaymentByPaymentId,
@@ -139,7 +140,7 @@ export async function analyzeRefundEligibility(
       return await analyzeAutomaticTriggers(claim, payment, submittedAt);
     }
   } catch (error) {
-    console.error('Error analyzing refund eligibility:', error);
+    logger.error('Error analyzing refund eligibility:', error);
     return {
       shouldRefund: false,
       trigger: null,
@@ -446,7 +447,7 @@ export async function processAutomaticRefund(
 
       await sendAutomaticRefundNotification(notificationData);
     } catch (emailError) {
-      console.error('Error sending refund notification:', emailError);
+      logger.error('Error sending refund notification:', emailError);
       // Don't fail the refund if email fails
     }
 
@@ -458,7 +459,7 @@ export async function processAutomaticRefund(
       decision,
     };
   } catch (error) {
-    console.error('Error processing automatic refund:', error);
+    logger.error('Error processing automatic refund:', error);
     return {
       success: false,
       error: error instanceof Error ? error.message : 'Unknown error',
@@ -516,7 +517,7 @@ export async function getClaimsNeedingAutomaticRefunds(): Promise<{
       ineligibleClaims: ineligibleClaims as any[],
     };
   } catch (error) {
-    console.error('Error getting claims needing automatic refunds:', error);
+    logger.error('Error getting claims needing automatic refunds:', error);
     throw error;
   }
 }

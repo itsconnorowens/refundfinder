@@ -1,3 +1,5 @@
+import { logger } from '@/lib/logger';
+
 /**
  * Email Queue System for Reliable Email Delivery
  * Handles retries, failures, and fallback mechanisms
@@ -68,7 +70,7 @@ class EmailQueue {
       this.queue.push(queuedEmail);
     }
 
-    console.log(`Email queued: ${emailId} (${priority} priority)`);
+    logger.info('Email queued: ${emailId} ( priority)', { priority: priority });
     return emailId;
   }
 
@@ -93,7 +95,7 @@ class EmailQueue {
           setTimeout(resolve, this.config.processingInterval)
         );
       } catch (error) {
-        console.error('Error in email queue processing:', error);
+        logger.error('Error in email queue processing:', error);
         await new Promise((resolve) =>
           setTimeout(resolve, this.config.processingInterval)
         );
@@ -133,7 +135,7 @@ class EmailQueue {
       email.attempts++;
       email.lastAttempt = new Date().toISOString();
 
-      console.log(`Processing email ${email.id} (attempt ${email.attempts})`);
+      logger.info('Processing email ${email.id} (attempt )', { attempts: email.attempts });
 
       // Import email service dynamically to avoid circular dependencies
       const { emailService, emailTemplates } = await import('./email-service');
@@ -224,18 +226,18 @@ class EmailQueue {
     email.attempts = 0;
     email.error = undefined;
 
-    console.log(`Email ${emailId} queued for retry`);
+    logger.info('Email  queued for retry', { emailId: emailId });
     return true;
   }
 
   clearSentEmails(): void {
     this.queue = this.queue.filter((email) => email.status !== 'sent');
-    console.log('Cleared sent emails from queue');
+    logger.info('Cleared sent emails from queue');
   }
 
   stopProcessing(): void {
     this.processing = false;
-    console.log('Email queue processing stopped');
+    logger.info('Email queue processing stopped');
   }
 }
 

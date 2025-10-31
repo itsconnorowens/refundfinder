@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { ClaimStatus } from '@/lib/airtable';
 import { updateClaimStatus as updateClaimStatusService } from '@/lib/claim-filing-service';
+import { logger } from '@/lib/logger';
 
 export async function PUT(
   request: NextRequest,
@@ -36,7 +37,7 @@ export async function PUT(
       message: 'Claim status updated successfully',
     });
   } catch (error) {
-    console.error('Error updating claim status:', error);
+    logger.error('Error updating claim status:', error);
     return NextResponse.json(
       { error: 'Failed to update claim status' },
       { status: 500 }

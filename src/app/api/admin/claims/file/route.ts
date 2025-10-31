@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { processAutomaticClaimFiling } from '@/lib/claim-filing-service';
+import { logger } from '@/lib/logger';
 
 export async function POST(request: NextRequest) {
   try {
@@ -15,7 +16,7 @@ export async function POST(request: NextRequest) {
       message: `Processed ${results.length} claims for filing`,
     });
   } catch (error) {
-    console.error('Error processing automatic claim filing:', error);
+    logger.error('Error processing automatic claim filing:', error);
     return NextResponse.json(
       { error: 'Failed to process automatic filing' },
       { status: 500 }
@@ -34,7 +35,7 @@ export async function GET() {
       message: `Processed ${results.length} claims for filing`,
     });
   } catch (error) {
-    console.error('Error processing automatic claim filing:', error);
+    logger.error('Error processing automatic claim filing:', error);
     return NextResponse.json(
       { error: 'Failed to process automatic filing' },
       { status: 500 }

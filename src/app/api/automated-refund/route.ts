@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { logger } from '@/lib/logger';
 import {
   processAutomaticRefund,
   analyzeRefundEligibility,
@@ -48,7 +49,7 @@ export async function POST(request: NextRequest) {
       );
     }
   } catch (error) {
-    console.error('Error processing automatic refund:', error);
+    logger.error('Error processing automatic refund:', error);
     return NextResponse.json(
       { error: 'Internal server error' },
       { status: 500 }
@@ -80,7 +81,7 @@ export async function GET(request: NextRequest) {
       decision,
     });
   } catch (error) {
-    console.error('Error analyzing refund eligibility:', error);
+    logger.error('Error analyzing refund eligibility:', error);
     return NextResponse.json(
       { error: 'Internal server error' },
       { status: 500 }
@@ -123,7 +124,7 @@ export async function PUT(request: NextRequest) {
       ...result,
     });
   } catch (error) {
-    console.error('Error processing batch refunds:', error);
+    logger.error('Error processing batch refunds:', error);
     return NextResponse.json(
       { error: 'Internal server error' },
       { status: 500 }

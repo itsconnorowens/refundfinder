@@ -5,6 +5,7 @@
 
 import { FlightData } from './flight-apis';
 import { calculateFlightDistance } from './distance-calculator';
+import { logger } from '@/lib/logger';
 
 export interface GroundingStatus {
   isGrounded: boolean;
@@ -133,7 +134,7 @@ export class RealTimeGroundingService {
         };
       }
     } catch (error) {
-      console.warn('Free API failed, falling back to web scraping', error);
+      logger.warn('Free API failed, falling back to web scraping', { error: error });
     }
 
     // 3. Try web scraping (minimal cost)
@@ -149,7 +150,7 @@ export class RealTimeGroundingService {
         };
       }
     } catch (error) {
-      console.warn('Web scraping failed, falling back to paid API', error);
+      logger.warn('Web scraping failed, falling back to paid API', { error: error });
     }
 
     // 4. Fall back to paid API (only when necessary)
@@ -355,7 +356,7 @@ export class RealTimeGroundingService {
         };
       }
     } catch (error) {
-      console.warn('Free weather API failed', error);
+      logger.warn('Free weather API failed', { error: error });
     }
 
     // Fall back to paid weather API

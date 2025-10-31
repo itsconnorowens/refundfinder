@@ -8,6 +8,7 @@ import { getAirlineConfig, AirlineConfig } from './airline-config';
 import { generateDocumentSubmission } from './document-generator';
 import { emailService, EmailResult } from './email-service';
 import { sendClaimFiledNotification } from './email-service';
+import { logger } from '@/lib/logger';
 
 export interface AirlineSubmissionResult {
   success: boolean;
@@ -118,7 +119,7 @@ export async function submitClaimToAirline(
           expectedResponseTime: airlineConfig.expectedResponseTime,
         });
       } catch (emailError) {
-        console.error('Error sending claim filed notification:', emailError);
+        logger.error('Error sending claim filed notification:', emailError);
         // Don't fail the submission if email fails
       }
 
@@ -129,7 +130,7 @@ export async function submitClaimToAirline(
 
     return result;
   } catch (error) {
-    console.error('Error submitting claim to airline:', error);
+    logger.error('Error submitting claim to airline:', error);
     return {
       success: false,
       error: 'Failed to submit claim to airline',
@@ -212,7 +213,7 @@ async function submitViaEmail(
       };
     }
   } catch (error) {
-    console.error('Error submitting via email:', error);
+    logger.error('Error submitting via email:', error);
     return {
       success: false,
       error: 'Email submission failed',
@@ -253,7 +254,7 @@ async function submitViaWebForm(
       method: 'web_form',
     };
   } catch (error) {
-    console.error('Error preparing web form submission:', error);
+    logger.error('Error preparing web form submission:', error);
     return {
       success: false,
       error: 'Web form preparation failed',
@@ -294,7 +295,7 @@ async function submitViaPostal(
       method: 'postal',
     };
   } catch (error) {
-    console.error('Error preparing postal submission:', error);
+    logger.error('Error preparing postal submission:', error);
     return {
       success: false,
       error: 'Postal submission preparation failed',
@@ -336,7 +337,7 @@ async function sendAirlineClaimEmail(
 
     return result;
   } catch (error) {
-    console.error('Error sending airline claim email:', error);
+    logger.error('Error sending airline claim email:', error);
     return {
       success: false,
       error: 'Failed to send email to airline',
@@ -396,7 +397,7 @@ export async function getClaimsReadyForFiling(): Promise<string[]> {
     // For now, return empty array - this will be implemented when we enhance the cron job
     return [];
   } catch (error) {
-    console.error('Error getting claims ready for filing:', error);
+    logger.error('Error getting claims ready for filing:', error);
     return [];
   }
 }

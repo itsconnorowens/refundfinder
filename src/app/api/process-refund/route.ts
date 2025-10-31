@@ -8,6 +8,7 @@ import {
   createRefund as createRefundRecord,
 } from '@/lib/airtable';
 import { withErrorTracking, addBreadcrumb } from '@/lib/error-tracking';
+import { logger } from '@/lib/logger';
 
 export const POST = withErrorTracking(async (request: NextRequest) => {
   const body = await request.json();
@@ -190,7 +191,7 @@ export async function GET(request: NextRequest) {
         : `Claim status '${claimStatus}' is not eligible for refund`,
     });
   } catch (error) {
-    console.error('Error checking refund eligibility:', error);
+    logger.error('Error checking refund eligibility:', error);
     return NextResponse.json(
       { error: 'Failed to check refund eligibility' },
       { status: 500 }

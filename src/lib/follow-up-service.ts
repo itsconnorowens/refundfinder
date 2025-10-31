@@ -12,6 +12,7 @@ import {
 import { getAirlineConfig } from './airline-config';
 import { emailService } from './email-service';
 import { sendStatusUpdateNotification } from './email-service';
+import { logger } from '@/lib/logger';
 
 export interface FollowUpSchedule {
   claimId: string;
@@ -236,7 +237,7 @@ async function sendFollowUpEmail(
       };
     }
   } catch (error) {
-    console.error('Error sending follow-up email:', error);
+    logger.error('Error sending follow-up email:', error);
     return {
       success: false,
       followUpId: `followup-${Date.now()}`,
@@ -329,7 +330,7 @@ export async function processAutomatedFollowUps(): Promise<
               ],
             });
           } catch (emailError) {
-            console.error('Error sending customer notification:', emailError);
+            logger.error('Error sending customer notification:', emailError);
             // Don't fail the follow-up if customer email fails
           }
         }
@@ -359,7 +360,7 @@ export async function processAutomatedFollowUps(): Promise<
 
     return results;
   } catch (error) {
-    console.error('Error processing automated follow-ups:', error);
+    logger.error('Error processing automated follow-ups:', error);
     return [];
   }
 }
@@ -465,7 +466,7 @@ export async function getFollowUpStats(): Promise<{
 
     return stats;
   } catch (error) {
-    console.error('Error getting follow-up stats:', error);
+    logger.error('Error getting follow-up stats:', error);
     return {
       totalFollowUps: 0,
       pendingFollowUps: 0,

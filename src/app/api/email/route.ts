@@ -6,6 +6,7 @@ import {
   emailQueue,
 } from '@/lib/email-queue';
 import { emailService } from '@/lib/email-service';
+import { logger } from '@/lib/logger';
 
 export async function GET(request: NextRequest) {
   try {
@@ -61,7 +62,7 @@ export async function GET(request: NextRequest) {
         });
     }
   } catch (error) {
-    console.error('Error in email management API:', error);
+    logger.error('Error in email management API:', error);
     return NextResponse.json(
       { error: 'Internal server error' },
       { status: 500 }
@@ -109,7 +110,7 @@ export async function POST(request: NextRequest) {
         return NextResponse.json({ error: 'Invalid action' }, { status: 400 });
     }
   } catch (error) {
-    console.error('Error in email management POST:', error);
+    logger.error('Error in email management POST:', error);
     return NextResponse.json(
       { error: 'Internal server error' },
       { status: 500 }

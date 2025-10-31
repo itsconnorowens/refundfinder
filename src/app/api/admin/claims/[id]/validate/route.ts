@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { validateClaimForFiling } from '@/lib/claim-filing-service';
+import { logger } from '@/lib/logger';
 
 export async function POST(
   _request: NextRequest,
@@ -14,7 +15,7 @@ export async function POST(
       data: validation,
     });
   } catch (error) {
-    console.error('Error validating claim:', error);
+    logger.error('Error validating claim:', error);
     return NextResponse.json(
       { error: 'Failed to validate claim' },
       { status: 500 }

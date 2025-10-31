@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { getClaimsReadyToFile } from '@/lib/airtable';
+import { logger } from '@/lib/logger';
 
 export async function GET() {
   try {
@@ -14,7 +15,7 @@ export async function GET() {
       data: { claims },
     });
   } catch (error) {
-    console.error('Error fetching claims ready to file:', error);
+    logger.error('Error fetching claims ready to file:', error);
     return NextResponse.json(
       { error: 'Failed to fetch claims ready to file' },
       { status: 500 }

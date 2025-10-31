@@ -19,6 +19,7 @@ import {
   AirlineConfig,
 } from './airline-config';
 import { generateDocumentSubmission } from './document-generator';
+import { logger } from '@/lib/logger';
 import {
   sendClaimFiledNotification,
   sendStatusUpdateNotification,
@@ -142,7 +143,7 @@ export async function validateClaimForFiling(
       error: errors.length > 0 ? errors[0] : undefined,
     };
   } catch (error) {
-    console.error('Error validating claim for filing:', error);
+    logger.error('Error validating claim for filing:', error);
     return {
       success: false,
       isValid: false,
@@ -221,7 +222,7 @@ export async function generateAirlineSubmission(
       airlineConfig,
     };
   } catch (error) {
-    console.error('Error generating airline submission:', error);
+    logger.error('Error generating airline submission:', error);
     return {
       success: false,
       error: 'Failed to generate submission materials',
@@ -262,13 +263,13 @@ export async function markClaimAsFiled(
         filingMethod,
       });
     } catch (emailError) {
-      console.error('Error sending claim filed notification:', emailError);
+      logger.error('Error sending claim filed notification:', emailError);
       // Don't fail the function if email fails
     }
 
     return true;
   } catch (error) {
-    console.error('Error marking claim as filed:', error);
+    logger.error('Error marking claim as filed:', error);
     return false;
   }
 }
@@ -329,13 +330,13 @@ export async function updateClaimStatus(
         notes,
       });
     } catch (emailError) {
-      console.error('Error sending status update notification:', emailError);
+      logger.error('Error sending status update notification:', emailError);
       // Don't fail the function if email fails
     }
 
     return true;
   } catch (error) {
-    console.error('Error updating claim status:', error);
+    logger.error('Error updating claim status:', error);
     return false;
   }
 }
@@ -367,7 +368,7 @@ export async function getAllClaimsReadyToFile(): Promise<any[]> {
       ...record.fields,
     }));
   } catch (error) {
-    console.error('Error fetching claims ready to file:', error);
+    logger.error('Error fetching claims ready to file:', error);
     return [];
   }
 }
@@ -383,7 +384,7 @@ export async function getClaimsNeedingFollowUp(): Promise<any[]> {
       ...record.fields,
     }));
   } catch (error) {
-    console.error('Error fetching claims needing follow-up:', error);
+    logger.error('Error fetching claims needing follow-up:', error);
     return [];
   }
 }
@@ -412,7 +413,7 @@ export async function scheduleFollowUp(
 
     return true;
   } catch (error) {
-    console.error('Error scheduling follow-up:', error);
+    logger.error('Error scheduling follow-up:', error);
     return false;
   }
 }
@@ -450,7 +451,7 @@ export async function processAutomaticClaimPreparation(
       'Automatically prepared for filing'
     );
 
-    console.log(`Claim ${claimId} automatically prepared for filing`);
+    logger.info('Claim  automatically prepared for filing', { claimId: claimId });
     return true;
   } catch (error) {
     console.error(
@@ -519,7 +520,7 @@ export async function processAutomaticClaimFiling(
     }
 
     if (claimsToProcess.length === 0) {
-      console.log('No claims ready for filing');
+      logger.info('No claims ready for filing');
       return [];
     }
 
@@ -534,7 +535,7 @@ export async function processAutomaticClaimFiling(
     const successful = results.filter((r) => r.result.success);
     const failed = results.filter((r) => !r.result.success);
 
-    console.log(`Successfully filed ${successful.length} claims`);
+    logger.info('Successfully filed  claims', { length: successful.length });
     if (failed.length > 0) {
       console.log(`Failed to file ${failed.length} claims:`, failed);
     }
@@ -545,7 +546,7 @@ export async function processAutomaticClaimFiling(
       error: r.result.error,
     }));
   } catch (error) {
-    console.error('Error processing automatic claim filing:', error);
+    logger.error('Error processing automatic claim filing:', error);
     return [];
   }
 }
@@ -586,7 +587,7 @@ export async function processClaimFollowUps(): Promise<
             // Send follow-up email to airline
             action = 'sent_follow_up_email';
             // This would integrate with the follow-up email system
-            console.log(`Sending follow-up for claim ${claim.claimId}`);
+            logger.info('Sending follow-up for claim ', { claimId: claim.claimId });
           }
         }
 
@@ -610,7 +611,7 @@ export async function processClaimFollowUps(): Promise<
 
     return results;
   } catch (error) {
-    console.error('Error processing claim follow-ups:', error);
+    logger.error('Error processing claim follow-ups:', error);
     return [];
   }
 }
@@ -665,7 +666,7 @@ export async function getClaimFilingStats(): Promise<{
       needingFollowUp: needingFollowUp.length,
     };
   } catch (error) {
-    console.error('Error getting claim filing stats:', error);
+    logger.error('Error getting claim filing stats:', error);
     return {
       total: 0,
       byStatus: {} as Record<ClaimStatus, number>,

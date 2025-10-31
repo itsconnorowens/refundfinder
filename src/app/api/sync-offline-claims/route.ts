@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { logger } from '@/lib/logger';
 import {
   getPendingClaims,
   markClaimAsSynced,
@@ -80,7 +81,7 @@ export async function POST(_request: NextRequest) {
       errors: errors.length > 0 ? errors : undefined,
     });
   } catch (error) {
-    console.error('Error in sync-offline-claims endpoint:', error);
+    logger.error('Error in sync-offline-claims endpoint:', error);
     return NextResponse.json(
       {
         success: false,

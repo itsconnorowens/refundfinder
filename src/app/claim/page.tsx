@@ -5,6 +5,7 @@ import { Suspense, useEffect, useState, useRef } from 'react';
 import posthog from 'posthog-js';
 import ClaimSubmissionForm from '@/components/ClaimSubmissionForm';
 import { FormErrorBoundary } from '@/components/FormErrorBoundary';
+import { getAttributionProperties } from '@/lib/marketing-attribution';
 
 function ClaimPageContent() {
   const searchParams = useSearchParams();
@@ -55,6 +56,7 @@ function ClaimPageContent() {
       posthog.capture('claim_form_started', {
         has_prefill: hasPrefill,
         source: hasPrefill ? 'eligibility_result' : 'direct_link',
+        ...getAttributionProperties(), // Include marketing attribution
       });
     }
   }, []);
@@ -69,6 +71,7 @@ function ClaimPageContent() {
           last_step_reached: lastStepReached,
           time_on_form_seconds: Math.round(timeOnForm),
           had_errors: hadErrors,
+          ...getAttributionProperties(), // Include marketing attribution
         });
       }
     };

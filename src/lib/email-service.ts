@@ -1,3 +1,5 @@
+import { logger } from '@/lib/logger';
+
 /**
  * Email Service with Multiple Providers and Fallbacks
  * Supports SendGrid, Resend, Gmail SMTP, and console logging
@@ -114,7 +116,7 @@ class EmailService {
       try {
         const result = await this.sendWithProvider(provider, emailData);
         if (result.success) {
-          console.log(`Email sent successfully via ${provider.provider}`);
+          logger.info('Email sent successfully via ', { provider: provider.provider });
           return result;
         }
       } catch (error) {
@@ -263,18 +265,18 @@ class EmailService {
     template: EmailTemplate
   ): Promise<EmailResult> {
     console.log('='.repeat(80));
-    console.log('📧 EMAIL (Console Fallback)');
+    logger.info('📧 EMAIL (Console Fallback)');
     console.log('='.repeat(80));
-    console.log(`To: ${emailData.to}`);
+    logger.info('To: ', { to: emailData.to });
     console.log(
       `From: ${provider.fromName || 'Flghtly'} <${provider.fromEmail || 'claims@flghtly.com'}>`
     );
-    console.log(`Subject: ${template.subject}`);
+    logger.info('Subject: ', { subject: template.subject });
     console.log('-'.repeat(40));
-    console.log('HTML Content:');
+    logger.info('HTML Content:');
     console.log(template.html);
     console.log('-'.repeat(40));
-    console.log('Text Content:');
+    logger.info('Text Content:');
     console.log(template.text);
     console.log('='.repeat(80));
 

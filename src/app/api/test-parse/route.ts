@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { runParseTests, testCustomEmail } from '@/lib/test-parse-email';
 import { isAnthropicConfigured } from '@/lib/parse-flight-email';
+import { logger } from '@/lib/logger';
 
 /**
  * GET /api/test-parse
@@ -44,7 +45,7 @@ export async function GET() {
       results,
     });
   } catch (error) {
-    console.error('Error running parse tests:', error);
+    logger.error('Error running parse tests:', error);
     return NextResponse.json(
       {
         success: false,
@@ -108,7 +109,7 @@ export async function POST(request: Request) {
         : 'Could not parse flight details from the provided email',
     });
   } catch (error) {
-    console.error('Error testing custom email:', error);
+    logger.error('Error testing custom email:', error);
     return NextResponse.json(
       {
         success: false,

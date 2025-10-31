@@ -2,6 +2,7 @@
 
 import { motion } from 'framer-motion';
 import { CheckIcon, MoneyIcon, ClockIcon, UsersIcon } from './icons';
+import { useCurrency } from '../contexts/CurrencyContext';
 
 interface MetricCardProps {
   number: string;
@@ -68,6 +69,26 @@ const MetricCard: React.FC<MetricCardProps> = ({
 };
 
 export const TrustMetrics: React.FC = () => {
+  const { currency } = useCurrency();
+
+  // Hard-coded region-specific metrics
+  const metrics = {
+    EUR: {
+      totalRecovered: '€147,000',
+      monthlyTrend: '+€23,000 this month'
+    },
+    USD: {
+      totalRecovered: '$158,760',
+      monthlyTrend: '+$25,000 this month'
+    },
+    GBP: {
+      totalRecovered: '£125,000',
+      monthlyTrend: '+£20,000 this month'
+    }
+  };
+
+  const currentMetrics = metrics[currency];
+
   return (
     <motion.div
       className="bg-white rounded-lg shadow-sm p-6 mb-8"
@@ -96,30 +117,30 @@ export const TrustMetrics: React.FC = () => {
           Join thousands of successful travelers who've recovered their compensation
         </motion.p>
       </div>
-      
+
       <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
-        <MetricCard 
+        <MetricCard
           number="320+"
           label="Successful Claims"
           icon={UsersIcon}
           trend="+12% this month"
           delay={0}
         />
-        <MetricCard 
-          number="€147,000"
+        <MetricCard
+          number={currentMetrics.totalRecovered}
           label="Total Recovered"
           icon={MoneyIcon}
-          trend="+€23,000 this month"
+          trend={currentMetrics.monthlyTrend}
           delay={0.1}
         />
-        <MetricCard 
+        <MetricCard
           number="94%"
           label="Success Rate"
           icon={CheckIcon}
           trend="+2% this month"
           delay={0.2}
         />
-        <MetricCard 
+        <MetricCard
           number="3.2 weeks"
           label="Avg. Processing"
           icon={ClockIcon}
