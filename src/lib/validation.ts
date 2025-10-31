@@ -30,6 +30,12 @@ export function validateFlightDate(value: string): { valid: boolean; error?: str
   if (!value) return { valid: false, error: 'Flight date is required' };
 
   const date = new Date(value);
+
+  // Check for invalid date
+  if (isNaN(date.getTime())) {
+    return { valid: false, error: 'Please enter a valid date' };
+  }
+
   const now = new Date();
   const sixYearsAgo = new Date();
   sixYearsAgo.setFullYear(now.getFullYear() - 6);
