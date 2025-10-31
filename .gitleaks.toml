@@ -1,0 +1,12 @@
+# Gitleaks configuration to ignore build artifacts and Next.js outputs
+
+[allowlist]
+  description = "Ignore build artifacts"
+  paths = [
+    "^\\.next/",
+    "^dist/",
+    "^build/",
+    "^out/"
+  ]
+
+

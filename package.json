@@ -17,7 +17,7 @@
     "test:ui": "vitest --ui",
     "test:e2e": "playwright test",
     "test:e2e:ui": "playwright test --ui",
-    "scan:secrets": "gitleaks detect --redact --verbose --no-git",
+    "scan:secrets": "gitleaks detect --redact --verbose --no-git --config .gitleaks.toml",
     "quality-check": "npm run lint && npm run type-check && npm test && npm run build",
     "playwright:install": "playwright install chromium",
     "import:airline-data": "node scripts/import-airline-data.js",
