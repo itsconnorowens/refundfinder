@@ -501,6 +501,7 @@ export class CancellationCompensationCalculator {
       conditions,
       additionalRights: [
         'Right to care (meals, refreshments, accommodation)',
+        'Right to choose between refund and re-routing',
         'Right to assistance',
       ],
     };

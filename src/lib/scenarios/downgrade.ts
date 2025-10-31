@@ -91,11 +91,12 @@ export const cabinClassPatterns = {
  * Fare difference patterns
  */
 export const fareDifferencePatterns = [
-  /fare\s+difference\s+of\s+\$?(\d+)/i,
-  /price\s+difference\s+of\s+\$?(\d+)/i,
-  /refund\s+of\s+\$?(\d+)/i,
-  /difference\s+of\s+\$?(\d+)/i,
-  /(\d+)\s+less/i,
+  /fare\s+difference\s+of\s+[€£$]?([\d,]+)/i,
+  /price\s+difference\s+of\s+[€£$]?([\d,]+)/i,
+  /refund\s+(?:the\s+)?fare\s+difference\s+of\s+[€£$]?([\d,]+)/i,
+  /refund\s+of\s+[€£$]?([\d,]+)/i,
+  /difference\s+of\s+[€£$]?([\d,]+)/i,
+  /([\d,]+)\s+less/i,
 ];
 
 /**
@@ -214,8 +215,18 @@ export class DowngradeDetector {
     for (const pattern of fareDifferencePatterns) {
       const match = content.match(pattern);
       if (match) {
-        const amount = parseInt(match[1]);
-        const currency = content.includes('$') ? 'USD' : 'EUR';
+        // Remove commas from the number string before parsing
+        const amount = parseInt(match[1].replace(/,/g, ''));
+
+        // Detect currency from symbols in the content
+        let currency = 'EUR'; // Default
+        if (content.includes('$') || content.toLowerCase().includes('usd')) {
+          currency = 'USD';
+        } else if (content.includes('£') || content.toLowerCase().includes('gbp')) {
+          currency = 'GBP';
+        } else if (content.includes('€') || content.toLowerCase().includes('eur')) {
+          currency = 'EUR';
+        }
 
         return { amount, currency };
       }

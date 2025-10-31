@@ -492,7 +492,7 @@ export class ComprehensiveCompensationCalculator {
     if (scenarioResult.scenarios.deniedBoarding && flightData) {
       const deniedBoardingResult =
         await deniedBoardingService.processDeniedBoarding(
-          '', // We already have the data
+          emailContent,
           flightData,
           regulation
         );
@@ -512,7 +512,7 @@ export class ComprehensiveCompensationCalculator {
     // Calculate downgrade compensation
     if (scenarioResult.scenarios.downgrade && flightData) {
       const downgradeResult = await downgradeService.processDowngrade(
-        '', // We already have the data
+        emailContent,
         flightData,
         regulation
       );

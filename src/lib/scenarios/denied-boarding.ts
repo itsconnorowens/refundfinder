@@ -99,7 +99,7 @@ export const involuntaryPatterns = [
  * Overbooking detection patterns
  */
 export const overbookingPatterns = [
-  /overbooked/i,
+  /overbook(?:ed|ing)?/i,
   /oversold/i,
   /more\s+passengers\s+than\s+seats/i,
   /too\s+many\s+passengers/i,
