@@ -3,6 +3,7 @@
  */
 
 import { NextResponse } from 'next/server';
+import { ErrorCode, getErrorDetails } from './error-codes';
 
 export interface ApiErrorResponse {
   error: string;
@@ -31,15 +32,19 @@ export function missingFieldsResponse(fields: string[], status = 400) {
   };
 
   const friendlyFields = fields.map(f => fieldLabels[f] || f);
+  const errorCode = ErrorCode.MISSING_REQUIRED_FIELDS;
+  const errorDetails = getErrorDetails(errorCode);
 
   return NextResponse.json(
     {
-      error: 'Missing required fields',
-      message: fields.length === 1
-        ? `Please provide: ${friendlyFields[0]}`
-        : `Please provide the following fields: ${friendlyFields.join(', ')}`,
-      missingFields: fields,
-      status,
+      success: false,
+      errorCode,
+      errorDetails: {
+        ...errorDetails,
+        userMessage: fields.length === 1
+          ? `Please provide: ${friendlyFields[0]}`
+          : `Please provide the following fields: ${friendlyFields.join(', ')}`,
+      },
     },
     { status }
   );
@@ -53,13 +58,17 @@ export function validationErrorResponse(
   reason: string,
   status = 400
 ) {
+  const errorCode = ErrorCode.VALIDATION_ERROR;
+  const errorDetails = getErrorDetails(errorCode);
+
   return NextResponse.json(
     {
-      error: 'Validation error',
-      message: reason,
-      field,
-      validation: reason,
-      status,
+      success: false,
+      errorCode,
+      errorDetails: {
+        ...errorDetails,
+        userMessage: reason,
+      },
     },
     { status }
   );
@@ -70,13 +79,17 @@ export function validationErrorResponse(
  */
 export function rateLimitResponse(retryAfter: number, remaining = 0) {
   const minutes = Math.ceil(retryAfter / 60);
+  const errorCode = ErrorCode.RATE_LIMIT_EXCEEDED;
+  const errorDetails = getErrorDetails(errorCode);
 
   return NextResponse.json(
     {
-      error: 'Rate limit exceeded',
-      message: `Too many requests. Please try again in ${minutes} minute${minutes > 1 ? 's' : ''}.`,
-      retryAfter,
-      status: 429,
+      success: false,
+      errorCode,
+      errorDetails: {
+        ...errorDetails,
+        userMessage: `Too many requests. Please try again in ${minutes} minute${minutes > 1 ? 's' : ''}.`,
+      },
     },
     {
       status: 429,
@@ -95,11 +108,17 @@ export function serverErrorResponse(
   message = 'An internal server error occurred',
   status = 500
 ) {
+  const errorCode = ErrorCode.INTERNAL_SERVER_ERROR;
+  const errorDetails = getErrorDetails(errorCode);
+
   return NextResponse.json(
     {
-      error: 'Server error',
-      message,
-      status,
+      success: false,
+      errorCode,
+      errorDetails: {
+        ...errorDetails,
+        userMessage: message,
+      },
     },
     { status }
   );

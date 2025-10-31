@@ -404,25 +404,30 @@ export function withErrorTracking<TContext = never>(
         },
       });
 
-      // Determine status code and error message
+      // Import error code utilities dynamically to avoid circular deps
+      const { getErrorCodeFromStatus, getErrorDetails } = await import('./error-codes');
+
+      // Determine status code and error code
       let statusCode = 500;
-      let errorType = 'Internal server error';
-      let errorMessage = 'An unexpected error occurred';
+      let errorCode;
 
       if (error instanceof AppError) {
         statusCode = error.statusCode;
-        errorType = error.name;
-        errorMessage = error.message;
+        errorCode = getErrorCodeFromStatus(statusCode);
       } else if (error instanceof Error) {
-        errorMessage = error.message;
+        errorCode = getErrorCodeFromStatus(statusCode);
+      } else {
+        errorCode = getErrorCodeFromStatus(500);
       }
 
-      // Return error response
+      const errorDetails = getErrorDetails(errorCode);
+
+      // Return error response in the format expected by the frontend API client
       return NextResponse.json(
         {
-          error: errorType,
-          message: errorMessage,
-          ...(error instanceof AppError && error.context && { details: error.context }),
+          success: false,
+          errorCode,
+          errorDetails,
         },
         { status: statusCode }
       );

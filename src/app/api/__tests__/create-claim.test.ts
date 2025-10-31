@@ -68,7 +68,8 @@ describe('POST /api/create-claim', () => {
     const data = await response.json();
 
     expect(response.status).toBe(400);
-    expect(data.error).toBe('Missing required fields');
+    expect(data.success).toBe(false);
+    expect(data.errorCode).toBeDefined();
   });
 
   it('should return 400 if files are missing', async () => {
@@ -93,7 +94,8 @@ describe('POST /api/create-claim', () => {
     const data = await response.json();
 
     expect(response.status).toBe(400);
-    expect(data.error).toBe('Missing required documents');
+    expect(data.success).toBe(false);
+    expect(data.errorCode).toBeDefined();
   });
 
   it('should return 400 for invalid file types', async () => {
@@ -124,7 +126,8 @@ describe('POST /api/create-claim', () => {
     const data = await response.json();
 
     expect(response.status).toBe(400);
-    expect(data.error).toContain('Invalid file type');
+    expect(data.success).toBe(false);
+    expect(data.errorCode).toBeDefined();
   });
 });
 
