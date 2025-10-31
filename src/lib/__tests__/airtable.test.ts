@@ -13,7 +13,8 @@ describe('Airtable Configuration', () => {
     expect(tables).toContain('CLAIMS');
     expect(tables).toContain('PAYMENTS');
     expect(tables).toContain('REFUNDS');
-    expect(tables).toHaveLength(3);
+    expect(tables).toContain('ELIGIBILITY_CHECKS');
+    expect(tables).toHaveLength(4);
   });
 });
 

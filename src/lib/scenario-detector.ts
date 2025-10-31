@@ -446,7 +446,7 @@ export class ComprehensiveCompensationCalculator {
    */
   async calculateComprehensiveCompensation(
     scenarioResult: ScenarioDetectionResult,
-    flightData: FlightData,
+    flightData: FlightData | null,
     regulation: string
   ): Promise<ComprehensiveCompensationResult> {
     const compensation: ComprehensiveCompensationResult['compensation'] = {};
@@ -468,7 +468,7 @@ export class ComprehensiveCompensationCalculator {
     }
 
     // Calculate cancellation compensation
-    if (scenarioResult.scenarios.cancellation) {
+    if (scenarioResult.scenarios.cancellation && flightData) {
       const cancellationResult = await cancellationService.processCancellation(
         '', // We already have the data
         flightData,
@@ -488,7 +488,7 @@ export class ComprehensiveCompensationCalculator {
     }
 
     // Calculate denied boarding compensation
-    if (scenarioResult.scenarios.deniedBoarding) {
+    if (scenarioResult.scenarios.deniedBoarding && flightData) {
       const deniedBoardingResult =
         await deniedBoardingService.processDeniedBoarding(
           '', // We already have the data
@@ -509,7 +509,7 @@ export class ComprehensiveCompensationCalculator {
     }
 
     // Calculate downgrade compensation
-    if (scenarioResult.scenarios.downgrade) {
+    if (scenarioResult.scenarios.downgrade && flightData) {
       const downgradeResult = await downgradeService.processDowngrade(
         '', // We already have the data
         flightData,
@@ -543,9 +543,14 @@ export class ComprehensiveCompensationCalculator {
    */
   private calculateDelayCompensation(
     delayData: DelayData,
-    flightData: FlightData,
-    _regulation: string
+    flightData: FlightData | null,
+    regulation: string
   ): { amount: number; currency: string; rights: string[] } {
+    // Check if regulation is supported
+    if (regulation !== 'EU261' && regulation !== 'US DOT') {
+      return { amount: 0, currency: 'EUR', rights: [] };
+    }
+
     // Only compensate for delays > 3 hours (EU261 threshold)
     if (delayData.delayMinutes < 180) {
       return { amount: 0, currency: 'EUR', rights: [] };
@@ -554,6 +559,19 @@ export class ComprehensiveCompensationCalculator {
     // Check for extraordinary circumstances
     if (delayData.extraordinaryCircumstances) {
       return { amount: 0, currency: 'EUR', rights: [] };
+    }
+
+    // Handle null flight data gracefully
+    if (!flightData || !flightData.departureAirport || !flightData.arrivalAirport) {
+      // Return default compensation for medium-haul if we can't determine distance
+      return {
+        amount: 400,
+        currency: 'EUR',
+        rights: [
+          'Right to care (meals, refreshments, accommodation)',
+          'Right to assistance (phone calls, etc.)',
+        ],
+      };
     }
 
     // Calculate distance between airports
@@ -599,7 +617,7 @@ export class ScenarioService {
    */
   async processEmailContent(
     emailContent: string,
-    flightData: FlightData,
+    flightData: FlightData | null,
     regulation: string
   ): Promise<{
     scenarioResult: ScenarioDetectionResult;
