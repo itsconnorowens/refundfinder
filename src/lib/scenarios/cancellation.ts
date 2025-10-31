@@ -221,12 +221,38 @@ export class CancellationDetector {
     const departureTimeMatch = content.match(/departure.*?(\d{1,2}:\d{2})/i);
     const arrivalTimeMatch = content.match(/arrival.*?(\d{1,2}:\d{2})/i);
 
+    // Extract delay hours from email text
+    const delayHours = this.extractDelayHours(content);
+
     return {
       flightNumber,
       departureTime: departureTimeMatch?.[1] || 'TBD',
       arrivalTime: arrivalTimeMatch?.[1] || 'TBD',
-      delayHours: 0, // Would need to calculate based on original vs new times
+      delayHours,
     };
+  }
+
+  /**
+   * Extract delay hours from email content
+   */
+  private extractDelayHours(content: string): number {
+    // Patterns to match delay mentions
+    const delayPatterns = [
+      /(\d+)[\s-]hour\s+delay/i,                    // "4-hour delay" or "4 hour delay"
+      /delay\s+of\s+(\d+)\s+hours?/i,               // "delay of 4 hours"
+      /delayed?\s+by\s+(\d+)\s+hours?/i,            // "delayed by 4 hours"
+      /providing\s+a\s+(\d+)[\s-]hour\s+delay/i,    // "providing a 4-hour delay"
+      /arrive\s+(\d+)\s+hours?\s+late/i,            // "arrive 4 hours late"
+    ];
+
+    for (const pattern of delayPatterns) {
+      const match = content.match(pattern);
+      if (match && match[1]) {
+        return parseInt(match[1], 10);
+      }
+    }
+
+    return 0; // No delay mentioned or unable to parse
   }
 
   /**
@@ -474,7 +500,7 @@ export class CancellationCompensationCalculator {
       regulation,
       conditions,
       additionalRights: [
-        'Right to care (meals, refreshments)',
+        'Right to care (meals, refreshments, accommodation)',
         'Right to assistance',
       ],
     };

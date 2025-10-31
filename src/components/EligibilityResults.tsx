@@ -131,7 +131,7 @@ export default function EligibilityResults({ results }: EligibilityResultsProps)
     );
   }
 
-  const { flightData, eligibility, validation } = data;
+  const { flightData, eligibility, validation: _validation } = data;
 
   // Check if eligible for compensation
   const eligibilityData = eligibility as EligibilityData;

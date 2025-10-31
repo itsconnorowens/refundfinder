@@ -447,7 +447,8 @@ export class ComprehensiveCompensationCalculator {
   async calculateComprehensiveCompensation(
     scenarioResult: ScenarioDetectionResult,
     flightData: FlightData | null,
-    regulation: string
+    regulation: string,
+    emailContent: string
   ): Promise<ComprehensiveCompensationResult> {
     const compensation: ComprehensiveCompensationResult['compensation'] = {};
     let totalCompensation = 0;
@@ -470,7 +471,7 @@ export class ComprehensiveCompensationCalculator {
     // Calculate cancellation compensation
     if (scenarioResult.scenarios.cancellation && flightData) {
       const cancellationResult = await cancellationService.processCancellation(
-        '', // We already have the data
+        emailContent,
         flightData,
         regulation
       );
@@ -632,7 +633,8 @@ export class ScenarioService {
       await this.calculator.calculateComprehensiveCompensation(
         scenarioResult,
         flightData,
-        regulation
+        regulation,
+        emailContent
       );
 
     // Generate analysis

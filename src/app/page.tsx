@@ -24,7 +24,7 @@ export default function Home() {
   const { currency, isEURegion } = useCurrency();
   const [activeTab, setActiveTab] = useState<'flight' | 'email'>('flight');
   const [results, setResults] = useState<CheckEligibilityResponse | null>(null);
-  const [loading, setLoading] = useState(false);
+  const [_loading, setLoading] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [prefersReducedMotion, setPrefersReducedMotion] = useState(false);
