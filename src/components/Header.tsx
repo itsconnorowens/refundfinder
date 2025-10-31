@@ -3,17 +3,17 @@ export default function Header() {
     <header className="sticky top-0 z-50 bg-white/95 backdrop-blur-md shadow-sm border-b border-gray-100 transition-all duration-300">
       <div className="container mx-auto px-4 py-4">
         <div className="flex items-center justify-between">
-          <div className="flex items-center space-x-3">
+          <a href="#" className="flex items-center space-x-3 focus:outline-none focus:ring-0 active:outline-none">
             <img
               src="/icon-192.png"
               alt="Flghtly Logo"
               className="w-10 h-10 rounded-full shadow-md"
             />
-            <div>
-              <h1 className="text-xl font-bold text-gray-900">Flghtly</h1>
-              <p className="text-xs text-gray-500 -mt-0.5">Compensation made simple</p>
+            <div className="text-left">
+              <h1 className="text-xl font-bold text-gray-900 text-left">Flghtly</h1>
+              <p className="text-xs text-gray-500 -mt-0.5 text-left">Compensation made simple</p>
             </div>
-          </div>
+          </a>
 
           <nav className="hidden md:flex space-x-8">
             <a href="#" className="text-gray-600 hover:text-blue-600 transition-colors font-medium">

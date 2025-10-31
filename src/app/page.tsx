@@ -27,6 +27,7 @@ export default function Home() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [prefersReducedMotion, setPrefersReducedMotion] = useState(false);
+  const [openFaqIndex, setOpenFaqIndex] = useState(0);
 
   const handleResults = (response: CheckEligibilityResponse) => {
     setResults(response);
@@ -398,12 +399,31 @@ export default function Home() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="max-w-md mx-auto bg-white rounded-2xl shadow-xl p-8">
             <div className="text-center">
-              <h3 className="text-2xl font-bold text-gray-900 mb-2">Success Fee Only</h3>
+              <h3 className="text-2xl font-bold text-gray-900 mb-2">Pay Only When You Win</h3>
               <div className="text-4xl font-bold text-blue-600 mb-4">{getServiceFeeFormatted(currency)}</div>
-              <p className="text-gray-600 mb-6">Only if we win your case</p>
-              <div className="bg-green-50 rounded-lg p-4">
+              <p className="text-gray-600 mb-6">100% risk-free. Keep 100% if we don't succeed.</p>
+              <motion.button
+                onClick={() => {
+                  const formSection = document.querySelector('#eligibility-form');
+                  formSection?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                }}
+                className="w-full bg-green-50 rounded-lg p-4 cursor-pointer border-2 border-transparent hover:border-green-200 transition-colors focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2"
+                whileHover={
+                  prefersReducedMotion
+                    ? {}
+                    : {
+                        scale: [1, 1.02, 1, 1.02, 1],
+                        transition: {
+                          duration: 1,
+                          repeat: Infinity,
+                          ease: "easeInOut"
+                        }
+                      }
+                }
+                whileTap={{ scale: 0.98 }}
+              >
                 <p className="text-green-800 font-medium">✓ No win, no fee guarantee</p>
-              </div>
+              </motion.button>
             </div>
           </div>
         </div>
@@ -521,46 +541,166 @@ export default function Home() {
             <h2 className="text-3xl font-bold text-gray-900 mb-4">Frequently Asked Questions</h2>
             <p className="text-xl text-gray-600">Everything you need to know about flight compensation</p>
           </div>
-          
-          <div className="space-y-6">
-            <div className="bg-white rounded-lg p-6 shadow-sm">
-              <h3 className="text-lg font-semibold text-gray-900 mb-3">What delays and cancellations qualify for compensation?</h3>
-              <p className="text-gray-600">
-                For EU261/UK CAA flights: Delays of 3+ hours or cancellations with less than 14 days notice qualify for compensation. 
-                For US flights: Airlines have their own policies, typically for delays of 4+ hours.
-              </p>
+
+          <div className="space-y-4">
+            {/* FAQ Item 1 */}
+            <div className="bg-white rounded-lg shadow-sm overflow-hidden">
+              <button
+                onClick={() => setOpenFaqIndex(openFaqIndex === 0 ? -1 : 0)}
+                className="w-full flex items-center justify-between p-6 text-left hover:bg-gray-50 transition-colors"
+              >
+                <h3 className="text-lg font-semibold text-gray-900 pr-8">
+                  What delays and cancellations qualify for compensation?
+                </h3>
+                <svg
+                  className={`w-5 h-5 text-gray-500 flex-shrink-0 transition-transform duration-200 ${
+                    openFaqIndex === 0 ? 'rotate-180' : ''
+                  }`}
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                </svg>
+              </button>
+              <div
+                className={`overflow-hidden transition-all duration-300 ${
+                  openFaqIndex === 0 ? 'max-h-96' : 'max-h-0'
+                }`}
+              >
+                <p className="px-6 pb-6 text-gray-600">
+                  For EU261/UK CAA flights: Delays of 3+ hours or cancellations with less than 14 days notice qualify for compensation.
+                  For US flights: Airlines have their own policies, typically for delays of 4+ hours.
+                </p>
+              </div>
             </div>
 
-            <div className="bg-white rounded-lg p-6 shadow-sm">
-              <h3 className="text-lg font-semibold text-gray-900 mb-3">What if my flight was cancelled?</h3>
-              <p className="text-gray-600">
-                Cancellations are covered under the same regulations as delays. If your flight was cancelled with less than 14 days notice 
-                (EU261/UK CAA) or meets airline-specific criteria (US), you may be entitled to compensation. The amount depends on flight distance.
-              </p>
+            {/* FAQ Item 2 */}
+            <div className="bg-white rounded-lg shadow-sm overflow-hidden">
+              <button
+                onClick={() => setOpenFaqIndex(openFaqIndex === 1 ? -1 : 1)}
+                className="w-full flex items-center justify-between p-6 text-left hover:bg-gray-50 transition-colors"
+              >
+                <h3 className="text-lg font-semibold text-gray-900 pr-8">
+                  What if my flight was cancelled?
+                </h3>
+                <svg
+                  className={`w-5 h-5 text-gray-500 flex-shrink-0 transition-transform duration-200 ${
+                    openFaqIndex === 1 ? 'rotate-180' : ''
+                  }`}
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                </svg>
+              </button>
+              <div
+                className={`overflow-hidden transition-all duration-300 ${
+                  openFaqIndex === 1 ? 'max-h-96' : 'max-h-0'
+                }`}
+              >
+                <p className="px-6 pb-6 text-gray-600">
+                  Cancellations are covered under the same regulations as delays. If your flight was cancelled with less than 14 days notice
+                  (EU261/UK CAA) or meets airline-specific criteria (US), you may be entitled to compensation. The amount depends on flight distance.
+                </p>
+              </div>
             </div>
 
-            <div className="bg-white rounded-lg p-6 shadow-sm">
-              <h3 className="text-lg font-semibold text-gray-900 mb-3">How do you verify my flight information?</h3>
-              <p className="text-gray-600">
-                We use real-time flight status APIs to verify your reported delay or cancellation. This helps ensure accuracy and 
-                maximizes your chances of success. If verification fails, we'll manually review your case.
-              </p>
+            {/* FAQ Item 3 */}
+            <div className="bg-white rounded-lg shadow-sm overflow-hidden">
+              <button
+                onClick={() => setOpenFaqIndex(openFaqIndex === 2 ? -1 : 2)}
+                className="w-full flex items-center justify-between p-6 text-left hover:bg-gray-50 transition-colors"
+              >
+                <h3 className="text-lg font-semibold text-gray-900 pr-8">
+                  How do you verify my flight information?
+                </h3>
+                <svg
+                  className={`w-5 h-5 text-gray-500 flex-shrink-0 transition-transform duration-200 ${
+                    openFaqIndex === 2 ? 'rotate-180' : ''
+                  }`}
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                </svg>
+              </button>
+              <div
+                className={`overflow-hidden transition-all duration-300 ${
+                  openFaqIndex === 2 ? 'max-h-96' : 'max-h-0'
+                }`}
+              >
+                <p className="px-6 pb-6 text-gray-600">
+                  We use real-time flight status APIs to verify your reported delay or cancellation. This helps ensure accuracy and
+                  maximizes your chances of success. If verification fails, we'll manually review your case.
+                </p>
+              </div>
             </div>
 
-            <div className="bg-white rounded-lg p-6 shadow-sm">
-              <h3 className="text-lg font-semibold text-gray-900 mb-3">How long does the process take?</h3>
-              <p className="text-gray-600">
-                We file your claim within 48 hours of payment. Airlines typically respond within 2-6 weeks. You'll receive email updates 
-                at every step of the process.
-              </p>
+            {/* FAQ Item 4 */}
+            <div className="bg-white rounded-lg shadow-sm overflow-hidden">
+              <button
+                onClick={() => setOpenFaqIndex(openFaqIndex === 3 ? -1 : 3)}
+                className="w-full flex items-center justify-between p-6 text-left hover:bg-gray-50 transition-colors"
+              >
+                <h3 className="text-lg font-semibold text-gray-900 pr-8">
+                  How long does the process take?
+                </h3>
+                <svg
+                  className={`w-5 h-5 text-gray-500 flex-shrink-0 transition-transform duration-200 ${
+                    openFaqIndex === 3 ? 'rotate-180' : ''
+                  }`}
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                </svg>
+              </button>
+              <div
+                className={`overflow-hidden transition-all duration-300 ${
+                  openFaqIndex === 3 ? 'max-h-96' : 'max-h-0'
+                }`}
+              >
+                <p className="px-6 pb-6 text-gray-600">
+                  We file your claim within 48 hours of payment. Airlines typically respond within 2-6 weeks. You'll receive email updates
+                  at every step of the process.
+                </p>
+              </div>
             </div>
 
-            <div className="bg-white rounded-lg p-6 shadow-sm">
-              <h3 className="text-lg font-semibold text-gray-900 mb-3">What if I'm not eligible?</h3>
-              <p className="text-gray-600">
-                If your flight doesn't qualify for compensation, we'll explain why and suggest checking other recent flights. 
-                Our eligibility check is completely free with no obligation.
-              </p>
+            {/* FAQ Item 5 */}
+            <div className="bg-white rounded-lg shadow-sm overflow-hidden">
+              <button
+                onClick={() => setOpenFaqIndex(openFaqIndex === 4 ? -1 : 4)}
+                className="w-full flex items-center justify-between p-6 text-left hover:bg-gray-50 transition-colors"
+              >
+                <h3 className="text-lg font-semibold text-gray-900 pr-8">
+                  What if I'm not eligible?
+                </h3>
+                <svg
+                  className={`w-5 h-5 text-gray-500 flex-shrink-0 transition-transform duration-200 ${
+                    openFaqIndex === 4 ? 'rotate-180' : ''
+                  }`}
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                </svg>
+              </button>
+              <div
+                className={`overflow-hidden transition-all duration-300 ${
+                  openFaqIndex === 4 ? 'max-h-96' : 'max-h-0'
+                }`}
+              >
+                <p className="px-6 pb-6 text-gray-600">
+                  If your flight doesn't qualify for compensation, we'll explain why and suggest checking other recent flights.
+                  Our eligibility check is completely free with no obligation.
+                </p>
+              </div>
             </div>
           </div>
         </div>
