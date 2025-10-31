@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useSearchParams } from 'next/navigation';
 import posthog from 'posthog-js';
 import { Button } from '@/components/ui/button';
@@ -31,6 +31,7 @@ import {
 } from '@/lib/validation';
 import { useCurrency } from '@/contexts/CurrencyContext';
 import { getServiceFee } from '@/lib/currency';
+import { useFormAbandonment } from '@/hooks/useFormAbandonment';
 
 interface FormData {
   // Step 1: Personal Info
@@ -103,6 +104,40 @@ export default function ClaimSubmissionForm() {
   
   const [isCreatingPaymentIntent, setIsCreatingPaymentIntent] = useState(false);
   const [isUploading, setIsUploading] = useState<{ [key: string]: boolean }>({});
+
+  // Track form abandonment
+  const { markCompleted } = useFormAbandonment('claim_submission', formData, {
+    current_step: currentStep,
+    disruption_type: formData.disruptionType,
+    airline: formData.airline,
+  });
+
+  // Track time spent on each step
+  const stepStartTime = useRef(Date.now());
+  const previousStep = useRef<number | null>(null);
+
+  useEffect(() => {
+    const stepNames = ['personal_info', 'flight_details', 'verification', 'documentation', 'review', 'payment'];
+
+    // Track time spent on previous step if it exists
+    if (previousStep.current !== null && previousStep.current !== currentStep) {
+      const timeSpent = Math.round((Date.now() - stepStartTime.current) / 1000);
+
+      if (typeof window !== 'undefined') {
+        posthog.capture('claim_form_step_time', {
+          step_number: previousStep.current,
+          step_name: stepNames[previousStep.current - 1],
+          time_spent_seconds: timeSpent,
+          next_step: currentStep,
+          abandoned: false, // They moved to next step
+        });
+      }
+    }
+
+    // Update refs for next iteration
+    previousStep.current = currentStep;
+    stepStartTime.current = Date.now();
+  }, [currentStep]);
 
   // Load form data from localStorage on mount and pre-fill from URL params
   useEffect(() => {
@@ -217,6 +252,21 @@ export default function ClaimSubmissionForm() {
     }
 
     setErrors(newErrors);
+
+    // Track validation errors if any
+    if (Object.keys(newErrors).length > 0 && typeof window !== 'undefined') {
+      const stepNames = ['personal_info', 'flight_details', 'verification', 'documentation', 'review', 'payment'];
+      Object.entries(newErrors).forEach(([field, error]) => {
+        posthog.capture('form_validation_error', {
+          form_name: 'claim_submission',
+          step_number: step,
+          step_name: stepNames[step - 1],
+          field,
+          error_message: error,
+        });
+      });
+    }
+
     return Object.keys(newErrors).length === 0;
   };
 
@@ -239,11 +289,20 @@ export default function ClaimSubmissionForm() {
         });
       }
 
-      // Set user context in Sentry after personal info is completed
+      // Set user context in Sentry and PostHog after personal info is completed
       if (currentStep === 1 && formData.email && formData.firstName) {
         setUser({
           email: formData.email,
           name: `${formData.firstName} ${formData.lastName}`.trim(),
+        });
+
+        // Identify user in PostHog
+        posthog.identify(formData.email, {
+          email: formData.email,
+          first_name: formData.firstName,
+          last_name: formData.lastName,
+          identified_at: new Date().toISOString(),
+          first_seen_via: 'claim_form'
         });
       }
 
@@ -499,6 +558,9 @@ export default function ClaimSubmissionForm() {
           });
         }
 
+        // Mark form as completed (prevents abandonment tracking)
+        markCompleted();
+
         // Clear form data from localStorage
         localStorage.removeItem('claimFormData');
         // Show success message
@@ -595,6 +657,7 @@ export default function ClaimSubmissionForm() {
                     onChange={(e) => handleInputChange('firstName', e.target.value)}
                     className={errors.firstName ? 'border-red-500' : ''}
                     placeholder="Enter your first name"
+                    data-ph-capture-attribute-name-mask="true"
                   />
                   {errors.firstName && (
                     <p className="text-red-500 text-sm mt-1 flex items-center">
@@ -613,6 +676,7 @@ export default function ClaimSubmissionForm() {
                     onChange={(e) => handleInputChange('lastName', e.target.value)}
                     className={errors.lastName ? 'border-red-500' : ''}
                     placeholder="Enter your last name"
+                    data-ph-capture-attribute-name-mask="true"
                   />
                   {errors.lastName && (
                     <p className="text-red-500 text-sm mt-1 flex items-center">
@@ -633,6 +697,7 @@ export default function ClaimSubmissionForm() {
                   onChange={(e) => handleInputChange('email', e.target.value)}
                   className={errors.email ? 'border-red-500' : ''}
                   placeholder="Enter your email address"
+                  data-ph-capture-attribute-name-mask="true"
                 />
                 {errors.email && (
                   <p className="text-red-500 text-sm mt-1 flex items-center">

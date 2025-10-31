@@ -53,14 +53,18 @@ class Logger {
     this.log('warn', message, context);
   }
 
-  error(message: string, error?: Error, context?: LogContext) {
+  error(message: string, error?: unknown, context?: LogContext) {
+    const errorInfo = error instanceof Error ? {
+      message: error.message,
+      stack: error.stack,
+      name: error.name
+    } : error ? {
+      message: String(error)
+    } : undefined;
+
     this.log('error', message, {
       ...context,
-      error: error ? {
-        message: error.message,
-        stack: error.stack,
-        name: error.name
-      } : undefined
+      error: errorInfo
     });
   }
 }

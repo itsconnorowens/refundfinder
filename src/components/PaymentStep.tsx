@@ -6,6 +6,7 @@ import {
   useStripe,
   useElements,
 } from '@stripe/react-stripe-js';
+import posthog from 'posthog-js';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { AlertCircle, CheckCircle, Lock, ShieldCheck } from 'lucide-react';
@@ -73,17 +74,46 @@ export default function PaymentStep({
       });
 
       if (error) {
+        // Track payment error
+        if (typeof window !== 'undefined') {
+          posthog.capture('payment_failed', {
+            error_type: error.type || 'stripe_error',
+            error_code: error.code || 'unknown',
+            error_message: error.message || 'Payment failed',
+            amount_cents: amount,
+            currency,
+          });
+        }
         setErrorMessage(error.message || 'Payment failed. Please try again.');
         setIsProcessing(false);
       } else if (paymentIntent && paymentIntent.status === 'succeeded') {
         // Payment successful
         onPaymentSuccess(paymentIntent.id);
       } else {
+        // Track incomplete payment
+        if (typeof window !== 'undefined') {
+          posthog.capture('payment_failed', {
+            error_type: 'incomplete_payment',
+            error_message: 'Payment could not be completed',
+            payment_status: paymentIntent?.status || 'unknown',
+            amount_cents: amount,
+            currency,
+          });
+        }
         setErrorMessage('Payment could not be completed. Please try again.');
         setIsProcessing(false);
       }
     } catch (err) {
       console.error('Payment error:', err);
+      // Track unexpected error
+      if (typeof window !== 'undefined') {
+        posthog.capture('payment_failed', {
+          error_type: 'unexpected_error',
+          error_message: err instanceof Error ? err.message : 'An unexpected error occurred',
+          amount_cents: amount,
+          currency,
+        });
+      }
       setErrorMessage('An unexpected error occurred. Please try again.');
       setIsProcessing(false);
     }

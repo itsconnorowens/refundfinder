@@ -8,7 +8,7 @@ import {
 } from '@/lib/rate-limit';
 import { withErrorTracking, addBreadcrumb, captureError } from '@/lib/error-tracking';
 import { missingFieldsResponse, rateLimitResponse } from '@/lib/api-response';
-import { trackServerEvent } from '@/lib/posthog';
+import { trackServerEvent, trackServerError } from '@/lib/posthog';
 import { logger } from '@/lib/logger';
 
 export const POST = withErrorTracking(async (request: NextRequest) => {
@@ -173,6 +173,17 @@ export const POST = withErrorTracking(async (request: NextRequest) => {
   } catch (error) {
     captureError(error, { level: 'warning', tags: { service: 'airtable', operation: 'eligibility_check_storage' } });
     logger.error('Error storing eligibility check:', error);
+
+    // Track error in PostHog for analytics
+    trackServerError('airtable_storage_error', error, {
+      userId: body.passengerEmail,
+      endpoint: '/api/check-eligibility',
+      method: 'POST',
+      operation: 'eligibility_check_storage',
+      flightNumber: flightDetails.flightNumber,
+      airline: flightDetails.airline,
+    });
+
     // Continue even if storage fails
   }
 

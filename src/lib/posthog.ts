@@ -60,6 +60,53 @@ export function identifyServerUser(
 }
 
 /**
+ * Track a server-side error
+ * Use this to track API errors, exceptions, and failures on the server
+ */
+export function trackServerError(
+  errorName: string,
+  error: unknown,
+  context?: {
+    userId?: string;
+    endpoint?: string;
+    method?: string;
+    statusCode?: number;
+    [key: string]: any;
+  }
+) {
+  const posthog = getPostHogServer();
+  if (!posthog) {
+    logger.warn('Cannot track server error - PostHog not configured');
+    return;
+  }
+
+  const errorMessage = error instanceof Error ? error.message : String(error);
+  const errorStack = error instanceof Error ? error.stack : undefined;
+
+  posthog.capture({
+    distinctId: context?.userId || 'anonymous',
+    event: 'api_error',
+    properties: {
+      error_name: errorName,
+      error_message: errorMessage,
+      error_stack: errorStack,
+      endpoint: context?.endpoint,
+      method: context?.method,
+      status_code: context?.statusCode,
+      timestamp: new Date().toISOString(),
+      ...context,
+    },
+  });
+
+  // Also log the error
+  logger.error(
+    `API Error: ${errorName}`,
+    error instanceof Error ? error : new Error(errorMessage),
+    context
+  );
+}
+
+/**
  * Shutdown PostHog (call this when shutting down the server)
  */
 export async function shutdownPostHog() {

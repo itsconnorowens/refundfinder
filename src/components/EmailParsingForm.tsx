@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { motion } from 'framer-motion';
 import posthog from 'posthog-js';
 import { CheckEligibilityResponse } from '../types/api';
+import { useFormAbandonment } from '@/hooks/useFormAbandonment';
 
 interface EmailParsingFormProps {
   onResults: (results: CheckEligibilityResponse) => void;
@@ -24,7 +25,7 @@ export default function EmailParsingForm({ onResults, onLoading }: EmailParsingF
     alternativeTiming: '',
     // Denied boarding fields
     boardingType: 'involuntary' as 'involuntary' | 'voluntary',
-    checkInTime: '',
+    checkedInOnTime: '',
     ticketPrice: '',
     // Downgrade fields
     classPaidFor: '',
@@ -32,6 +33,11 @@ export default function EmailParsingForm({ onResults, onLoading }: EmailParsingF
   });
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [loading, setLoading] = useState(false);
+
+  // Track form abandonment
+  const { markCompleted } = useFormAbandonment('email_parsing', formData, {
+    disruption_type: formData.disruptionType,
+  });
 
   const validateForm = () => {
     const newErrors: Record<string, string> = {};
@@ -68,8 +74,8 @@ export default function EmailParsingForm({ onResults, onLoading }: EmailParsingF
 
     // Validate denied boarding fields
     if (formData.disruptionType === 'denied_boarding') {
-      if (!formData.checkInTime) {
-        newErrors.checkInTime = 'Check-in time is required for denied boarding claims';
+      if (!formData.checkedInOnTime) {
+        newErrors.checkedInOnTime = 'Please indicate whether you checked in on time';
       }
       if (!formData.ticketPrice.trim() || parseFloat(formData.ticketPrice) <= 0) {
         newErrors.ticketPrice = 'Valid ticket price is required';
@@ -90,6 +96,19 @@ export default function EmailParsingForm({ onResults, onLoading }: EmailParsingF
     }
 
     setErrors(newErrors);
+
+    // Track validation errors if any
+    if (Object.keys(newErrors).length > 0 && typeof window !== 'undefined') {
+      Object.entries(newErrors).forEach(([field, error]) => {
+        posthog.capture('form_validation_error', {
+          form_name: 'email_parsing',
+          field,
+          error_message: error,
+          disruption_type: formData.disruptionType,
+        });
+      });
+    }
+
     return Object.keys(newErrors).length === 0;
   };
 
@@ -100,8 +119,22 @@ export default function EmailParsingForm({ onResults, onLoading }: EmailParsingF
       return;
     }
 
-    // Track eligibility check started
+    // Track email parsing started and eligibility check started
     if (typeof window !== 'undefined') {
+      // Identify user
+      posthog.identify(formData.passengerEmail.trim(), {
+        email: formData.passengerEmail.trim(),
+        first_name: formData.firstName.trim(),
+        last_name: formData.lastName.trim(),
+        identified_at: new Date().toISOString(),
+        first_seen_via: 'email_parsing'
+      });
+
+      posthog.capture('email_parsing_started', {
+        content_length: formData.emailContent.length,
+        disruption_type: formData.disruptionType,
+      });
+
       posthog.capture('eligibility_check_started', {
         method: 'email',
         disruption_type: formData.disruptionType,
@@ -131,7 +164,7 @@ export default function EmailParsingForm({ onResults, onLoading }: EmailParsingF
           alternativeTiming: formData.alternativeTiming.trim(),
           // Denied boarding fields
           boardingType: formData.boardingType,
-          checkInTime: formData.checkInTime,
+          checkedInOnTime: formData.checkedInOnTime,
           ticketPrice: formData.ticketPrice ? parseFloat(formData.ticketPrice) : undefined,
           // Downgrade fields
           classPaidFor: formData.classPaidFor,
@@ -141,21 +174,50 @@ export default function EmailParsingForm({ onResults, onLoading }: EmailParsingF
 
       const result: CheckEligibilityResponse = await response.json();
 
-      // Track eligibility check completed
-      if (typeof window !== 'undefined' && result.success && result.data?.eligibility) {
-        posthog.capture('eligibility_check_completed', {
-          eligible: result.data.eligibility.isEligible,
-          compensation_amount: result.data.eligibility.compensationAmount,
-          regulation: result.data.eligibility.regulation,
-          disruption_type: formData.disruptionType,
-          confidence: result.data.eligibility.confidence,
-          method: 'email',
-        });
+      // Track email parsing completed and eligibility check completed
+      if (typeof window !== 'undefined') {
+        if (result.success) {
+          posthog.capture('email_parsing_completed', {
+            content_length: formData.emailContent.length,
+            disruption_type: formData.disruptionType,
+            parsed_successfully: true
+          });
+
+          if (result.data?.eligibility) {
+            posthog.capture('eligibility_check_completed', {
+              eligible: result.data.eligibility.isEligible,
+              compensation_amount: result.data.eligibility.compensationAmount,
+              regulation: result.data.eligibility.regulation,
+              disruption_type: formData.disruptionType,
+              confidence: result.data.eligibility.confidence,
+              method: 'email',
+            });
+          }
+        } else {
+          posthog.capture('email_parsing_failed', {
+            content_length: formData.emailContent.length,
+            error: result.error || 'Unknown error',
+            disruption_type: formData.disruptionType,
+          });
+        }
       }
+
+      // Mark form as completed (prevents abandonment tracking)
+      markCompleted();
 
       onResults(result);
     } catch (error) {
       console.error('Error checking eligibility:', error);
+
+      // Track parsing failure
+      if (typeof window !== 'undefined') {
+        posthog.capture('email_parsing_failed', {
+          content_length: formData.emailContent.length,
+          error: error instanceof Error ? error.message : 'Network or server error',
+          disruption_type: formData.disruptionType,
+        });
+      }
+
       onResults({
         success: false,
         error: 'Failed to check eligibility. Please try again.',
@@ -245,7 +307,7 @@ Turkish Airlines`;
                 value="delay"
                 checked={formData.disruptionType === 'delay'}
                 onChange={(e) => handleInputChange('disruptionType', e.target.value)}
-                className="mr-3 w-4 h-4"
+                className="mr-3 w-4 h-4 accent-blue-600"
               />
               <div>
                 <span className="text-sm font-medium">Flight Delayed</span>
@@ -259,7 +321,7 @@ Turkish Airlines`;
                 value="cancellation"
                 checked={formData.disruptionType === 'cancellation'}
                 onChange={(e) => handleInputChange('disruptionType', e.target.value)}
-                className="mr-3 w-4 h-4"
+                className="mr-3 w-4 h-4 accent-blue-600"
               />
               <div>
                 <span className="text-sm font-medium">Flight Cancelled</span>
@@ -273,7 +335,7 @@ Turkish Airlines`;
                 value="denied_boarding"
                 checked={formData.disruptionType === 'denied_boarding'}
                 onChange={(e) => handleInputChange('disruptionType', e.target.value)}
-                className="mr-3 w-4 h-4"
+                className="mr-3 w-4 h-4 accent-blue-600"
               />
               <div>
                 <span className="text-sm font-medium">Denied Boarding</span>
@@ -287,7 +349,7 @@ Turkish Airlines`;
                 value="downgrade"
                 checked={formData.disruptionType === 'downgrade'}
                 onChange={(e) => handleInputChange('disruptionType', e.target.value)}
-                className="mr-3 w-4 h-4"
+                className="mr-3 w-4 h-4 accent-blue-600"
               />
               <div>
                 <span className="text-sm font-medium">Seat Downgrade</span>
@@ -386,7 +448,7 @@ Turkish Airlines`;
                     value="involuntary"
                     checked={formData.boardingType === 'involuntary'}
                     onChange={(e) => handleInputChange('boardingType', e.target.value)}
-                    className="mr-3 mt-1 w-4 h-4"
+                    className="mr-3 mt-1 w-4 h-4 accent-blue-600"
                   />
                   <div>
                     <span className="text-sm font-medium">Involuntary - You were denied boarding</span>
@@ -400,7 +462,7 @@ Turkish Airlines`;
                     value="voluntary"
                     checked={formData.boardingType === 'voluntary'}
                     onChange={(e) => handleInputChange('boardingType', e.target.value)}
-                    className="mr-3 mt-1 w-4 h-4"
+                    className="mr-3 mt-1 w-4 h-4 accent-blue-600"
                   />
                   <div>
                     <span className="text-sm font-medium">Voluntary - You gave up your seat</span>
@@ -410,24 +472,60 @@ Turkish Airlines`;
               </div>
             </div>
 
-            {/* Check-in Time */}
-            <div>
-              <label htmlFor="checkInTime" className="block text-sm font-medium text-gray-700 mb-2">
-                What time did you check in? *
+            {/* Check-in Status */}
+            <div className="md:col-span-2">
+              <label className="block text-sm font-medium text-gray-700 mb-3">
+                Did you check in on time? *
               </label>
-              <input
-                type="time"
-                id="checkInTime"
-                value={formData.checkInTime}
-                onChange={(e) => handleInputChange('checkInTime', e.target.value)}
-                className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${
-                  errors.checkInTime ? 'border-red-500' : 'border-gray-300'
-                }`}
-              />
-              {errors.checkInTime && (
-                <p className="mt-1 text-sm text-red-600">{errors.checkInTime}</p>
+              <div className="space-y-3">
+                <label className="flex items-start p-3 border rounded-lg cursor-pointer hover:bg-gray-50 transition-colors">
+                  <input
+                    type="radio"
+                    name="checkedInOnTime"
+                    value="yes"
+                    checked={formData.checkedInOnTime === 'yes'}
+                    onChange={(e) => handleInputChange('checkedInOnTime', e.target.value)}
+                    className="mr-3 mt-1 w-4 h-4"
+                  />
+                  <div>
+                    <span className="text-sm font-medium">Yes, I checked in on time</span>
+                    <p className="text-xs text-gray-500 mt-1">
+                      Within the airline's check-in deadline (typically 30-60 min domestic, 60-90 min international)
+                    </p>
+                  </div>
+                </label>
+                <label className="flex items-start p-3 border rounded-lg cursor-pointer hover:bg-gray-50 transition-colors">
+                  <input
+                    type="radio"
+                    name="checkedInOnTime"
+                    value="no"
+                    checked={formData.checkedInOnTime === 'no'}
+                    onChange={(e) => handleInputChange('checkedInOnTime', e.target.value)}
+                    className="mr-3 mt-1 w-4 h-4"
+                  />
+                  <div>
+                    <span className="text-sm font-medium">No, I checked in late</span>
+                    <p className="text-xs text-gray-500 mt-1">After the check-in deadline</p>
+                  </div>
+                </label>
+                <label className="flex items-start p-3 border rounded-lg cursor-pointer hover:bg-gray-50 transition-colors">
+                  <input
+                    type="radio"
+                    name="checkedInOnTime"
+                    value="unsure"
+                    checked={formData.checkedInOnTime === 'unsure'}
+                    onChange={(e) => handleInputChange('checkedInOnTime', e.target.value)}
+                    className="mr-3 mt-1 w-4 h-4"
+                  />
+                  <div>
+                    <span className="text-sm font-medium">I'm not sure</span>
+                    <p className="text-xs text-gray-500 mt-1">I don't remember or wasn't aware of the deadline</p>
+                  </div>
+                </label>
+              </div>
+              {errors.checkedInOnTime && (
+                <p className="mt-2 text-sm text-red-600">{errors.checkedInOnTime}</p>
               )}
-              <p className="mt-1 text-xs text-gray-500">Must be within check-in deadline to be eligible</p>
             </div>
 
             {/* Ticket Price */}
@@ -592,6 +690,7 @@ Turkish Airlines`;
               value={formData.firstName}
               onChange={(e) => handleInputChange('firstName', e.target.value)}
               placeholder="John"
+              data-ph-capture-attribute-name-mask="true"
               className={`w-full px-4 py-4 md:py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-base ${
                 errors.firstName ? 'border-red-500' : 'border-gray-300'
               }`}
@@ -611,6 +710,7 @@ Turkish Airlines`;
               value={formData.lastName}
               onChange={(e) => handleInputChange('lastName', e.target.value)}
               placeholder="Doe"
+              data-ph-capture-attribute-name-mask="true"
               className={`w-full px-4 py-4 md:py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-base ${
                 errors.lastName ? 'border-red-500' : 'border-gray-300'
               }`}
@@ -630,6 +730,7 @@ Turkish Airlines`;
               value={formData.passengerEmail}
               onChange={(e) => handleInputChange('passengerEmail', e.target.value)}
               placeholder="john@example.com"
+              data-ph-capture-attribute-name-mask="true"
               className={`w-full px-4 py-4 md:py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-base ${
                 errors.passengerEmail ? 'border-red-500' : 'border-gray-300'
               }`}

@@ -35,10 +35,6 @@ export function PostHogProvider({ children }: { children: React.ReactNode }) {
               console.log('PostHog: Already initialized by snippet. Development tracking enabled.');
             }
           }
-          // Enable autocapture if not already enabled
-          if (!posthog.get_config('autocapture')) {
-            posthog.set_config({ autocapture: true });
-          }
           return;
         }
 
@@ -107,7 +103,7 @@ export function PostHogPageView() {
         posthog.capture('$pageview', {
           $current_url: url,
         });
-      } catch (_error) {
+      } catch {
         // Silently fail if PostHog not available
       }
     };

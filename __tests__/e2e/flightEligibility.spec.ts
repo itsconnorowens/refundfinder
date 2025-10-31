@@ -57,7 +57,7 @@ test.describe('Flight Eligibility Form - E2E Tests', () => {
 
       // Enter invalid flight number
       await page.fill('input[name="flightNumber"]', '123');
-      await page.blur('input[name="flightNumber"]');
+      await page.locator('input[name="flightNumber"]').blur();
 
       // Check for error message
       await expect(page.locator('text=Invalid flight number format')).toBeVisible();
@@ -213,8 +213,8 @@ test.describe('Flight Eligibility Form - E2E Tests', () => {
       // Select tier
       await page.check('text=1-2 hours');
 
-      // Fill check-in time
-      await page.fill('input[name="checkInTime"]', '10:30');
+      // Select check-in status
+      await page.check('input[name="checkedInOnTime"][value="yes"]');
 
       // Fill ticket price
       await page.fill('input[name="ticketPrice"]', '450');
@@ -299,7 +299,7 @@ test.describe('Flight Eligibility Form - E2E Tests', () => {
 
       // Enter typo email
       await page.fill('input[name="passengerEmail"]', 'test@gmial.com');
-      await page.blur('input[name="passengerEmail"]');
+      await page.locator('input[name="passengerEmail"]').blur();
 
       // Should show suggestion
       await expect(page.locator('text=gmail.com')).toBeVisible();

@@ -18,6 +18,7 @@ import TrustDisclosure from '../components/trust-disclosure';
 import CurrencySelector from '../components/CurrencySelector';
 import { useCurrency } from '../contexts/CurrencyContext';
 import { formatCurrency, getServiceFeeFormatted, formatCompensationRange, convertCompensationAmount } from '../lib/currency';
+import { useFeatureFlag } from '../hooks/useFeatureFlag';
 
 export default function Home() {
   const { currency, isEURegion } = useCurrency();
@@ -28,6 +29,22 @@ export default function Home() {
   const [scrolled, setScrolled] = useState(false);
   const [prefersReducedMotion, setPrefersReducedMotion] = useState(false);
   const [openFaqIndex, setOpenFaqIndex] = useState(0);
+
+  // Feature flag for A/B testing CTA button text
+  const ctaText = useFeatureFlag('hero-cta-text');
+
+  // Get CTA button text based on feature flag
+  const getCtaText = () => {
+    switch (ctaText) {
+      case 'get-started':
+        return 'Get Started';
+      case 'claim-now':
+        return 'Claim Now';
+      case 'check-eligibility':
+      default:
+        return 'Check Eligibility';
+    }
+  };
 
   const handleResults = (response: CheckEligibilityResponse) => {
     setResults(response);
@@ -210,7 +227,7 @@ export default function Home() {
                 }
                 whileTap={prefersReducedMotion ? {} : { scale: 0.98 }}
               >
-                Check Eligibility
+                {getCtaText()}
               </motion.button>
             </div>
 

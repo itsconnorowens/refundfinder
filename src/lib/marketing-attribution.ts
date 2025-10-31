@@ -171,11 +171,37 @@ export async function trackAttributionEvent(attribution: MarketingAttribution): 
     const hasData = attribution.utm_source || attribution.utm_medium || attribution.utm_campaign || attribution.referrer;
 
     if (hasData) {
+      // Capture the event
       posthog.capture('marketing_attribution_captured', {
         ...attribution,
       });
 
-      logger.debug('Attribution event tracked in PostHog', { attribution });
+      // Set as super properties so ALL future events include attribution
+      posthog.register({
+        utm_source: attribution.utm_source,
+        utm_medium: attribution.utm_medium,
+        utm_campaign: attribution.utm_campaign,
+        utm_content: attribution.utm_content,
+        utm_term: attribution.utm_term,
+        referrer: attribution.referrer,
+        landing_page: attribution.landing_page,
+      });
+
+      // Set initial attribution as person properties (only set once per user)
+      if (posthog.people) {
+        posthog.people.set_once({
+          initial_utm_source: attribution.utm_source,
+          initial_utm_medium: attribution.utm_medium,
+          initial_utm_campaign: attribution.utm_campaign,
+          initial_utm_content: attribution.utm_content,
+          initial_utm_term: attribution.utm_term,
+          initial_referrer: attribution.referrer,
+          initial_landing_page: attribution.landing_page,
+          first_seen_at: attribution.first_seen,
+        });
+      }
+
+      logger.debug('Attribution event tracked in PostHog and set as super properties', { attribution });
     }
   } catch (error) {
     // Silently fail if PostHog not available

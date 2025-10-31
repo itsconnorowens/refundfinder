@@ -19,14 +19,46 @@ export default function EligibilityResults({ results }: EligibilityResultsProps)
 
   const handleFileClaimClick = () => {
     // Track file claim button click
-    if (typeof window !== 'undefined' && results.data?.eligibility) {
+    if (typeof window !== 'undefined' && results.data?.eligibility && results.data?.flightData) {
       const eligibilityData = results.data.eligibility as EligibilityData;
+      const flightData = results.data.flightData as FlightData;
+
+      // Extract airline and route info for group analytics
+      const airlineCode = flightData.flightNumber ? flightData.flightNumber.match(/^[A-Z]{2,3}/)?.[0] || '' : '';
+      const routeId = flightData.departureAirport && flightData.arrivalAirport
+        ? `${flightData.departureAirport}-${flightData.arrivalAirport}`
+        : '';
+
+      // Set up group analytics if we have airline/route data
+      if (airlineCode) {
+        posthog.group('airline', airlineCode, {
+          airline_code: airlineCode,
+        });
+      }
+
+      if (routeId) {
+        posthog.group('route', routeId, {
+          route_id: routeId,
+          origin_airport: flightData.departureAirport,
+          destination_airport: flightData.arrivalAirport,
+        });
+      }
+
       posthog.capture('file_claim_clicked', {
         compensation_amount: eligibilityData.compensationAmount,
         regulation: eligibilityData.regulation,
         disruption_type: eligibilityData.disruptionType,
         confidence: eligibilityData.confidence,
+        airline: airlineCode,
+        route: routeId,
         ...getAttributionProperties(), // Include marketing attribution
+        // Add groups to event if available
+        ...(airlineCode || routeId ? {
+          $groups: {
+            ...(airlineCode && { airline: airlineCode }),
+            ...(routeId && { route: routeId }),
+          },
+        } : {}),
       });
     }
     setShowPaymentForm(true);

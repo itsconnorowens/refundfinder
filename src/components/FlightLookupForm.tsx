@@ -10,10 +10,15 @@ import {
   validateFlightNumber,
   validateAirportCode,
   validateFlightDate,
-  validateEmail
+  validateEmail,
+  validateAirline,
+  extractAirlineCode as _extractAirlineCode
 } from '@/lib/validation';
- 
+import { getAirlineByIATACode } from '@/lib/airlines';
+
 import { getAttributionProperties } from '@/lib/marketing-attribution';
+import { useFormAbandonment } from '@/hooks/useFormAbandonment';
+import { parseApiError, ErrorDetails } from '@/lib/error-messages';
 
 interface FlightLookupFormProps {
   onResults: (results: CheckEligibilityResponse) => void;
@@ -61,7 +66,7 @@ export default function FlightLookupForm({ onResults, onLoading }: FlightLookupF
     volunteersRequested: false,
     deniedBoardingReason: '',
     alternativeArrivalDelay: '',
-    checkInTime: '',
+    checkedInOnTime: '',
     ticketPrice: '',
     // Downgrade fields
     classPaidFor: '',
@@ -77,9 +82,14 @@ export default function FlightLookupForm({ onResults, onLoading }: FlightLookupF
   const [emailSuggestion, setEmailSuggestion] = useState<string>('');
   const [showManualNoticeEdit, setShowManualNoticeEdit] = useState(false);
   const [showCancellationRights, setShowCancellationRights] = useState(false);
-  const [showEURightsInfo, setShowEURightsInfo] = useState(false);
-  const [showUSRightsInfo, setShowUSRightsInfo] = useState(false);
   const [showDowngradeInfo, setShowDowngradeInfo] = useState(false);
+  const [apiError, setApiError] = useState<ErrorDetails | null>(null);
+
+  // Track form abandonment
+  const { markCompleted } = useFormAbandonment('eligibility_check', formData, {
+    disruption_type: formData.disruptionType,
+    airline: formData.airline,
+  });
 
   // Track disruption type selection
   useEffect(() => {
@@ -109,22 +119,6 @@ export default function FlightLookupForm({ onResults, onLoading }: FlightLookupF
   }, [showCancellationRights]);
 
   useEffect(() => {
-    if (showEURightsInfo && typeof window !== 'undefined') {
-      posthog.capture('info_box_expanded', {
-        type: 'eu_denied_boarding_rights'
-      });
-    }
-  }, [showEURightsInfo]);
-
-  useEffect(() => {
-    if (showUSRightsInfo && typeof window !== 'undefined') {
-      posthog.capture('info_box_expanded', {
-        type: 'us_denied_boarding_rights'
-      });
-    }
-  }, [showUSRightsInfo]);
-
-  useEffect(() => {
     if (showDowngradeInfo && typeof window !== 'undefined') {
       posthog.capture('info_box_expanded', {
         type: 'downgrade_info'
@@ -133,11 +127,26 @@ export default function FlightLookupForm({ onResults, onLoading }: FlightLookupF
   }, [showDowngradeInfo]);
 
   const validateField = (field: string, value: string) => {
-    let result: { valid: boolean; error?: string; suggestion?: string } = { valid: true };
+    let result: { valid: boolean; error?: string; suggestion?: string; airlineCode?: string } = { valid: true };
 
     switch (field) {
       case 'flightNumber':
         result = validateFlightNumber(value);
+        // Auto-populate airline if flight number is valid and airline is empty
+        if (result.valid && result.airlineCode && !formData.airline) {
+          const airline = getAirlineByIATACode(result.airlineCode);
+          if (airline) {
+            setFormData(prev => ({ ...prev, airline: airline.name }));
+            // Also validate the airline field
+            const airlineResult = validateAirline(airline.name);
+            if (!airlineResult.error) {
+              setFieldValid(prev => ({ ...prev, airline: airlineResult.valid }));
+            }
+          }
+        }
+        break;
+      case 'airline':
+        result = validateAirline(value);
         break;
       case 'departureAirport':
       case 'arrivalAirport':
@@ -181,6 +190,11 @@ export default function FlightLookupForm({ onResults, onLoading }: FlightLookupF
       newErrors.departureDate = dateResult.error || 'Invalid date';
     }
 
+    const airlineResult = validateAirline(formData.airline.trim());
+    if (!airlineResult.valid) {
+      newErrors.airline = airlineResult.error || 'Invalid airline';
+    }
+
     const departureResult = validateAirportCode(formData.departureAirport.trim());
     if (!departureResult.valid) {
       newErrors.departureAirport = departureResult.error || 'Invalid airport code';
@@ -191,8 +205,11 @@ export default function FlightLookupForm({ onResults, onLoading }: FlightLookupF
       newErrors.arrivalAirport = arrivalResult.error || 'Invalid airport code';
     }
 
-    if (!formData.airline.trim()) {
-      newErrors.airline = 'Airline is required';
+    // Cross-field validation: departure and arrival must be different
+    if (departureResult.valid && arrivalResult.valid) {
+      if (formData.departureAirport.trim().toUpperCase() === formData.arrivalAirport.trim().toUpperCase()) {
+        newErrors.arrivalAirport = 'Departure and arrival airports must be different';
+      }
     }
 
     // Validate delay duration for delays
@@ -236,8 +253,8 @@ export default function FlightLookupForm({ onResults, onLoading }: FlightLookupF
       if (!formData.deniedBoardingReason) {
         newErrors.deniedBoardingReason = 'Reason for denied boarding is required';
       }
-      if (!formData.checkInTime) {
-        newErrors.checkInTime = 'Check-in time is required for denied boarding claims';
+      if (!formData.checkedInOnTime) {
+        newErrors.checkedInOnTime = 'Please indicate whether you checked in on time';
       }
       if (!formData.ticketPrice.trim() || parseFloat(formData.ticketPrice) <= 0) {
         newErrors.ticketPrice = 'Valid ticket price is required';
@@ -277,6 +294,20 @@ export default function FlightLookupForm({ onResults, onLoading }: FlightLookupF
     }
 
     setErrors(newErrors);
+
+    // Track validation errors if any
+    if (Object.keys(newErrors).length > 0 && typeof window !== 'undefined') {
+      // Track each validation error
+      Object.entries(newErrors).forEach(([field, error]) => {
+        posthog.capture('form_validation_error', {
+          form_name: 'eligibility_check',
+          field,
+          error_message: error,
+          disruption_type: formData.disruptionType,
+        });
+      });
+    }
+
     return Object.keys(newErrors).length === 0;
   };
 
@@ -289,6 +320,15 @@ export default function FlightLookupForm({ onResults, onLoading }: FlightLookupF
 
     // Track eligibility check started
     if (typeof window !== 'undefined') {
+      // Identify user with their email
+      posthog.identify(formData.passengerEmail.trim(), {
+        email: formData.passengerEmail.trim(),
+        first_name: formData.firstName.trim(),
+        last_name: formData.lastName.trim(),
+        identified_at: new Date().toISOString(),
+        first_seen_via: 'eligibility_check'
+      });
+
       posthog.capture('eligibility_check_started', {
         method: 'flight',
         disruption_type: formData.disruptionType,
@@ -300,6 +340,7 @@ export default function FlightLookupForm({ onResults, onLoading }: FlightLookupF
     onLoading(true);
     setLoading(true);
     setErrors({});
+    setApiError(null); // Clear any previous API errors
 
     try {
       // Calculate alternativeTiming from structured inputs for backward compatibility
@@ -355,7 +396,7 @@ export default function FlightLookupForm({ onResults, onLoading }: FlightLookupF
           volunteersRequested: formData.volunteersRequested,
           deniedBoardingReason: formData.deniedBoardingReason,
           alternativeArrivalDelay: formData.alternativeArrivalDelay, // Now structured radio button values
-          checkInTime: formData.checkInTime,
+          checkedInOnTime: formData.checkedInOnTime,
           ticketPrice: formData.ticketPrice
             ? (formData.isRoundTrip ? parseFloat(formData.ticketPrice) / 2 : parseFloat(formData.ticketPrice))
             : undefined,
@@ -369,28 +410,91 @@ export default function FlightLookupForm({ onResults, onLoading }: FlightLookupF
 
       const result: CheckEligibilityResponse = await response.json();
 
+      // Check if response was not OK
+      if (!response.ok) {
+        // Parse the error using our error message system
+        const errorDetails = parseApiError({
+          ...result,
+          status: response.status,
+        });
+
+        setApiError(errorDetails);
+
+        // Track error in analytics
+        if (typeof window !== 'undefined') {
+          posthog.capture('eligibility_check_error', {
+            error_title: errorDetails.title,
+            error_message: errorDetails.message,
+            status_code: response.status,
+            disruption_type: formData.disruptionType,
+            airline: formData.airline.trim(),
+          });
+        }
+
+        // Don't call onResults with an error - just show it in the form
+        onLoading(false);
+        setLoading(false);
+        return;
+      }
+
       // Track eligibility check completed
       if (typeof window !== 'undefined' && result.success && result.data?.eligibility) {
+        const airlineCode = formData.airline.trim().toUpperCase();
+        const routeId = `${formData.departureAirport.trim().toUpperCase()}-${formData.arrivalAirport.trim().toUpperCase()}`;
+
+        // Set up group analytics for airline
+        posthog.group('airline', airlineCode, {
+          airline_code: airlineCode,
+          airline_name: airlineCode, // Could enhance with full name lookup
+        });
+
+        // Set up group analytics for route
+        posthog.group('route', routeId, {
+          route_id: routeId,
+          origin_airport: formData.departureAirport.trim().toUpperCase(),
+          destination_airport: formData.arrivalAirport.trim().toUpperCase(),
+          route_type: formData.departureAirport.trim().toUpperCase().startsWith('EU') ? 'EU' : 'International',
+        });
+
+        // Track event with group context
         posthog.capture('eligibility_check_completed', {
           eligible: result.data.eligibility.isEligible,
           compensation_amount: result.data.eligibility.compensationAmount,
           regulation: result.data.eligibility.regulation,
           disruption_type: formData.disruptionType,
-          airline: formData.airline.trim(),
+          airline: airlineCode,
           confidence: result.data.eligibility.confidence,
           method: 'flight',
           ...getAttributionProperties(), // Include marketing attribution
+          // Add groups to event
+          $groups: {
+            airline: airlineCode,
+            route: routeId,
+          },
         });
       }
+
+      // Mark form as completed (prevents abandonment tracking)
+      markCompleted();
 
       onResults(result);
     } catch (error) {
       console.error('Error checking eligibility:', error);
-      onResults({
-        success: false,
-        error: 'Failed to check eligibility. Please try again.',
-        method: 'flight_lookup'
-      });
+
+      // Parse network/fetch errors
+      const errorDetails = parseApiError(error);
+      setApiError(errorDetails);
+
+      // Track error in analytics
+      if (typeof window !== 'undefined') {
+        posthog.capture('eligibility_check_error', {
+          error_title: errorDetails.title,
+          error_message: errorDetails.message,
+          error_type: 'network_error',
+          disruption_type: formData.disruptionType,
+          airline: formData.airline.trim(),
+        });
+      }
     } finally {
       onLoading(false);
       setLoading(false);
@@ -406,6 +510,10 @@ export default function FlightLookupForm({ onResults, onLoading }: FlightLookupF
     // Clear field valid indicator
     if (fieldValid[field]) {
       setFieldValid(prev => ({ ...prev, [field]: false }));
+    }
+    // Clear API error when user makes changes
+    if (apiError) {
+      setApiError(null);
     }
   };
 
@@ -467,7 +575,7 @@ export default function FlightLookupForm({ onResults, onLoading }: FlightLookupF
               value="delay"
               checked={formData.disruptionType === 'delay'}
               onChange={(e) => handleInputChange('disruptionType', e.target.value)}
-              className="mr-3 w-4 h-4"
+              className="mr-3 w-4 h-4 accent-blue-600"
             />
             <div>
               <span className="text-sm font-medium">Flight Delayed</span>
@@ -481,7 +589,7 @@ export default function FlightLookupForm({ onResults, onLoading }: FlightLookupF
               value="cancellation"
               checked={formData.disruptionType === 'cancellation'}
               onChange={(e) => handleInputChange('disruptionType', e.target.value)}
-              className="mr-3 w-4 h-4"
+              className="mr-3 w-4 h-4 accent-blue-600"
             />
             <div>
               <span className="text-sm font-medium">Flight Cancelled</span>
@@ -495,7 +603,7 @@ export default function FlightLookupForm({ onResults, onLoading }: FlightLookupF
               value="denied_boarding"
               checked={formData.disruptionType === 'denied_boarding'}
               onChange={(e) => handleInputChange('disruptionType', e.target.value)}
-              className="mr-3 w-4 h-4"
+              className="mr-3 w-4 h-4 accent-blue-600"
             />
             <div>
               <span className="text-sm font-medium">Denied Boarding</span>
@@ -509,7 +617,7 @@ export default function FlightLookupForm({ onResults, onLoading }: FlightLookupF
               value="downgrade"
               checked={formData.disruptionType === 'downgrade'}
               onChange={(e) => handleInputChange('disruptionType', e.target.value)}
-              className="mr-3 w-4 h-4"
+              className="mr-3 w-4 h-4 accent-blue-600"
             />
             <div>
               <span className="text-sm font-medium">Seat Downgrade</span>
@@ -575,14 +683,21 @@ export default function FlightLookupForm({ onResults, onLoading }: FlightLookupF
         </div>
 
         {/* Airline */}
-        <AirlineAutocomplete
-          value={formData.airline}
-          onChange={(value) => handleInputChange('airline', value)}
-          label="Airline"
-          required={true}
-          placeholder="e.g., British Airways, BA"
-          error={errors.airline}
-        />
+        <div>
+          <AirlineAutocomplete
+            value={formData.airline}
+            onChange={(value) => handleInputChange('airline', value)}
+            onBlur={(value) => validateField('airline', value)}
+            label="Airline"
+            required={true}
+            placeholder="e.g., British Airways, BA"
+            error={errors.airline}
+            isValid={fieldValid.airline}
+          />
+          {!formData.airline && (
+            <p className="mt-1 text-xs text-gray-500">Auto-filled from flight number, or enter manually</p>
+          )}
+        </div>
 
         {/* Route - Visual Grouping with Arrow */}
         <div className="md:col-span-2">
@@ -594,10 +709,12 @@ export default function FlightLookupForm({ onResults, onLoading }: FlightLookupF
               <AirportAutocomplete
                 value={formData.departureAirport}
                 onChange={(value) => handleInputChange('departureAirport', value)}
+                onBlur={(value) => validateField('departureAirport', value)}
                 placeholder="Departure (e.g., LHR, JFK)"
-                error=""
+                error={errors.departureAirport}
                 label=""
                 required={false}
+                isValid={fieldValid.departureAirport}
               />
             </div>
             <div className="text-2xl text-blue-500 pb-2 hidden sm:block">
@@ -610,18 +727,15 @@ export default function FlightLookupForm({ onResults, onLoading }: FlightLookupF
               <AirportAutocomplete
                 value={formData.arrivalAirport}
                 onChange={(value) => handleInputChange('arrivalAirport', value)}
+                onBlur={(value) => validateField('arrivalAirport', value)}
                 placeholder="Arrival (e.g., CDG, LAX)"
-                error=""
+                error={errors.arrivalAirport}
                 label=""
                 required={false}
+                isValid={fieldValid.arrivalAirport}
               />
             </div>
           </div>
-          {(errors.departureAirport || errors.arrivalAirport) && (
-            <p className="mt-1 text-sm text-red-600">
-              {errors.departureAirport || errors.arrivalAirport}
-            </p>
-          )}
           <p className="mt-1 text-xs text-gray-500">Your departure and arrival airports</p>
         </div>
       </div>
@@ -1015,7 +1129,7 @@ export default function FlightLookupForm({ onResults, onLoading }: FlightLookupF
                     value="involuntary"
                     checked={formData.boardingType === 'involuntary'}
                     onChange={(e) => handleInputChange('boardingType', e.target.value)}
-                    className="mr-3 mt-1 w-4 h-4"
+                    className="mr-3 mt-1 w-4 h-4 accent-blue-600"
                   />
                   <div>
                     <span className="text-sm font-medium">Involuntary - You were denied boarding</span>
@@ -1029,7 +1143,7 @@ export default function FlightLookupForm({ onResults, onLoading }: FlightLookupF
                     value="voluntary"
                     checked={formData.boardingType === 'voluntary'}
                     onChange={(e) => handleInputChange('boardingType', e.target.value)}
-                    className="mr-3 mt-1 w-4 h-4"
+                    className="mr-3 mt-1 w-4 h-4 accent-blue-600"
                   />
                   <div>
                     <span className="text-sm font-medium">Voluntary - You gave up your seat</span>
@@ -1041,18 +1155,34 @@ export default function FlightLookupForm({ onResults, onLoading }: FlightLookupF
 
             {/* Volunteers Requested */}
             <div className="md:col-span-2">
-              <label className="flex items-center p-3 border rounded-lg cursor-pointer hover:bg-gray-50">
-                <input
-                  type="checkbox"
-                  checked={formData.volunteersRequested}
-                  onChange={(e) => setFormData(prev => ({ ...prev, volunteersRequested: e.target.checked }))}
-                  className="mr-3 w-4 h-4"
-                />
-                <span className="text-sm font-medium text-gray-700">
-                  Did the airline ask for volunteers before denying boarding?
-                </span>
+              <label className="block text-sm font-medium text-gray-700 mb-3">
+                Did the airline ask for volunteers before denying boarding?
               </label>
-              <p className="mt-2 text-xs text-gray-500 px-3">Airlines are required to ask for volunteers first in overbooking situations</p>
+              <div className="flex gap-4">
+                <label className="flex items-center p-3 border rounded-lg cursor-pointer hover:bg-gray-50 transition-colors flex-1">
+                  <input
+                    type="radio"
+                    name="volunteersRequested"
+                    value="yes"
+                    checked={formData.volunteersRequested === true}
+                    onChange={() => setFormData(prev => ({ ...prev, volunteersRequested: true }))}
+                    className="mr-3 w-4 h-4 accent-blue-600"
+                  />
+                  <span className="text-sm font-medium">Yes</span>
+                </label>
+                <label className="flex items-center p-3 border rounded-lg cursor-pointer hover:bg-gray-50 transition-colors flex-1">
+                  <input
+                    type="radio"
+                    name="volunteersRequested"
+                    value="no"
+                    checked={formData.volunteersRequested === false}
+                    onChange={() => setFormData(prev => ({ ...prev, volunteersRequested: false }))}
+                    className="mr-3 w-4 h-4 accent-blue-600"
+                  />
+                  <span className="text-sm font-medium">No</span>
+                </label>
+              </div>
+              <p className="mt-2 text-xs text-gray-500">Airlines are required to ask for volunteers first in overbooking situations</p>
             </div>
 
             {/* Denied Boarding Reason */}
@@ -1109,7 +1239,7 @@ export default function FlightLookupForm({ onResults, onLoading }: FlightLookupF
                       value="0-1"
                       checked={formData.alternativeArrivalDelay === '0-1'}
                       onChange={(e) => handleInputChange('alternativeArrivalDelay', e.target.value)}
-                      className="mr-3 mt-1 w-4 h-4"
+                      className="mr-3 mt-1 w-4 h-4 accent-blue-600"
                     />
                     <div>
                       <span className="text-sm font-medium">Within 1 hour</span>
@@ -1123,7 +1253,7 @@ export default function FlightLookupForm({ onResults, onLoading }: FlightLookupF
                       value="1-2"
                       checked={formData.alternativeArrivalDelay === '1-2'}
                       onChange={(e) => handleInputChange('alternativeArrivalDelay', e.target.value)}
-                      className="mr-3 mt-1 w-4 h-4"
+                      className="mr-3 mt-1 w-4 h-4 accent-blue-600"
                     />
                     <div>
                       <span className="text-sm font-medium">1-2 hours (domestic) or 1-4 hours (international)</span>
@@ -1137,7 +1267,7 @@ export default function FlightLookupForm({ onResults, onLoading }: FlightLookupF
                       value="2-4"
                       checked={formData.alternativeArrivalDelay === '2-4'}
                       onChange={(e) => handleInputChange('alternativeArrivalDelay', e.target.value)}
-                      className="mr-3 mt-1 w-4 h-4"
+                      className="mr-3 mt-1 w-4 h-4 accent-blue-600"
                     />
                     <div>
                       <span className="text-sm font-medium">2-4 hours (domestic) or 4+ hours (international)</span>
@@ -1151,7 +1281,7 @@ export default function FlightLookupForm({ onResults, onLoading }: FlightLookupF
                       value="4+"
                       checked={formData.alternativeArrivalDelay === '4+'}
                       onChange={(e) => handleInputChange('alternativeArrivalDelay', e.target.value)}
-                      className="mr-3 mt-1 w-4 h-4"
+                      className="mr-3 mt-1 w-4 h-4 accent-blue-600"
                     />
                     <div>
                       <span className="text-sm font-medium">More than 4 hours / Next day</span>
@@ -1166,30 +1296,95 @@ export default function FlightLookupForm({ onResults, onLoading }: FlightLookupF
               </div>
             )}
 
-            {/* Check-in Time */}
-            <div>
-              <label htmlFor="checkInTime" className="block text-sm font-medium text-gray-700 mb-2">
-                What time did you check in?
+            {/* Check-in Status */}
+            <div className="md:col-span-2">
+              <label className="block text-sm font-medium text-gray-700 mb-3">
+                Did you check in on time?
               </label>
-              <input
-                type="time"
-                id="checkInTime"
-                value={formData.checkInTime}
-                onChange={(e) => handleInputChange('checkInTime', e.target.value)}
-                className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${
-                  errors.checkInTime ? 'border-red-500' : 'border-gray-300'
-                }`}
-              />
-              {errors.checkInTime && (
-                <p className="mt-1 text-sm text-red-600">{errors.checkInTime}</p>
+              <div className="space-y-3">
+                <label className="flex items-start p-3 border rounded-lg cursor-pointer hover:bg-gray-50 transition-colors">
+                  <input
+                    type="radio"
+                    name="checkedInOnTime"
+                    value="yes"
+                    checked={formData.checkedInOnTime === 'yes'}
+                    onChange={(e) => handleInputChange('checkedInOnTime', e.target.value)}
+                    className="mr-3 mt-1 w-4 h-4"
+                  />
+                  <div>
+                    <span className="text-sm font-medium">Yes, I checked in on time</span>
+                    <p className="text-xs text-gray-500 mt-1">
+                      Within the airline's check-in deadline (typically 30-60 min domestic, 60-90 min international)
+                    </p>
+                  </div>
+                </label>
+                <label className="flex items-start p-3 border rounded-lg cursor-pointer hover:bg-gray-50 transition-colors">
+                  <input
+                    type="radio"
+                    name="checkedInOnTime"
+                    value="no"
+                    checked={formData.checkedInOnTime === 'no'}
+                    onChange={(e) => handleInputChange('checkedInOnTime', e.target.value)}
+                    className="mr-3 mt-1 w-4 h-4"
+                  />
+                  <div>
+                    <span className="text-sm font-medium">No, I checked in late</span>
+                    <p className="text-xs text-gray-500 mt-1">After the check-in deadline</p>
+                  </div>
+                </label>
+                <label className="flex items-start p-3 border rounded-lg cursor-pointer hover:bg-gray-50 transition-colors">
+                  <input
+                    type="radio"
+                    name="checkedInOnTime"
+                    value="unsure"
+                    checked={formData.checkedInOnTime === 'unsure'}
+                    onChange={(e) => handleInputChange('checkedInOnTime', e.target.value)}
+                    className="mr-3 mt-1 w-4 h-4"
+                  />
+                  <div>
+                    <span className="text-sm font-medium">I'm not sure</span>
+                    <p className="text-xs text-gray-500 mt-1">I don't remember or wasn't aware of the deadline</p>
+                  </div>
+                </label>
+              </div>
+              {errors.checkedInOnTime && (
+                <p className="mt-2 text-sm text-red-600">{errors.checkedInOnTime}</p>
               )}
-              <p className="mt-1 text-xs text-gray-500">🕐 Must be within check-in deadline to be eligible</p>
+            </div>
+
+            {/* Ticket Type */}
+            <div className="md:col-span-2">
+              <label className="block text-sm font-medium text-gray-700 mb-3">
+                Ticket Type
+              </label>
+              <div className="flex gap-4">
+                <label className="flex items-center p-3 border rounded-lg cursor-pointer hover:bg-gray-50 transition-colors flex-1">
+                  <input
+                    type="radio"
+                    name="ticketType"
+                    checked={!formData.isRoundTrip}
+                    onChange={() => setFormData(prev => ({ ...prev, isRoundTrip: false }))}
+                    className="mr-3 w-4 h-4 accent-blue-600"
+                  />
+                  <span className="text-sm font-medium">One-Way</span>
+                </label>
+                <label className="flex items-center p-3 border rounded-lg cursor-pointer hover:bg-gray-50 transition-colors flex-1">
+                  <input
+                    type="radio"
+                    name="ticketType"
+                    checked={formData.isRoundTrip}
+                    onChange={() => setFormData(prev => ({ ...prev, isRoundTrip: true }))}
+                    className="mr-3 w-4 h-4 accent-blue-600"
+                  />
+                  <span className="text-sm font-medium">Round-Trip</span>
+                </label>
+              </div>
             </div>
 
             {/* Ticket Price */}
             <div className="md:col-span-2">
               <label htmlFor="ticketPrice" className="block text-sm font-medium text-gray-700 mb-2">
-                One-Way Ticket Price (USD)
+                {formData.isRoundTrip ? 'Total Round-Trip' : 'One-Way'} Ticket Price (USD)
               </label>
               <div className="relative">
                 <span className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500 text-lg">$</span>
@@ -1198,7 +1393,7 @@ export default function FlightLookupForm({ onResults, onLoading }: FlightLookupF
                   id="ticketPrice"
                   value={formData.ticketPrice}
                   onChange={(e) => handleInputChange('ticketPrice', e.target.value)}
-                  placeholder="450"
+                  placeholder={formData.isRoundTrip ? "900" : "450"}
                   min="0"
                   step="0.01"
                   className={`w-full pl-9 pr-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${
@@ -1209,70 +1404,9 @@ export default function FlightLookupForm({ onResults, onLoading }: FlightLookupF
               {errors.ticketPrice && (
                 <p className="mt-1 text-sm text-red-600">{errors.ticketPrice}</p>
               )}
-              <div className="mt-2 space-y-1">
-                <p className="text-xs text-gray-600">Enter the base fare shown on your ticket, before taxes and fees</p>
-                <label className="flex items-center text-xs text-gray-600">
-                  <input
-                    type="checkbox"
-                    checked={formData.isRoundTrip}
-                    onChange={(e) => setFormData(prev => ({ ...prev, isRoundTrip: e.target.checked }))}
-                    className="mr-2"
-                  />
-                  This was a round-trip ticket (we'll calculate one-way equivalent)
-                </label>
-              </div>
-            </div>
-
-            {/* EU Rights Info Box - Collapsible */}
-            <div className="md:col-span-2">
-              <button
-                type="button"
-                onClick={() => setShowEURightsInfo(!showEURightsInfo)}
-                className="w-full flex items-center justify-between p-4 bg-green-50 border border-green-200 rounded-lg hover:bg-green-100 transition-colors"
-              >
-                <span className="font-medium text-green-900">
-                  🇪🇺 EU Regulation 261/2004 - Denied Boarding Rights
-                </span>
-                <span className="text-green-700 text-xl">{showEURightsInfo ? '▲' : '▼'}</span>
-              </button>
-
-              {showEURightsInfo && (
-                <div className="mt-2 bg-green-50 border border-green-200 border-t-0 rounded-b-lg p-4">
-                  <ul className="text-sm text-green-800 space-y-1">
-                    <li>• Up to €600 compensation for involuntary denied boarding</li>
-                    <li>• Distance-based: €250 (under 1,500km), €400 (1,500-3,500km), €600 (over 3,500km)</li>
-                    <li>• 50% reduction if alternative arrives within 2-4 hours of original</li>
-                    <li>• Right to care: meals, hotel, transport during waiting time</li>
-                    <li>• Choice between refund or alternative flight to final destination</li>
-                  </ul>
-                </div>
-              )}
-            </div>
-
-            {/* US Rights Info Box - Collapsible */}
-            <div className="md:col-span-2">
-              <button
-                type="button"
-                onClick={() => setShowUSRightsInfo(!showUSRightsInfo)}
-                className="w-full flex items-center justify-between p-4 bg-blue-50 border border-blue-200 rounded-lg hover:bg-blue-100 transition-colors"
-              >
-                <span className="font-medium text-blue-900">
-                  🇺🇸 US DOT - Involuntary Bumping Compensation
-                </span>
-                <span className="text-blue-700 text-xl">{showUSRightsInfo ? '▲' : '▼'}</span>
-              </button>
-
-              {showUSRightsInfo && (
-                <div className="mt-2 bg-blue-50 border border-blue-200 border-t-0 rounded-b-lg p-4">
-                  <ul className="text-sm text-blue-800 space-y-1">
-                    <li>• Airlines must ask for volunteers before denying boarding involuntarily</li>
-                    <li>• 0-1 hour delay: No compensation required</li>
-                    <li>• 1-2 hours delay (domestic) / 1-4 hours (international): 200% of fare (max $775)</li>
-                    <li>• 2+ hours delay (domestic) / 4+ hours (international): 400% of fare (max $1,550)</li>
-                    <li>• Compensation must be paid immediately at the airport</li>
-                  </ul>
-                </div>
-              )}
+              <p className="mt-2 text-xs text-gray-600">
+                Enter the base fare shown on your ticket, before taxes and fees
+              </p>
             </div>
           </div>
         </div>
@@ -1332,19 +1466,48 @@ export default function FlightLookupForm({ onResults, onLoading }: FlightLookupF
               )}
             </div>
 
+            {/* Ticket Type */}
+            <div className="md:col-span-2">
+              <label className="block text-sm font-medium text-gray-700 mb-3">
+                Ticket Type
+              </label>
+              <div className="flex gap-4">
+                <label className="flex items-center p-3 border rounded-lg cursor-pointer hover:bg-gray-50 transition-colors flex-1">
+                  <input
+                    type="radio"
+                    name="ticketTypeDowngrade"
+                    checked={!formData.isRoundTrip}
+                    onChange={() => setFormData(prev => ({ ...prev, isRoundTrip: false }))}
+                    className="mr-3 w-4 h-4 accent-blue-600"
+                  />
+                  <span className="text-sm font-medium">One-Way</span>
+                </label>
+                <label className="flex items-center p-3 border rounded-lg cursor-pointer hover:bg-gray-50 transition-colors flex-1">
+                  <input
+                    type="radio"
+                    name="ticketTypeDowngrade"
+                    checked={formData.isRoundTrip}
+                    onChange={() => setFormData(prev => ({ ...prev, isRoundTrip: true }))}
+                    className="mr-3 w-4 h-4 accent-blue-600"
+                  />
+                  <span className="text-sm font-medium">Round-Trip</span>
+                </label>
+              </div>
+            </div>
+
             {/* Ticket Price */}
             <div className="md:col-span-2">
-              <label htmlFor="ticketPrice" className="block text-sm font-medium text-gray-700 mb-2">
-                One-Way Ticket Price (USD)
+              <label htmlFor="ticketPriceDowngrade" className="block text-sm font-medium text-gray-700 mb-2">
+                {formData.isRoundTrip ? 'Total Round-Trip' : 'One-Way'} Ticket Price (USD)
               </label>
               <div className="relative">
                 <span className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500 text-lg">$</span>
                 <input
                   type="number"
-                  id="ticketPrice"
+                  id="ticketPriceDowngrade"
                   value={formData.ticketPrice}
                   onChange={(e) => handleInputChange('ticketPrice', e.target.value)}
-                  placeholder="2500"
+                  placeholder={formData.isRoundTrip ? "5000" : "2500"}
                   min="0"
                   step="0.01"
                   className={`w-full pl-9 pr-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${
@@ -1355,18 +1518,9 @@ export default function FlightLookupForm({ onResults, onLoading }: FlightLookupF
               {errors.ticketPrice && (
                 <p className="mt-1 text-sm text-red-600">{errors.ticketPrice}</p>
               )}
-              <div className="mt-2 space-y-1">
-                <p className="text-xs text-gray-600">Enter the base fare shown on your ticket, before taxes and fees</p>
-                <label className="flex items-center text-xs text-gray-600">
-                  <input
-                    type="checkbox"
-                    checked={formData.isRoundTrip}
-                    onChange={(e) => setFormData(prev => ({ ...prev, isRoundTrip: e.target.checked }))}
-                    className="mr-2"
-                  />
-                  This was a round-trip ticket (we'll calculate one-way equivalent)
-                </label>
-              </div>
+              <p className="mt-2 text-xs text-gray-600">
+                Enter the base fare shown on your ticket, before taxes and fees
+              </p>
             </div>
 
             {/* Live Compensation Preview */}
@@ -1534,6 +1688,7 @@ export default function FlightLookupForm({ onResults, onLoading }: FlightLookupF
               value={formData.firstName}
               onChange={(e) => handleInputChange('firstName', e.target.value)}
               placeholder="John"
+              data-ph-capture-attribute-name-mask="true"
               className={`w-full px-4 py-4 md:py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-base ${
                 errors.firstName ? 'border-red-500' : 'border-gray-300'
               }`}
@@ -1553,6 +1708,7 @@ export default function FlightLookupForm({ onResults, onLoading }: FlightLookupF
               value={formData.lastName}
               onChange={(e) => handleInputChange('lastName', e.target.value)}
               placeholder="Doe"
+              data-ph-capture-attribute-name-mask="true"
               className={`w-full px-4 py-4 md:py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-base ${
                 errors.lastName ? 'border-red-500' : 'border-gray-300'
               }`}
@@ -1574,6 +1730,7 @@ export default function FlightLookupForm({ onResults, onLoading }: FlightLookupF
                 onChange={(e) => handleInputChange('passengerEmail', e.target.value)}
                 onBlur={(e) => validateField('passengerEmail', e.target.value)}
                 placeholder="john@example.com"
+                data-ph-capture-attribute-name-mask="true"
                 className={`w-full px-4 py-4 md:py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-base ${
                   errors.passengerEmail ? 'border-red-500' : fieldValid.passengerEmail ? 'border-green-500' : 'border-gray-300'
                 }`}
@@ -1600,6 +1757,44 @@ export default function FlightLookupForm({ onResults, onLoading }: FlightLookupF
           </div>
         </div>
       </div>
+
+      {/* API Error Display */}
+      {apiError && (
+        <div className="bg-red-50 border-2 border-red-200 rounded-lg p-6 space-y-4">
+          <div className="flex items-start space-x-3">
+            <div className="flex-shrink-0">
+              <svg className="w-6 h-6 text-red-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+              </svg>
+            </div>
+            <div className="flex-1">
+              <h3 className="text-lg font-semibold text-red-900 mb-1">{apiError.title}</h3>
+              <p className="text-red-800 mb-3">{apiError.message}</p>
+
+              {apiError.guidance && apiError.guidance.length > 0 && (
+                <div className="bg-white border border-red-200 rounded-md p-4">
+                  <p className="text-sm font-medium text-red-900 mb-2">What to do next:</p>
+                  <ul className="list-disc list-inside space-y-1 text-sm text-red-800">
+                    {apiError.guidance.map((item, index) => (
+                      <li key={index}>{item}</li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+
+              {apiError.retryable && (
+                <button
+                  type="button"
+                  onClick={() => setApiError(null)}
+                  className="mt-4 text-sm font-medium text-red-700 hover:text-red-900 underline"
+                >
+                  Dismiss and try again
+                </button>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
 
       <div className="flex justify-center pt-6">
         <motion.button

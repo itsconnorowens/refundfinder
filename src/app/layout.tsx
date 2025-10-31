@@ -41,6 +41,16 @@ export default function RootLayout({
         person_profiles: 'identified_only',
         capture_pageview: false,
         capture_pageleave: true,
+        capture_exceptions: true,
+        enable_recording_console_log: true,
+        session_recording: {
+            maskAllInputs: false,
+            maskTextSelector: '[data-ph-capture-attribute-name-mask]',
+            recordCrossOriginIframes: true,
+            sampling: {
+                minimumDuration: 5000
+            }
+        }
     });
             `,
           }}
