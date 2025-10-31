@@ -12,7 +12,10 @@ import { trackServerEvent, trackServerError } from '@/lib/posthog';
 import { logger } from '@/lib/logger';
 
 export const POST = withErrorTracking(async (request: NextRequest) => {
-  logger.info('🔍 Eligibility Check API - Request received');
+  const startTime = Date.now();
+  logger.info('🔍 Eligibility Check API - Request received', {
+    timestamp: new Date().toISOString(),
+  });
 
   // Check rate limit
     const clientId = getClientIdentifier(request);
@@ -117,10 +120,7 @@ export const POST = withErrorTracking(async (request: NextRequest) => {
       ...(ticketPrice !== undefined && { ticketPrice }),
     };
 
-    console.log(
-      '✈️ Flight details created:',
-      JSON.stringify(flightDetails, null, 2)
-    );
+    logger.info('Flight details created', { flightDetails });
 
   // Check eligibility
   addBreadcrumb('Checking flight eligibility', 'eligibility', {
@@ -187,6 +187,22 @@ export const POST = withErrorTracking(async (request: NextRequest) => {
     // Continue even if storage fails
   }
 
+    const duration = Date.now() - startTime;
+    logger.info('✅ Eligibility check completed successfully', {
+      duration,
+      eligible: result.eligible,
+      compensationAmount: result.amount,
+    });
+
+    // Log warning if request took too long (potential timeout risk)
+    if (duration > 25000) {
+      logger.warn('⚠️ Eligibility check took longer than 25 seconds', {
+        duration,
+        flightNumber: flightDetails.flightNumber,
+        airline: flightDetails.airline,
+      });
+    }
+
     return NextResponse.json(
       {
         success: true,
@@ -209,6 +225,7 @@ export const POST = withErrorTracking(async (request: NextRequest) => {
             isEligible: result.eligible,
             compensationAmount: result.amount,
             reason: result.reason || result.message,
+            message: result.message,
             regulation: result.regulation,
             confidence: result.confidence,
             disruptionType: flightDetails.disruptionType,
@@ -235,6 +252,7 @@ export const POST = withErrorTracking(async (request: NextRequest) => {
           'X-RateLimit-Reset': Math.ceil(
             rateLimitResult.resetTime / 1000
           ).toString(),
+          'X-Response-Time': duration.toString(),
         },
       }
     );

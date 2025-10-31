@@ -51,9 +51,10 @@ export async function saveOfflineClaim(
           await (registration.sync as any).register('sync-claims');
         }
       } catch (error: unknown) {
-        console.error(
-          '[Offline Storage] Service Worker sync not available:',
-          error
+        logger.error(
+          'Service Worker sync not available',
+          error,
+          { operation: 'offline_storage' }
         );
       }
     }

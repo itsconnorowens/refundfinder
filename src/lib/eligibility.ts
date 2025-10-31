@@ -1074,7 +1074,11 @@ function _calculateFlightDistance(departure: string, arrival: string): number {
 
   if (distance === null) {
     // Fallback for airports not in database
-    console.warn(`Airport not found in database: ${departure} or ${arrival}`);
+    logger.warn(`Airport not found in database`, {
+      departure,
+      arrival,
+      operation: 'distance_calculation'
+    });
     return 1000; // Default to 1000km if unknown
   }
 

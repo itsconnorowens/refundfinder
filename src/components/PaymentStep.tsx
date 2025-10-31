@@ -7,6 +7,7 @@ import {
   useElements,
 } from '@stripe/react-stripe-js';
 import posthog from 'posthog-js';
+import { logger } from '@/lib/logger';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { AlertCircle, CheckCircle, Lock, ShieldCheck } from 'lucide-react';
@@ -104,7 +105,7 @@ export default function PaymentStep({
         setIsProcessing(false);
       }
     } catch (err: unknown) {
-      console.error('Payment error:', err);
+      logger.error('Payment error', err);
       // Track unexpected error
       if (typeof window !== 'undefined') {
         posthog.capture('payment_failed', {

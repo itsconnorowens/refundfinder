@@ -120,7 +120,10 @@ class EmailService {
           return result;
         }
       } catch (error: unknown) {
-        console.error(`Failed to send email via ${provider.provider}:`, error);
+        logger.error(`Failed to send email via ${provider.provider}`, error, {
+          provider: provider.provider,
+          operation: 'email'
+        });
         continue;
       }
     }

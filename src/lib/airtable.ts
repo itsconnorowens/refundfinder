@@ -6,7 +6,7 @@ const apiKey = process.env.AIRTABLE_API_KEY;
 const baseId = process.env.AIRTABLE_BASE_ID;
 
 if (!apiKey || !baseId) {
-  console.warn(
+  logger.warn(
     'Airtable credentials not configured. Some features may not work.'
   );
 }
@@ -582,9 +582,10 @@ export async function getClaimsByStatus(
 
     return records;
   } catch (error: unknown) {
-    console.error(
-      `Error fetching claims with status ${status} from Airtable:`,
-      error
+    logger.error(
+      `Error fetching claims with status ${status} from Airtable`,
+      error,
+      { status }
     );
     throw error;
   }
@@ -651,8 +652,8 @@ export async function getClaimsNeedingFollowUp(): Promise<readonly any[]> {
 
     return records;
   } catch (error: unknown) {
-    console.error(
-      'Error fetching claims needing follow-up from Airtable:',
+    logger.error(
+      'Error fetching claims needing follow-up from Airtable',
       error
     );
     throw error;

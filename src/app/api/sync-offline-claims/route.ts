@@ -61,7 +61,10 @@ export async function POST(_request: NextRequest) {
           errors.push(`Claim ${claim.claimId}: ${errorData.error}`);
         }
       } catch (error: unknown) {
-        console.error(`Error syncing claim ${claim.claimId}:`, error);
+        logger.error(`Error syncing claim ${claim.claimId}`, error, {
+          route: '/api/sync-offline-claims',
+          claimId: claim.claimId
+        });
         await markClaimAsFailed(
           claim.claimId,
           error instanceof Error ? error.message : 'Unknown error'

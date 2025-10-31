@@ -1,6 +1,8 @@
 import * as Sentry from '@sentry/nextjs';
 import { NextRequest, NextResponse } from 'next/server';
 import { logger } from '@/lib/logger';
+import posthog from 'posthog-js';
+import { trackServerEvent } from '@/lib/posthog';
 
 /**
  * Error tracking service for Flghtly
@@ -248,6 +250,35 @@ export function captureError(
   // Also log to console for local development
   logger.error('[Error Tracking]', error, { tags: enrichedTags, extra: enrichedExtra });
 
+  // Track error in PostHog for correlation with user behavior
+  try {
+    const errorData = {
+      sentryEventId: eventId,
+      errorType: error instanceof AppError ? error.name : error instanceof Error ? error.name : 'UnknownError',
+      errorMessage: error instanceof Error ? error.message : String(error),
+      errorCategory: error instanceof AppError ? error.category : 'unknown',
+      statusCode: error instanceof AppError ? error.statusCode : 500,
+      userEmail: context?.user?.email || 'anonymous',
+      tags: enrichedTags,
+      level: context?.level || 'error',
+      timestamp: new Date().toISOString(),
+    };
+
+    // Try client-side PostHog first (if available)
+    if (typeof window !== 'undefined' && posthog.__loaded) {
+      posthog.capture('error_occurred', errorData);
+    } else {
+      // Fallback to server-side PostHog
+      const userId = context?.user?.email || context?.user?.id || 'anonymous';
+      trackServerEvent(userId, 'error_occurred', errorData);
+    }
+  } catch (posthogError: unknown) {
+    // Don't let PostHog tracking errors break error handling
+    logger.warn('[Error Tracking] Failed to send error to PostHog', {
+      error: posthogError instanceof Error ? posthogError.message : String(posthogError),
+    });
+  }
+
   return eventId;
 }
 
@@ -408,7 +439,11 @@ export function trackPerformance(
   });
 
   if (duration > 5000) {
-    console.warn(`Slow operation: ${operation} took ${duration}ms`, tags);
+    logger.warn(`Slow operation: ${operation} took ${duration}ms`, {
+      operation,
+      duration,
+      ...tags,
+    });
     captureMessage(`Slow operation: ${operation} took ${duration}ms`, {
       level: 'warning',
       tags: {
@@ -565,7 +600,12 @@ export async function trackEmailDelivery<T>(
     });
 
     // Log failed delivery
-    console.error(`[Email] Failed to send ${emailType} to ${recipient} after ${duration}ms`);
+    logger.error(`Failed to send email`, undefined, {
+      emailType,
+      recipient,
+      duration,
+      operation: 'email'
+    });
 
     throw new EmailError(
       `Email delivery failed: ${emailType}`,

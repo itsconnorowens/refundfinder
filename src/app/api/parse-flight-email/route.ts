@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { logger } from '@/lib/logger';
+import { trackServerEvent } from '@/lib/posthog';
 import {
   parseFlightEmail,
   isAnthropicConfigured,
@@ -79,16 +80,27 @@ export async function POST(request: NextRequest) {
     }
 
     // Parse the email using Claude
-    logger.info('📧 Email parsing - Input email length:', { length: emailText.length });
+    logger.info('Email parsing - Input email length', { length: emailText.length, route: '/api/parse-flight-email' });
+
+    // Track email parse initiation
+    trackServerEvent('anonymous', 'email_parse_initiated', {
+      emailLength: emailText.length,
+      timestamp: new Date().toISOString(),
+    });
+
     const flightData = await parseFlightEmail(emailText);
-    console.log(
-      '📧 Email parsing - Raw result:',
-      JSON.stringify(flightData, null, 2)
-    );
+    logger.info('Email parsing - Raw result', { flightData, route: '/api/parse-flight-email' });
 
     // Check if parsing was successful
     if (!flightData || !flightData.success) {
-      logger.info('❌ Email parsing failed:', { error: flightData?.error });
+      logger.info('Email parsing failed', { error: flightData?.error, route: '/api/parse-flight-email' });
+
+      // Track email parse failure
+      trackServerEvent('anonymous', 'email_parse_failure', {
+        reason: flightData?.error || 'unknown',
+        emailLength: emailText.length,
+      });
+
       return NextResponse.json(
         {
           success: false,
@@ -100,10 +112,16 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    console.log(
-      '✅ Email parsing successful - Data:',
-      JSON.stringify(flightData.data, null, 2)
-    );
+    logger.info('Email parsing successful', { data: flightData.data, route: '/api/parse-flight-email' });
+
+    // Track email parse success
+    trackServerEvent('anonymous', 'email_parse_success', {
+      airline: flightData.data?.airline || '',
+      hasFlightNumber: !!flightData.data?.flightNumber,
+      hasDate: !!flightData.data?.departureDate,
+      hasAirports: !!(flightData.data?.departureAirport && flightData.data?.arrivalAirport),
+      fieldsExtracted: flightData.data ? Object.keys(flightData.data).length : 0,
+    });
 
     // Return successful response
     return NextResponse.json({

@@ -154,27 +154,37 @@ class EmailQueue {
 
       if (result.success) {
         email.status = 'sent';
-        console.log(
-          `Email ${email.id} sent successfully via ${result.provider}`
-        );
+        logger.info(`Email sent successfully`, {
+          emailId: email.id,
+          provider: result.provider,
+          operation: 'email'
+        });
       } else {
         throw new Error(result.error || 'Unknown email error');
       }
     } catch (error: unknown) {
-      console.error(`Failed to send email ${email.id}:`, error);
+      logger.error(`Failed to send email`, error, {
+        emailId: email.id,
+        operation: 'email'
+      });
 
       email.error = error instanceof Error ? error.message : 'Unknown error';
 
       if (email.attempts >= email.maxAttempts) {
         email.status = 'failed';
-        console.error(
-          `Email ${email.id} failed permanently after ${email.attempts} attempts`
-        );
+        logger.error(`Email failed permanently`, undefined, {
+          emailId: email.id,
+          attempts: email.attempts,
+          operation: 'email'
+        });
       } else {
         email.status = 'retry';
-        console.log(
-          `Email ${email.id} will be retried (attempt ${email.attempts}/${email.maxAttempts})`
-        );
+        logger.info(`Email will be retried`, {
+          emailId: email.id,
+          attempt: email.attempts,
+          maxAttempts: email.maxAttempts,
+          operation: 'email'
+        });
 
         // Schedule retry with delay
         setTimeout(() => {

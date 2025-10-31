@@ -16,11 +16,15 @@ import {
 } from '@/lib/validation';
 import { useCurrency } from '@/contexts/CurrencyContext';
 import { formatCompensationRange, getServiceFeeFormatted } from '@/lib/currency';
+import { usePostHog } from 'posthog-js/react';
+import { apiPost } from '@/lib/api-client';
+import { ErrorMessage, RetryingMessage } from '@/components/ErrorMessage';
+import type { ErrorCode, ErrorDetails } from '@/lib/error-codes';
 
 interface EligibilityFormData {
   // Option 1: Email paste
   emailText: string;
-  
+
   // Option 2: Manual entry
   flightNumber: string;
   airline: string;
@@ -31,9 +35,35 @@ interface EligibilityFormData {
   delayReason: string;
 }
 
+// API Response types
+interface EligibilityResult {
+  isEligible: boolean;
+  compensationAmount: string;
+  regulation: string;
+  reason: string;
+  message: string;
+}
+
+interface CheckEligibilityResponse {
+  success: boolean;
+  data: {
+    flightData: {
+      flightNumber: string;
+      airline: string;
+      departureDate: string;
+      departureAirport: string;
+      arrivalAirport: string;
+      delayDuration: string;
+      delayReason?: string;
+    };
+    eligibility: EligibilityResult;
+  };
+}
+
 export function EligibilityForm() {
   const router = useRouter();
   const { currency, isEURegion } = useCurrency();
+  const posthog = usePostHog();
   const [formData, setFormData] = useState<EligibilityFormData>({
     emailText: '',
     flightNumber: '',
@@ -48,6 +78,9 @@ export function EligibilityForm() {
   const [inputMethod, setInputMethod] = useState<'email' | 'manual'>('email');
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string>('');
+  const [errorCode, setErrorCode] = useState<ErrorCode | null>(null);
+  const [errorDetails, setErrorDetails] = useState<ErrorDetails | null>(null);
+  const [retryState, setRetryState] = useState<{ attempt: number; max: number } | null>(null);
   const [parsedFlight, setParsedFlight] = useState<Partial<EligibilityFormData> | null>(null);
   const [fieldErrors, setFieldErrors] = useState<{ [key: string]: string }>({});
   const [fieldValid, setFieldValid] = useState<{ [key: string]: boolean }>({});
@@ -55,6 +88,8 @@ export function EligibilityForm() {
   const handleInputChange = (field: keyof EligibilityFormData, value: string) => {
     setFormData(prev => ({ ...prev, [field]: value }));
     setError('');
+    setErrorCode(null);
+    setErrorDetails(null);
     // Clear field error when user types
     if (fieldErrors[field]) {
       setFieldErrors(prev => ({ ...prev, [field]: '' }));
@@ -84,6 +119,15 @@ export function EligibilityForm() {
         break;
     }
 
+    // Track validation errors
+    if (!result.valid && result.error) {
+      posthog.capture('eligibility_validation_error', {
+        field,
+        error: result.error,
+        value: value.substring(0, 20), // Only first 20 chars for privacy
+      });
+    }
+
     setFieldErrors(prev => ({ ...prev, [field]: result.error || '' }));
     setFieldValid(prev => ({ ...prev, [field]: result.valid }));
     return result.valid;
@@ -94,6 +138,12 @@ export function EligibilityForm() {
       setError('Please paste your flight confirmation email');
       return;
     }
+
+    // Track email parse attempt
+    posthog.capture('eligibility_email_parse_started', {
+      emailLength: formData.emailText.length,
+      timestamp: new Date().toISOString(),
+    });
 
     setIsLoading(true);
     setError('');
@@ -114,7 +164,16 @@ export function EligibilityForm() {
 
       if (data.success && data.data) {
         console.log('📧 Parsed flight data:', JSON.stringify(data.data, null, 2));
-        
+
+        // Track successful email parse
+        posthog.capture('eligibility_email_parse_success', {
+          airline: data.data.airline || '',
+          hasFlightNumber: !!(data.data.flightNumber || data.data.flight_number),
+          hasDate: !!(data.data.departureDate || data.data.date),
+          hasAirports: !!(data.data.departureAirport && data.data.arrivalAirport),
+          fieldsExtracted: Object.keys(data.data).length,
+        });
+
         // Pre-fill manual form with parsed data (handle both camelCase and snake_case)
         setFormData(prev => ({
           ...prev,
@@ -130,11 +189,25 @@ export function EligibilityForm() {
         setInputMethod('manual');
       } else {
         console.log('❌ Email parsing failed:', data.error);
+
+        // Track failed email parse
+        posthog.capture('eligibility_email_parse_failure', {
+          reason: data.error || 'unknown',
+          emailLength: formData.emailText.length,
+        });
+
         setError('Could not extract flight details. Please enter them manually.');
         setInputMethod('manual');
       }
     } catch (error: unknown) {
       console.error('Error parsing email:', error);
+
+      // Track email parse error
+      posthog.capture('eligibility_email_parse_failure', {
+        reason: 'exception',
+        error: error instanceof Error ? error.message : String(error),
+      });
+
       setError('Failed to parse email. Please enter details manually.');
       setInputMethod('manual');
     } finally {
@@ -172,64 +245,119 @@ export function EligibilityForm() {
 
     if (hasErrors) {
       setError('Please correct the errors above before continuing');
+
+      // Track form submission with validation errors
+      posthog.capture('eligibility_check_validation_failed', {
+        errorCount: Object.keys(newFieldErrors).length + Object.keys(fieldErrors).length,
+        fields: Object.keys(newFieldErrors),
+      });
+
       return;
     }
 
+    // Track eligibility check submission
+    posthog.capture('eligibility_check_submitted', {
+      airline: formData.airline,
+      departureAirport: formData.departureAirport,
+      arrivalAirport: formData.arrivalAirport,
+      delayDuration: formData.delayDuration,
+      hasDelayReason: !!formData.delayReason,
+      usedEmailParse: !!parsedFlight,
+      timestamp: new Date().toISOString(),
+    });
+
     setIsLoading(true);
     setError('');
+    setErrorCode(null);
+    setErrorDetails(null);
+    setRetryState(null);
 
-    try {
-      const requestData = {
+    const requestData = {
+      flightNumber: formData.flightNumber,
+      airline: formData.airline,
+      departureDate: formData.departureDate,
+      departureAirport: formData.departureAirport,
+      arrivalAirport: formData.arrivalAirport,
+      delayDuration: formData.delayDuration,
+      delayReason: formData.delayReason
+    };
+
+    console.log('🚀 Frontend - Sending eligibility check request:', JSON.stringify(requestData, null, 2));
+
+    // Make API request with automatic retry and error handling
+    const response = await apiPost<CheckEligibilityResponse>(
+      '/api/check-eligibility',
+      requestData,
+      {
+        timeout: 30000, // 30 second timeout
+        maxRetries: 2, // Retry up to 2 times on transient failures
+        retryDelay: 1000, // 1 second between retries
+        errorContext: {
+          airline: formData.airline,
+          route: `${formData.departureAirport}-${formData.arrivalAirport}`,
+          delayDuration: formData.delayDuration,
+        },
+        onRetry: (attempt, max) => {
+          console.log(`🔄 Retrying eligibility check... Attempt ${attempt}/${max}`);
+          setRetryState({ attempt, max });
+        },
+      }
+    );
+
+    setIsLoading(false);
+    setRetryState(null);
+
+    console.log('📥 Frontend - Received response:', JSON.stringify(response, null, 2));
+
+    if (response.success) {
+      console.log('✅ Frontend - Eligibility check successful');
+
+      const eligibilityData = response.data.data.eligibility;
+
+      // Track successful eligibility check
+      posthog.capture('eligibility_check_completed', {
+        eligible: eligibilityData.isEligible,
+        amount: eligibilityData.compensationAmount,
+        regulation: eligibilityData.regulation,
+        airline: formData.airline,
+        departureAirport: formData.departureAirport,
+        arrivalAirport: formData.arrivalAirport,
+        delayDuration: formData.delayDuration,
+      });
+
+      // Navigate to results page with data
+      const params = new URLSearchParams({
+        eligible: eligibilityData.isEligible.toString(),
+        amount: eligibilityData.compensationAmount,
+        message: eligibilityData.message,
+        regulation: eligibilityData.regulation,
+        reason: eligibilityData.reason || '',
         flightNumber: formData.flightNumber,
         airline: formData.airline,
         departureDate: formData.departureDate,
         departureAirport: formData.departureAirport,
         arrivalAirport: formData.arrivalAirport,
-        delayDuration: formData.delayDuration,
-        delayReason: formData.delayReason
-      };
-      
-      console.log('🚀 Frontend - Sending eligibility check request:', JSON.stringify(requestData, null, 2));
-      
-      const response = await fetch('/api/check-eligibility', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(requestData),
+        delayDuration: formData.delayDuration
       });
 
-      const data = await response.json();
-      console.log('📥 Frontend - Received response:', JSON.stringify(data, null, 2));
+      router.push(`/results?${params.toString()}`);
+    } else {
+      console.log('❌ Frontend - Eligibility check failed:', response.errorCode);
 
-      if (data.success) {
-        console.log('✅ Frontend - Eligibility check successful');
-        // Navigate to results page with data
-        const params = new URLSearchParams({
-          eligible: data.result.eligible.toString(),
-          amount: data.result.amount,
-          message: data.result.message,
-          regulation: data.result.regulation,
-          reason: data.result.reason || '',
-          flightNumber: formData.flightNumber,
-          airline: formData.airline,
-          departureDate: formData.departureDate,
-          departureAirport: formData.departureAirport,
-          arrivalAirport: formData.arrivalAirport,
-          delayDuration: formData.delayDuration
-        });
-        
-        router.push(`/results?${params.toString()}`);
-      } else {
-        console.log('❌ Frontend - Eligibility check failed:', data.error);
-        const errorMessage = data.message || data.error || 'Failed to check eligibility';
-        setError(errorMessage);
-      }
-    } catch (error: unknown) {
-      console.error('Error checking eligibility:', error);
-      setError('Failed to check eligibility. Please try again.');
-    } finally {
-      setIsLoading(false);
+      // Track eligibility check failure
+      posthog.capture('eligibility_check_failed', {
+        errorCode: response.errorCode,
+        errorCategory: response.errorDetails.category,
+        errorSeverity: response.errorDetails.severity,
+        airline: formData.airline,
+        departureAirport: formData.departureAirport,
+        arrivalAirport: formData.arrivalAirport,
+      });
+
+      // Set error state for ErrorMessage component
+      setErrorCode(response.errorCode);
+      setErrorDetails(response.errorDetails);
+      setError(response.errorDetails.userMessage);
     }
   };
 
@@ -499,8 +627,30 @@ export function EligibilityForm() {
                   </div>
                 )}
 
-                {/* Error Message */}
-                {error && (
+                {/* Retry State Message */}
+                {retryState && (
+                  <RetryingMessage
+                    attempt={retryState.attempt}
+                    maxAttempts={retryState.max}
+                  />
+                )}
+
+                {/* Error Message with Error Codes */}
+                {errorCode && errorDetails && (
+                  <ErrorMessage
+                    errorCode={errorCode}
+                    errorDetails={errorDetails}
+                    context={{
+                      airline: formData.airline,
+                      route: `${formData.departureAirport}-${formData.arrivalAirport}`,
+                      delayDuration: formData.delayDuration,
+                    }}
+                    onRetry={errorDetails.retryable ? handleCheckEligibility : undefined}
+                  />
+                )}
+
+                {/* Fallback simple error for validation errors */}
+                {error && !errorCode && (
                   <div className="text-red-400 text-sm bg-red-900/20 border border-red-500/20 rounded-lg p-3">
                     {error}
                   </div>

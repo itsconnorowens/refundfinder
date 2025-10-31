@@ -31,7 +31,7 @@ export async function POST(request: NextRequest) {
     };
 
     // Log the request (in production, store in database)
-    console.log(`GDPR Request ${requestId}:`, dataSubjectRequest);
+    logger.info('GDPR Request received', { requestId, dataSubjectRequest, route: '/api/gdpr' });
 
     // Process based on request type
     let responseData: Record<string, unknown> = {};
@@ -123,9 +123,11 @@ export async function POST(request: NextRequest) {
     }
 
     // Send confirmation email (in production, implement email sending)
-    console.log(
-      `Sending confirmation email to ${body.email} for request ${requestId}`
-    );
+    logger.info('Sending GDPR confirmation email', {
+      email: body.email,
+      requestId,
+      route: '/api/gdpr'
+    });
 
     // Queue GDPR confirmation email
     try {

@@ -42,6 +42,7 @@
     "dexie": "^4.2.1",
     "framer-motion": "^12.23.24",
     "lucide-react": "^0.400.0",
+    "nanoid": "^5.1.6",
     "next": "^15.1.4",
     "nodemailer": "^7.0.10",
     "posthog-js": "^1.282.0",

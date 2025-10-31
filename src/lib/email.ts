@@ -7,7 +7,7 @@ const sendGridApiKey = process.env.SENDGRID_API_KEY;
 if (sendGridApiKey) {
   sgMail.setApiKey(sendGridApiKey);
 } else {
-  console.warn(
+  logger.warn(
     'SendGrid API key not configured. SendGrid email sending will be disabled.'
   );
 }
@@ -18,7 +18,7 @@ let _resend: Resend | null = null;
 if (resendApiKey) {
   _resend = new Resend(resendApiKey);
 } else {
-  console.warn(
+  logger.warn(
     'Resend API key not configured. Resend email sending will be disabled.'
   );
 }

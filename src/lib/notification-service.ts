@@ -149,14 +149,9 @@ function sendConsoleNotification(
   severity: 'low' | 'medium' | 'high' | 'critical',
   metadata?: Record<string, any>
 ): boolean {
-  const logFn = severity === 'critical' || severity === 'high' ? console.error : console.warn;
+  const logFn = severity === 'critical' || severity === 'high' ? logger.error : logger.warn;
 
-  logFn(`[${severity.toUpperCase()}] ${title}`);
-  logFn(message);
-
-  if (metadata) {
-    logFn('Metadata:', metadata);
-  }
+  logFn(`[${severity.toUpperCase()}] ${title}`, undefined, { message, ...metadata });
 
   return true;
 }

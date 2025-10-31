@@ -51,7 +51,7 @@ export async function updateEmailTracking(
   try {
     const claim = await getClaimByClaimId(claimId);
     if (!claim) {
-      console.error(`Claim ${claimId} not found for email tracking update`);
+      logger.error(`Claim not found for email tracking update`, undefined, { claimId });
       return false;
     }
 
@@ -86,9 +86,11 @@ export async function updateEmailTracking(
       });
     }
 
-    console.log(
-      `Updated email tracking for claim ${claimId}: ${trackingEvent.event}`
-    );
+    logger.info(`Updated email tracking for claim`, {
+      claimId,
+      event: trackingEvent.event,
+      operation: 'email_tracking'
+    });
     return true;
   } catch (error: unknown) {
     logger.error('Error updating email tracking:', error);
@@ -312,7 +314,7 @@ export async function resolveAlert(
 ): Promise<boolean> {
   try {
     // In a real implementation, this would update the database
-    console.log(`Alert ${alertId} resolved by ${resolvedBy}`, resolutionNotes);
+    logger.info(`Alert resolved`, { alertId, resolvedBy, resolutionNotes, operation: 'alert_resolution' });
     return true;
   } catch (error: unknown) {
     logger.error('Error resolving alert:', error);
@@ -340,9 +342,10 @@ export async function sendAlertNotification(
     // Send to different channels based on severity
     if (alert.severity === 'critical') {
       // Send immediate notification (Slack, SMS, etc.)
-      console.error(
-        'CRITICAL ALERT - IMMEDIATE ACTION REQUIRED:',
-        notification
+      logger.error(
+        'CRITICAL ALERT - IMMEDIATE ACTION REQUIRED',
+        undefined,
+        { notification, operation: 'alert_notification' }
       );
     } else if (alert.severity === 'high') {
       // Send to monitoring channel

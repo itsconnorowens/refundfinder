@@ -1,8 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { adminAuthMiddleware } from '@/lib/admin-auth';
+import { generateRequestContext } from '@/lib/request-context';
 
 export function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
+
+  // Generate request context for tracing
+  const requestContext = generateRequestContext(request);
 
   // PostHog proxy - rewrite /ingest/* to PostHog servers
   if (pathname.startsWith('/ingest/static/')) {
@@ -11,7 +15,9 @@ export function middleware(request: NextRequest) {
     url.port = '';
     url.protocol = 'https:';
     url.pathname = pathname.replace('/ingest/static/', '/static/');
-    return NextResponse.rewrite(url);
+    const response = NextResponse.rewrite(url);
+    response.headers.set('x-request-id', requestContext.requestId);
+    return response;
   }
 
   if (pathname.startsWith('/ingest/')) {
@@ -20,18 +26,28 @@ export function middleware(request: NextRequest) {
     url.port = '';
     url.protocol = 'https:';
     url.pathname = pathname.replace('/ingest/', '/');
-    return NextResponse.rewrite(url);
+    const response = NextResponse.rewrite(url);
+    response.headers.set('x-request-id', requestContext.requestId);
+    return response;
   }
 
   // Apply admin authentication to /admin routes
   const authResult = adminAuthMiddleware(request);
   if (authResult) {
+    authResult.headers.set('x-request-id', requestContext.requestId);
     return authResult;
   }
 
-  return NextResponse.next();
+  // Add request ID to response headers for debugging
+  const response = NextResponse.next();
+  response.headers.set('x-request-id', requestContext.requestId);
+
+  return response;
 }
 
 export const config = {
-  matcher: ['/admin/:path*', '/ingest/:path*'],
+  matcher: [
+    // Match all routes except static files and Next.js internals
+    '/((?!_next/static|_next/image|favicon.ico).*)',
+  ],
 };

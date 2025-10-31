@@ -3,6 +3,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { useSearchParams } from 'next/navigation';
 import posthog from 'posthog-js';
+import { logger } from '@/lib/logger';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -180,7 +181,7 @@ export default function ClaimSubmissionForm() {
           const parsed = JSON.parse(savedData);
           setFormData(parsed);
         } catch (error: unknown) {
-          console.error('Error parsing saved form data:', error);
+          logger.error('Error parsing saved form data', error);
         }
       }
     }
@@ -353,7 +354,7 @@ export default function ClaimSubmissionForm() {
         });
       }
     } catch (error: unknown) {
-      console.error('Error creating payment intent:', error);
+      logger.error('Error creating payment intent', error);
       showError('Failed to initialize payment. Please try again.');
     } finally {
       setIsCreatingPaymentIntent(false);
@@ -397,7 +398,7 @@ export default function ClaimSubmissionForm() {
       }));
 
     } catch (error: unknown) {
-      console.error('Flight verification error:', error);
+      logger.error('Flight verification error', error);
       // Set verification as failed but allow user to proceed
       setFormData(prev => ({
         ...prev,
@@ -477,12 +478,12 @@ export default function ClaimSubmissionForm() {
         }
 
         // Show success message
-        console.log(`${type} uploaded successfully`);
+        logger.info(`${type} uploaded successfully`, { type });
       } else {
         throw new Error(result.error || 'Upload failed');
       }
     } catch (error: unknown) {
-      console.error('Upload error:', error);
+      logger.error('Upload error', error, { type });
       setErrors(prev => ({
         ...prev,
         [type]: 'Failed to upload file. Please try again.'
@@ -513,7 +514,6 @@ export default function ClaimSubmissionForm() {
   };
 
   const handlePaymentSuccess = async (paymentIntentId: string) => {
-    
     try {
       // Validate that files have been uploaded
       if (!formData.boardingPassUrl || !formData.delayProofUrl) {
@@ -521,7 +521,8 @@ export default function ClaimSubmissionForm() {
         return;
       }
 
-      const response = await fetch('/api/create-claim', {
+      // Submit claim to API
+      const apiResponse = await fetch('/api/create-claim', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -545,13 +546,13 @@ export default function ClaimSubmissionForm() {
         }),
       });
 
-      const result = await response.json();
+      const response = await apiResponse.json();
 
-      if (response.ok) {
+      if (apiResponse.ok && response.claimId) {
         // Track payment completed
         if (typeof window !== 'undefined') {
           posthog.capture('payment_completed', {
-            claim_id: result.claimId,
+            claim_id: response.claimId,
             payment_intent_id: paymentIntentId,
             amount_cents: 4900,
             ...getAttributionProperties(), // Include marketing attribution
@@ -565,19 +566,33 @@ export default function ClaimSubmissionForm() {
         localStorage.removeItem('claimFormData');
         // Show success message
         showSuccess('Claim submitted successfully!', {
-          description: `${result.message} - Claim ID: ${result.claimId}`,
+          description: `${response.message || 'Your claim has been submitted'} - Claim ID: ${response.claimId}`,
           duration: 5000,
         });
         // Redirect to success page after a short delay
         setTimeout(() => {
-          window.location.href = `/success?claim_id=${result.claimId}`;
+          window.location.href = `/success?claim_id=${response.claimId}`;
         }, 1500);
       } else {
-        throw new Error(result.error || 'Failed to submit claim');
+        // Use error code and details for better user feedback
+        logger.error('Claim submission failed', {
+          errorCode: response.errorCode,
+          errorDetails: response.errorDetails,
+          paymentIntentId,
+        });
+
+        // Show user-friendly error message with error code
+        showError(
+          `${response.errorDetails.userMessage} (Error Code: ${response.errorCode})`,
+          {
+            description: 'Please contact support with your payment confirmation and error code.',
+            duration: 10000,
+          }
+        );
       }
     } catch (error: unknown) {
-      console.error('Error submitting claim:', error);
-      showError('Failed to submit claim. Please contact support with your payment confirmation.');
+      logger.error('Unexpected error submitting claim', error);
+      showError('An unexpected error occurred. Please contact support with your payment confirmation.');
     }
   };
 

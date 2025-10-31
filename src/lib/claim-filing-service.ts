@@ -349,7 +349,7 @@ export async function getClaimsByStatus(status: ClaimStatus): Promise<any[]> {
       ...record.fields,
     }));
   } catch (error: unknown) {
-    console.error(`Error fetching claims with status ${status}:`, error);
+    logger.error(`Error fetching claims with status ${status}`, error, { status });
     return [];
   }
 }
@@ -426,7 +426,11 @@ export async function processAutomaticClaimPreparation(
     const validation = await validateClaimForFiling(claimId);
 
     if (!validation.isValid) {
-      console.log(`Claim ${claimId} validation failed:`, validation.errors);
+      logger.info(`Claim validation failed`, {
+        claimId,
+        errors: validation.errors,
+        operation: 'claim_preparation'
+      });
       return false;
     }
 
@@ -434,10 +438,11 @@ export async function processAutomaticClaimPreparation(
     const result = await generateAirlineSubmission(claimId);
 
     if (!result.success) {
-      console.log(
-        `Failed to generate submission for claim ${claimId}:`,
-        result.error
-      );
+      logger.info(`Failed to generate submission for claim`, {
+        claimId,
+        error: result.error,
+        operation: 'claim_preparation'
+      });
       return false;
     }
 
@@ -448,12 +453,13 @@ export async function processAutomaticClaimPreparation(
       'Automatically prepared for filing'
     );
 
-    logger.info('Claim  automatically prepared for filing', { claimId: claimId });
+    logger.info('Claim automatically prepared for filing', { claimId, operation: 'claim_preparation' });
     return true;
   } catch (error: unknown) {
-    console.error(
-      `Error processing automatic claim preparation for ${claimId}:`,
-      error
+    logger.error(
+      `Error processing automatic claim preparation`,
+      error,
+      { claimId, operation: 'claim_preparation' }
     );
     return false;
   }
@@ -521,9 +527,10 @@ export async function processAutomaticClaimFiling(
       return [];
     }
 
-    console.log(
-      `Processing ${claimsToProcess.length} claims for automatic filing`
-    );
+    logger.info(`Processing claims for automatic filing`, {
+      count: claimsToProcess.length,
+      operation: 'claim_filing'
+    });
 
     // Process claims through airline submission service
     const results = await processClaimsForFiling(claimsToProcess);
@@ -532,9 +539,16 @@ export async function processAutomaticClaimFiling(
     const successful = results.filter((r) => r.result.success);
     const failed = results.filter((r) => !r.result.success);
 
-    logger.info('Successfully filed  claims', { length: successful.length });
+    logger.info('Successfully filed claims', {
+      count: successful.length,
+      operation: 'claim_filing'
+    });
     if (failed.length > 0) {
-      console.log(`Failed to file ${failed.length} claims:`, failed);
+      logger.info(`Failed to file claims`, {
+        count: failed.length,
+        failed,
+        operation: 'claim_filing'
+      });
     }
 
     return results.map((r) => ({
@@ -566,8 +580,9 @@ export async function processClaimFollowUps(): Promise<
       try {
         const airlineConfig = getAirlineConfig(claim.airline);
         if (!airlineConfig) {
-          console.log(
-            `No airline config for ${claim.airline}, skipping follow-up`
+          logger.info(
+            `No airline config, skipping follow-up`,
+            { airline: claim.airline, operation: 'claim_follow_up' }
           );
           continue;
         }
@@ -594,9 +609,10 @@ export async function processClaimFollowUps(): Promise<
           success,
         });
       } catch (error: unknown) {
-        console.error(
-          `Error processing follow-up for claim ${claim.claimId}:`,
-          error
+        logger.error(
+          `Error processing follow-up for claim`,
+          error,
+          { claimId: claim.claimId, operation: 'claim_follow_up' }
         );
         results.push({
           claimId: claim.claimId,
