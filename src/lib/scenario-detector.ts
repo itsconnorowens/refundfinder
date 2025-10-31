@@ -544,7 +544,7 @@ export class ComprehensiveCompensationCalculator {
   private calculateDelayCompensation(
     delayData: DelayData,
     flightData: FlightData,
-    regulation: string
+    _regulation: string
   ): { amount: number; currency: string; rights: string[] } {
     // Only compensate for delays > 3 hours (EU261 threshold)
     if (delayData.delayMinutes < 180) {

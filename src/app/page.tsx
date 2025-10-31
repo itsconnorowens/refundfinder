@@ -5,7 +5,6 @@ import { motion } from 'framer-motion';
 import FlightLookupForm from '../components/FlightLookupForm';
 import EmailParsingForm from '../components/EmailParsingForm';
 import EligibilityResults from '../components/EligibilityResults';
-import FlightPathsAnimation from '../components/FlightPathsAnimation';
 import { CheckEligibilityResponse } from '../types/api';
 import { CheckIcon, MoneyIcon, BoltIcon, PlaneIcon, EmailIcon } from '../components/icons';
 import { StarRating } from '../components/StarRating';
@@ -94,9 +93,9 @@ export default function Home() {
             <div className="flex items-center">
               <button
                 onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
-                className="flex-shrink-0 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 rounded-lg"
+                className="flex-shrink-0 focus:outline-none rounded-lg"
               >
-                <div className="flex items-center space-x-2">
+                <div className="flex items-center space-x-3">
                   <motion.img
                     src="/icon-192.png"
                     alt="Flghtly Logo"
@@ -125,12 +124,13 @@ export default function Home() {
                     }
                   />
                   <motion.div
+                    className="text-left"
                     initial={prefersReducedMotion ? { opacity: 1, x: 0 } : { opacity: 0, x: -20 }}
                     animate={{ opacity: 1, x: 0 }}
                     transition={prefersReducedMotion ? { duration: 0 } : { duration: 0.6, delay: 0.3 }}
                   >
-                    <h1 className="text-xl font-bold text-gray-900">Flghtly</h1>
-                    <p className="text-xs text-gray-500 -mt-0.5">Compensation made simple</p>
+                    <h1 className="text-xl font-bold text-gray-900 text-left">Flghtly</h1>
+                    <p className="text-xs text-gray-500 -mt-0.5 text-left">Compensation made simple</p>
                   </motion.div>
                 </div>
               </button>
@@ -233,13 +233,8 @@ export default function Home() {
       {/* Mobile Menu */}
       <MobileMenu isOpen={mobileMenuOpen} onClose={() => setMobileMenuOpen(false)} />
 
-      {/* Hero Section with Animation */}
+      {/* Hero Section */}
       <section className="relative py-12 overflow-hidden">
-        {/* Background Animation */}
-        <div className="absolute inset-0 z-0 opacity-10 sm:opacity-20">
-          <FlightPathsAnimation />
-        </div>
-        
         {/* Content */}
         <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center">

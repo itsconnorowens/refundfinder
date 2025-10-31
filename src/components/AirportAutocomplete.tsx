@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useRef, useEffect } from 'react';
-import { airports, searchAirports, getAirportByCode, Airport } from '@/lib/airports';
+import { searchAirports, getAirportByCode, Airport } from '@/lib/airports';
 
 interface AirportAutocompleteProps {
   value: string;
@@ -18,7 +18,7 @@ export default function AirportAutocomplete({
   placeholder = "e.g., LHR, JFK", 
   error,
   label,
-  required = false
+  required: _required = false
 }: AirportAutocompleteProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
@@ -91,7 +91,7 @@ export default function AirportAutocomplete({
   return (
     <div className="relative">
       <label className="block text-sm font-medium text-gray-700 mb-2">
-        {label} {required && '*'}
+        {label}
       </label>
       <div className="relative" ref={dropdownRef}>
         <input

@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { CheckCircle, Circle, Clock, ChevronRight } from 'lucide-react';
 import { cn } from '@/lib/utils';
@@ -27,18 +27,9 @@ export const AdaptiveProgressIndicator: React.FC<AdaptiveProgressIndicatorProps>
   onStepClick,
   className
 }) => {
-  const [isMobile, setIsMobile] = useState(false);
   const [showMobileDetails, setShowMobileDetails] = useState(false);
 
-  useEffect(() => {
-    const checkMobile = () => {
-      setIsMobile(window.innerWidth < 768);
-    };
-    
-    checkMobile();
-    window.addEventListener('resize', checkMobile);
-    return () => window.removeEventListener('resize', checkMobile);
-  }, []);
+  // Responsive handling not currently used
 
   const getStepStatus = (stepId: number) => {
     if (completedSteps.includes(stepId)) return 'completed';
@@ -53,7 +44,7 @@ export const AdaptiveProgressIndicator: React.FC<AdaptiveProgressIndicatorProps>
     return remainingSteps * avgTimePerStep;
   };
 
-  const StepIcon = ({ stepId, status }: { stepId: number; status: string }) => {
+  const StepIcon = ({ stepId: _stepId, status }: { stepId: number; status: string }) => {
     const iconProps = { size: 20 };
     
     switch (status) {
@@ -83,7 +74,7 @@ export const AdaptiveProgressIndicator: React.FC<AdaptiveProgressIndicatorProps>
         </div>
 
         <div className="space-y-3">
-          {steps.map((step, index) => {
+          {steps.map((step, _index) => {
             const status = getStepStatus(step.id);
             const isClickable = completedSteps.includes(step.id) && onStepClick;
             

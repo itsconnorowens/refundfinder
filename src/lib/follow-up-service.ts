@@ -3,12 +3,7 @@
  * Handles automated follow-ups with airlines based on response timelines
  */
 
-import {
-  ClaimRecord,
-  updateClaim,
-  getClaimByClaimId,
-  getClaimsNeedingFollowUp,
-} from './airtable';
+import { ClaimRecord, updateClaim, getClaimsNeedingFollowUp } from './airtable';
 import { getAirlineConfig } from './airline-config';
 import { emailService } from './email-service';
 import { sendStatusUpdateNotification } from './email-service';

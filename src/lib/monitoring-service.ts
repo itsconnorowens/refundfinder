@@ -61,7 +61,7 @@ export async function updateEmailTracking(
       : {};
 
     // Update tracking data
-    const updatedTracking = {
+    const _updatedTracking = {
       ...existingTracking,
       [trackingEvent.messageId]: {
         ...existingTracking[trackingEvent.messageId],
@@ -105,7 +105,7 @@ export async function createSystemAlert(
   try {
     const alertId = `alert-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
 
-    const newAlert: SystemAlert = {
+    const _newAlert: SystemAlert = {
       id: alertId,
       ...alert,
     };

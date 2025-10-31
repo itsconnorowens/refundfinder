@@ -24,10 +24,7 @@ import {
   sendClaimFiledNotification,
   sendStatusUpdateNotification,
 } from './email-service';
-import {
-  submitClaimToAirline,
-  processClaimsForFiling,
-} from './airline-submission-service';
+import { processClaimsForFiling } from './airline-submission-service';
 
 export interface ClaimValidationResult {
   success: boolean;

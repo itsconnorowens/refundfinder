@@ -8,7 +8,7 @@ import {
 } from '@stripe/react-stripe-js';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { AlertCircle, CheckCircle, Lock, ShieldCheck, Users, Clock, DollarSign } from 'lucide-react';
+import { AlertCircle, CheckCircle, Lock, ShieldCheck } from 'lucide-react';
 import { TrustBadgeRow } from './TrustBadge';
 import { useCurrency } from '@/contexts/CurrencyContext';
 import { formatCurrency, convertCompensationAmount } from '@/lib/currency';
@@ -27,7 +27,7 @@ export default function PaymentStep({
   email,
   firstName,
   lastName,
-  claimId,
+  claimId: _claimId,
   amount,
   onPaymentSuccess,
   onBack,

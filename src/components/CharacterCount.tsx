@@ -15,7 +15,6 @@ export const CharacterCount: React.FC<CharacterCountProps> = ({
   maximum = 5000,
 }) => {
   const isValidLength = current >= minimum && current <= maximum;
-  const isNearMinimum = current < minimum && current > minimum - 20;
   
   const getColor = () => {
     if (isValidLength) return 'text-green-600';

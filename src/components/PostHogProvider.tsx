@@ -107,7 +107,7 @@ export function PostHogPageView() {
         posthog.capture('$pageview', {
           $current_url: url,
         });
-      } catch (error) {
+      } catch (_error) {
         // Silently fail if PostHog not available
       }
     };

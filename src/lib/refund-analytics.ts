@@ -1,11 +1,6 @@
 import { logger } from '@/lib/logger';
 
-import {
-  getClaimByClaimId,
-  getPaymentByPaymentId,
-  ClaimStatus,
-  PaymentStatus,
-} from './airtable';
+import { ClaimStatus, PaymentStatus } from './airtable';
 
 // Analytics time periods
 export type AnalyticsPeriod = 'hour' | 'day' | 'week' | 'month' | 'year';

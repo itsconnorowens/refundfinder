@@ -18,7 +18,7 @@ export default function AirlineAutocomplete({
   placeholder = "e.g., British Airways, BA", 
   error,
   label,
-  required = false
+  required: _required = false
 }: AirlineAutocompleteProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
@@ -96,7 +96,7 @@ export default function AirlineAutocomplete({
   return (
     <div className="relative">
       <label className="block text-sm font-medium text-gray-700 mb-2">
-        {label} {required && '*'}
+        {label}
       </label>
       <div className="relative" ref={dropdownRef}>
         <input

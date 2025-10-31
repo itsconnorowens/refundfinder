@@ -250,8 +250,8 @@ class FlightStatusService {
    * Call FlightAware API
    */
   private async callFlightAware(
-    flightNumber: string,
-    date: string
+    _flightNumber: string,
+    _date: string
   ): Promise<FlightStatusResult> {
     const apiKey = process.env.FLIGHTAWARE_API_KEY;
     if (!apiKey) {

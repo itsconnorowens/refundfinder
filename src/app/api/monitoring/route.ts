@@ -192,15 +192,9 @@ async function checkWeatherHealth(): Promise<
   }
 }
 
-async function checkOperationalHealth(): Promise<
-  'healthy' | 'degraded' | 'unhealthy'
-> {
-  try {
-    // Operational services are always available (basic provider)
-    return 'healthy';
-  } catch {
-    return 'unhealthy';
-  }
+async function checkOperationalHealth(): Promise<'healthy' | 'degraded' | 'unhealthy'> {
+  // Operational services are always available (basic provider)
+  return 'healthy';
 }
 
 function calculateServiceStatus(

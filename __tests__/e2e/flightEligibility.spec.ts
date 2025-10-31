@@ -26,8 +26,8 @@ test.describe('Flight Eligibility Form - E2E Tests', () => {
       await page.fill('input[placeholder*="Departure"]', 'LHR');
       await page.fill('input[placeholder*="Arrival"]', 'JFK');
 
-      // Step 4: Check visual route grouping
-      await expect(page.locator('text=✈️')).toBeVisible();
+      // Step 4: Check visual route grouping (direction arrow)
+      await expect(page.locator('text=→').first()).toBeVisible();
 
       // Step 5: Fill delay duration
       const hoursInput = page.locator('input').filter({ hasText: /hours/ }).first();
@@ -344,7 +344,7 @@ test.describe('Flight Eligibility Form - E2E Tests', () => {
       await page.goto('/');
 
       // Desktop should show horizontal arrow
-      await expect(page.locator('text=✈️ →')).toBeVisible();
+      await expect(page.locator('text=→')).toBeVisible();
     });
   });
 

@@ -217,7 +217,7 @@ export function isOfflineStorageAvailable(): boolean {
       return false;
     }
     return true;
-  } catch (error) {
+  } catch (_error) {
     return false;
   }
 }

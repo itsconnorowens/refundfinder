@@ -111,7 +111,7 @@ export default function TestEmailPage() {
                         <li>Check RESEND_API_KEY in .env.local</li>
                         <li>Verify domain in Resend dashboard</li>
                         <li>Check browser console for errors</li>
-                        <li>View logs at <a href="https://resend.com/emails" target="_blank" rel="noopener" className="underline">resend.com/emails</a></li>
+                        <li>View logs at <a href="https://resend.com/emails" target="_blank" rel="noreferrer" className="underline">resend.com/emails</a></li>
                       </ul>
                     </div>
                   </div>
@@ -143,7 +143,7 @@ export default function TestEmailPage() {
                   <div>
                     <strong>Check Deliverability:</strong>
                     <br />
-                    Visit <a href="https://www.mail-tester.com/" target="_blank" rel="noopener" className="text-blue-600 underline">mail-tester.com</a> and send a test email
+                    Visit <a href="https://www.mail-tester.com/" target="_blank" rel="noreferrer" className="text-blue-600 underline">mail-tester.com</a> and send a test email
                   </div>
                 </div>
               </div>

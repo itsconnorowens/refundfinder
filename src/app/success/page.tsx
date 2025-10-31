@@ -1,13 +1,13 @@
 'use client';
 
 import { useSearchParams, useRouter } from 'next/navigation';
-import { useEffect, useState, Suspense } from 'react';
+import { useEffect, Suspense } from 'react';
 import posthog from 'posthog-js';
 import { setUser } from '@/lib/error-tracking';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { CheckCircle, Mail, Clock, DollarSign, Plane, FileText, Calendar } from 'lucide-react';
+import { CheckCircle, Mail, Clock, DollarSign, FileText, Calendar } from 'lucide-react';
 import { ClaimStatusModal } from '@/components/ClaimStatusModal';
 
 function SuccessPageContent() {

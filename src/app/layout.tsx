@@ -4,7 +4,6 @@ import { PWAInstaller } from '@/components/PWAInstaller'
 import { ClientPostHogProvider } from '@/components/ClientPostHog'
 import { ErrorBoundary } from '@/components/ErrorBoundary'
 import { ClientToaster } from '@/components/ClientToaster'
-import { SentryFeedbackWidget } from '@/components/SentryFeedback'
 import { CurrencyProvider } from '@/contexts/CurrencyContext'
 
 export const metadata: Metadata = {
@@ -53,7 +52,6 @@ export default function RootLayout({
             <CurrencyProvider>
               {children}
               <PWAInstaller />
-              <SentryFeedbackWidget />
               <ClientToaster />
             </CurrencyProvider>
           </ClientPostHogProvider>

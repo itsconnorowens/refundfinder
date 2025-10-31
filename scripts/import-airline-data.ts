@@ -19,30 +19,15 @@ interface AirlineData {
   passengerVolume?: number; // Annual passenger volume in millions
 }
 
-interface DataSource {
-  name: string;
-  url: string;
-  format: 'json' | 'csv' | 'xml';
-}
+// Reserved for future data source typing
+// interface DataSource {
+//   name: string;
+//   url: string;
+//   format: 'json' | 'csv' | 'xml';
+// }
 
-// Public data sources for airline information
-const DATA_SOURCES: DataSource[] = [
-  {
-    name: 'OpenFlights',
-    url: 'https://raw.githubusercontent.com/jpatokal/openflights/master/data/airlines.dat',
-    format: 'csv',
-  },
-  {
-    name: 'IATA Airport Codes',
-    url: 'https://github.com/datasets/airport-codes',
-    format: 'json',
-  },
-  {
-    name: 'Aviation Edge',
-    url: 'https://aviation-edge.com/v2/public/airlineDatabase',
-    format: 'json',
-  },
-];
+// Public data sources for airline information (reserved for future use)
+// const DATA_SOURCES: DataSource[] = [...];
 
 /**
  * Parse OpenFlights CSV format
@@ -57,7 +42,7 @@ function parseOpenFlightsCSV(csvContent: string): AirlineData[] {
 
     if (parts.length < 8) continue;
 
-    const [id, name, alias, iata, icao, callsign, country, active] = parts;
+    const [, name, alias, iata, icao, callsign, country, active] = parts;
 
     if (!iata || iata === '\\N') continue;
 

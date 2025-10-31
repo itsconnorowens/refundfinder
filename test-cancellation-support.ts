@@ -4,7 +4,7 @@
  * Tests all cancellation scenarios, API verification, cost controls, and end-to-end user flows
  */
 
-import { checkEligibility, FlightDetails, NoticePeriod } from './src/lib/eligibility';
+import { checkEligibility, NoticePeriod } from './src/lib/eligibility';
 import { flightValidationService } from './src/lib/flight-validation';
 
 // Test data for various scenarios

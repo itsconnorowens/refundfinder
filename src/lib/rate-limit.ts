@@ -44,7 +44,6 @@ export function checkRateLimit(
   config: RateLimitConfig
 ): RateLimitResult {
   const now = Date.now();
-  const windowStart = now - config.windowMs;
 
   // Get or create entry for this identifier
   let entry = rateLimitStore.get(identifier);

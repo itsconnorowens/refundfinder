@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect } from 'react';
 import { useSearchParams } from 'next/navigation';
 import posthog from 'posthog-js';
 import { Button } from '@/components/ui/button';
@@ -8,8 +8,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Progress } from '@/components/ui/progress';
-import { Badge } from '@/components/ui/badge';
-import { ChevronLeft, ChevronRight, Upload, FileText, CheckCircle, AlertCircle, X } from 'lucide-react';
+import { ChevronLeft, ChevronRight, FileText, CheckCircle, AlertCircle } from 'lucide-react';
 import StripeProvider from '@/components/StripeProvider';
 import PaymentStep from '@/components/PaymentStep';
 import VerificationVisualization from '@/components/VerificationVisualization';
@@ -98,11 +97,10 @@ export default function ClaimSubmissionForm() {
   });
   
   const [errors, setErrors] = useState<FormErrors>({});
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [dragActive, setDragActive] = useState<string | null>(null);
+  
   const [claimId, setClaimId] = useState<string>('');
   const [paymentClientSecret, setPaymentClientSecret] = useState<string | null>(null);
-  const [paymentIntentId, setPaymentIntentId] = useState<string | null>(null);
+  
   const [isCreatingPaymentIntent, setIsCreatingPaymentIntent] = useState(false);
   const [isUploading, setIsUploading] = useState<{ [key: string]: boolean }>({});
 
@@ -284,7 +282,7 @@ export default function ClaimSubmissionForm() {
 
       const data = await response.json();
       setPaymentClientSecret(data.clientSecret);
-      setPaymentIntentId(data.paymentIntentId);
+      
       setClaimId(data.claimId); // Receive claim ID from server
 
       // Track payment initiated
@@ -445,25 +443,7 @@ export default function ClaimSubmissionForm() {
     }
   };
 
-  const handleDrag = (e: React.DragEvent, type: 'boardingPass' | 'delayProof') => {
-    e.preventDefault();
-    e.stopPropagation();
-    if (e.type === 'dragenter' || e.type === 'dragover') {
-      setDragActive(type);
-    } else if (e.type === 'dragleave') {
-      setDragActive(null);
-    }
-  };
-
-  const handleDrop = (e: React.DragEvent, type: 'boardingPass' | 'delayProof') => {
-    e.preventDefault();
-    e.stopPropagation();
-    setDragActive(null);
-    
-    if (e.dataTransfer.files && e.dataTransfer.files[0]) {
-      handleFileUpload(e.dataTransfer.files[0], type);
-    }
-  };
+  
 
   const removeFile = (type: 'boardingPass' | 'delayProof') => {
     setFormData(prev => ({
@@ -474,13 +454,11 @@ export default function ClaimSubmissionForm() {
   };
 
   const handlePaymentSuccess = async (paymentIntentId: string) => {
-    setIsSubmitting(true);
     
     try {
       // Validate that files have been uploaded
       if (!formData.boardingPassUrl || !formData.delayProofUrl) {
         showError('Please ensure all files have been uploaded successfully before proceeding.');
-        setIsSubmitting(false);
         return;
       }
 
@@ -538,8 +516,6 @@ export default function ClaimSubmissionForm() {
     } catch (error) {
       console.error('Error submitting claim:', error);
       showError('Failed to submit claim. Please contact support with your payment confirmation.');
-    } finally {
-      setIsSubmitting(false);
     }
   };
 

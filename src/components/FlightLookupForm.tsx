@@ -10,11 +10,9 @@ import {
   validateFlightNumber,
   validateAirportCode,
   validateFlightDate,
-  validateDelayDuration,
   validateEmail
 } from '@/lib/validation';
-import { useCurrency } from '@/contexts/CurrencyContext';
-import { formatCurrency, convertCompensationAmount } from '@/lib/currency';
+ 
 import { getAttributionProperties } from '@/lib/marketing-attribution';
 
 interface FlightLookupFormProps {
@@ -23,7 +21,6 @@ interface FlightLookupFormProps {
 }
 
 export default function FlightLookupForm({ onResults, onLoading }: FlightLookupFormProps) {
-  const { currency, isEURegion } = useCurrency();
   const [formData, setFormData] = useState({
     flightNumber: '',
     airline: '',
@@ -78,7 +75,6 @@ export default function FlightLookupForm({ onResults, onLoading }: FlightLookupF
   const [loading, setLoading] = useState(false);
   const [fieldValid, setFieldValid] = useState<Record<string, boolean>>({});
   const [emailSuggestion, setEmailSuggestion] = useState<string>('');
-  const [showManualTimingEdit, setShowManualTimingEdit] = useState(false);
   const [showManualNoticeEdit, setShowManualNoticeEdit] = useState(false);
   const [showCancellationRights, setShowCancellationRights] = useState(false);
   const [showEURightsInfo, setShowEURightsInfo] = useState(false);
@@ -455,14 +451,13 @@ export default function FlightLookupForm({ onResults, onLoading }: FlightLookupF
     <form onSubmit={handleSubmit} className="space-y-6">
       <div className="text-center mb-6">
         <h2 className="text-2xl font-bold text-gray-900 mb-2">Check Your Eligibility</h2>
-        <p className="text-gray-600">We&apos;ll check if you&apos;re eligible for compensation</p>
-        <p className="text-sm text-gray-500 mt-2">💡 Takes less than 2 minutes</p>
+        <p className="text-gray-600">We&apos;ll check if you&apos;re eligible for compensation in less than 2 minutes</p>
       </div>
 
       {/* Section 1: Disruption Type - MOVED TO TOP */}
       <div className="mb-6">
         <label className="block text-sm font-medium text-gray-700 mb-3">
-          What happened to your flight? *
+          What happened to your flight?
         </label>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
           <label className="flex items-center p-3 border rounded-lg cursor-pointer hover:bg-gray-50 transition-colors">
@@ -529,7 +524,7 @@ export default function FlightLookupForm({ onResults, onLoading }: FlightLookupF
         {/* Departure Date - MOVED UP */}
         <div>
           <label htmlFor="departureDate" className="block text-sm font-medium text-gray-700 mb-2">
-            Departure Date *
+            Departure Date
           </label>
           <div className="relative">
             <input
@@ -555,7 +550,7 @@ export default function FlightLookupForm({ onResults, onLoading }: FlightLookupF
         {/* Flight Number */}
         <div>
           <label htmlFor="flightNumber" className="block text-sm font-medium text-gray-700 mb-2">
-            Flight Number *
+            Flight Number
           </label>
           <div className="relative">
             <input
@@ -592,7 +587,7 @@ export default function FlightLookupForm({ onResults, onLoading }: FlightLookupF
         {/* Route - Visual Grouping with Arrow */}
         <div className="md:col-span-2">
           <label className="block text-sm font-medium text-gray-700 mb-2">
-            Route *
+            Route
           </label>
           <div className="flex items-center gap-3">
             <div className="flex-1">
@@ -606,7 +601,7 @@ export default function FlightLookupForm({ onResults, onLoading }: FlightLookupF
               />
             </div>
             <div className="text-2xl text-blue-500 pb-2 hidden sm:block">
-              ✈️ →
+              →
             </div>
             <div className="text-lg text-blue-500 pb-2 sm:hidden">
               ↓
@@ -637,7 +632,7 @@ export default function FlightLookupForm({ onResults, onLoading }: FlightLookupF
         {formData.disruptionType === 'delay' && (
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">
-              Delay Duration *
+              Delay Duration
             </label>
             <div className="flex space-x-2">
               <div className="flex-1">
@@ -672,7 +667,7 @@ export default function FlightLookupForm({ onResults, onLoading }: FlightLookupF
             {errors.delayHours && (
               <p className="mt-1 text-sm text-red-600">{errors.delayHours}</p>
             )}
-            <p className="mt-1 text-xs text-gray-500">⏰ How long was your flight delayed from the original departure time?</p>
+            <p className="mt-1 text-xs text-gray-500">How long was your flight delayed from the original departure time?</p>
           </div>
         )}
 
@@ -687,7 +682,7 @@ export default function FlightLookupForm({ onResults, onLoading }: FlightLookupF
             {/* Notification Date with Auto-calculated Notice Period */}
             <div className="md:col-span-2">
               <label htmlFor="notificationDate" className="block text-sm font-medium text-gray-700 mb-2">
-                When were you notified of the cancellation? *
+                When were you notified of the cancellation?
               </label>
               <input
                 type="date"
@@ -800,7 +795,7 @@ export default function FlightLookupForm({ onResults, onLoading }: FlightLookupF
                 {/* Alternative Departure Delay */}
                 <div className="md:col-span-2">
                   <label className="block text-sm font-medium text-gray-700 mb-2">
-                    How much later did the alternative depart? *
+                    How much later did the alternative depart?
                   </label>
                   <div className="flex items-center space-x-2 flex-wrap gap-y-2">
                     <input
@@ -843,7 +838,7 @@ export default function FlightLookupForm({ onResults, onLoading }: FlightLookupF
                 {/* Alternative Arrival Delay */}
                 <div className="md:col-span-2">
                   <label className="block text-sm font-medium text-gray-700 mb-2">
-                    How much later did it arrive? *
+                    How much later did it arrive?
                   </label>
                   <div className="flex items-center space-x-2 flex-wrap gap-y-2">
                     <input
@@ -872,7 +867,7 @@ export default function FlightLookupForm({ onResults, onLoading }: FlightLookupF
                   {errors.alternativeArrivalHours && (
                     <p className="mt-1 text-sm text-red-600">{errors.alternativeArrivalHours}</p>
                   )}
-                  <p className="mt-1 text-xs text-gray-500">⏰ This affects your compensation amount</p>
+                  <p className="mt-1 text-xs text-gray-500">This affects your compensation amount</p>
                 </div>
 
                 {/* Auto-calculated summary with edit option */}
@@ -1010,7 +1005,7 @@ export default function FlightLookupForm({ onResults, onLoading }: FlightLookupF
             {/* Boarding Type */}
             <div className="md:col-span-2">
               <label className="block text-sm font-medium text-gray-700 mb-3">
-                Type of Denied Boarding *
+                Type of Denied Boarding
               </label>
               <div className="space-y-3">
                 <label className="flex items-start p-3 border rounded-lg cursor-pointer hover:bg-gray-50">
@@ -1063,7 +1058,7 @@ export default function FlightLookupForm({ onResults, onLoading }: FlightLookupF
             {/* Denied Boarding Reason */}
             <div>
               <label htmlFor="deniedBoardingReason" className="block text-sm font-medium text-gray-700 mb-2">
-                Reason for Denied Boarding *
+                Reason for Denied Boarding
               </label>
               <select
                 id="deniedBoardingReason"
@@ -1104,7 +1099,7 @@ export default function FlightLookupForm({ onResults, onLoading }: FlightLookupF
             {formData.alternativeOffered && (
               <div className="md:col-span-2">
                 <label className="block text-sm font-medium text-gray-700 mb-3">
-                  How much later did the alternative arrive? *
+                  How much later did the alternative arrive?
                 </label>
                 <div className="space-y-3">
                   <label className="flex items-start p-3 border rounded-lg cursor-pointer hover:bg-gray-50 transition-colors">
@@ -1174,7 +1169,7 @@ export default function FlightLookupForm({ onResults, onLoading }: FlightLookupF
             {/* Check-in Time */}
             <div>
               <label htmlFor="checkInTime" className="block text-sm font-medium text-gray-700 mb-2">
-                What time did you check in? *
+                What time did you check in?
               </label>
               <input
                 type="time"
@@ -1194,7 +1189,7 @@ export default function FlightLookupForm({ onResults, onLoading }: FlightLookupF
             {/* Ticket Price */}
             <div className="md:col-span-2">
               <label htmlFor="ticketPrice" className="block text-sm font-medium text-gray-700 mb-2">
-                One-Way Ticket Price (USD) *
+                One-Way Ticket Price (USD)
               </label>
               <div className="relative">
                 <span className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500 text-lg">$</span>
@@ -1215,7 +1210,7 @@ export default function FlightLookupForm({ onResults, onLoading }: FlightLookupF
                 <p className="mt-1 text-sm text-red-600">{errors.ticketPrice}</p>
               )}
               <div className="mt-2 space-y-1">
-                <p className="text-xs text-gray-600">💡 Enter the base fare shown on your ticket, before taxes and fees</p>
+                <p className="text-xs text-gray-600">Enter the base fare shown on your ticket, before taxes and fees</p>
                 <label className="flex items-center text-xs text-gray-600">
                   <input
                     type="checkbox"
@@ -1292,7 +1287,7 @@ export default function FlightLookupForm({ onResults, onLoading }: FlightLookupF
             {/* Class Paid For */}
             <div>
               <label htmlFor="classPaidFor" className="block text-sm font-medium text-gray-700 mb-2">
-                Class You Paid For *
+                Class You Paid For
               </label>
               <select
                 id="classPaidFor"
@@ -1316,7 +1311,7 @@ export default function FlightLookupForm({ onResults, onLoading }: FlightLookupF
             {/* Class Received */}
             <div>
               <label htmlFor="classReceived" className="block text-sm font-medium text-gray-700 mb-2">
-                Class You Actually Received *
+                Class You Actually Received
               </label>
               <select
                 id="classReceived"
@@ -1340,7 +1335,7 @@ export default function FlightLookupForm({ onResults, onLoading }: FlightLookupF
             {/* Ticket Price */}
             <div className="md:col-span-2">
               <label htmlFor="ticketPrice" className="block text-sm font-medium text-gray-700 mb-2">
-                One-Way Ticket Price (USD) *
+                One-Way Ticket Price (USD)
               </label>
               <div className="relative">
                 <span className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500 text-lg">$</span>
@@ -1361,7 +1356,7 @@ export default function FlightLookupForm({ onResults, onLoading }: FlightLookupF
                 <p className="mt-1 text-sm text-red-600">{errors.ticketPrice}</p>
               )}
               <div className="mt-2 space-y-1">
-                <p className="text-xs text-gray-600">💡 Enter the base fare shown on your ticket, before taxes and fees</p>
+                <p className="text-xs text-gray-600">Enter the base fare shown on your ticket, before taxes and fees</p>
                 <label className="flex items-center text-xs text-gray-600">
                   <input
                     type="checkbox"
@@ -1425,7 +1420,7 @@ export default function FlightLookupForm({ onResults, onLoading }: FlightLookupF
             {/* Downgrade Timing */}
             <div>
               <label htmlFor="downgradeTiming" className="block text-sm font-medium text-gray-700 mb-2">
-                When did the downgrade happen? *
+                When did the downgrade happen?
               </label>
               <select
                 id="downgradeTiming"
@@ -1531,7 +1526,7 @@ export default function FlightLookupForm({ onResults, onLoading }: FlightLookupF
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6">
           <div>
             <label htmlFor="firstName" className="block text-sm font-medium text-gray-700 mb-2">
-              First Name *
+              First Name
             </label>
             <input
               type="text"
@@ -1550,7 +1545,7 @@ export default function FlightLookupForm({ onResults, onLoading }: FlightLookupF
 
           <div>
             <label htmlFor="lastName" className="block text-sm font-medium text-gray-700 mb-2">
-              Last Name *
+              Last Name
             </label>
             <input
               type="text"
@@ -1569,7 +1564,7 @@ export default function FlightLookupForm({ onResults, onLoading }: FlightLookupF
 
           <div>
             <label htmlFor="passengerEmail" className="block text-sm font-medium text-gray-700 mb-2">
-              Email Address *
+              Email Address
             </label>
             <div className="relative">
               <input

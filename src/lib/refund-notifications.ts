@@ -8,7 +8,7 @@ try {
   const resendModule = require('resend');
   Resend = resendModule.Resend;
   resend = new Resend(process.env.RESEND_API_KEY);
-} catch (error) {
+} catch {
   logger.warn('Resend not installed, email notifications will be disabled');
   resend = null;
 }

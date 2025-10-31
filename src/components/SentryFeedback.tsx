@@ -12,7 +12,7 @@ import { MessageSquare } from 'lucide-react';
  */
 export function SentryFeedbackWidget() {
   const [mounted, setMounted] = useState(false);
-  const [feedbackOpen, setFeedbackOpen] = useState(false);
+  const [_feedbackOpen, _setFeedbackOpen] = useState(false);
 
   useEffect(() => {
     setMounted(true);

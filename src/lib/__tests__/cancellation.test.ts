@@ -3,7 +3,7 @@
  * Tests EU261 Article 5 compliance and all edge cases
  */
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { checkEligibility, FlightDetails, NoticePeriod, AlternativeFlight } from '../eligibility';
+import { checkEligibility, FlightDetails, AlternativeFlight } from '../eligibility';
 
 // Mock the dependencies
 vi.mock('../extraordinary-circumstances', () => ({
@@ -17,7 +17,7 @@ vi.mock('../extraordinary-circumstances', () => ({
 }));
 
 vi.mock('../distance-calculator', () => ({
-  calculateFlightDistanceCached: vi.fn((from, to) => ({
+  calculateFlightDistanceCached: vi.fn((_from, _to) => ({
     isValid: true,
     distanceKm: 1200, // Default to short-haul
   })),

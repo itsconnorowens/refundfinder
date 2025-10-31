@@ -640,7 +640,7 @@ async function checkEU261CancellationEligibility(
  * Check US DOT cancellation eligibility
  */
 async function checkDOTCancellationEligibility(
-  flight: FlightDetails
+  _flight: FlightDetails
 ): Promise<EligibilityResult> {
   // US DOT doesn't mandate compensation for cancellations
   return {

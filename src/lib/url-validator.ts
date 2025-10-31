@@ -320,7 +320,6 @@ export class ClaimTracker {
   getTopPerformingAirlines(limit: number = 10): AirlineSuccessMetrics[] {
     const airlineCodes = new Set(this.claimResults.map((c) => c.airlineCode));
     const allMetrics = Array.from(airlineCodes).map((code) => {
-      const claims = this.claimResults.filter((c) => c.airlineCode === code);
       const airlineName = code; // You'd fetch the actual name
       return this.getAirlineMetrics(code, airlineName);
     });
@@ -337,7 +336,6 @@ export class ClaimTracker {
   getAirlinesNeedingAttention(threshold: number = 70): AirlineSuccessMetrics[] {
     const airlineCodes = new Set(this.claimResults.map((c) => c.airlineCode));
     const allMetrics = Array.from(airlineCodes).map((code) => {
-      const claims = this.claimResults.filter((c) => c.airlineCode === code);
       const airlineName = code;
       return this.getAirlineMetrics(code, airlineName);
     });

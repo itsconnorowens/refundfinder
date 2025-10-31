@@ -1,7 +1,7 @@
 'use client';
 
 import { useCallback } from 'react';
-import { Upload, X, FileText, AlertCircle, CheckCircle } from 'lucide-react';
+import { Upload, X, AlertCircle, CheckCircle } from 'lucide-react';
 
 interface DocumentUploadZoneProps {
   type: 'boardingPass' | 'delayProof';

@@ -3,7 +3,7 @@
  * Swiss, Norwegian, and Canadian Regulations
  */
 
-import { calculateFlightDistanceCached } from '../distance-calculator';
+// import { calculateFlightDistanceCached } from '../distance-calculator';
 
 export interface RegionalEligibilityResult {
   eligible: boolean;
@@ -52,7 +52,6 @@ export class SwissRegulations {
   ): RegionalEligibilityResult {
     // Swiss FOCA generally follows EU261 rules
     const {
-      delayHours,
       distance,
       isCancellation,
       isExtraordinaryCircumstances,
@@ -132,7 +131,6 @@ export class NorwegianRegulations {
     params: NorwegianEligibilityParams
   ): RegionalEligibilityResult {
     const {
-      delayHours,
       distance,
       isCancellation,
       isExtraordinaryCircumstances,
@@ -214,10 +212,8 @@ export class CanadianRegulations {
     const {
       delayHours,
       isWithinAirlineControl,
-      isCancellation,
       isDeniedBoarding,
       largeCarrier = true,
-      previousCompensationProvided = false,
     } = params;
 
     // No compensation if delay is outside airline control

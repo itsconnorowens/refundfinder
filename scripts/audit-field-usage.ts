@@ -15,8 +15,8 @@ if (!apiKey || !baseId) {
 
 const base = new Airtable({ apiKey }).base(baseId);
 
-// Define which fields should be used for each disruption type
-const FIELD_USAGE_RULES = {
+// Define which fields should be used for each disruption type (reserved for future validation)
+/* const FIELD_USAGE_RULES = {
   // Core fields - ALWAYS used
   core: [
     'claim_id',
@@ -71,7 +71,7 @@ const FIELD_USAGE_RULES = {
     'booking_reference',
     'internal_notes',
   ],
-};
+}; */
 
 interface FieldIssue {
   recordId: string;
@@ -112,7 +112,7 @@ async function auditFieldUsage() {
       const email = fields.user_email || 'no-email';
 
       // Count by type
-      if (stats.hasOwnProperty(disruptionType)) {
+      if (Object.prototype.hasOwnProperty.call(stats, disruptionType)) {
         stats[disruptionType as keyof typeof stats]++;
       } else {
         stats.unknown++;

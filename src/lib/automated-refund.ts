@@ -377,7 +377,7 @@ export async function processAutomaticRefund(
     const stripePaymentIntentId = payment.get(
       'stripe_payment_intent_id'
     ) as string;
-    const amount = payment.get('amount') as number;
+    // const amount = payment.get('amount') as number;
 
     // Process refund in Stripe
     const stripeRefund = await processRefund(

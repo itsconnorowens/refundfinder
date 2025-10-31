@@ -10,8 +10,8 @@ import { getAttributionProperties } from '@/lib/marketing-attribution';
 function ClaimPageContent() {
   const searchParams = useSearchParams();
   const formStartTime = useRef<number>(0);
-  const [lastStepReached, setLastStepReached] = useState(1);
-  const [hadErrors, setHadErrors] = useState(false);
+  const [lastStepReached] = useState(1);
+  const [hadErrors] = useState(false);
 
   // Get pre-filled data from URL params
   const flightNumber = searchParams.get('flightNumber') || '';

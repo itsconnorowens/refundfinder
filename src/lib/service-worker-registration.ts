@@ -73,7 +73,7 @@ export async function isServiceWorkerActive(): Promise<boolean> {
   try {
     const registration = await navigator.serviceWorker.getRegistration();
     return registration?.active !== null;
-  } catch (error) {
+  } catch {
     return false;
   }
 }

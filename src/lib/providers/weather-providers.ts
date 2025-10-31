@@ -172,7 +172,7 @@ export class OpenWeatherMapProvider implements WeatherProvider {
     }
   }
 
-  private mapIntensity(main: string): WeatherIntensity {
+  private mapIntensity(_main: string): WeatherIntensity {
     // OpenWeatherMap doesn't provide intensity directly
     // This would need to be enhanced based on additional data
     return 'moderate';

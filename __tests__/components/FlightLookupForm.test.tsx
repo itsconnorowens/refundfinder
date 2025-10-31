@@ -5,7 +5,6 @@
 
 import React from 'react';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
-import userEvent from '@testing-library/user-event';
 import { vi } from 'vitest';
 import FlightLookupForm from '@/components/FlightLookupForm';
 
@@ -63,7 +62,7 @@ describe('FlightLookupForm - Conditional Rendering', () => {
     });
 
     it('should show disruption type as first question', () => {
-      const { container } = render(<FlightLookupForm onResults={mockOnResults} onLoading={mockOnLoading} />);
+      render(<FlightLookupForm onResults={mockOnResults} onLoading={mockOnLoading} />);
 
       // Check that disruption type question appears early in the document
       const disruptionLabel = screen.getByText(/What happened to your flight/i);
@@ -284,13 +283,13 @@ describe('FlightLookupForm - Visual Route Grouping', () => {
   const mockOnResults = vi.fn();
   const mockOnLoading = vi.fn();
 
-  it('should show airplane icon between airport fields', () => {
+  it('should show direction arrow between airport fields', () => {
     render(<FlightLookupForm onResults={mockOnResults} onLoading={mockOnLoading} />);
 
     expect(screen.getByText(/Route/i)).toBeInTheDocument();
-    // Check for airplane emoji in the DOM
-    const airplaneIcon = screen.getByText(/✈️/);
-    expect(airplaneIcon).toBeInTheDocument();
+    // Check for direction arrow in the DOM
+    const arrowIcon = screen.getByText(/→/);
+    expect(arrowIcon).toBeInTheDocument();
   });
 });
 
