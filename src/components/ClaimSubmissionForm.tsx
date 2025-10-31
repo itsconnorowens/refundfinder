@@ -623,7 +623,7 @@ export default function ClaimSubmissionForm() {
             <div key={step.id} className="flex items-center">
               <div className={`flex items-center justify-center w-10 h-10 rounded-full border-2 ${
                 currentStep >= step.id 
-                  ? 'bg-blue-600 border-blue-600 text-white' 
+                  ? 'bg-purple-500 border-blue-600 text-white' 
                   : 'bg-white border-gray-300 text-gray-500'
               }`}>
                 {currentStep > step.id ? (
@@ -638,7 +638,7 @@ export default function ClaimSubmissionForm() {
               </div>
               {index < STEPS.length - 1 && (
                 <div className={`w-16 h-0.5 mx-4 ${
-                  currentStep > step.id ? 'bg-blue-600' : 'bg-gray-300'
+                  currentStep > step.id ? 'bg-purple-500' : 'bg-gray-300'
                 }`} />
               )}
             </div>
@@ -942,8 +942,8 @@ export default function ClaimSubmissionForm() {
               />
 
               <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
-                <h4 className="font-medium text-blue-900 mb-2">What happens next?</h4>
-                <ul className="text-sm text-blue-800 space-y-1">
+                <h4 className="font-medium text-purple-900 mb-2">What happens next?</h4>
+                <ul className="text-sm text-purple-800 space-y-1">
                   <li>• Your claim will be filed with the airline within 48 hours</li>
                   <li>• You'll receive email updates at every step</li>
                   <li>• We'll handle all paperwork and follow-up</li>
@@ -958,11 +958,11 @@ export default function ClaimSubmissionForm() {
             <div className="space-y-8">
               {/* Document Upload Guidance */}
               <div className="bg-blue-50 border border-blue-200 rounded-lg p-6">
-                <h3 className="text-lg font-semibold text-blue-900 mb-4">Document Upload Guide</h3>
+                <h3 className="text-lg font-semibold text-purple-900 mb-4">Document Upload Guide</h3>
                 <div className="grid md:grid-cols-2 gap-6">
                   <div>
-                    <h4 className="font-medium text-blue-900 mb-2">Boarding Pass Requirements</h4>
-                    <ul className="text-sm text-blue-800 space-y-1 mb-3">
+                    <h4 className="font-medium text-purple-900 mb-2">Boarding Pass Requirements</h4>
+                    <ul className="text-sm text-purple-800 space-y-1 mb-3">
                       <li>• Must show flight number, date, and passenger name</li>
                       <li>• Must show departure and arrival airports</li>
                       <li>• Can be digital (PDF) or photo of physical pass</li>
@@ -975,8 +975,8 @@ export default function ClaimSubmissionForm() {
                     </div>
                   </div>
                   <div>
-                    <h4 className="font-medium text-blue-900 mb-2">Delay/Cancellation Proof</h4>
-                    <ul className="text-sm text-blue-800 space-y-1 mb-3">
+                    <h4 className="font-medium text-purple-900 mb-2">Delay/Cancellation Proof</h4>
+                    <ul className="text-sm text-purple-800 space-y-1 mb-3">
                       <li>• Screenshots of airline app/website</li>
                       <li>• Email notifications from airline</li>
                       <li>• Airport departure board photos</li>
@@ -1066,7 +1066,7 @@ export default function ClaimSubmissionForm() {
               </div>
               
               <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
-                <p className="text-sm text-blue-800">
+                <p className="text-sm text-purple-800">
                   <strong>What happens next:</strong> We&apos;ll file your claim within 10 business days and email you with every update. 
                   Our team will handle all communication with the airline and legal requirements.
                 </p>

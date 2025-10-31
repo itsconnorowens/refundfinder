@@ -143,19 +143,19 @@ export default function PaymentStep({
         </div>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
           <div>
-            <div className="text-2xl font-bold text-blue-600">320+</div>
+            <div className="text-2xl font-bold text-purple-600">320+</div>
             <div className="text-xs text-gray-500">Claims Processed</div>
           </div>
           <div>
-            <div className="text-2xl font-bold text-blue-600">94%</div>
+            <div className="text-2xl font-bold text-purple-600">94%</div>
             <div className="text-xs text-gray-500">Success Rate</div>
           </div>
           <div>
-            <div className="text-2xl font-bold text-blue-600">48h</div>
+            <div className="text-2xl font-bold text-purple-600">48h</div>
             <div className="text-xs text-gray-500">Filing Time</div>
           </div>
           <div>
-            <div className="text-2xl font-bold text-blue-600">{formatCurrency(averagePayout, currency)}</div>
+            <div className="text-2xl font-bold text-purple-600">{formatCurrency(averagePayout, currency)}</div>
             <div className="text-xs text-gray-500">Avg Payout</div>
           </div>
         </div>
@@ -165,7 +165,7 @@ export default function PaymentStep({
       <Card className="bg-linear-to-br from-blue-50 to-indigo-50 border-blue-200">
         <CardHeader>
           <CardTitle className="text-xl flex items-center">
-            <Lock className="w-5 h-5 mr-2 text-blue-600" />
+            <Lock className="w-5 h-5 mr-2 text-purple-600" />
             Secure Payment
           </CardTitle>
           <CardDescription>
@@ -286,7 +286,7 @@ export default function PaymentStep({
               <Button
                 type="submit"
                 disabled={!stripe || !paymentReady || isProcessing}
-                className="bg-blue-600 hover:bg-blue-700 min-w-[200px]"
+                className="bg-purple-500 hover:bg-purple-600 min-w-[200px]"
               >
                 {isProcessing ? (
                   <>

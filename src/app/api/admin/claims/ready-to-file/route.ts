@@ -1,8 +1,9 @@
 import { NextResponse } from 'next/server';
 import { getClaimsReadyToFile } from '@/lib/airtable';
 import { logger } from '@/lib/logger';
+import { withErrorTracking } from '@/lib/error-tracking';
 
-export async function GET() {
+export const GET = withErrorTracking(async () => {
   try {
     const records = await getClaimsReadyToFile();
     const claims = records.map((record) => ({
@@ -21,6 +22,9 @@ export async function GET() {
       { status: 500 }
     );
   }
-}
+}, {
+  route: '/api/admin/claims/ready-to-file',
+  tags: { service: 'admin', operation: 'get_ready_to_file' }
+});
 
 

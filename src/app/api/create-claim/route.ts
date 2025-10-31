@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createClaim, createPayment } from '@/lib/airtable';
 import { retrievePaymentIntent } from '@/lib/stripe-server';
-import { captureError, setUser, addBreadcrumb, captureMessage } from '@/lib/error-tracking';
+import { captureError, setUser, addBreadcrumb, captureMessage, withErrorTracking } from '@/lib/error-tracking';
 import { trackServerEvent, identifyServerUser } from '@/lib/posthog';
 import { notifyNewClaim } from '@/lib/notification-service';
 import { sendClaimConfirmationEmail } from '@/lib/email-service';
@@ -9,7 +9,7 @@ import { generateClaimId } from '@/lib/claim-id';
 import { logger } from '@/lib/logger';
 import { missingFieldsResponse, validationErrorResponse } from '@/lib/api-response';
 
-export async function POST(request: NextRequest) {
+export const POST = withErrorTracking(async (request: NextRequest) => {
   try {
     // Handle both JSON and FormData requests
     const contentType = request.headers.get('content-type') || '';
@@ -338,7 +338,10 @@ export async function POST(request: NextRequest) {
       { status: 500 }
     );
   }
-}
+}, {
+  route: '/api/create-claim',
+  tags: { service: 'claims', operation: 'create_claim' }
+});
 
 function calculateEstimatedCompensation(
   departureAirport: string,

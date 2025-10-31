@@ -10,6 +10,8 @@ import { withErrorTracking, addBreadcrumb, captureError } from '@/lib/error-trac
 import { missingFieldsResponse, rateLimitResponse } from '@/lib/api-response';
 import { trackServerEvent, trackServerError } from '@/lib/posthog';
 import { logger } from '@/lib/logger';
+import { extractAirlineCode } from '@/lib/validation';
+import { getAirlineByIATACode } from '@/lib/airlines';
 
 export const POST = withErrorTracking(async (request: NextRequest) => {
   const startTime = Date.now();
@@ -38,7 +40,7 @@ export const POST = withErrorTracking(async (request: NextRequest) => {
     // Extract all fields from body (with backward compatibility defaults)
     const {
       flightNumber,
-      airline,
+      airline: providedAirline,
       departureDate,
       departureAirport,
       arrivalAirport,
@@ -62,7 +64,7 @@ export const POST = withErrorTracking(async (request: NextRequest) => {
 
     logger.info('🔍 Field validation:');
     logger.info('  flightNumber:', { flightNumber, type: typeof flightNumber });
-    logger.info('  airline:', { airline, type: typeof airline });
+    logger.info('  providedAirline:', { providedAirline, type: typeof providedAirline });
     logger.info('  departureDate:', { departureDate, type: typeof departureDate });
     logger.info('  departureAirport:', { departureAirport, type: typeof departureAirport });
     logger.info('  arrivalAirport:', { arrivalAirport, type: typeof arrivalAirport });
@@ -73,7 +75,6 @@ export const POST = withErrorTracking(async (request: NextRequest) => {
     // Validate required fields with better error messages
     const missingFields = [];
     if (!flightNumber?.trim()) missingFields.push('flightNumber');
-    if (!airline?.trim()) missingFields.push('airline');
     if (!departureDate?.trim()) missingFields.push('departureDate');
     if (!departureAirport?.trim()) missingFields.push('departureAirport');
     if (!arrivalAirport?.trim()) missingFields.push('arrivalAirport');
@@ -92,10 +93,31 @@ export const POST = withErrorTracking(async (request: NextRequest) => {
 
     logger.info('✅ All fields validated successfully');
 
+    // Auto-derive airline from flight number if not provided
+    let airline = providedAirline?.trim() || '';
+    if (!airline) {
+      const airlineCode = extractAirlineCode(flightNumber.trim());
+      if (airlineCode) {
+        const airlineData = getAirlineByIATACode(airlineCode);
+        airline = airlineData?.name || airlineCode;
+        logger.info('✈️ Auto-derived airline from flight number:', {
+          flightNumber: flightNumber.trim(),
+          airlineCode,
+          airline
+        });
+      } else {
+        logger.warn('⚠️ Could not extract airline code from flight number:', {
+          flightNumber: flightNumber.trim()
+        });
+        // Use flight number prefix as fallback
+        airline = flightNumber.trim().substring(0, 2);
+      }
+    }
+
     // Create flight details object with all fields
     const flightDetails: FlightDetails = {
       flightNumber: flightNumber.trim(),
-      airline: airline.trim(),
+      airline: airline,
       departureDate,
       departureAirport: departureAirport.trim().toUpperCase(),
       arrivalAirport: arrivalAirport.trim().toUpperCase(),

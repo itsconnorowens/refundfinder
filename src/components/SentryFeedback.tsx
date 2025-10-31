@@ -42,7 +42,7 @@ export function SentryFeedbackWidget() {
   return (
     <button
       onClick={openFeedback}
-      className="fixed bottom-4 right-4 z-50 bg-[#00D9B5] hover:bg-[#00A893] text-[#0f172a] p-4 rounded-full shadow-lg transition-all duration-200 hover:scale-110 focus:outline-none focus:ring-2 focus:ring-[#00D9B5] focus:ring-offset-2"
+      className="fixed bottom-4 right-4 z-50 bg-[#FB923C] hover:bg-[#00A893] text-[#0f172a] p-4 rounded-full shadow-lg transition-all duration-200 hover:scale-110 focus:outline-none focus:ring-2 focus:ring-[#FB923C] focus:ring-offset-2"
       aria-label="Send feedback"
       title="Report an issue or send feedback"
     >
@@ -124,7 +124,7 @@ export function InlineFeedbackForm() {
               type="text"
               value={name}
               onChange={(e) => setName(e.target.value)}
-              className="w-full px-3 py-2 bg-slate-900 border border-slate-600 rounded-lg text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-[#00D9B5] focus:border-transparent"
+              className="w-full px-3 py-2 bg-slate-900 border border-slate-600 rounded-lg text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-[#FB923C] focus:border-transparent"
               placeholder="Your name"
             />
           </div>
@@ -138,7 +138,7 @@ export function InlineFeedbackForm() {
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="w-full px-3 py-2 bg-slate-900 border border-slate-600 rounded-lg text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-[#00D9B5] focus:border-transparent"
+              className="w-full px-3 py-2 bg-slate-900 border border-slate-600 rounded-lg text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-[#FB923C] focus:border-transparent"
               placeholder="your@email.com"
             />
           </div>
@@ -152,7 +152,7 @@ export function InlineFeedbackForm() {
               value={message}
               onChange={(e) => setMessage(e.target.value)}
               rows={4}
-              className="w-full px-3 py-2 bg-slate-900 border border-slate-600 rounded-lg text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-[#00D9B5] focus:border-transparent resize-none"
+              className="w-full px-3 py-2 bg-slate-900 border border-slate-600 rounded-lg text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-[#FB923C] focus:border-transparent resize-none"
               placeholder="Describe the issue or share your feedback..."
             />
           </div>
@@ -165,7 +165,7 @@ export function InlineFeedbackForm() {
 
           <button
             type="submit"
-            className="w-full bg-[#00D9B5] hover:bg-[#00A893] text-[#0f172a] font-medium py-2 px-4 rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-[#00D9B5] focus:ring-offset-2 focus:ring-offset-slate-800"
+            className="w-full bg-[#FB923C] hover:bg-[#00A893] text-[#0f172a] font-medium py-2 px-4 rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-[#FB923C] focus:ring-offset-2 focus:ring-offset-slate-800"
           >
             Submit Feedback
           </button>

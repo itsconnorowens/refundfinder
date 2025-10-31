@@ -7,8 +7,9 @@ import {
 } from '@/lib/email-queue';
 import { emailService } from '@/lib/email-service';
 import { logger } from '@/lib/logger';
+import { withErrorTracking } from '@/lib/error-tracking';
 
-export async function GET(request: NextRequest) {
+export const GET = withErrorTracking(async (request: NextRequest) => {
   try {
     const url = new URL(request.url);
     const action = url.searchParams.get('action');
@@ -68,9 +69,12 @@ export async function GET(request: NextRequest) {
       { status: 500 }
     );
   }
-}
+}, {
+  route: '/api/email',
+  tags: { service: 'email', operation: 'email_management' }
+});
 
-export async function POST(request: NextRequest) {
+export const POST = withErrorTracking(async (request: NextRequest) => {
   try {
     const body = await request.json();
     const { action, emailId } = body;
@@ -116,4 +120,7 @@ export async function POST(request: NextRequest) {
       { status: 500 }
     );
   }
-}
+}, {
+  route: '/api/email',
+  tags: { service: 'email', operation: 'email_actions' }
+});

@@ -205,7 +205,7 @@ function AnimatedPlane({
       cx={position.x}
       cy={position.y}
       r="8"
-      fill="#00D9B5"
+      fill="#FB923C"
       opacity={shouldAnimate ? 1 : 0}
     >
       <animate
@@ -424,7 +424,7 @@ function StaticFlightIllustration() {
             cx={(path.origin.x + path.destination.x) / 2}
             cy={(path.origin.y + path.destination.y) / 2 - 20}
             r="6"
-            fill="#00D9B5"
+            fill="#FB923C"
             opacity="0.6"
           />
         </g>

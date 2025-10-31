@@ -44,21 +44,21 @@ export function TestimonialsSection({ className = "" }: TestimonialsSectionProps
         {/* Statistics Grid */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mb-16">
           <div className="text-center">
-            <div className="text-3xl font-bold text-[#00D9B5] mb-2">
+            <div className="text-3xl font-bold text-[#FB923C] mb-2">
               {formatCompensationAmount(totalRecovered, currency, isEURegion)}
             </div>
             <div className="text-slate-400">Total Recovered</div>
           </div>
           <div className="text-center">
-            <div className="text-3xl font-bold text-[#00D9B5] mb-2">320</div>
+            <div className="text-3xl font-bold text-[#FB923C] mb-2">320</div>
             <div className="text-slate-400">Happy Travelers</div>
           </div>
           <div className="text-center">
-            <div className="text-3xl font-bold text-[#00D9B5] mb-2">94%</div>
+            <div className="text-3xl font-bold text-[#FB923C] mb-2">94%</div>
             <div className="text-slate-400">Success Rate</div>
           </div>
           <div className="text-center">
-            <div className="text-3xl font-bold text-[#00D9B5] mb-2">3.2</div>
+            <div className="text-3xl font-bold text-[#FB923C] mb-2">3.2</div>
             <div className="text-slate-400">Weeks Avg</div>
           </div>
         </div>
@@ -78,13 +78,13 @@ export function TestimonialsSection({ className = "" }: TestimonialsSectionProps
                   <div className="flex items-center justify-center gap-2">
                     <span className="font-semibold text-white">{currentTestimonial.name}</span>
                     {currentTestimonial.verified && (
-                      <span className="text-[#00D9B5] text-sm">✓ Verified</span>
+                      <span className="text-[#FB923C] text-sm">✓ Verified</span>
                     )}
                   </div>
                   <div className="text-slate-400 text-sm">
                     {currentTestimonial.route} • {currentTestimonial.airline}
                   </div>
-                  <div className="text-[#00D9B5] font-semibold">
+                  <div className="text-[#FB923C] font-semibold">
                     {formatCompensationAmount(currentTestimonial.amountEur, currency, isEURegion)} recovered in {currentTestimonial.timeline}
                   </div>
                 </div>
@@ -105,7 +105,7 @@ export function TestimonialsSection({ className = "" }: TestimonialsSectionProps
                         key={index}
                         onClick={() => setCurrentIndex(index)}
                         className={`w-2 h-2 rounded-full transition-colors ${
-                          index === currentIndex ? 'bg-[#00D9B5]' : 'bg-slate-600'
+                          index === currentIndex ? 'bg-[#FB923C]' : 'bg-slate-600'
                         }`}
                       />
                     ))}

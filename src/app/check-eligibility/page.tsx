@@ -152,22 +152,22 @@ export default function CheckEligibilityPage() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-950 py-12">
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-purple-50 via-pink-50 to-orange-50 py-12">
       <div className="container mx-auto px-4 max-w-4xl">
         {/* Header */}
         <div className="text-center mb-8">
-          <h1 className="text-4xl font-bold text-white mb-4">
+          <h1 className="text-4xl font-bold text-gray-900 mb-4">
             Check Your Flight Eligibility
           </h1>
-          <p className="text-xl text-slate-400">
+          <p className="text-xl text-gray-600">
             Find out if you're entitled to compensation for your delayed flight
           </p>
         </div>
 
-        <Card className="bg-slate-800 border-slate-700">
+        <Card className="bg-white/90 border-gray-200">
           <CardHeader>
-            <CardTitle className="text-2xl text-white">Flight Details</CardTitle>
-            <CardDescription className="text-slate-400">
+            <CardTitle className="text-2xl text-gray-900">Flight Details</CardTitle>
+            <CardDescription className="text-gray-600">
               Enter your flight information to check eligibility
             </CardDescription>
           </CardHeader>
@@ -196,7 +196,7 @@ export default function CheckEligibilityPage() {
             {inputMethod === 'email' && (
               <div className="space-y-4">
                 <div>
-                  <Label htmlFor="emailText" className="text-sm font-medium text-white">
+                  <Label htmlFor="emailText" className="text-sm font-medium text-gray-900">
                     Flight Confirmation Email
                   </Label>
                   <Textarea
@@ -204,9 +204,9 @@ export default function CheckEligibilityPage() {
                     value={formData.emailText}
                     onChange={(e) => handleInputChange('emailText', e.target.value)}
                     placeholder="Paste your flight confirmation email here..."
-                    className="mt-2 min-h-[200px] bg-slate-700 border-slate-600 text-white"
+                    className="mt-2 min-h-[200px] bg-white border-gray-300 text-gray-900"
                   />
-                  <p className="text-sm text-slate-400 mt-1">
+                  <p className="text-sm text-gray-600 mt-1">
                     We'll automatically extract flight details from your email
                   </p>
                 </div>
@@ -227,7 +227,7 @@ export default function CheckEligibilityPage() {
                 {/* Flight Information */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
-                    <Label htmlFor="flightNumber" className="text-sm font-medium text-white">
+                    <Label htmlFor="flightNumber" className="text-sm font-medium text-gray-900">
                       Flight Number *
                     </Label>
                     <Input
@@ -235,12 +235,12 @@ export default function CheckEligibilityPage() {
                       value={formData.flightNumber}
                       onChange={(e) => handleInputChange('flightNumber', e.target.value)}
                       placeholder="e.g., AA1234"
-                      className="mt-1 bg-slate-700 border-slate-600 text-white"
+                      className="mt-1 bg-white border-gray-300 text-gray-900"
                     />
                   </div>
                   
                   <div>
-                    <Label htmlFor="airline" className="text-sm font-medium text-white">
+                    <Label htmlFor="airline" className="text-sm font-medium text-gray-900">
                       Airline *
                     </Label>
                     <Input
@@ -248,12 +248,12 @@ export default function CheckEligibilityPage() {
                       value={formData.airline}
                       onChange={(e) => handleInputChange('airline', e.target.value)}
                       placeholder="e.g., American Airlines"
-                      className="mt-1 bg-slate-700 border-slate-600 text-white"
+                      className="mt-1 bg-white border-gray-300 text-gray-900"
                     />
                   </div>
                   
                   <div>
-                    <Label htmlFor="departureDate" className="text-sm font-medium text-white">
+                    <Label htmlFor="departureDate" className="text-sm font-medium text-gray-900">
                       Departure Date *
                     </Label>
                     <Input
@@ -261,12 +261,12 @@ export default function CheckEligibilityPage() {
                       type="date"
                       value={formData.departureDate}
                       onChange={(e) => handleInputChange('departureDate', e.target.value)}
-                      className="mt-1 bg-slate-700 border-slate-600 text-white"
+                      className="mt-1 bg-white border-gray-300 text-gray-900"
                     />
                   </div>
                   
                   <div>
-                    <Label htmlFor="delayDuration" className="text-sm font-medium text-white">
+                    <Label htmlFor="delayDuration" className="text-sm font-medium text-gray-900">
                       Delay Duration *
                     </Label>
                     <Input
@@ -274,12 +274,12 @@ export default function CheckEligibilityPage() {
                       value={formData.delayDuration}
                       onChange={(e) => handleInputChange('delayDuration', e.target.value)}
                       placeholder="e.g., 4 hours, 3.5 hours, 180 minutes"
-                      className="mt-1 bg-slate-700 border-slate-600 text-white"
+                      className="mt-1 bg-white border-gray-300 text-gray-900"
                     />
                   </div>
                   
                   <div>
-                    <Label htmlFor="departureAirport" className="text-sm font-medium text-white">
+                    <Label htmlFor="departureAirport" className="text-sm font-medium text-gray-900">
                       Departure Airport *
                     </Label>
                     <Input
@@ -287,12 +287,12 @@ export default function CheckEligibilityPage() {
                       value={formData.departureAirport}
                       onChange={(e) => handleInputChange('departureAirport', e.target.value.toUpperCase())}
                       placeholder="e.g., JFK"
-                      className="mt-1 bg-slate-700 border-slate-600 text-white"
+                      className="mt-1 bg-white border-gray-300 text-gray-900"
                     />
                   </div>
                   
                   <div>
-                    <Label htmlFor="arrivalAirport" className="text-sm font-medium text-white">
+                    <Label htmlFor="arrivalAirport" className="text-sm font-medium text-gray-900">
                       Arrival Airport *
                     </Label>
                     <Input
@@ -300,14 +300,14 @@ export default function CheckEligibilityPage() {
                       value={formData.arrivalAirport}
                       onChange={(e) => handleInputChange('arrivalAirport', e.target.value.toUpperCase())}
                       placeholder="e.g., LAX"
-                      className="mt-1 bg-slate-700 border-slate-600 text-white"
+                      className="mt-1 bg-white border-gray-300 text-gray-900"
                     />
                   </div>
                 </div>
 
                 {/* Delay Reason */}
                 <div>
-                  <Label htmlFor="delayReason" className="text-sm font-medium text-white">
+                  <Label htmlFor="delayReason" className="text-sm font-medium text-gray-900">
                     Reason for Delay (Optional)
                   </Label>
                   <Input
@@ -315,9 +315,9 @@ export default function CheckEligibilityPage() {
                     value={formData.delayReason}
                     onChange={(e) => handleInputChange('delayReason', e.target.value)}
                     placeholder="e.g., Technical issues, weather, crew delay"
-                    className="mt-1 bg-slate-700 border-slate-600 text-white"
+                    className="mt-1 bg-white border-gray-300 text-gray-900"
                   />
-                  <p className="text-sm text-slate-400 mt-1">
+                  <p className="text-sm text-gray-600 mt-1">
                     This helps us determine if extraordinary circumstances apply
                   </p>
                 </div>
@@ -369,7 +369,7 @@ export default function CheckEligibilityPage() {
             </Button>
 
             {/* Help Text */}
-            <div className="text-center text-sm text-slate-400">
+            <div className="text-center text-sm text-gray-600">
               <p>
                 We check eligibility based on EU261 and US DOT regulations. 
                 This is a free service with no obligation to file a claim.
@@ -383,7 +383,7 @@ export default function CheckEligibilityPage() {
           <Button
             variant="outline"
             onClick={() => router.push('/')}
-            className="text-slate-400 border-slate-600 hover:text-white hover:border-slate-500"
+            className="text-gray-700 border-gray-300 hover:text-gray-900 hover:border-gray-400"
           >
             ← Back to Home
           </Button>

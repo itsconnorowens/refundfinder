@@ -103,7 +103,7 @@ export function MobileFileUpload({
 
       {/* Preview */}
       {preview && (
-        <div className="relative rounded-lg overflow-hidden border-2 border-[#00D9B5]">
+        <div className="relative rounded-lg overflow-hidden border-2 border-[#FB923C]">
           <img src={preview} alt="Preview" className="w-full h-auto" />
           <Button
             type="button"
@@ -121,8 +121,8 @@ export function MobileFileUpload({
       {uploadedFile && !preview && (
         <div className="flex items-center gap-3 p-3 bg-slate-900 rounded-lg border border-slate-700">
           <div className="flex-shrink-0">
-            <div className="w-10 h-10 bg-[#00D9B5]/20 rounded-lg flex items-center justify-center">
-              <FileText className="w-5 h-5 text-[#00D9B5]" />
+            <div className="w-10 h-10 bg-[#FB923C]/20 rounded-lg flex items-center justify-center">
+              <FileText className="w-5 h-5 text-[#FB923C]" />
             </div>
           </div>
           <div className="flex-1 min-w-0">
@@ -158,13 +158,13 @@ export function MobileFileUpload({
             variant="outline"
             onClick={() => cameraInputRef.current?.click()}
             disabled={isUploading}
-            className="flex flex-col items-center justify-center h-24 border-2 border-dashed hover:border-[#00D9B5] transition-colors"
+            className="flex flex-col items-center justify-center h-24 border-2 border-dashed hover:border-[#FB923C] transition-colors"
           >
             {isUploading ? (
-              <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-[#00D9B5]" />
+              <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-[#FB923C]" />
             ) : (
               <>
-                <Camera className="w-6 h-6 mb-2 text-[#00D9B5]" />
+                <Camera className="w-6 h-6 mb-2 text-[#FB923C]" />
                 <span className="text-xs font-medium">Take Photo</span>
               </>
             )}
@@ -187,13 +187,13 @@ export function MobileFileUpload({
             variant="outline"
             onClick={() => fileInputRef.current?.click()}
             disabled={isUploading}
-            className="flex flex-col items-center justify-center h-24 border-2 border-dashed hover:border-[#00D9B5] transition-colors"
+            className="flex flex-col items-center justify-center h-24 border-2 border-dashed hover:border-[#FB923C] transition-colors"
           >
             {isUploading ? (
-              <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-[#00D9B5]" />
+              <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-[#FB923C]" />
             ) : (
               <>
-                <Upload className="w-6 h-6 mb-2 text-[#00D9B5]" />
+                <Upload className="w-6 h-6 mb-2 text-[#FB923C]" />
                 <span className="text-xs font-medium">Choose File</span>
               </>
             )}
@@ -213,7 +213,7 @@ export function MobileFileUpload({
 
       {/* Drag and drop zone for desktop */}
       {!uploadedFile && !isUploading && (
-        <div className="hidden md:flex items-center justify-center min-h-[100px] border-2 border-dashed border-slate-700 rounded-lg hover:border-[#00D9B5] transition-colors cursor-pointer">
+        <div className="hidden md:flex items-center justify-center min-h-[100px] border-2 border-dashed border-slate-700 rounded-lg hover:border-[#FB923C] transition-colors cursor-pointer">
           <div className="text-center">
             <Upload className="w-8 h-8 text-slate-500 mx-auto mb-2" />
             <p className="text-sm text-slate-400">
@@ -221,7 +221,7 @@ export function MobileFileUpload({
               <button
                 type="button"
                 onClick={() => fileInputRef.current?.click()}
-                className="text-[#00D9B5] hover:underline"
+                className="text-[#FB923C] hover:underline"
               >
                 browse files
               </button>

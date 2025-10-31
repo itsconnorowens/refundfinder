@@ -1,16 +1,16 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getAirlineConfig } from '@/lib/airline-config';
-import { addBreadcrumb } from '@/lib/error-tracking';
+import { addBreadcrumb, withErrorTracking } from '@/lib/error-tracking';
 import { logger } from '@/lib/logger';
 
 /**
  * GET /api/admin/airlines/[code]
  * Get specific airline configuration
  */
-export async function GET(
+export const GET = withErrorTracking(async (
   request: NextRequest,
   { params }: { params: Promise<{ code: string }> }
-) {
+) => {
   try {
     const { code: airlineCode } = await params;
     addBreadcrumb('Fetching airline configuration', 'admin', { airlineCode });
@@ -37,16 +37,19 @@ export async function GET(
       { status: 500 }
     );
   }
-}
+}, {
+  route: '/api/admin/airlines/[code]',
+  tags: { service: 'admin', operation: 'get_airline_config' }
+});
 
 /**
  * PUT /api/admin/airlines/[code]
  * Update airline configuration (for future use)
  */
-export async function PUT(
+export const PUT = withErrorTracking(async (
   request: NextRequest,
   { params }: { params: Promise<{ code: string }> }
-) {
+) => {
   try {
     const { code } = await params;
     addBreadcrumb('Updating airline configuration', 'admin', { airlineCode: code });
@@ -66,4 +69,7 @@ export async function PUT(
       { status: 500 }
     );
   }
-}
+}, {
+  route: '/api/admin/airlines/[code]',
+  tags: { service: 'admin', operation: 'update_airline_config' }
+});

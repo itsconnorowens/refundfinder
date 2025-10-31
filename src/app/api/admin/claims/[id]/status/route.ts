@@ -2,11 +2,12 @@ import { NextRequest, NextResponse } from 'next/server';
 import { ClaimStatus } from '@/lib/airtable';
 import { updateClaimStatus as updateClaimStatusService } from '@/lib/claim-filing-service';
 import { logger } from '@/lib/logger';
+import { withErrorTracking } from '@/lib/error-tracking';
 
-export async function PUT(
+export const PUT = withErrorTracking(async (
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
-) {
+) => {
   try {
     const { id: claimId } = await params;
     const body = await request.json();
@@ -43,4 +44,7 @@ export async function PUT(
       { status: 500 }
     );
   }
-}
+}, {
+  route: '/api/admin/claims/[id]/status',
+  tags: { service: 'admin', operation: 'update_claim_status' }
+});

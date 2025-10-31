@@ -82,7 +82,7 @@ function ClaimPageContent() {
   }, [lastStepReached, hadErrors]);
 
   return (
-    <div className="min-h-screen bg-slate-950">
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-purple-50 via-pink-50 to-orange-50">
       <div className="container mx-auto px-4 py-8">
         <FormErrorBoundary
           formName="claim-submission"

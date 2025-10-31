@@ -56,30 +56,30 @@ export default function GDPRCompliancePage() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-950 py-12">
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-purple-50 via-pink-50 to-orange-50 py-12">
       <div className="container mx-auto px-4 max-w-4xl">
         {/* Header */}
         <div className="text-center mb-8">
-          <h1 className="text-4xl font-bold text-white mb-4">
+          <h1 className="text-4xl font-bold text-gray-900 mb-4">
             GDPR Data Subject Rights
           </h1>
-          <p className="text-xl text-slate-400">
+          <p className="text-xl text-gray-600">
             Exercise your data protection rights under GDPR and UK GDPR
           </p>
         </div>
 
         {/* Rights Information */}
-        <Card className="bg-slate-800 border-slate-700 mb-8">
+        <Card className="bg-white/90 border-gray-200 mb-8">
           <CardHeader>
-            <CardTitle className="text-2xl text-white">Your Rights</CardTitle>
+            <CardTitle className="text-2xl text-gray-900">Your Rights</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="grid md:grid-cols-2 gap-4">
               {rightsInfo.rights.map((right, index) => (
-                <div key={index} className="bg-slate-700 rounded-lg p-4">
-                  <h3 className="font-semibold text-white mb-2">{right.name}</h3>
-                  <p className="text-slate-300 text-sm mb-2">{right.description}</p>
-                  <p className="text-slate-400 text-xs">Response time: {right.responseTime}</p>
+                <div key={index} className="bg-white/60 rounded-lg p-4">
+                  <h3 className="font-semibold text-gray-900 mb-2">{right.name}</h3>
+                  <p className="text-gray-700 text-sm mb-2">{right.description}</p>
+                  <p className="text-gray-600 text-xs">Response time: {right.responseTime}</p>
                 </div>
               ))}
             </div>
@@ -87,19 +87,19 @@ export default function GDPRCompliancePage() {
         </Card>
 
         {/* Request Form */}
-        <Card className="bg-slate-800 border-slate-700 mb-8">
+        <Card className="bg-white/90 border-gray-200 mb-8">
           <CardHeader>
-            <CardTitle className="text-2xl text-white">Submit a Request</CardTitle>
+            <CardTitle className="text-2xl text-gray-900">Submit a Request</CardTitle>
           </CardHeader>
           <CardContent>
             <form onSubmit={handleSubmit} className="space-y-6">
               <div>
-                <Label htmlFor="type" className="text-white">Request Type</Label>
+                <Label htmlFor="type" className="text-gray-900">Request Type</Label>
                 <select
                   id="type"
                   value={request.type}
                   onChange={(e) => setRequest({ ...request, type: e.target.value })}
-                  className="w-full bg-slate-700 border border-slate-600 text-white rounded-md px-3 py-2"
+                  className="w-full bg-white/60 border border-gray-300 text-gray-900 rounded-md px-3 py-2"
                   required
                 >
                   <option value="">Select request type</option>
@@ -113,13 +113,13 @@ export default function GDPRCompliancePage() {
               </div>
 
               <div>
-                <Label htmlFor="email" className="text-white">Email Address</Label>
+                <Label htmlFor="email" className="text-gray-900">Email Address</Label>
                 <Input
                   id="email"
                   type="email"
                   value={request.email}
                   onChange={(e) => setRequest({ ...request, email: e.target.value })}
-                  className="bg-slate-700 border-slate-600 text-white"
+                  className="bg-white/60 border-gray-300 text-gray-900"
                   placeholder="your@email.com"
                   required
                 />
@@ -127,12 +127,12 @@ export default function GDPRCompliancePage() {
 
               {(request.type === 'objection' || request.type === 'restriction') && (
                 <div>
-                  <Label htmlFor="reason" className="text-white">Reason (Required)</Label>
+                  <Label htmlFor="reason" className="text-gray-900">Reason (Required)</Label>
                   <Textarea
                     id="reason"
                     value={request.reason}
                     onChange={(e) => setRequest({ ...request, reason: e.target.value })}
-                    className="bg-slate-700 border-slate-600 text-white"
+                    className="bg-white/60 border-gray-300 text-gray-900"
                     placeholder="Please explain your reason for this request..."
                     rows={4}
                     required={request.type === 'objection' || request.type === 'restriction'}
@@ -143,7 +143,7 @@ export default function GDPRCompliancePage() {
               <Button
                 type="submit"
                 disabled={isSubmitting || !request.type || !request.email}
-                className="w-full bg-blue-600 hover:bg-blue-700 text-white"
+                className="w-full bg-blue-600 hover:bg-blue-700 text-gray-900"
               >
                 {isSubmitting ? 'Submitting...' : 'Submit Request'}
               </Button>
@@ -202,26 +202,26 @@ export default function GDPRCompliancePage() {
         )}
 
         {/* Contact Information */}
-        <Card className="bg-slate-800 border-slate-700">
+        <Card className="bg-white/90 border-gray-200">
           <CardHeader>
-            <CardTitle className="text-2xl text-white">Contact Information</CardTitle>
+            <CardTitle className="text-2xl text-gray-900">Contact Information</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="grid md:grid-cols-3 gap-4">
-              <div className="bg-slate-700 rounded-lg p-4">
-                <h3 className="font-semibold text-white mb-2">Privacy Team</h3>
-                <p className="text-slate-300 text-sm">privacy@flghtly.com</p>
-                <p className="text-slate-400 text-xs">General privacy inquiries</p>
+              <div className="bg-white/60 rounded-lg p-4">
+                <h3 className="font-semibold text-gray-900 mb-2">Privacy Team</h3>
+                <p className="text-gray-700 text-sm">privacy@flghtly.com</p>
+                <p className="text-gray-600 text-xs">General privacy inquiries</p>
               </div>
-              <div className="bg-slate-700 rounded-lg p-4">
-                <h3 className="font-semibold text-white mb-2">Data Protection Officer</h3>
-                <p className="text-slate-300 text-sm">dpo@flghtly.com</p>
-                <p className="text-slate-400 text-xs">Data protection matters</p>
+              <div className="bg-white/60 rounded-lg p-4">
+                <h3 className="font-semibold text-gray-900 mb-2">Data Protection Officer</h3>
+                <p className="text-gray-700 text-sm">dpo@flghtly.com</p>
+                <p className="text-gray-600 text-xs">Data protection matters</p>
               </div>
-              <div className="bg-slate-700 rounded-lg p-4">
-                <h3 className="font-semibold text-white mb-2">EU Representative</h3>
-                <p className="text-slate-300 text-sm">eu-representative@flghtly.com</p>
-                <p className="text-slate-400 text-xs">EU data protection authority liaison</p>
+              <div className="bg-white/60 rounded-lg p-4">
+                <h3 className="font-semibold text-gray-900 mb-2">EU Representative</h3>
+                <p className="text-gray-700 text-sm">eu-representative@flghtly.com</p>
+                <p className="text-gray-600 text-xs">EU data protection authority liaison</p>
               </div>
             </div>
           </CardContent>

@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { withErrorTracking } from '@/lib/error-tracking';
 
-export async function GET(request: NextRequest) {
+export const GET = withErrorTracking(async (request: NextRequest) => {
   // Vercel provides geo information in headers
   // Type assertion for the geo property which is added by Vercel Edge runtime
   const req = request as NextRequest & { geo?: { country?: string; city?: string; region?: string } };
@@ -14,6 +15,9 @@ export async function GET(request: NextRequest) {
     city,
     region,
   });
-}
+}, {
+  route: '/api/geo',
+  tags: { service: 'geolocation', operation: 'get_location' }
+});
 
 export const runtime = 'edge';

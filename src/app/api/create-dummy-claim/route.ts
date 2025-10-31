@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import Airtable from 'airtable';
 import { logger } from '@/lib/logger';
+import { withErrorTracking } from '@/lib/error-tracking';
 
 // Lazy initialization of Airtable to avoid build-time errors
 function getAirtableBase() {
@@ -17,7 +18,7 @@ function getAirtableBase() {
 
 const tableName = process.env.AIRTABLE_CLAIMS_TABLE_NAME || 'Claims';
 
-export async function POST(request: NextRequest) {
+export const POST = withErrorTracking(async (request: NextRequest) => {
   try {
     // Parse the request body
     const body = await request.json();
@@ -124,9 +125,12 @@ export async function POST(request: NextRequest) {
       { status: 500 }
     );
   }
-}
+}, {
+  route: '/api/create-dummy-claim',
+  tags: { service: 'testing', operation: 'create_dummy_claim' }
+});
 
-export async function GET() {
+export const GET = withErrorTracking(async () => {
   try {
     // Fetch all records from the Claims table
     const base = getAirtableBase();
@@ -182,4 +186,7 @@ export async function GET() {
       { status: 500 }
     );
   }
-}
+}, {
+  route: '/api/create-dummy-claim',
+  tags: { service: 'testing', operation: 'get_dummy_claims' }
+});

@@ -45,7 +45,7 @@ export function MobileStepIndicator({
         {/* Progress Bar */}
         <div className="h-1 bg-gray-200 rounded-full overflow-hidden">
           <div
-            className="h-full bg-blue-600 transition-all duration-300"
+            className="h-full bg-purple-500 transition-all duration-300"
             style={{ width: `${progress}%` }}
           />
         </div>

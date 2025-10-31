@@ -1,6 +1,11 @@
 // Enhanced flight email parsing using Anthropic Claude with improved accuracy and error handling
+/* eslint-disable no-undef */
+// AbortController is a global DOM type
+
 import Anthropic from '@anthropic-ai/sdk';
 import { logger } from '@/lib/logger';
+import { trackServerEvent } from '@/lib/posthog';
+import { getCachedParse, setCachedParse } from '@/lib/email-parse-cache';
 
 const anthropic = new Anthropic({
   apiKey: process.env.ANTHROPIC_API_KEY,
@@ -65,6 +70,13 @@ export interface FlightEmailData {
   };
 }
 
+export interface TokenUsage {
+  input_tokens: number;
+  output_tokens: number;
+  total_tokens: number;
+  estimated_cost_usd: number;
+}
+
 export interface EmailParseResult {
   success: boolean;
   data?: FlightEmailData;
@@ -72,15 +84,22 @@ export interface EmailParseResult {
   confidence: number;
   parsingTime?: number;
   retryCount?: number;
+  tokenUsage?: TokenUsage;
 }
 
 export function isAnthropicConfigured(): boolean {
   return !!process.env.ANTHROPIC_API_KEY;
 }
 
+const DEFAULT_TIMEOUT_MS = parseInt(
+  process.env.EMAIL_PARSE_TIMEOUT_MS || '25000',
+  10
+);
+
 export async function parseFlightEmail(
   emailContent: string,
-  retryCount: number = 0
+  retryCount: number = 0,
+  timeoutMs: number = DEFAULT_TIMEOUT_MS
 ): Promise<EmailParseResult> {
   const startTime = Date.now();
 
@@ -102,14 +121,89 @@ export async function parseFlightEmail(
     };
   }
 
+  // Check cache first to avoid redundant API calls
+  const cachedResult = getCachedParse(emailContent);
+  if (cachedResult) {
+    logger.info('Returning cached email parse result', {
+      confidence: cachedResult.confidence,
+      fromCache: true,
+      route: 'parse-flight-email',
+    });
+
+    // Track cache hit
+    trackServerEvent('anonymous', 'email_parse_cache_hit', {
+      emailLength: emailContent.length,
+      confidence: cachedResult.confidence,
+    });
+
+    // Update parsing time to reflect cache retrieval
+    return {
+      ...cachedResult,
+      parsingTime: Date.now() - startTime,
+    };
+  }
+
+  // Create AbortController for timeout handling
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => {
+    logger.warn('Email parsing timeout triggered', {
+      timeoutMs,
+      emailLength: emailContent.length,
+      route: 'parse-flight-email',
+    });
+    controller.abort();
+  }, timeoutMs);
+
   try {
     const prompt = createEnhancedParsingPrompt(emailContent);
 
-    const response = await anthropic.messages.create({
+    const response = await anthropic.messages.create(
+      {
+        model: 'claude-3-5-sonnet-20241022',
+        max_tokens: 3000,
+        temperature: 0.1, // Lower temperature for more consistent results
+        messages: [{ role: 'user', content: prompt }],
+      },
+      {
+        signal: controller.signal as AbortSignal,
+      }
+    );
+
+    // Clear timeout on successful response
+    clearTimeout(timeoutId);
+
+    // Extract and calculate token usage
+    const inputTokens = response.usage?.input_tokens || 0;
+    const outputTokens = response.usage?.output_tokens || 0;
+    const totalTokens = inputTokens + outputTokens;
+
+    // Claude 3.5 Sonnet pricing (as of 2024):
+    // Input: $3.00 per million tokens
+    // Output: $15.00 per million tokens
+    const estimatedCostUsd =
+      (inputTokens / 1_000_000) * 3.0 + (outputTokens / 1_000_000) * 15.0;
+
+    const tokenUsage: TokenUsage = {
+      input_tokens: inputTokens,
+      output_tokens: outputTokens,
+      total_tokens: totalTokens,
+      estimated_cost_usd: estimatedCostUsd,
+    };
+
+    // Log token usage for cost tracking
+    logger.info('Email parsing token usage', {
+      route: 'parse-flight-email',
+      operation: 'email_parse',
+      ...tokenUsage,
       model: 'claude-3-5-sonnet-20241022',
-      max_tokens: 3000,
-      temperature: 0.1, // Lower temperature for more consistent results
-      messages: [{ role: 'user', content: prompt }],
+      emailLength: emailContent.length,
+    });
+
+    // Track in PostHog for analytics
+    trackServerEvent('anonymous', 'email_parse_tokens', {
+      ...tokenUsage,
+      emailLength: emailContent.length,
+      success: true,
     });
 
     const content = response.content[0];
@@ -124,12 +218,12 @@ export async function parseFlightEmail(
     const validation = validateFlightEmailData(parsedData);
     if (!validation.isValid && retryCount < 2) {
       logger.info('Validation failed, retrying... (attempt )', { retryCount1: retryCount + 1 });
-      return await parseFlightEmail(emailContent, retryCount + 1);
+      return await parseFlightEmail(emailContent, retryCount + 1, timeoutMs);
     }
 
     const parsingTime = Date.now() - startTime;
 
-    return {
+    const result: EmailParseResult = {
       success: true,
       data: {
         ...parsedData,
@@ -143,8 +237,42 @@ export async function parseFlightEmail(
       confidence,
       parsingTime,
       retryCount,
+      tokenUsage,
     };
+
+    // Cache successful result (only if confidence is reasonable)
+    setCachedParse(emailContent, result);
+
+    return result;
   } catch (error: unknown) {
+    // Always clear timeout on error
+    clearTimeout(timeoutId);
+
+    // Handle timeout error specifically
+    if (error instanceof Error && error.name === 'AbortError') {
+      logger.error('Email parsing timed out', {
+        timeoutMs,
+        emailLength: emailContent.length,
+        elapsedTime: Date.now() - startTime,
+        route: 'parse-flight-email',
+      });
+
+      trackServerEvent('anonymous', 'email_parse_timeout', {
+        timeoutMs,
+        emailLength: emailContent.length,
+        retryCount,
+      });
+
+      return {
+        success: false,
+        error:
+          'Email parsing timed out. Please try again or enter details manually.',
+        confidence: 0,
+        parsingTime: Date.now() - startTime,
+        retryCount,
+      };
+    }
+
     logger.error('Error parsing flight email:', error);
 
     // Retry on certain errors
@@ -156,7 +284,7 @@ export async function parseFlightEmail(
       console.log(
         `JSON parsing error, retrying... (attempt ${retryCount + 1})`
       );
-      return await parseFlightEmail(emailContent, retryCount + 1);
+      return await parseFlightEmail(emailContent, retryCount + 1, timeoutMs);
     }
 
     return {

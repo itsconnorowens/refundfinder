@@ -5,11 +5,12 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { initializeRealTimeServices } from '../../../lib/real-time-services-config';
 import { logger } from '@/lib/logger';
+import { withErrorTracking } from '@/lib/error-tracking';
 
 // Initialize services
 const { factory, monitor } = initializeRealTimeServices();
 
-export async function GET(request: NextRequest) {
+export const GET = withErrorTracking(async (request: NextRequest) => {
   try {
     const { searchParams } = new URL(request.url);
     const type = searchParams.get('type'); // 'flight' or 'airport'
@@ -98,9 +99,12 @@ export async function GET(request: NextRequest) {
       { status: 500 }
     );
   }
-}
+}, {
+  route: '/api/real-time-data',
+  tags: { service: 'real-time', operation: 'get_data' }
+});
 
-export async function POST(request: NextRequest) {
+export const POST = withErrorTracking(async (request: NextRequest) => {
   try {
     const body = await request.json();
     const { type, flightNumber, flightDate, airportCode } = body;
@@ -186,14 +190,20 @@ export async function POST(request: NextRequest) {
       { status: 500 }
     );
   }
-}
+}, {
+  route: '/api/real-time-data',
+  tags: { service: 'real-time', operation: 'post_data' }
+});
 
 // Health check endpoint
-export async function HEAD() {
+export const HEAD = withErrorTracking(async () => {
   try {
     // Basic health check
     return new NextResponse(null, { status: 200 });
   } catch {
     return new NextResponse(null, { status: 503 });
   }
-}
+}, {
+  route: '/api/real-time-data',
+  tags: { service: 'health', operation: 'health_check' }
+});

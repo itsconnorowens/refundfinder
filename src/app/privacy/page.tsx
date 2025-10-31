@@ -4,25 +4,25 @@ import Link from 'next/link';
 
 export default function PrivacyPage() {
   return (
-    <div className="min-h-screen bg-slate-950 py-12">
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-purple-50 via-pink-50 to-orange-50 py-12">
       <div className="container mx-auto px-4 max-w-4xl">
         {/* Header */}
         <div className="text-center mb-8">
-          <h1 className="text-4xl font-bold text-white mb-4">
+          <h1 className="text-4xl font-bold text-gray-900 mb-4">
             Privacy Policy
           </h1>
-          <p className="text-xl text-slate-400">
+          <p className="text-xl text-gray-600">
             Last updated: {new Date().toLocaleDateString()}
           </p>
         </div>
 
-        <Card className="bg-slate-800 border-slate-700">
+        <Card className="bg-white/90 border-gray-200">
           <CardHeader>
-            <CardTitle className="text-2xl text-white">Privacy Policy</CardTitle>
+            <CardTitle className="text-2xl text-gray-900">Privacy Policy</CardTitle>
           </CardHeader>
-          <CardContent className="space-y-6 text-slate-300">
+          <CardContent className="space-y-6 text-gray-700">
             <section>
-              <h2 className="text-xl font-semibold text-white mb-3">1. Information We Collect</h2>
+              <h2 className="text-xl font-semibold text-gray-900 mb-3">1. Information We Collect</h2>
               <p>
                 We collect the following types of information:
               </p>
@@ -36,7 +36,7 @@ export default function PrivacyPage() {
             </section>
 
             <section>
-              <h2 className="text-xl font-semibold text-white mb-3">2. How We Use Your Information</h2>
+              <h2 className="text-xl font-semibold text-gray-900 mb-3">2. How We Use Your Information</h2>
               <p>
                 We use your information to:
               </p>
@@ -59,7 +59,7 @@ export default function PrivacyPage() {
             </section>
 
             <section>
-              <h2 className="text-xl font-semibold text-white mb-3">3. Information Sharing</h2>
+              <h2 className="text-xl font-semibold text-gray-900 mb-3">3. Information Sharing</h2>
               <p>
                 We may share your information with:
               </p>
@@ -75,7 +75,7 @@ export default function PrivacyPage() {
             </section>
 
             <section>
-              <h2 className="text-xl font-semibold text-white mb-3">4. Data Security</h2>
+              <h2 className="text-xl font-semibold text-gray-900 mb-3">4. Data Security</h2>
               <p>
                 We implement appropriate security measures to protect your personal information:
               </p>
@@ -88,7 +88,7 @@ export default function PrivacyPage() {
             </section>
 
             <section>
-              <h2 className="text-xl font-semibold text-white mb-3">5. Data Retention</h2>
+              <h2 className="text-xl font-semibold text-gray-900 mb-3">5. Data Retention</h2>
               <p>
                 We retain your personal information for as long as necessary to:
               </p>
@@ -104,7 +104,7 @@ export default function PrivacyPage() {
             </section>
 
             <section>
-              <h2 className="text-xl font-semibold text-white mb-3">6. Your Rights (GDPR/UK GDPR)</h2>
+              <h2 className="text-xl font-semibold text-gray-900 mb-3">6. Your Rights (GDPR/UK GDPR)</h2>
               <p>
                 If you are in the EU or UK, you have the following rights:
               </p>
@@ -126,7 +126,7 @@ export default function PrivacyPage() {
             </section>
 
             <section>
-              <h2 className="text-xl font-semibold text-white mb-3">7. Cookies and Tracking</h2>
+              <h2 className="text-xl font-semibold text-gray-900 mb-3">7. Cookies and Tracking</h2>
               <p>
                 We use cookies and similar technologies to:
               </p>
@@ -141,7 +141,7 @@ export default function PrivacyPage() {
             </section>
 
             <section>
-              <h2 className="text-xl font-semibold text-white mb-3">8. Third-Party Services</h2>
+              <h2 className="text-xl font-semibold text-gray-900 mb-3">8. Third-Party Services</h2>
               <p>
                 We use the following third-party services:
               </p>
@@ -154,7 +154,7 @@ export default function PrivacyPage() {
             </section>
 
             <section>
-              <h2 className="text-xl font-semibold text-white mb-3">9. Data Breach Notification</h2>
+              <h2 className="text-xl font-semibold text-gray-900 mb-3">9. Data Breach Notification</h2>
               <p>
                 In the event of a data breach that may affect your personal information, we will:
               </p>
@@ -167,21 +167,21 @@ export default function PrivacyPage() {
             </section>
 
             <section>
-              <h2 className="text-xl font-semibold text-white mb-3">10. Children's Privacy</h2>
+              <h2 className="text-xl font-semibold text-gray-900 mb-3">10. Children's Privacy</h2>
               <p>
                 Our service is not intended for children under 16. We do not knowingly collect personal information from children under 16. If we become aware that we have collected personal information from a child under 16, we will take steps to delete such information.
               </p>
             </section>
 
             <section>
-              <h2 className="text-xl font-semibold text-white mb-3">11. Changes to This Policy</h2>
+              <h2 className="text-xl font-semibold text-gray-900 mb-3">11. Changes to This Policy</h2>
               <p>
                 We may update this Privacy Policy from time to time. We will notify you of any changes by posting the new Privacy Policy on this page and updating the "Last updated" date. We encourage you to review this Privacy Policy periodically.
               </p>
             </section>
 
             <section>
-              <h2 className="text-xl font-semibold text-white mb-3">12. EU Representative</h2>
+              <h2 className="text-xl font-semibold text-gray-900 mb-3">12. EU Representative</h2>
               <p>
                 As a US-based company processing personal data of EU residents, we have appointed an EU Representative to act as our point of contact for EU data protection matters:
               </p>
@@ -193,7 +193,7 @@ export default function PrivacyPage() {
             </section>
 
             <section>
-              <h2 className="text-xl font-semibold text-white mb-3">13. Contact Us</h2>
+              <h2 className="text-xl font-semibold text-gray-900 mb-3">13. Contact Us</h2>
               <p>
                 If you have any questions about this Privacy Policy or our data practices, please contact us:
               </p>
@@ -212,7 +212,7 @@ export default function PrivacyPage() {
           <Link href="/">
             <Button
               variant="outline"
-              className="text-slate-400 border-slate-600 hover:text-white hover:border-slate-500"
+              className="text-gray-600 border-slate-600 hover:text-gray-900 hover:border-slate-500"
             >
               ← Back to Home
             </Button>

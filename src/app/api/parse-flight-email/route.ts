@@ -1,10 +1,16 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { logger } from '@/lib/logger';
 import { trackServerEvent } from '@/lib/posthog';
+import { withErrorTracking } from '@/lib/error-tracking';
 import {
   parseFlightEmail,
   isAnthropicConfigured,
 } from '@/lib/parse-flight-email';
+import {
+  checkRateLimit,
+  getClientIdentifier,
+  EMAIL_PARSE_RATE_LIMIT,
+} from '@/lib/rate-limit';
 
 /**
  * POST /api/parse-flight-email
@@ -30,7 +36,7 @@ import {
  *   }
  * }
  */
-export async function POST(request: NextRequest) {
+export const POST = withErrorTracking(async (request: NextRequest) => {
   try {
     // Check if Anthropic is configured
     if (!isAnthropicConfigured()) {
@@ -41,6 +47,40 @@ export async function POST(request: NextRequest) {
             'Claude API is not configured. Please set ANTHROPIC_API_KEY in environment variables.',
         },
         { status: 503 }
+      );
+    }
+
+    // Check rate limit (before parsing body to save resources)
+    const clientId = getClientIdentifier(request);
+    logger.info('Rate limit check for email parsing', { clientId, route: '/api/parse-flight-email' });
+
+    const rateLimitResult = checkRateLimit(clientId, EMAIL_PARSE_RATE_LIMIT);
+    logger.info('Rate limit result', { rateLimitResult, route: '/api/parse-flight-email' });
+
+    if (!rateLimitResult.allowed) {
+      logger.warn('Rate limit exceeded for email parsing', { clientId, route: '/api/parse-flight-email' });
+
+      // Track rate limit event
+      trackServerEvent('anonymous', 'email_parse_rate_limited', {
+        clientId,
+        retryAfter: rateLimitResult.retryAfter,
+      });
+
+      return NextResponse.json(
+        {
+          success: false,
+          error: 'Rate limit exceeded. Please try again later.',
+          retryAfter: rateLimitResult.retryAfter,
+        },
+        {
+          status: 429,
+          headers: {
+            'X-RateLimit-Limit': EMAIL_PARSE_RATE_LIMIT.maxRequests.toString(),
+            'X-RateLimit-Remaining': '0',
+            'X-RateLimit-Reset': Math.ceil(rateLimitResult.resetTime / 1000).toString(),
+            'Retry-After': (rateLimitResult.retryAfter || 3600).toString(),
+          },
+        }
       );
     }
 
@@ -123,11 +163,20 @@ export async function POST(request: NextRequest) {
       fieldsExtracted: flightData.data ? Object.keys(flightData.data).length : 0,
     });
 
-    // Return successful response
-    return NextResponse.json({
-      success: true,
-      data: flightData.data,
-    });
+    // Return successful response with rate limit headers
+    return NextResponse.json(
+      {
+        success: true,
+        data: flightData.data,
+      },
+      {
+        headers: {
+          'X-RateLimit-Limit': EMAIL_PARSE_RATE_LIMIT.maxRequests.toString(),
+          'X-RateLimit-Remaining': rateLimitResult.remaining.toString(),
+          'X-RateLimit-Reset': Math.ceil(rateLimitResult.resetTime / 1000).toString(),
+        },
+      }
+    );
   } catch (error: unknown) {
     // Log error for debugging
     logger.error('Error in parse-flight-email API route:', error);
@@ -141,14 +190,17 @@ export async function POST(request: NextRequest) {
       { status: 500 }
     );
   }
-}
+}, {
+  route: '/api/parse-flight-email',
+  tags: { service: 'email', operation: 'parse_email' }
+});
 
 /**
  * GET /api/parse-flight-email
  *
  * Check if the Claude API is configured and ready to use
  */
-export async function GET() {
+export const GET = withErrorTracking(async () => {
   const configured = isAnthropicConfigured();
 
   return NextResponse.json({
@@ -157,4 +209,7 @@ export async function GET() {
       ? 'Claude API is configured and ready to use'
       : 'Claude API is not configured. Please set ANTHROPIC_API_KEY in environment variables.',
   });
-}
+}, {
+  route: '/api/parse-flight-email',
+  tags: { service: 'email', operation: 'check_config' }
+});

@@ -269,7 +269,7 @@ Turkish Airlines`;
           onChange={(e) => handleInputChange('emailContent', e.target.value)}
           placeholder={sampleEmail}
           rows={12}
-          className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 resize-none text-base ${
+          className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500 resize-none text-base ${
             errors.emailContent ? 'border-red-500' : 'border-gray-300'
           }`}
         />
@@ -285,7 +285,7 @@ Turkish Airlines`;
             Subject: Flight Delay Notification - TK157<br/>
             Dear Passenger,<br/>
             We regret to inform you that your flight TK157...<br/>
-            <span className="text-blue-600">[rest of email content]</span>
+            <span className="text-purple-600">[rest of email content]</span>
           </div>
         </div>
       </div>
@@ -369,7 +369,7 @@ Turkish Airlines`;
               id="noticeGiven"
               value={formData.noticeGiven}
               onChange={(e) => handleInputChange('noticeGiven', e.target.value)}
-              className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${
+              className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500 ${
                 errors.noticeGiven ? 'border-red-500' : 'border-gray-300'
               }`}
             >
@@ -412,7 +412,7 @@ Turkish Airlines`;
                   value={formData.alternativeTiming}
                   onChange={(e) => handleInputChange('alternativeTiming', e.target.value)}
                   placeholder="e.g., 2 hours later, next day"
-                  className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${
+                  className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500 ${
                     errors.alternativeTiming ? 'border-red-500' : 'border-gray-300'
                   }`}
                 />
@@ -431,8 +431,8 @@ Turkish Airlines`;
         {formData.disruptionType === 'denied_boarding' && (
           <div className="space-y-6">
             <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
-              <h4 className="font-medium text-blue-900 mb-2">Denied Boarding Information</h4>
-              <p className="text-sm text-blue-800">Please provide additional details about the denied boarding incident.</p>
+              <h4 className="font-medium text-purple-900 mb-2">Denied Boarding Information</h4>
+              <p className="text-sm text-purple-800">Please provide additional details about the denied boarding incident.</p>
             </div>
 
             {/* Boarding Type */}
@@ -541,7 +541,7 @@ Turkish Airlines`;
                 placeholder="e.g., 450"
                 min="0"
                 step="0.01"
-                className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${
+                className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500 ${
                   errors.ticketPrice ? 'border-red-500' : 'border-gray-300'
                 }`}
               />
@@ -570,7 +570,7 @@ Turkish Airlines`;
                 id="classPaidFor"
                 value={formData.classPaidFor}
                 onChange={(e) => handleInputChange('classPaidFor', e.target.value)}
-                className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${
+                className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500 ${
                   errors.classPaidFor ? 'border-red-500' : 'border-gray-300'
                 }`}
               >
@@ -594,7 +594,7 @@ Turkish Airlines`;
                 id="classReceived"
                 value={formData.classReceived}
                 onChange={(e) => handleInputChange('classReceived', e.target.value)}
-                className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${
+                className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500 ${
                   errors.classReceived ? 'border-red-500' : 'border-gray-300'
                 }`}
               >
@@ -622,7 +622,7 @@ Turkish Airlines`;
                 placeholder="e.g., 2500"
                 min="0"
                 step="0.01"
-                className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${
+                className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500 ${
                   errors.ticketPrice ? 'border-red-500' : 'border-gray-300'
                 }`}
               />
@@ -691,7 +691,7 @@ Turkish Airlines`;
               onChange={(e) => handleInputChange('firstName', e.target.value)}
               placeholder="John"
               data-ph-capture-attribute-name-mask="true"
-              className={`w-full px-4 py-4 md:py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-base ${
+              className={`w-full px-4 py-4 md:py-3 border rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500 text-base ${
                 errors.firstName ? 'border-red-500' : 'border-gray-300'
               }`}
             />
@@ -711,7 +711,7 @@ Turkish Airlines`;
               onChange={(e) => handleInputChange('lastName', e.target.value)}
               placeholder="Doe"
               data-ph-capture-attribute-name-mask="true"
-              className={`w-full px-4 py-4 md:py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-base ${
+              className={`w-full px-4 py-4 md:py-3 border rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500 text-base ${
                 errors.lastName ? 'border-red-500' : 'border-gray-300'
               }`}
             />
@@ -731,7 +731,7 @@ Turkish Airlines`;
               onChange={(e) => handleInputChange('passengerEmail', e.target.value)}
               placeholder="john@example.com"
               data-ph-capture-attribute-name-mask="true"
-              className={`w-full px-4 py-4 md:py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-base ${
+              className={`w-full px-4 py-4 md:py-3 border rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500 text-base ${
                 errors.passengerEmail ? 'border-red-500' : 'border-gray-300'
               }`}
             />
@@ -744,8 +744,8 @@ Turkish Airlines`;
 
       {/* Help Section */}
       <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
-        <h4 className="font-medium text-blue-900 mb-2">📧 What emails work best?</h4>
-        <ul className="text-sm text-blue-800 space-y-1">
+        <h4 className="font-medium text-purple-900 mb-2">📧 What emails work best?</h4>
+        <ul className="text-sm text-purple-800 space-y-1">
           <li>• Flight delay notifications from airlines</li>
           <li>• Flight cancellation emails</li>
           <li>• Booking confirmations with delay information</li>
@@ -756,7 +756,7 @@ Turkish Airlines`;
       <div className="flex justify-center pt-6 pb-8 md:pb-0">
         <motion.button
           type="submit"
-          className="w-full sm:w-auto px-8 py-4 bg-blue-600 text-white font-semibold rounded-lg focus:ring-4 focus:ring-blue-200 min-h-[48px] text-base relative overflow-hidden"
+          className="w-full sm:w-auto px-8 py-4 bg-purple-500 text-white font-semibold rounded-lg focus:ring-4 focus:ring-purple-200 min-h-[48px] text-base relative overflow-hidden"
           whileHover={{ 
             scale: 1.05,
             boxShadow: "0 10px 25px rgba(59, 130, 246, 0.3)"

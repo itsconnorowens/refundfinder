@@ -4,32 +4,32 @@ import Link from 'next/link';
 
 export default function TermsPage() {
   return (
-    <div className="min-h-screen bg-slate-950 py-12">
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-purple-50 via-pink-50 to-orange-50 py-12">
       <div className="container mx-auto px-4 max-w-4xl">
         {/* Header */}
         <div className="text-center mb-8">
-          <h1 className="text-4xl font-bold text-white mb-4">
+          <h1 className="text-4xl font-bold text-gray-900 mb-4">
             Terms of Service
           </h1>
-          <p className="text-xl text-slate-400">
+          <p className="text-xl text-gray-600">
             Last updated: {new Date().toLocaleDateString()}
           </p>
         </div>
 
-        <Card className="bg-slate-800 border-slate-700">
+        <Card className="bg-white/90 border-gray-200">
           <CardHeader>
-            <CardTitle className="text-2xl text-white">Terms of Service</CardTitle>
+            <CardTitle className="text-2xl text-gray-900">Terms of Service</CardTitle>
           </CardHeader>
-          <CardContent className="space-y-6 text-slate-300">
+          <CardContent className="space-y-6 text-gray-700">
             <section>
-              <h2 className="text-xl font-semibold text-white mb-3">1. Acceptance of Terms</h2>
+              <h2 className="text-xl font-semibold text-gray-900 mb-3">1. Acceptance of Terms</h2>
               <p>
                 By accessing and using Flghtly ("the Service"), you accept and agree to be bound by the terms and provision of this agreement. If you do not agree to abide by the above, please do not use this service.
               </p>
             </section>
 
             <section>
-              <h2 className="text-xl font-semibold text-white mb-3">2. Description of Service</h2>
+              <h2 className="text-xl font-semibold text-gray-900 mb-3">2. Description of Service</h2>
               <p>
                 Flghtly is a service that provides <strong>assistance</strong> to passengers in claiming compensation for flight delays and cancellations under EU Regulation 261/2004, UK CAA regulations, and other applicable consumer protection laws. We assist in the preparation and submission of compensation claims to airlines on behalf of passengers. <strong>We do not provide legal advice or representation.</strong>
               </p>
@@ -39,7 +39,7 @@ export default function TermsPage() {
             </section>
 
             <section>
-              <h2 className="text-xl font-semibold text-white mb-3">3. Service Fee & Refund Guarantee</h2>
+              <h2 className="text-xl font-semibold text-gray-900 mb-3">3. Service Fee & Refund Guarantee</h2>
               <p>
                 Our service fee is $49 per claim, charged upfront when you submit your claim. We operate with a <strong className="text-[#00D9B5]">100% refund guarantee</strong> - if we are unable to file your claim successfully, you will receive a full automatic refund.
               </p>
@@ -56,14 +56,14 @@ export default function TermsPage() {
             </section>
 
             <section>
-              <h2 className="text-xl font-semibold text-white mb-3">4. Eligibility</h2>
+              <h2 className="text-xl font-semibold text-gray-900 mb-3">4. Eligibility</h2>
               <p>
                 Compensation eligibility depends on various factors including flight route, delay duration, and circumstances. We provide initial eligibility assessments, but final determination rests with the airline. We cannot guarantee that your claim will be successful.
               </p>
             </section>
 
             <section>
-              <h2 className="text-xl font-semibold text-white mb-3">5. Your Responsibilities</h2>
+              <h2 className="text-xl font-semibold text-gray-900 mb-3">5. Your Responsibilities</h2>
               <p>
                 You are responsible for:
               </p>
@@ -76,7 +76,7 @@ export default function TermsPage() {
             </section>
 
             <section>
-              <h2 className="text-xl font-semibold text-white mb-3">6. Our Responsibilities</h2>
+              <h2 className="text-xl font-semibold text-gray-900 mb-3">6. Our Responsibilities</h2>
               <p>
                 We will:
               </p>
@@ -91,7 +91,7 @@ export default function TermsPage() {
             </section>
 
             <section>
-              <h2 className="text-xl font-semibold text-white mb-3">7. Refund Policy & Processing</h2>
+              <h2 className="text-xl font-semibold text-gray-900 mb-3">7. Refund Policy & Processing</h2>
               <p>
                 <strong>Automatic Refunds:</strong> Refunds are processed automatically when refund triggers are met. You do not need to request a refund in most cases.
               </p>
@@ -115,7 +115,7 @@ export default function TermsPage() {
             </section>
 
             <section>
-              <h2 className="text-xl font-semibold text-white mb-3">8. Data Protection & International Compliance</h2>
+              <h2 className="text-xl font-semibold text-gray-900 mb-3">8. Data Protection & International Compliance</h2>
               <p>
                 We collect and process your personal data in accordance with our Privacy Policy and applicable data protection laws, including GDPR (for EU residents), UK GDPR (for UK residents), and other applicable consumer protection regulations. We will only use your data for the purpose of processing your compensation claim and will not share it with third parties except as necessary for claim processing.
               </p>
@@ -125,7 +125,7 @@ export default function TermsPage() {
             </section>
 
             <section>
-              <h2 className="text-xl font-semibold text-white mb-3">9. Limitation of Liability</h2>
+              <h2 className="text-xl font-semibold text-gray-900 mb-3">9. Limitation of Liability</h2>
               <p>
                 Our liability is limited to the service fee paid. We are not responsible for any losses, damages, or expenses beyond the amount you paid for our service. We cannot guarantee the outcome of your claim.
               </p>
@@ -135,7 +135,7 @@ export default function TermsPage() {
             </section>
 
             <section>
-              <h2 className="text-xl font-semibold text-white mb-3">10. International Consumer Rights</h2>
+              <h2 className="text-xl font-semibold text-gray-900 mb-3">10. International Consumer Rights</h2>
               <p>
                 <strong>EU Residents:</strong> You have the right to withdraw from this service within 14 days of purchase under the Consumer Rights Directive. However, if you have already used our service to file a claim, this right may be limited.
               </p>
@@ -148,14 +148,14 @@ export default function TermsPage() {
             </section>
 
             <section>
-              <h2 className="text-xl font-semibold text-white mb-3">11. Changes to Terms</h2>
+              <h2 className="text-xl font-semibold text-gray-900 mb-3">11. Changes to Terms</h2>
               <p>
                 We reserve the right to modify these terms at any time. Changes will be posted on this page with an updated revision date. Your continued use of the service constitutes acceptance of any changes.
               </p>
             </section>
 
             <section>
-              <h2 className="text-xl font-semibold text-white mb-3">12. Contact Information</h2>
+              <h2 className="text-xl font-semibold text-gray-900 mb-3">12. Contact Information</h2>
               <p>
                 If you have any questions about these Terms of Service, please contact us at:
               </p>
@@ -173,7 +173,7 @@ export default function TermsPage() {
           <Link href="/">
             <Button
               variant="outline"
-              className="text-slate-400 border-slate-600 hover:text-white hover:border-slate-500"
+              className="text-gray-600 border-slate-600 hover:text-gray-900 hover:border-slate-500"
             >
               ← Back to Home
             </Button>

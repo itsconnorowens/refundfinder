@@ -70,7 +70,7 @@ export function MobileMenu({ isOpen, onClose }: MobileMenuProps) {
                 <li>
                   <button
                     onClick={() => handleNavClick('#how-it-works')}
-                    className="block w-full text-left py-3 text-base font-medium text-gray-900 hover:text-blue-600 transition-colors"
+                    className="block w-full text-left py-3 text-base font-medium text-gray-900 hover:text-purple-600 transition-colors"
                   >
                     How It Works
                   </button>
@@ -78,7 +78,7 @@ export function MobileMenu({ isOpen, onClose }: MobileMenuProps) {
                 <li>
                   <button
                     onClick={() => handleNavClick('#success-stories')}
-                    className="block w-full text-left py-3 text-base font-medium text-gray-900 hover:text-blue-600 transition-colors"
+                    className="block w-full text-left py-3 text-base font-medium text-gray-900 hover:text-purple-600 transition-colors"
                   >
                     Success Stories
                   </button>
@@ -86,7 +86,7 @@ export function MobileMenu({ isOpen, onClose }: MobileMenuProps) {
                 <li>
                   <button
                     onClick={() => handleNavClick('#faq')}
-                    className="block w-full text-left py-3 text-base font-medium text-gray-900 hover:text-blue-600 transition-colors"
+                    className="block w-full text-left py-3 text-base font-medium text-gray-900 hover:text-purple-600 transition-colors"
                   >
                     FAQ
                   </button>
@@ -97,7 +97,7 @@ export function MobileMenu({ isOpen, onClose }: MobileMenuProps) {
               <div className="mt-6">
                 <button
                   onClick={handleCTAClick}
-                  className="w-full bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white px-6 py-3 rounded-lg font-medium transition-all duration-200 shadow-md hover:shadow-lg"
+                  className="w-full bg-purple-500 hover:bg-purple-600 text-white px-6 py-3 rounded-lg font-medium transition-all duration-200 shadow-md hover:shadow-lg"
                 >
                   Check Eligibility
                 </button>

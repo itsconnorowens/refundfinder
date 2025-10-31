@@ -34,7 +34,7 @@ export default function HeroWithAnimation() {
 
             {/* CTA Buttons */}
             <div className="flex flex-col sm:flex-row gap-4 justify-center items-center pt-4">
-              <button className="w-full sm:w-auto px-8 py-4 bg-[#00D9B5] text-slate-950 font-semibold text-lg rounded-lg hover:bg-[#00BF9F] transition-all duration-200 shadow-lg hover:shadow-xl hover:shadow-[#00D9B5]/30 transform hover:-translate-y-0.5">
+              <button className="w-full sm:w-auto px-8 py-4 bg-[#FB923C] text-slate-950 font-semibold text-lg rounded-lg hover:bg-[#F97316] transition-all duration-200 shadow-lg hover:shadow-xl hover:shadow-[#FB923C]/30 transform hover:-translate-y-0.5">
                 Check My Flight
               </button>
               <button className="w-full sm:w-auto px-8 py-4 bg-slate-800/80 backdrop-blur-sm text-white font-semibold text-lg rounded-lg hover:bg-slate-700/80 transition-all duration-200 border border-slate-700">
@@ -45,7 +45,7 @@ export default function HeroWithAnimation() {
             {/* Stats */}
             <div className="grid grid-cols-3 gap-6 sm:gap-8 lg:gap-12 pt-8 lg:pt-12">
               <div className="text-center">
-                <div className="text-3xl sm:text-4xl lg:text-5xl font-bold text-[#00D9B5] mb-2">
+                <div className="text-3xl sm:text-4xl lg:text-5xl font-bold text-[#FB923C] mb-2">
                   98%
                 </div>
                 <div className="text-sm sm:text-base text-slate-400">
@@ -53,7 +53,7 @@ export default function HeroWithAnimation() {
                 </div>
               </div>
               <div className="text-center">
-                <div className="text-3xl sm:text-4xl lg:text-5xl font-bold text-[#00D9B5] mb-2">
+                <div className="text-3xl sm:text-4xl lg:text-5xl font-bold text-[#FB923C] mb-2">
                   €2M+
                 </div>
                 <div className="text-sm sm:text-base text-slate-400">
@@ -61,7 +61,7 @@ export default function HeroWithAnimation() {
                 </div>
               </div>
               <div className="text-center">
-                <div className="text-3xl sm:text-4xl lg:text-5xl font-bold text-[#00D9B5] mb-2">
+                <div className="text-3xl sm:text-4xl lg:text-5xl font-bold text-[#FB923C] mb-2">
                   10k+
                 </div>
                 <div className="text-sm sm:text-base text-slate-400">
@@ -79,7 +79,7 @@ export default function HeroWithAnimation() {
                 <span>4.9/5 Rating</span>
               </div>
               <div className="flex items-center gap-2">
-                <svg className="w-5 h-5 text-[#00D9B5]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg className="w-5 h-5 text-[#FB923C]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
                 </svg>
                 <span>100% Secure</span>

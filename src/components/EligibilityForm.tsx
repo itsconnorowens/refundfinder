@@ -7,7 +7,6 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import FlightPathsAnimation from './FlightPathsAnimation';
-import AirlineAutocomplete from './AirlineAutocomplete';
 import {
   validateFlightNumber,
   validateAirportCode,
@@ -27,7 +26,6 @@ interface EligibilityFormData {
 
   // Option 2: Manual entry
   flightNumber: string;
-  airline: string;
   departureDate: string;
   departureAirport: string;
   arrivalAirport: string;
@@ -49,7 +47,6 @@ interface CheckEligibilityResponse {
   data: {
     flightData: {
       flightNumber: string;
-      airline: string;
       departureDate: string;
       departureAirport: string;
       arrivalAirport: string;
@@ -67,7 +64,6 @@ export function EligibilityForm() {
   const [formData, setFormData] = useState<EligibilityFormData>({
     emailText: '',
     flightNumber: '',
-    airline: '',
     departureDate: '',
     departureAirport: '',
     arrivalAirport: '',
@@ -167,7 +163,6 @@ export function EligibilityForm() {
 
         // Track successful email parse
         posthog.capture('eligibility_email_parse_success', {
-          airline: data.data.airline || '',
           hasFlightNumber: !!(data.data.flightNumber || data.data.flight_number),
           hasDate: !!(data.data.departureDate || data.data.date),
           hasAirports: !!(data.data.departureAirport && data.data.arrivalAirport),
@@ -178,7 +173,6 @@ export function EligibilityForm() {
         setFormData(prev => ({
           ...prev,
           flightNumber: data.data.flightNumber || data.data.flight_number || '',
-          airline: data.data.airline || '',
           departureDate: data.data.departureDate || data.data.date || '',
           departureAirport: data.data.departureAirport || data.data.departure_airport || '',
           arrivalAirport: data.data.arrivalAirport || data.data.arrival_airport || '',
@@ -226,7 +220,6 @@ export function EligibilityForm() {
     ];
 
     let hasErrors = false;
-    const newFieldErrors: { [key: string]: string } = {};
 
     // Validate each field
     for (const field of fieldsToValidate) {
@@ -236,20 +229,13 @@ export function EligibilityForm() {
       }
     }
 
-    // Check airline separately (it's not in validation functions)
-    if (!formData.airline?.trim()) {
-      newFieldErrors.airline = 'Airline is required';
-      setFieldErrors(prev => ({ ...prev, airline: 'Airline is required' }));
-      hasErrors = true;
-    }
-
     if (hasErrors) {
       setError('Please correct the errors above before continuing');
 
       // Track form submission with validation errors
       posthog.capture('eligibility_check_validation_failed', {
-        errorCount: Object.keys(newFieldErrors).length + Object.keys(fieldErrors).length,
-        fields: Object.keys(newFieldErrors),
+        errorCount: Object.keys(fieldErrors).length,
+        fields: Object.keys(fieldErrors),
       });
 
       return;
@@ -257,7 +243,6 @@ export function EligibilityForm() {
 
     // Track eligibility check submission
     posthog.capture('eligibility_check_submitted', {
-      airline: formData.airline,
       departureAirport: formData.departureAirport,
       arrivalAirport: formData.arrivalAirport,
       delayDuration: formData.delayDuration,
@@ -274,7 +259,6 @@ export function EligibilityForm() {
 
     const requestData = {
       flightNumber: formData.flightNumber,
-      airline: formData.airline,
       departureDate: formData.departureDate,
       departureAirport: formData.departureAirport,
       arrivalAirport: formData.arrivalAirport,
@@ -293,7 +277,6 @@ export function EligibilityForm() {
         maxRetries: 2, // Retry up to 2 times on transient failures
         retryDelay: 1000, // 1 second between retries
         errorContext: {
-          airline: formData.airline,
           route: `${formData.departureAirport}-${formData.arrivalAirport}`,
           delayDuration: formData.delayDuration,
         },
@@ -319,7 +302,6 @@ export function EligibilityForm() {
         eligible: eligibilityData.isEligible,
         amount: eligibilityData.compensationAmount,
         regulation: eligibilityData.regulation,
-        airline: formData.airline,
         departureAirport: formData.departureAirport,
         arrivalAirport: formData.arrivalAirport,
         delayDuration: formData.delayDuration,
@@ -333,7 +315,6 @@ export function EligibilityForm() {
         regulation: eligibilityData.regulation,
         reason: eligibilityData.reason || '',
         flightNumber: formData.flightNumber,
-        airline: formData.airline,
         departureDate: formData.departureDate,
         departureAirport: formData.departureAirport,
         arrivalAirport: formData.arrivalAirport,
@@ -349,7 +330,6 @@ export function EligibilityForm() {
         errorCode: response.errorCode,
         errorCategory: response.errorDetails.category,
         errorSeverity: response.errorDetails.severity,
-        airline: formData.airline,
         departureAirport: formData.departureAirport,
         arrivalAirport: formData.arrivalAirport,
       });
@@ -378,14 +358,14 @@ export function EligibilityForm() {
             {/* Floating Card */}
             <div className="bg-slate-900/90 backdrop-blur-xl border border-slate-800/50 rounded-2xl shadow-2xl p-8 sm:p-10 lg:p-12">
               <div className="text-center space-y-6">
-                <div className="inline-block px-4 py-2 bg-[#00D9B5]/10 border border-[#00D9B5]/30 rounded-full text-[#00D9B5] text-sm font-semibold mb-4">
+                <div className="inline-block px-4 py-2 bg-[#FB923C]/10 border border-[#FB923C]/30 rounded-full text-[#FB923C] text-sm font-semibold mb-4">
                   🚀 Join 320+ Travelers Who Got Paid
                 </div>
 
                 <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-white">
                   Flight Delayed 3+ Hours?
                   <br />
-                  <span className="text-[#00D9B5]">Get Your {formatCompensationRange(250, 600, currency, isEURegion)}</span>
+                  <span className="text-[#FB923C]">Get Your {formatCompensationRange(250, 600, currency, isEURegion)}</span>
                   <br />
                   Compensation in 30 Days
                 </h1>
@@ -393,7 +373,7 @@ export function EligibilityForm() {
                 <p className="text-lg text-slate-400">
                   We handle the airline paperwork so you don't have to.
                   <br />
-                  <span className="text-[#00D9B5] font-semibold">Pay {getServiceFeeFormatted(currency)} upfront with 100% money-back guarantee.</span>
+                  <span className="text-[#FB923C] font-semibold">Pay {getServiceFeeFormatted(currency)} upfront with 100% money-back guarantee.</span>
                 </p>
 
                 {/* Input Method Selection */}
@@ -402,7 +382,7 @@ export function EligibilityForm() {
                     onClick={() => setInputMethod('email')}
                     className={`flex-1 py-2 px-4 rounded-md text-sm font-medium transition-all ${
                       inputMethod === 'email'
-                        ? 'bg-[#00D9B5] text-slate-950'
+                        ? 'bg-[#FB923C] text-slate-950'
                         : 'text-slate-400 hover:text-white'
                     }`}
                   >
@@ -412,7 +392,7 @@ export function EligibilityForm() {
                     onClick={() => setInputMethod('manual')}
                     className={`flex-1 py-2 px-4 rounded-md text-sm font-medium transition-all ${
                       inputMethod === 'manual'
-                        ? 'bg-[#00D9B5] text-slate-950'
+                        ? 'bg-[#FB923C] text-slate-950'
                         : 'text-slate-400 hover:text-white'
                     }`}
                   >
@@ -427,7 +407,7 @@ export function EligibilityForm() {
                       value={formData.emailText}
                       onChange={(e) => handleInputChange('emailText', e.target.value)}
                       placeholder="Paste your flight confirmation email here..."
-                      className="min-h-[120px] bg-slate-800/50 border-slate-700 text-white placeholder-slate-500 focus:border-[#00D9B5]"
+                      className="min-h-[120px] bg-slate-800/50 border-slate-700 text-white placeholder-slate-500 focus:border-[#FB923C]"
                     />
                     <Button
                       onClick={handleEmailParse}
@@ -454,7 +434,7 @@ export function EligibilityForm() {
                             onChange={(e) => handleInputChange('flightNumber', e.target.value)}
                             onBlur={(e) => validateField('flightNumber', e.target.value)}
                             placeholder="e.g., BA123"
-                            className={`mt-1 bg-slate-800/50 border-slate-700 text-white placeholder-slate-500 focus:border-[#00D9B5] ${
+                            className={`mt-1 bg-slate-800/50 border-slate-700 text-white placeholder-slate-500 focus:border-[#FB923C] ${
                               fieldErrors.flightNumber ? 'border-red-500' : fieldValid.flightNumber ? 'border-green-500' : ''
                             }`}
                           />
@@ -465,39 +445,9 @@ export function EligibilityForm() {
                         {fieldErrors.flightNumber && (
                           <p className="text-red-400 text-sm mt-1">{fieldErrors.flightNumber}</p>
                         )}
+                        <p className="text-slate-500 text-xs mt-1">Found on your boarding pass or confirmation email</p>
                       </div>
-                      
-                      <div>
-                        <AirlineAutocomplete
-                          value={formData.airline}
-                          onChange={(value) => {
-                            handleInputChange('airline', value);
-                            // Mark airline as valid when it has content
-                            if (value.trim().length >= 2) {
-                              setFieldValid(prev => ({ ...prev, airline: true }));
-                              setFieldErrors(prev => ({ ...prev, airline: '' }));
-                            } else {
-                              setFieldValid(prev => ({ ...prev, airline: false }));
-                            }
-                          }}
-                          onBlur={(value) => {
-                            // Validate on blur
-                            if (!value.trim()) {
-                              setFieldErrors(prev => ({ ...prev, airline: 'Airline is required' }));
-                              setFieldValid(prev => ({ ...prev, airline: false }));
-                            } else if (value.trim().length < 2) {
-                              setFieldErrors(prev => ({ ...prev, airline: 'Please enter at least 2 characters' }));
-                              setFieldValid(prev => ({ ...prev, airline: false }));
-                            }
-                          }}
-                          label="Airline"
-                          required={true}
-                          placeholder="e.g., British Airways, BA"
-                          isValid={fieldValid.airline}
-                          error={fieldErrors.airline}
-                        />
-                      </div>
-                      
+
                       <div>
                         <Label htmlFor="departureDate" className="text-sm font-medium text-white">
                           Departure Date *
@@ -509,7 +459,7 @@ export function EligibilityForm() {
                             value={formData.departureDate}
                             onChange={(e) => handleInputChange('departureDate', e.target.value)}
                             onBlur={(e) => validateField('departureDate', e.target.value)}
-                            className={`mt-1 bg-slate-800/50 border-slate-700 text-white focus:border-[#00D9B5] ${
+                            className={`mt-1 bg-slate-800/50 border-slate-700 text-white focus:border-[#FB923C] ${
                               fieldErrors.departureDate ? 'border-red-500' : fieldValid.departureDate ? 'border-green-500' : ''
                             }`}
                           />
@@ -533,7 +483,7 @@ export function EligibilityForm() {
                             onChange={(e) => handleInputChange('delayDuration', e.target.value)}
                             onBlur={(e) => validateField('delayDuration', e.target.value)}
                             placeholder="e.g., 4 hours"
-                            className={`mt-1 bg-slate-800/50 border-slate-700 text-white placeholder-slate-500 focus:border-[#00D9B5] ${
+                            className={`mt-1 bg-slate-800/50 border-slate-700 text-white placeholder-slate-500 focus:border-[#FB923C] ${
                               fieldErrors.delayDuration ? 'border-red-500' : fieldValid.delayDuration ? 'border-green-500' : ''
                             }`}
                           />
@@ -558,7 +508,7 @@ export function EligibilityForm() {
                             onBlur={(e) => validateField('departureAirport', e.target.value)}
                             placeholder="e.g., LHR"
                             maxLength={3}
-                            className={`mt-1 bg-slate-800/50 border-slate-700 text-white placeholder-slate-500 focus:border-[#00D9B5] ${
+                            className={`mt-1 bg-slate-800/50 border-slate-700 text-white placeholder-slate-500 focus:border-[#FB923C] ${
                               fieldErrors.departureAirport ? 'border-red-500' : fieldValid.departureAirport ? 'border-green-500' : ''
                             }`}
                           />
@@ -583,7 +533,7 @@ export function EligibilityForm() {
                             onBlur={(e) => validateField('arrivalAirport', e.target.value)}
                             placeholder="e.g., JFK"
                             maxLength={3}
-                            className={`mt-1 bg-slate-800/50 border-slate-700 text-white placeholder-slate-500 focus:border-[#00D9B5] ${
+                            className={`mt-1 bg-slate-800/50 border-slate-700 text-white placeholder-slate-500 focus:border-[#FB923C] ${
                               fieldErrors.arrivalAirport ? 'border-red-500' : fieldValid.arrivalAirport ? 'border-green-500' : ''
                             }`}
                           />
@@ -615,7 +565,7 @@ export function EligibilityForm() {
                             }
                           }}
                           placeholder="e.g., Technical issues, weather"
-                          className={`mt-1 bg-slate-800/50 border-slate-700 text-white placeholder-slate-500 focus:border-[#00D9B5] ${
+                          className={`mt-1 bg-slate-800/50 border-slate-700 text-white placeholder-slate-500 focus:border-[#FB923C] ${
                             formData.delayReason.trim() ? 'border-green-500' : ''
                           }`}
                         />
@@ -641,7 +591,6 @@ export function EligibilityForm() {
                     errorCode={errorCode}
                     errorDetails={errorDetails}
                     context={{
-                      airline: formData.airline,
                       route: `${formData.departureAirport}-${formData.arrivalAirport}`,
                       delayDuration: formData.delayDuration,
                     }}
@@ -662,7 +611,6 @@ export function EligibilityForm() {
                     <h3 className="text-green-400 font-medium mb-2">✓ Flight Details Extracted</h3>
                     <div className="grid grid-cols-2 gap-2 text-sm text-green-300">
                       <div>Flight: {parsedFlight.flightNumber}</div>
-                      <div>Airline: {parsedFlight.airline}</div>
                       <div>Date: {parsedFlight.departureDate}</div>
                       <div>Route: {parsedFlight.departureAirport} → {parsedFlight.arrivalAirport}</div>
                     </div>
@@ -675,8 +623,8 @@ export function EligibilityForm() {
                 {/* Check Eligibility Button */}
                 <Button
                   onClick={handleCheckEligibility}
-                  disabled={isLoading || (inputMethod === 'manual' && (!formData.flightNumber || !formData.airline || !formData.departureDate || !formData.departureAirport || !formData.arrivalAirport || !formData.delayDuration))}
-                  className="w-full px-6 py-4 bg-[#00D9B5] text-slate-950 font-bold text-lg rounded-lg hover:bg-[#00BF9F] transition-all shadow-lg hover:shadow-xl hover:shadow-[#00D9B5]/40"
+                  disabled={isLoading || (inputMethod === 'manual' && (!formData.flightNumber || !formData.departureDate || !formData.departureAirport || !formData.arrivalAirport || !formData.delayDuration))}
+                  className="w-full px-6 py-4 bg-[#FB923C] text-slate-950 font-bold text-lg rounded-lg hover:bg-[#F97316] transition-all shadow-lg hover:shadow-xl hover:shadow-[#FB923C]/40"
                 >
                   {isLoading ? (
                     <>

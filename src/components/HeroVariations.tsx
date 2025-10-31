@@ -21,7 +21,7 @@ export function HeroFullBackground() {
           <h1 className="text-5xl sm:text-6xl lg:text-7xl font-bold text-white">
             Track Your Flight
             <br />
-            <span className="text-[#00D9B5]">Get Compensated</span>
+            <span className="text-[#FB923C]">Get Compensated</span>
           </h1>
           <p className="text-xl text-slate-300 max-w-2xl mx-auto">
             Automated flight delay compensation. No upfront costs.
@@ -46,8 +46,8 @@ export function HeroSplitScreen() {
         <div className="grid lg:grid-cols-2 gap-8 lg:gap-12 items-center min-h-screen py-12 lg:py-0">
           {/* Content (Left Side) - z-20 */}
           <div className="relative z-20 space-y-6 sm:space-y-8 text-center lg:text-left order-2 lg:order-1">
-            <div className="inline-flex items-center gap-2 px-4 py-2 bg-[#00D9B5]/10 border border-[#00D9B5]/30 rounded-full text-[#00D9B5] text-sm font-semibold">
-              <span className="w-2 h-2 bg-[#00D9B5] rounded-full animate-pulse" />
+            <div className="inline-flex items-center gap-2 px-4 py-2 bg-[#FB923C]/10 border border-[#FB923C]/30 rounded-full text-[#FB923C] text-sm font-semibold">
+              <span className="w-2 h-2 bg-[#FB923C] rounded-full animate-pulse" />
               Live Claims Processing
             </div>
 
@@ -65,7 +65,7 @@ export function HeroSplitScreen() {
             </p>
 
             <div className="flex flex-col sm:flex-row gap-4 lg:justify-start justify-center">
-              <button className="px-8 py-4 bg-[#00D9B5] text-slate-950 font-semibold rounded-lg hover:bg-[#00BF9F] transition-all shadow-lg">
+              <button className="px-8 py-4 bg-[#FB923C] text-slate-950 font-semibold rounded-lg hover:bg-[#F97316] transition-all shadow-lg">
                 Check Eligibility
               </button>
               <button className="px-8 py-4 border border-slate-700 text-white font-semibold rounded-lg hover:bg-slate-800 transition-all">
@@ -112,7 +112,7 @@ export function HeroContainedAnimation() {
             <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-white">
               Your Flight Compensation
               <br />
-              <span className="bg-linear-to-r from-[#00D9B5] to-[#FFB627] bg-clip-text text-transparent">
+              <span className="bg-linear-to-r from-[#FB923C] to-[#FFB627] bg-clip-text text-transparent">
                 Delivered Automatically
               </span>
             </h1>
@@ -131,7 +131,7 @@ export function HeroContainedAnimation() {
           {/* Bottom CTA */}
           <div className="text-center space-y-6 relative z-20">
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <button className="px-10 py-5 bg-[#00D9B5] text-slate-950 font-bold text-lg rounded-xl hover:bg-[#00BF9F] transition-all shadow-xl hover:shadow-2xl hover:shadow-[#00D9B5]/40 transform hover:-translate-y-1">
+              <button className="px-10 py-5 bg-[#FB923C] text-slate-950 font-bold text-lg rounded-xl hover:bg-[#F97316] transition-all shadow-xl hover:shadow-2xl hover:shadow-[#FB923C]/40 transform hover:-translate-y-1">
                 Start Your Claim
               </button>
               <button className="px-10 py-5 bg-slate-800 text-white font-semibold text-lg rounded-xl hover:bg-slate-700 transition-all border border-slate-700">
@@ -171,7 +171,7 @@ export function HeroOverlayCard() {
             {/* Floating Card */}
             <div className="bg-slate-900/90 backdrop-blur-xl border border-slate-800/50 rounded-2xl shadow-2xl p-8 sm:p-10 lg:p-12">
               <div className="text-center space-y-6">
-                <div className="inline-block px-4 py-2 bg-[#00D9B5]/10 border border-[#00D9B5]/30 rounded-full text-[#00D9B5] text-sm font-semibold mb-4">
+                <div className="inline-block px-4 py-2 bg-[#FB923C]/10 border border-[#FB923C]/30 rounded-full text-[#FB923C] text-sm font-semibold mb-4">
                   🚀 Join 10,000+ Travelers
                 </div>
 
@@ -191,13 +191,13 @@ export function HeroOverlayCard() {
                   <input
                     type="text"
                     placeholder="Flight number (e.g., BA123)"
-                    className="w-full px-6 py-4 bg-slate-800/50 border border-slate-700 rounded-lg text-white placeholder-slate-500 focus:outline-none focus:border-[#00D9B5] transition-all"
+                    className="w-full px-6 py-4 bg-slate-800/50 border border-slate-700 rounded-lg text-white placeholder-slate-500 focus:outline-none focus:border-[#FB923C] transition-all"
                   />
                   <input
                     type="date"
-                    className="w-full px-6 py-4 bg-slate-800/50 border border-slate-700 rounded-lg text-white focus:outline-none focus:border-[#00D9B5] transition-all"
+                    className="w-full px-6 py-4 bg-slate-800/50 border border-slate-700 rounded-lg text-white focus:outline-none focus:border-[#FB923C] transition-all"
                   />
-                  <button className="w-full px-6 py-4 bg-[#00D9B5] text-slate-950 font-bold text-lg rounded-lg hover:bg-[#00BF9F] transition-all shadow-lg hover:shadow-xl hover:shadow-[#00D9B5]/40">
+                  <button className="w-full px-6 py-4 bg-[#FB923C] text-slate-950 font-bold text-lg rounded-lg hover:bg-[#F97316] transition-all shadow-lg hover:shadow-xl hover:shadow-[#FB923C]/40">
                     Check Eligibility
                   </button>
                 </div>
@@ -246,7 +246,7 @@ export function HeroTopAnimation() {
 
                 <div className="grid sm:grid-cols-3 gap-6 pt-6">
                   <div className="p-6 bg-slate-800/50 rounded-xl">
-                    <div className="text-3xl font-bold text-[#00D9B5] mb-2">
+                    <div className="text-3xl font-bold text-[#FB923C] mb-2">
                       Step 1
                     </div>
                     <p className="text-slate-400 text-sm">
@@ -254,7 +254,7 @@ export function HeroTopAnimation() {
                     </p>
                   </div>
                   <div className="p-6 bg-slate-800/50 rounded-xl">
-                    <div className="text-3xl font-bold text-[#00D9B5] mb-2">
+                    <div className="text-3xl font-bold text-[#FB923C] mb-2">
                       Step 2
                     </div>
                     <p className="text-slate-400 text-sm">
@@ -271,7 +271,7 @@ export function HeroTopAnimation() {
                   </div>
                 </div>
 
-                <button className="px-12 py-5 bg-[#00D9B5] text-slate-950 font-bold text-xl rounded-xl hover:bg-[#00BF9F] transition-all shadow-2xl hover:shadow-[#00D9B5]/50 transform hover:-translate-y-1">
+                <button className="px-12 py-5 bg-[#FB923C] text-slate-950 font-bold text-xl rounded-xl hover:bg-[#F97316] transition-all shadow-2xl hover:shadow-[#FB923C]/50 transform hover:-translate-y-1">
                   Start Your Claim
                 </button>
               </div>

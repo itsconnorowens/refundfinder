@@ -40,8 +40,8 @@ export const ProgressIndicator: React.FC<ProgressIndicatorProps> = ({
         <motion.div
           className={`h-full rounded-full ${
             percentage >= 75 ? 'bg-green-500' :
-            percentage >= 50 ? 'bg-blue-500' :
-            'bg-blue-400'
+            percentage >= 50 ? 'bg-purple-500' :
+            'bg-purple-400'
           }`}
           initial={{ width: 0 }}
           animate={{ width: `${percentage}%` }}

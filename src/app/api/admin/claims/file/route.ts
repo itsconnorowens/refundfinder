@@ -1,8 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { processAutomaticClaimFiling } from '@/lib/claim-filing-service';
 import { logger } from '@/lib/logger';
+import { withErrorTracking } from '@/lib/error-tracking';
 
-export async function POST(request: NextRequest) {
+export const POST = withErrorTracking(async (request: NextRequest) => {
   try {
     const body = await request.json();
     const { claimIds } = body;
@@ -22,9 +23,12 @@ export async function POST(request: NextRequest) {
       { status: 500 }
     );
   }
-}
+}, {
+  route: '/api/admin/claims/file',
+  tags: { service: 'admin', operation: 'file_claims' }
+});
 
-export async function GET() {
+export const GET = withErrorTracking(async () => {
   try {
     // Process all claims ready to file
     const results = await processAutomaticClaimFiling();
@@ -41,4 +45,7 @@ export async function GET() {
       { status: 500 }
     );
   }
-}
+}, {
+  route: '/api/admin/claims/file',
+  tags: { service: 'admin', operation: 'auto_file_claims' }
+});

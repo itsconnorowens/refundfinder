@@ -116,7 +116,7 @@ export default function AirlineAutocomplete({
           onBlur={handleInputBlur}
           onKeyDown={handleKeyDown}
           placeholder={placeholder}
-          className={`w-full px-4 py-2.5 border rounded-lg bg-slate-800/50 text-white placeholder-slate-500 focus:border-[#00D9B5] focus:ring-0 outline-none ${
+          className={`w-full px-4 py-2.5 border rounded-lg bg-slate-800/50 text-white placeholder-slate-500 focus:border-[#FB923C] focus:ring-0 outline-none ${
             error ? 'border-red-500' : isValid ? 'border-green-500' : 'border-slate-700'
           }`}
         />

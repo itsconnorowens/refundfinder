@@ -98,7 +98,7 @@ export const AdaptiveProgressIndicator: React.FC<AdaptiveProgressIndicatorProps>
                   <div className="flex items-center justify-between">
                     <p className={cn(
                       "text-sm font-medium",
-                      status === 'current' && "text-blue-900",
+                      status === 'current' && "text-purple-900",
                       status === 'completed' && "text-green-900",
                       status === 'upcoming' && "text-gray-500"
                     )}>
@@ -110,7 +110,7 @@ export const AdaptiveProgressIndicator: React.FC<AdaptiveProgressIndicatorProps>
                   </div>
                   <p className={cn(
                     "text-xs mt-0.5",
-                    status === 'current' && "text-blue-700",
+                    status === 'current' && "text-purple-700",
                     status === 'completed' && "text-green-700",
                     status === 'upcoming' && "text-gray-400"
                   )}>
@@ -209,7 +209,7 @@ export const AdaptiveProgressIndicator: React.FC<AdaptiveProgressIndicatorProps>
                       key={step.id}
                       className={cn(
                         "flex items-center space-x-2 text-xs",
-                        status === 'current' && "text-blue-600 font-medium",
+                        status === 'current' && "text-purple-600 font-medium",
                         status === 'completed' && "text-green-600",
                         status === 'upcoming' && "text-gray-400"
                       )}

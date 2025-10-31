@@ -90,7 +90,7 @@ export default function Home() {
   }, [mobileMenuOpen]);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-purple-50 via-pink-50 to-orange-50">
       {/* Header */}
       <motion.header
         className={`sticky top-0 z-50 border-b transition-all duration-300 ${
@@ -160,13 +160,13 @@ export default function Home() {
                   const section = document.querySelector('#how-it-works');
                   section?.scrollIntoView({ behavior: 'smooth', block: 'start' });
                 }}
-                className="relative text-gray-600 hover:text-blue-600 transition-colors font-medium group"
+                className="relative text-gray-600 hover:text-purple-600 transition-colors font-medium group"
                 whileHover={prefersReducedMotion ? {} : { scale: 1.05 }}
                 whileTap={prefersReducedMotion ? {} : { scale: 0.95 }}
               >
                 How It Works
                 <motion.span
-                  className="absolute bottom-0 left-0 w-0 h-0.5 bg-blue-600 group-hover:w-full transition-all duration-300"
+                  className="absolute bottom-0 left-0 w-0 h-0.5 bg-purple-600 group-hover:w-full transition-all duration-300"
                   initial={{ width: 0 }}
                   whileHover={prefersReducedMotion ? {} : { width: '100%' }}
                 />
@@ -176,13 +176,13 @@ export default function Home() {
                   const section = document.querySelector('#success-stories');
                   section?.scrollIntoView({ behavior: 'smooth', block: 'start' });
                 }}
-                className="relative text-gray-600 hover:text-blue-600 transition-colors font-medium group"
+                className="relative text-gray-600 hover:text-purple-600 transition-colors font-medium group"
                 whileHover={prefersReducedMotion ? {} : { scale: 1.05 }}
                 whileTap={prefersReducedMotion ? {} : { scale: 0.95 }}
               >
                 Success Stories
                 <motion.span
-                  className="absolute bottom-0 left-0 w-0 h-0.5 bg-blue-600 group-hover:w-full transition-all duration-300"
+                  className="absolute bottom-0 left-0 w-0 h-0.5 bg-purple-600 group-hover:w-full transition-all duration-300"
                   initial={{ width: 0 }}
                   whileHover={prefersReducedMotion ? {} : { width: '100%' }}
                 />
@@ -192,13 +192,13 @@ export default function Home() {
                   const section = document.querySelector('#faq');
                   section?.scrollIntoView({ behavior: 'smooth', block: 'start' });
                 }}
-                className="relative text-gray-600 hover:text-blue-600 transition-colors font-medium group"
+                className="relative text-gray-600 hover:text-purple-600 transition-colors font-medium group"
                 whileHover={prefersReducedMotion ? {} : { scale: 1.05 }}
                 whileTap={prefersReducedMotion ? {} : { scale: 0.95 }}
               >
                 FAQ
                 <motion.span
-                  className="absolute bottom-0 left-0 w-0 h-0.5 bg-blue-600 group-hover:w-full transition-all duration-300"
+                  className="absolute bottom-0 left-0 w-0 h-0.5 bg-purple-600 group-hover:w-full transition-all duration-300"
                   initial={{ width: 0 }}
                   whileHover={prefersReducedMotion ? {} : { width: '100%' }}
                 />
@@ -212,7 +212,7 @@ export default function Home() {
                   const formSection = document.querySelector('#check-eligibility');
                   formSection?.scrollIntoView({ behavior: 'smooth', block: 'start' });
                 }}
-                className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white px-6 py-2.5 rounded-lg font-medium transition-all duration-200 shadow-md hover:shadow-lg"
+                className="bg-purple-500 hover:bg-purple-600 text-white px-6 py-2.5 rounded-lg font-medium transition-all duration-200 shadow-md hover:shadow-lg"
                 initial={prefersReducedMotion ? { opacity: 1, scale: 1 } : { opacity: 0, scale: 0.8 }}
                 animate={{ opacity: 1, scale: 1 }}
                 transition={prefersReducedMotion ? { duration: 0 } : { duration: 0.5, delay: 0.4 }}
@@ -281,7 +281,7 @@ export default function Home() {
               </div>
             </div>
             <div className="text-center">
-              <p className="text-lg text-blue-600 font-medium">Check your flight in 60 seconds ↓</p>
+              <p className="text-lg text-purple-600 font-medium">Check your flight in 60 seconds ↓</p>
             </div>
           </div>
         </div>
@@ -301,7 +301,7 @@ export default function Home() {
                 onClick={() => setActiveTab('flight')}
                 className={`flex-1 py-3 px-4 rounded-md text-sm font-medium transition-colors ${
                   activeTab === 'flight'
-                    ? 'bg-white text-blue-600 shadow-sm'
+                    ? 'bg-white text-purple-600 shadow-sm'
                     : 'text-gray-500 hover:text-gray-700'
                 }`}
               >
@@ -317,7 +317,7 @@ export default function Home() {
                 onClick={() => setActiveTab('email')}
                 className={`flex-1 py-3 px-4 rounded-md text-sm font-medium transition-colors ${
                   activeTab === 'email'
-                    ? 'bg-white text-blue-600 shadow-sm'
+                    ? 'bg-white text-purple-600 shadow-sm'
                     : 'text-gray-500 hover:text-gray-700'
                 }`}
               >
@@ -364,21 +364,21 @@ export default function Home() {
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 md:gap-8">
             <div className="text-center">
-              <div className="bg-blue-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
+              <div className="bg-purple-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
                 <StepIcon step={1} size={24} />
               </div>
               <h3 className="text-xl font-semibold mb-2">Check Eligibility</h3>
               <p className="text-gray-600">Enter your flight details or paste your email. Get instant results for free.</p>
             </div>
             <div className="text-center">
-              <div className="bg-blue-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
+              <div className="bg-purple-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
                 <StepIcon step={2} size={24} />
               </div>
               <h3 className="text-xl font-semibold mb-2">We File Your Claim</h3>
               <p className="text-gray-600">If eligible, pay {getServiceFeeFormatted(currency)} and we'll submit your claim within 48 hours.</p>
             </div>
             <div className="text-center">
-              <div className="bg-blue-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
+              <div className="bg-purple-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
                 <StepIcon step={3} size={24} />
               </div>
               <h3 className="text-xl font-semibold mb-2">Get Your Money</h3>
@@ -401,7 +401,7 @@ export default function Home() {
           <div className="max-w-md mx-auto bg-white rounded-2xl shadow-xl p-8">
             <div className="text-center">
               <h3 className="text-2xl font-bold text-gray-900 mb-2">Pay Only When You Win</h3>
-              <div className="text-4xl font-bold text-blue-600 mb-4">{getServiceFeeFormatted(currency)}</div>
+              <div className="text-4xl font-bold text-purple-600 mb-4">{getServiceFeeFormatted(currency)}</div>
               <p className="text-gray-600 mb-6">100% risk-free. Keep 100% if we don't succeed.</p>
               <motion.button
                 onClick={() => {
@@ -527,9 +527,9 @@ export default function Home() {
           </div>
 
           <div className="text-center mt-12">
-            <div className="bg-blue-50 rounded-lg p-6 max-w-2xl mx-auto">
-              <h3 className="text-xl font-semibold text-blue-900 mb-2">Join 320+ Successful Travelers</h3>
-              <p className="text-blue-800">
+            <div className="bg-purple-50 rounded-lg p-6 max-w-2xl mx-auto">
+              <h3 className="text-xl font-semibold text-purple-900 mb-2">Join 320+ Successful Travelers</h3>
+              <p className="text-purple-800">
                 Average compensation: {formatCompensationAmount(450, currency, isEURegion)} • Success rate: 94% • Average processing time: 3.2 weeks
               </p>
             </div>
@@ -713,7 +713,7 @@ export default function Home() {
       <TrustDisclosure />
 
       {/* Footer */}
-      <footer className="bg-blue-50 py-12">
+      <footer className="bg-orange-50/50 py-12">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center">
             <div className="flex items-center justify-center space-x-3 mb-4">
@@ -731,25 +731,25 @@ export default function Home() {
             <div className="flex flex-wrap justify-center gap-6 mb-6">
               <a
                 href="/terms"
-                className="text-gray-400 hover:text-white transition-colors"
+                className="text-gray-600 hover:text-purple-600 transition-colors"
               >
                 Terms of Service
               </a>
               <a
                 href="/privacy"
-                className="text-gray-400 hover:text-white transition-colors"
+                className="text-gray-600 hover:text-purple-600 transition-colors"
               >
                 Privacy Policy
               </a>
               <a
                 href="/gdpr"
-                className="text-gray-400 hover:text-white transition-colors"
+                className="text-gray-600 hover:text-purple-600 transition-colors"
               >
                 GDPR Rights
               </a>
               <a
                 href="mailto:claims@flghtly.com"
-                className="text-gray-400 hover:text-white transition-colors"
+                className="text-gray-600 hover:text-purple-600 transition-colors"
               >
                 Contact Support
               </a>

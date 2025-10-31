@@ -84,10 +84,10 @@ export function PWAInstaller() {
 
   return (
     <div className="fixed bottom-4 left-4 right-4 z-50 md:left-auto md:right-4 md:w-auto md:max-w-sm">
-      <div className="bg-gradient-to-r from-[#0f172a] to-[#1e293b] border border-[#00D9B5] rounded-lg p-4 shadow-lg backdrop-blur-sm">
+      <div className="bg-gradient-to-r from-[#0f172a] to-[#1e293b] border border-[#FB923C] rounded-lg p-4 shadow-lg backdrop-blur-sm">
         <div className="flex items-start gap-3">
           <div className="flex-shrink-0">
-            <div className="w-12 h-12 bg-[#00D9B5] rounded-lg flex items-center justify-center">
+            <div className="w-12 h-12 bg-[#FB923C] rounded-lg flex items-center justify-center">
               <span className="text-2xl">📱</span>
             </div>
           </div>
@@ -101,7 +101,7 @@ export function PWAInstaller() {
             <div className="flex gap-2">
               <button
                 onClick={handleInstallClick}
-                className="flex-1 bg-[#00D9B5] text-[#0f172a] px-4 py-2 rounded-lg font-medium hover:bg-[#00A893] transition-colors"
+                className="flex-1 bg-[#FB923C] text-[#0f172a] px-4 py-2 rounded-lg font-medium hover:bg-[#00A893] transition-colors"
               >
                 Install
               </button>

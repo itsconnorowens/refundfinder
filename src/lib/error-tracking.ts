@@ -335,20 +335,31 @@ export function addBreadcrumb(
 
 /**
  * Wrapper for API route handlers that automatically captures errors
+ * Supports both Next.js 14 and 15 route handler signatures
  * Usage:
  *
  * export const POST = withErrorTracking(async (req) => {
  *   // Your handler code
  * }, { route: '/api/create-claim' });
+ *
+ * // With dynamic params (Next.js 15)
+ * export const GET = withErrorTracking(async (req, { params }) => {
+ *   const { id } = await params;
+ *   // Your handler code
+ * }, { route: '/api/claims/[id]' });
  */
-export function withErrorTracking(
-  handler: (req: NextRequest) => Promise<NextResponse>,
+export function withErrorTracking<TContext = never>(
+  handler: [TContext] extends [never]
+    ? (req: NextRequest) => Promise<NextResponse>
+    : (req: NextRequest, context: TContext) => Promise<NextResponse>,
   options?: {
     route?: string;
     tags?: Record<string, string>;
   }
-) {
-  return async (req: NextRequest): Promise<NextResponse> => {
+): [TContext] extends [never]
+  ? (req: NextRequest) => Promise<NextResponse>
+  : (req: NextRequest, context: TContext) => Promise<NextResponse> {
+  return (async (req: NextRequest, context?: TContext): Promise<NextResponse> => {
     try {
       // Add breadcrumb for request
       addBreadcrumb(
@@ -360,7 +371,7 @@ export function withErrorTracking(
         }
       );
 
-      const response = await handler(req);
+      const response = await (handler as any)(req, context);
 
       // Track successful responses
       if (response.status >= 400) {
@@ -416,7 +427,7 @@ export function withErrorTracking(
         { status: statusCode }
       );
     }
-  };
+  }) as any;
 }
 
 /**

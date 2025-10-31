@@ -11,23 +11,23 @@ export function TrustBar({ className = "" }: TrustBarProps) {
       <div className="container mx-auto px-5">
         <div className="flex flex-wrap justify-center items-center gap-8 text-slate-400">
           <div className="flex items-center gap-2">
-            <span className="text-[#00D9B5]">✓</span>
+            <span className="text-[#FB923C]">✓</span>
             <span>{statistics.totalTravelers}+ Claims Processed</span>
           </div>
           <div className="flex items-center gap-2">
-            <span className="text-[#00D9B5]">✓</span>
+            <span className="text-[#FB923C]">✓</span>
             <span>{statistics.totalRecovered} Recovered</span>
           </div>
           <div className="flex items-center gap-2">
-            <span className="text-[#00D9B5]">✓</span>
+            <span className="text-[#FB923C]">✓</span>
             <span>{statistics.successRate} Success Rate</span>
           </div>
           <div className="flex items-center gap-2">
-            <span className="text-[#00D9B5]">✓</span>
+            <span className="text-[#FB923C]">✓</span>
             <span>Stripe Secured</span>
           </div>
           <div className="flex items-center gap-2">
-            <span className="text-[#00D9B5]">✓</span>
+            <span className="text-[#FB923C]">✓</span>
             <span>GDPR Compliant</span>
           </div>
         </div>

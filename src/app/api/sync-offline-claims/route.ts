@@ -5,12 +5,13 @@ import {
   markClaimAsSynced,
   markClaimAsFailed,
 } from '@/lib/offline-storage';
+import { withErrorTracking } from '@/lib/error-tracking';
 
 /**
  * API endpoint to sync offline claims
  * Called by service worker when connection is restored
  */
-export async function POST(_request: NextRequest) {
+export const POST = withErrorTracking(async (_request: NextRequest) => {
   try {
     const pendingClaims = await getPendingClaims();
 
@@ -93,7 +94,10 @@ export async function POST(_request: NextRequest) {
       { status: 500 }
     );
   }
-}
+}, {
+  route: '/api/sync-offline-claims',
+  tags: { service: 'offline', operation: 'sync_claims' }
+});
 
 /**
  * Helper function to mark claim as syncing

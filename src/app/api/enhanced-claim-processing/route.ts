@@ -5,11 +5,12 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { initializeRealTimeServices } from '../../../lib/real-time-services-config';
 import { logger } from '@/lib/logger';
+import { withErrorTracking } from '@/lib/error-tracking';
 
 // Initialize services
 const { factory, monitor } = initializeRealTimeServices();
 
-export async function POST(request: NextRequest) {
+export const POST = withErrorTracking(async (request: NextRequest) => {
   try {
     const body = await request.json();
     const {
@@ -74,9 +75,12 @@ export async function POST(request: NextRequest) {
       { status: 500 }
     );
   }
-}
+}, {
+  route: '/api/enhanced-claim-processing',
+  tags: { service: 'claims', operation: 'process_claim' }
+});
 
-export async function GET(request: NextRequest) {
+export const GET = withErrorTracking(async (request: NextRequest) => {
   try {
     const { searchParams } = new URL(request.url);
     const flightNumber = searchParams.get('flightNumber');
@@ -130,6 +134,12 @@ export async function GET(request: NextRequest) {
         },
       });
     }
+
+    // If flightNumber is provided without flightDate
+    return NextResponse.json(
+      { error: 'flightDate is required when flightNumber is provided' },
+      { status: 400 }
+    );
   } catch (error: unknown) {
     logger.error('Real-time data fetch error:', error);
 
@@ -144,13 +154,19 @@ export async function GET(request: NextRequest) {
       { status: 500 }
     );
   }
-}
+}, {
+  route: '/api/enhanced-claim-processing',
+  tags: { service: 'real-time', operation: 'fetch_data' }
+});
 
 // Health check endpoint
-export async function HEAD() {
+export const HEAD = withErrorTracking(async () => {
   try {
     return new NextResponse(null, { status: 200 });
   } catch {
     return new NextResponse(null, { status: 503 });
   }
-}
+}, {
+  route: '/api/enhanced-claim-processing',
+  tags: { service: 'health', operation: 'check' }
+});

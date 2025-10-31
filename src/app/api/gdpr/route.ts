@@ -7,8 +7,9 @@ import {
 } from '@/lib/gdpr';
 import { queueGDPRConfirmation } from '@/lib/email-queue';
 import { logger } from '@/lib/logger';
+import { withErrorTracking } from '@/lib/error-tracking';
 
-export async function POST(request: NextRequest) {
+export const POST = withErrorTracking(async (request: NextRequest) => {
   try {
     const body = await request.json();
 
@@ -161,9 +162,12 @@ export async function POST(request: NextRequest) {
       { status: 500 }
     );
   }
-}
+}, {
+  route: '/api/gdpr',
+  tags: { service: 'compliance', operation: 'gdpr_request' }
+});
 
-export async function GET() {
+export const GET = withErrorTracking(async () => {
   return NextResponse.json({
     message: 'GDPR Data Subject Rights API',
     endpoints: {
@@ -183,4 +187,7 @@ export async function GET() {
       euRepresentative: GDPR_CONFIG.euRepresentativeEmail,
     },
   });
-}
+}, {
+  route: '/api/gdpr',
+  tags: { service: 'compliance', operation: 'gdpr_info' }
+});

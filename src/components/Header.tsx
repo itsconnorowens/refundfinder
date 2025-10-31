@@ -16,19 +16,19 @@ export default function Header() {
           </a>
 
           <nav className="hidden md:flex space-x-8">
-            <button className="text-gray-600 hover:text-blue-600 transition-colors font-medium">
+            <button className="text-gray-600 hover:text-purple-600 transition-colors font-medium">
               Dashboard
             </button>
-            <button className="text-gray-600 hover:text-blue-600 transition-colors font-medium">
+            <button className="text-gray-600 hover:text-purple-600 transition-colors font-medium">
               Claims
             </button>
-            <button className="text-gray-600 hover:text-blue-600 transition-colors font-medium">
+            <button className="text-gray-600 hover:text-purple-600 transition-colors font-medium">
               Settings
             </button>
           </nav>
 
           <div className="flex items-center space-x-4">
-            <button className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white px-6 py-2.5 rounded-lg font-medium transition-all duration-200 shadow-md hover:shadow-lg">
+            <button className="bg-purple-500 hover:bg-purple-600 text-white px-6 py-2.5 rounded-lg font-medium transition-all duration-200 shadow-md hover:shadow-lg">
               Sign In
             </button>
           </div>

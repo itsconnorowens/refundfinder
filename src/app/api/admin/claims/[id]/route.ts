@@ -1,16 +1,16 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getClaimByClaimId, updateClaim } from '@/lib/airtable';
-import { addBreadcrumb } from '@/lib/error-tracking';
+import { addBreadcrumb, withErrorTracking } from '@/lib/error-tracking';
 import { logger } from '@/lib/logger';
 
 /**
  * GET /api/admin/claims/[id]
  * Get claim details
  */
-export async function GET(
+export const GET = withErrorTracking(async (
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
-) {
+) => {
   try {
     const { id: claimId } = await params;
 
@@ -33,7 +33,10 @@ export async function GET(
     captureError(error, { level: 'error', tags: { service: 'admin', operation: 'claim_management', route: '/api/admin/claims/[id]' } });
     return NextResponse.json({ error: 'Failed to fetch claim' }, { status: 500 });
   }
-}
+}, {
+  route: '/api/admin/claims/[id]',
+  tags: { service: 'admin', operation: 'get_claim' }
+});
 
 /**
  * POST /api/admin/claims/[id]/validate
@@ -44,10 +47,10 @@ export async function GET(
  * PUT /api/admin/claims/[id]
  * Update claim details
  */
-export async function PUT(
+export const PUT = withErrorTracking(async (
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
-) {
+) => {
   try {
     const { id: claimId } = await params;
     const body = await request.json();
@@ -70,4 +73,7 @@ export async function PUT(
       { status: 500 }
     );
   }
-}
+}, {
+  route: '/api/admin/claims/[id]',
+  tags: { service: 'admin', operation: 'update_claim' }
+});

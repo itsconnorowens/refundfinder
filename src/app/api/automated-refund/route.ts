@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { logger } from '@/lib/logger';
+import { withErrorTracking } from '@/lib/error-tracking';
 import {
   processAutomaticRefund,
   analyzeRefundEligibility,
@@ -11,7 +12,7 @@ import {
  * POST /api/automated-refund/process
  * Process an automatic refund for a specific claim
  */
-export async function POST(request: NextRequest) {
+export const POST = withErrorTracking(async (request: NextRequest) => {
   try {
     const body = await request.json();
     const { claimId, trigger, processedBy = 'api' } = body;
@@ -55,13 +56,16 @@ export async function POST(request: NextRequest) {
       { status: 500 }
     );
   }
-}
+}, {
+  route: '/api/automated-refund',
+  tags: { service: 'refund', operation: 'process_refund' }
+});
 
 /**
  * GET /api/automated-refund/analyze
  * Analyze refund eligibility for a claim
  */
-export async function GET(request: NextRequest) {
+export const GET = withErrorTracking(async (request: NextRequest) => {
   try {
     const { searchParams } = new URL(request.url);
     const claimId = searchParams.get('claimId');
@@ -87,13 +91,16 @@ export async function GET(request: NextRequest) {
       { status: 500 }
     );
   }
-}
+}, {
+  route: '/api/automated-refund',
+  tags: { service: 'refund', operation: 'analyze_eligibility' }
+});
 
 /**
  * PUT /api/automated-refund/batch
  * Process batch automatic refunds
  */
-export async function PUT(request: NextRequest) {
+export const PUT = withErrorTracking(async (request: NextRequest) => {
   try {
     const body = await request.json();
     const { claimIds, trigger, processedBy = 'api' } = body;
@@ -130,4 +137,7 @@ export async function PUT(request: NextRequest) {
       { status: 500 }
     );
   }
-}
+}, {
+  route: '/api/automated-refund',
+  tags: { service: 'refund', operation: 'batch_refunds' }
+});

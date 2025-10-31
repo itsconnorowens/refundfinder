@@ -54,12 +54,12 @@ export function PaymentErrorFallback({
 
       <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-md p-4 mb-6">
         <div className="flex items-start gap-2">
-          <CreditCard className="h-5 w-5 text-blue-600 dark:text-blue-400 flex-shrink-0 mt-0.5" />
+          <CreditCard className="h-5 w-5 text-purple-600 dark:text-blue-400 flex-shrink-0 mt-0.5" />
           <div>
-            <p className="text-sm font-medium text-blue-900 dark:text-blue-300">
+            <p className="text-sm font-medium text-purple-900 dark:text-blue-300">
               Your payment information is secure
             </p>
-            <p className="text-sm text-blue-700 dark:text-blue-400 mt-1">
+            <p className="text-sm text-purple-700 dark:text-blue-400 mt-1">
               No payment has been processed. You can safely try again or contact
               support if the issue persists.
             </p>
@@ -71,7 +71,7 @@ export function PaymentErrorFallback({
         {onRetry && (
           <button
             onClick={onRetry}
-            className="w-full flex items-center justify-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-md transition-colors"
+            className="w-full flex items-center justify-center gap-2 px-4 py-2 bg-purple-500 hover:bg-purple-600 text-white font-medium rounded-md transition-colors"
           >
             <CreditCard className="h-4 w-4" />
             Try Payment Again
@@ -93,7 +93,7 @@ export function PaymentErrorFallback({
         Need help?{' '}
         <a
           href="mailto:support@flghtly.com"
-          className="text-blue-600 dark:text-blue-400 hover:underline"
+          className="text-purple-600 dark:text-blue-400 hover:underline"
         >
           Contact Support
         </a>

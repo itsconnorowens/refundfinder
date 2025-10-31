@@ -1,12 +1,13 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { analyzeRefundEligibility } from '@/lib/automated-refund';
 import { logger } from '@/lib/logger';
+import { withErrorTracking } from '@/lib/error-tracking';
 
 /**
  * GET /api/automated-refund/analyze
  * Analyze a claim for refund eligibility
  */
-export async function GET(request: NextRequest) {
+export const GET = withErrorTracking(async (request: NextRequest) => {
   try {
     const { searchParams } = new URL(request.url);
     const claimId = searchParams.get('claimId');
@@ -31,4 +32,7 @@ export async function GET(request: NextRequest) {
       { status: 500 }
     );
   }
-}
+}, {
+  route: '/api/automated-refund/analyze',
+  tags: { service: 'refund', operation: 'analyze_refund' }
+});

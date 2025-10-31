@@ -1,11 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { generateAirlineSubmission } from '@/lib/claim-filing-service';
 import { logger } from '@/lib/logger';
+import { withErrorTracking } from '@/lib/error-tracking';
 
-export async function POST(
+export const POST = withErrorTracking(async (
   _request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
-) {
+) => {
   try {
     const { id: claimId } = await params;
     const result = await generateAirlineSubmission(claimId);
@@ -25,4 +26,7 @@ export async function POST(
       { status: 500 }
     );
   }
-}
+}, {
+  route: '/api/admin/claims/[id]/generate-submission',
+  tags: { service: 'admin', operation: 'generate_submission' }
+});

@@ -664,7 +664,7 @@ export default function FlightLookupForm({ onResults, onLoading }: FlightLookupF
               value={formData.departureDate}
               onChange={(e) => handleInputChange('departureDate', e.target.value)}
               onBlur={(e) => validateField('departureDate', e.target.value)}
-              className={`w-full px-4 py-4 md:py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-base ${
+              className={`w-full px-4 py-4 md:py-3 border rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500 text-base ${
                 errors.departureDate ? 'border-red-500' : fieldValid.departureDate ? 'border-green-500' : 'border-gray-300'
               }`}
             />
@@ -691,7 +691,7 @@ export default function FlightLookupForm({ onResults, onLoading }: FlightLookupF
               onChange={(e) => handleInputChange('flightNumber', e.target.value)}
               onBlur={(e) => validateField('flightNumber', e.target.value)}
               placeholder="e.g., BA123"
-              className={`w-full px-4 py-4 md:py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-base ${
+              className={`w-full px-4 py-4 md:py-3 border rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500 text-base ${
                 errors.flightNumber ? 'border-red-500' : fieldValid.flightNumber ? 'border-green-500' : 'border-gray-300'
               }`}
             />
@@ -781,7 +781,7 @@ export default function FlightLookupForm({ onResults, onLoading }: FlightLookupF
                   placeholder="Hours"
                   min="0"
                   max="24"
-                  className={`w-full px-4 py-4 md:py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-base ${
+                  className={`w-full px-4 py-4 md:py-3 border rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500 text-base ${
                     errors.delayHours ? 'border-red-500' : 'border-gray-300'
                   }`}
                 />
@@ -795,7 +795,7 @@ export default function FlightLookupForm({ onResults, onLoading }: FlightLookupF
                   placeholder="Minutes"
                   min="0"
                   max="59"
-                  className={`w-full px-4 py-4 md:py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-base ${
+                  className={`w-full px-4 py-4 md:py-3 border rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500 text-base ${
                     errors.delayHours ? 'border-red-500' : 'border-gray-300'
                   }`}
                 />
@@ -833,7 +833,7 @@ export default function FlightLookupForm({ onResults, onLoading }: FlightLookupF
                     setFormData(prev => ({ ...prev, noticeGiven: calculated }));
                   }
                 }}
-                className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 ${
+                className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-purple-500 ${
                   errors.notificationDate ? 'border-red-500' : 'border-gray-300'
                 }`}
               />
@@ -847,17 +847,17 @@ export default function FlightLookupForm({ onResults, onLoading }: FlightLookupF
                 <div className="mt-3 bg-blue-50 border border-blue-200 rounded-lg p-3">
                   <div className="flex items-center justify-between">
                     <div>
-                      <p className="text-sm text-blue-900 font-medium">
+                      <p className="text-sm text-purple-900 font-medium">
                         ✓ Calculated: {getNoticePeriodLabel(formData.noticeGiven)}
                       </p>
-                      <p className="text-xs text-blue-700 mt-1">
+                      <p className="text-xs text-purple-700 mt-1">
                         ({calculateDaysBetween(formData.notificationDate, formData.departureDate)} days before departure)
                       </p>
                     </div>
                     <button
                       type="button"
                       onClick={() => setShowManualNoticeEdit(!showManualNoticeEdit)}
-                      className="text-sm text-blue-700 underline hover:text-blue-800"
+                      className="text-sm text-purple-700 underline hover:text-purple-800"
                     >
                       {showManualNoticeEdit ? 'Hide' : 'Edit'}
                     </button>
@@ -866,7 +866,7 @@ export default function FlightLookupForm({ onResults, onLoading }: FlightLookupF
                   {/* Manual edit dropdown */}
                   {showManualNoticeEdit && (
                     <div className="mt-3">
-                      <label htmlFor="manualNoticeGiven" className="block text-xs text-blue-900 mb-1">
+                      <label htmlFor="manualNoticeGiven" className="block text-xs text-purple-900 mb-1">
                         Correct if needed:
                       </label>
                       <select
@@ -885,7 +885,7 @@ export default function FlightLookupForm({ onResults, onLoading }: FlightLookupF
                             });
                           }
                         }}
-                        className="w-full px-3 py-2 border border-blue-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500"
+                        className="w-full px-3 py-2 border border-blue-300 rounded-lg text-sm focus:ring-2 focus:ring-purple-500"
                       >
                         <option value="< 7 days">Less than 7 days before departure</option>
                         <option value="7-14 days">7-14 days before departure</option>
@@ -925,7 +925,7 @@ export default function FlightLookupForm({ onResults, onLoading }: FlightLookupF
                     value={formData.alternativeFlightNumber}
                     onChange={(e) => handleInputChange('alternativeFlightNumber', e.target.value)}
                     placeholder="e.g., BA123"
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500"
                   />
                 </div>
 
@@ -942,7 +942,7 @@ export default function FlightLookupForm({ onResults, onLoading }: FlightLookupF
                       placeholder="0"
                       min="0"
                       max="48"
-                      className={`w-20 px-3 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 ${
+                      className={`w-20 px-3 py-3 border rounded-lg focus:ring-2 focus:ring-purple-500 ${
                         errors.alternativeDepartureHours ? 'border-red-500' : 'border-gray-300'
                       }`}
                     />
@@ -954,7 +954,7 @@ export default function FlightLookupForm({ onResults, onLoading }: FlightLookupF
                       placeholder="0"
                       min="0"
                       max="59"
-                      className="w-20 px-3 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                      className="w-20 px-3 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500"
                     />
                     <span className="text-gray-600 text-sm">minutes</span>
                     <label className="flex items-center ml-4">
@@ -985,7 +985,7 @@ export default function FlightLookupForm({ onResults, onLoading }: FlightLookupF
                       placeholder="0"
                       min="0"
                       max="48"
-                      className={`w-20 px-3 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 ${
+                      className={`w-20 px-3 py-3 border rounded-lg focus:ring-2 focus:ring-purple-500 ${
                         errors.alternativeArrivalHours ? 'border-red-500' : 'border-gray-300'
                       }`}
                     />
@@ -997,7 +997,7 @@ export default function FlightLookupForm({ onResults, onLoading }: FlightLookupF
                       placeholder="0"
                       min="0"
                       max="59"
-                      className="w-20 px-3 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                      className="w-20 px-3 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500"
                     />
                     <span className="text-gray-600 text-sm">minutes</span>
                   </div>
@@ -1010,7 +1010,7 @@ export default function FlightLookupForm({ onResults, onLoading }: FlightLookupF
                 {/* Auto-calculated summary with edit option */}
                 {(formData.alternativeDepartureHours || formData.alternativeArrivalHours) && (
                   <div className="md:col-span-2 bg-blue-50 border border-blue-200 rounded-lg p-3">
-                    <p className="text-sm text-blue-900">
+                    <p className="text-sm text-purple-900">
                       ✓ Calculated: Alternative departed {calculateTiming(
                         formData.alternativeDepartureHours,
                         formData.alternativeDepartureMinutes,
@@ -1020,7 +1020,7 @@ export default function FlightLookupForm({ onResults, onLoading }: FlightLookupF
                         formData.alternativeArrivalMinutes
                       )} later
                     </p>
-                    <p className="text-xs text-blue-700 mt-1">
+                    <p className="text-xs text-purple-700 mt-1">
                       Looks wrong? Edit the values above to correct.
                     </p>
                   </div>
@@ -1095,7 +1095,7 @@ export default function FlightLookupForm({ onResults, onLoading }: FlightLookupF
                 id="passengerChoice"
                 value={formData.passengerChoice}
                 onChange={(e) => handleInputChange('passengerChoice', e.target.value)}
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500"
               >
                 <option value="">Select your choice</option>
                 <option value="refund">Requested full refund</option>
@@ -1110,17 +1110,17 @@ export default function FlightLookupForm({ onResults, onLoading }: FlightLookupF
               <button
                 type="button"
                 onClick={() => setShowCancellationRights(!showCancellationRights)}
-                className="w-full flex items-center justify-between p-4 bg-blue-50 border border-blue-200 rounded-lg hover:bg-blue-100 transition-colors"
+                className="w-full flex items-center justify-between p-4 bg-blue-50 border border-blue-200 rounded-lg hover:bg-purple-100 transition-colors"
               >
-                <span className="font-medium text-blue-900">
+                <span className="font-medium text-purple-900">
                   📖 Learn about your cancellation rights
                 </span>
-                <span className="text-blue-700 text-xl">{showCancellationRights ? '▲' : '▼'}</span>
+                <span className="text-purple-700 text-xl">{showCancellationRights ? '▲' : '▼'}</span>
               </button>
 
               {showCancellationRights && (
                 <div className="mt-2 bg-blue-50 border border-blue-200 border-t-0 rounded-b-lg p-4">
-                  <ul className="text-sm text-blue-800 space-y-1">
+                  <ul className="text-sm text-purple-800 space-y-1">
                     <li>• Compensation depends on notice period and alternative flight timing</li>
                     <li>• Less than 7 days notice: Usually eligible for full compensation</li>
                     <li>• You always have the right to a refund OR alternative flight</li>
@@ -1217,7 +1217,7 @@ export default function FlightLookupForm({ onResults, onLoading }: FlightLookupF
                 id="deniedBoardingReason"
                 value={formData.deniedBoardingReason}
                 onChange={(e) => handleInputChange('deniedBoardingReason', e.target.value)}
-                className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${
+                className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500 ${
                   errors.deniedBoardingReason ? 'border-red-500' : 'border-gray-300'
                 }`}
               >
@@ -1332,7 +1332,7 @@ export default function FlightLookupForm({ onResults, onLoading }: FlightLookupF
                     value="yes"
                     checked={formData.checkedInOnTime === 'yes'}
                     onChange={(e) => handleInputChange('checkedInOnTime', e.target.value)}
-                    className="mr-3 mt-1 w-4 h-4"
+                    className="mr-3 mt-1 w-4 h-4 accent-blue-600"
                   />
                   <div>
                     <span className="text-sm font-medium">Yes, I checked in on time</span>
@@ -1348,7 +1348,7 @@ export default function FlightLookupForm({ onResults, onLoading }: FlightLookupF
                     value="no"
                     checked={formData.checkedInOnTime === 'no'}
                     onChange={(e) => handleInputChange('checkedInOnTime', e.target.value)}
-                    className="mr-3 mt-1 w-4 h-4"
+                    className="mr-3 mt-1 w-4 h-4 accent-blue-600"
                   />
                   <div>
                     <span className="text-sm font-medium">No, I checked in late</span>
@@ -1362,7 +1362,7 @@ export default function FlightLookupForm({ onResults, onLoading }: FlightLookupF
                     value="unsure"
                     checked={formData.checkedInOnTime === 'unsure'}
                     onChange={(e) => handleInputChange('checkedInOnTime', e.target.value)}
-                    className="mr-3 mt-1 w-4 h-4"
+                    className="mr-3 mt-1 w-4 h-4 accent-blue-600"
                   />
                   <div>
                     <span className="text-sm font-medium">I'm not sure</span>
@@ -1419,7 +1419,7 @@ export default function FlightLookupForm({ onResults, onLoading }: FlightLookupF
                   placeholder={formData.isRoundTrip ? "900" : "450"}
                   min="0"
                   step="0.01"
-                  className={`w-full pl-9 pr-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${
+                  className={`w-full pl-9 pr-4 py-3 border rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500 ${
                     errors.ticketPrice ? 'border-red-500' : 'border-gray-300'
                   }`}
                 />
@@ -1450,7 +1450,7 @@ export default function FlightLookupForm({ onResults, onLoading }: FlightLookupF
                 id="classPaidFor"
                 value={formData.classPaidFor}
                 onChange={(e) => handleInputChange('classPaidFor', e.target.value)}
-                className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${
+                className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500 ${
                   errors.classPaidFor ? 'border-red-500' : 'border-gray-300'
                 }`}
               >
@@ -1474,7 +1474,7 @@ export default function FlightLookupForm({ onResults, onLoading }: FlightLookupF
                 id="classReceived"
                 value={formData.classReceived}
                 onChange={(e) => handleInputChange('classReceived', e.target.value)}
-                className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${
+                className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500 ${
                   errors.classReceived ? 'border-red-500' : 'border-gray-300'
                 }`}
               >
@@ -1533,7 +1533,7 @@ export default function FlightLookupForm({ onResults, onLoading }: FlightLookupF
                   placeholder={formData.isRoundTrip ? "5000" : "2500"}
                   min="0"
                   step="0.01"
-                  className={`w-full pl-9 pr-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${
+                  className={`w-full pl-9 pr-4 py-3 border rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500 ${
                     errors.ticketPrice ? 'border-red-500' : 'border-gray-300'
                   }`}
                 />
@@ -1603,7 +1603,7 @@ export default function FlightLookupForm({ onResults, onLoading }: FlightLookupF
                 id="downgradeTiming"
                 value={formData.downgradeTiming}
                 onChange={(e) => handleInputChange('downgradeTiming', e.target.value)}
-                className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${
+                className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500 ${
                   errors.downgradeTiming ? 'border-red-500' : 'border-gray-300'
                 }`}
               >
@@ -1627,7 +1627,7 @@ export default function FlightLookupForm({ onResults, onLoading }: FlightLookupF
                 id="downgradeReason"
                 value={formData.downgradeReason}
                 onChange={(e) => handleInputChange('downgradeReason', e.target.value)}
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500"
               >
                 <option value="">Select reason</option>
                 <option value="overbooking">Overbooking in higher class</option>
@@ -1680,7 +1680,7 @@ export default function FlightLookupForm({ onResults, onLoading }: FlightLookupF
             id="delayReason"
             value={formData.delayReason}
             onChange={(e) => handleInputChange('delayReason', e.target.value)}
-            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500"
           >
             <option value="">Select reason</option>
             <option value="Technical issues">Technical issues</option>
@@ -1714,7 +1714,7 @@ export default function FlightLookupForm({ onResults, onLoading }: FlightLookupF
                 onBlur={(e) => validateField('firstName', e.target.value)}
                 placeholder="John"
                 data-ph-capture-attribute-name-mask="true"
-                className={`w-full px-4 py-4 md:py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-base ${
+                className={`w-full px-4 py-4 md:py-3 border rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500 text-base ${
                   errors.firstName ? 'border-red-500' : fieldValid.firstName ? 'border-green-500' : 'border-gray-300'
                 }`}
               />
@@ -1740,7 +1740,7 @@ export default function FlightLookupForm({ onResults, onLoading }: FlightLookupF
                 onBlur={(e) => validateField('lastName', e.target.value)}
                 placeholder="Doe"
                 data-ph-capture-attribute-name-mask="true"
-                className={`w-full px-4 py-4 md:py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-base ${
+                className={`w-full px-4 py-4 md:py-3 border rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500 text-base ${
                   errors.lastName ? 'border-red-500' : fieldValid.lastName ? 'border-green-500' : 'border-gray-300'
                 }`}
               />
@@ -1766,7 +1766,7 @@ export default function FlightLookupForm({ onResults, onLoading }: FlightLookupF
                 onBlur={(e) => validateField('passengerEmail', e.target.value)}
                 placeholder="john@example.com"
                 data-ph-capture-attribute-name-mask="true"
-                className={`w-full px-4 py-4 md:py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-base ${
+                className={`w-full px-4 py-4 md:py-3 border rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500 text-base ${
                   errors.passengerEmail ? 'border-red-500' : fieldValid.passengerEmail ? 'border-green-500' : 'border-gray-300'
                 }`}
               />
@@ -1775,7 +1775,7 @@ export default function FlightLookupForm({ onResults, onLoading }: FlightLookupF
               )}
             </div>
             {emailSuggestion && (
-              <p className="mt-1 text-sm text-blue-600">
+              <p className="mt-1 text-sm text-purple-600">
                 Did you mean <button
                   type="button"
                   onClick={() => {
@@ -1834,7 +1834,7 @@ export default function FlightLookupForm({ onResults, onLoading }: FlightLookupF
       <div className="flex justify-center pt-6">
         <motion.button
           type="submit"
-          className="w-full md:w-auto px-8 py-4 md:py-4 bg-blue-600 text-white font-semibold rounded-lg focus:ring-4 focus:ring-blue-200 text-base min-h-[48px] relative overflow-hidden"
+          className="w-full md:w-auto px-8 py-4 md:py-4 bg-purple-500 text-white font-semibold rounded-lg focus:ring-4 focus:ring-purple-200 text-base min-h-[48px] relative overflow-hidden"
           whileHover={{ 
             scale: 1.05,
             boxShadow: "0 10px 25px rgba(59, 130, 246, 0.3)"

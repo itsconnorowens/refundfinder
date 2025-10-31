@@ -24,7 +24,7 @@ export function TrustSection({ className = "" }: TrustSectionProps) {
           <Card className="bg-slate-800 border-slate-700">
             <CardHeader>
               <CardTitle className="flex items-center gap-3 text-white">
-                <DollarSign className="w-6 h-6 text-[#00D9B5]" />
+                <DollarSign className="w-6 h-6 text-[#FB923C]" />
                 {trustContent.transparentPricing.title}
               </CardTitle>
             </CardHeader>
@@ -35,7 +35,7 @@ export function TrustSection({ className = "" }: TrustSectionProps) {
               <ul className="space-y-2">
                 {trustContent.transparentPricing.highlights.map((highlight, index) => (
                   <li key={index} className="flex items-center gap-2 text-slate-300">
-                    <span className="text-[#00D9B5]">✓</span>
+                    <span className="text-[#FB923C]">✓</span>
                     {highlight}
                   </li>
                 ))}
@@ -47,7 +47,7 @@ export function TrustSection({ className = "" }: TrustSectionProps) {
           <Card className="bg-slate-800 border-slate-700">
             <CardHeader>
               <CardTitle className="flex items-center gap-3 text-white">
-                <Shield className="w-6 h-6 text-[#00D9B5]" />
+                <Shield className="w-6 h-6 text-[#FB923C]" />
                 {trustContent.moneyBackGuarantee.title}
               </CardTitle>
             </CardHeader>
@@ -58,7 +58,7 @@ export function TrustSection({ className = "" }: TrustSectionProps) {
               <ul className="space-y-2">
                 {trustContent.moneyBackGuarantee.conditions.map((condition, index) => (
                   <li key={index} className="flex items-center gap-2 text-slate-300">
-                    <span className="text-[#00D9B5]">✓</span>
+                    <span className="text-[#FB923C]">✓</span>
                     {condition}
                   </li>
                 ))}
@@ -70,7 +70,7 @@ export function TrustSection({ className = "" }: TrustSectionProps) {
           <Card className="bg-slate-800 border-slate-700">
             <CardHeader>
               <CardTitle className="flex items-center gap-3 text-white">
-                <Lock className="w-6 h-6 text-[#00D9B5]" />
+                <Lock className="w-6 h-6 text-[#FB923C]" />
                 {trustContent.secureCompliant.title}
               </CardTitle>
             </CardHeader>
@@ -81,7 +81,7 @@ export function TrustSection({ className = "" }: TrustSectionProps) {
               <ul className="space-y-2">
                 {trustContent.secureCompliant.features.map((feature, index) => (
                   <li key={index} className="flex items-center gap-2 text-slate-300">
-                    <span className="text-[#00D9B5]">✓</span>
+                    <span className="text-[#FB923C]">✓</span>
                     {feature}
                   </li>
                 ))}
@@ -93,7 +93,7 @@ export function TrustSection({ className = "" }: TrustSectionProps) {
           <Card className="bg-slate-800 border-slate-700">
             <CardHeader>
               <CardTitle className="flex items-center gap-3 text-white">
-                <Users className="w-6 h-6 text-[#00D9B5]" />
+                <Users className="w-6 h-6 text-[#FB923C]" />
                 {trustContent.expertTeam.title}
               </CardTitle>
             </CardHeader>
@@ -104,7 +104,7 @@ export function TrustSection({ className = "" }: TrustSectionProps) {
               <ul className="space-y-2">
                 {trustContent.expertTeam.credentials.map((credential, index) => (
                   <li key={index} className="flex items-center gap-2 text-slate-300">
-                    <span className="text-[#00D9B5]">✓</span>
+                    <span className="text-[#FB923C]">✓</span>
                     {credential}
                   </li>
                 ))}
@@ -125,7 +125,7 @@ export function TrustSection({ className = "" }: TrustSectionProps) {
                   <thead>
                     <tr className="border-b border-slate-700">
                       <th className="text-left p-4 text-white font-semibold">Feature</th>
-                      <th className="text-center p-4 text-[#00D9B5] font-semibold">Flghtly</th>
+                      <th className="text-center p-4 text-[#FB923C] font-semibold">Flghtly</th>
                       <th className="text-center p-4 text-slate-400 font-semibold">Typical Competitors</th>
                     </tr>
                   </thead>
@@ -133,7 +133,7 @@ export function TrustSection({ className = "" }: TrustSectionProps) {
                     {comparisonData.features.map((feature: ComparisonFeature, index: number) => (
                       <tr key={index} className="border-b border-slate-700 last:border-b-0">
                         <td className="p-4 text-slate-300">{feature.feature}</td>
-                        <td className="p-4 text-center text-[#00D9B5] font-medium">{feature.flghtly}</td>
+                        <td className="p-4 text-center text-[#FB923C] font-medium">{feature.flghtly}</td>
                         <td className="p-4 text-center text-slate-400">{feature.competitors}</td>
                       </tr>
                     ))}

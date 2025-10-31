@@ -105,3 +105,12 @@ export const ELIGIBILITY_RATE_LIMIT: RateLimitConfig = {
   maxRequests: 10, // 10 requests per hour
   windowMs: 60 * 60 * 1000, // 1 hour
 };
+
+/**
+ * Default rate limit configuration for email parsing
+ * More restrictive than eligibility checks due to Claude API costs
+ */
+export const EMAIL_PARSE_RATE_LIMIT: RateLimitConfig = {
+  maxRequests: 5, // 5 requests per hour (aggressive to avoid large bills)
+  windowMs: 60 * 60 * 1000, // 1 hour
+};
