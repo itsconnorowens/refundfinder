@@ -86,22 +86,54 @@ Ensure these are configured in **Production** environment:
 
 ## Testing Payments in Production
 
-### Test Card Numbers (Even in Live Mode)
+### 🚨 IMPORTANT: Live Mode vs Test Mode Cards
 
-You can use Stripe's test cards even in live mode for testing:
+When using **LIVE API keys** in production, you **cannot** use standard test cards like `4242 4242 4242 4242`. Those only work with TEST API keys.
 
-**Success:**
-- Card: `4242 4242 4242 4242`
-- Expiry: Any future date
-- CVC: Any 3 digits
+### Live Mode Test Cards
 
-**Declined:**
-- Card: `4000 0000 0000 0002`
+Use these special test cards that work with **LIVE API keys** (they create charges but don't actually process real money):
+
+**✅ Success - Use This Card:**
+- Card: `4000 0566 5566 5556`
+- Expiry: Any future date (e.g., `12/34`)
+- CVC: Any 3 digits (e.g., `123`)
+- ZIP: Any valid ZIP code (e.g., `10001`)
+
+This card will successfully complete the payment flow without charging real money.
+
+**❌ Common Mistake:**
+```
+Card: 4242 4242 4242 4242  ← DON'T USE IN PRODUCTION
+```
+This card **only works with TEST keys**. Using it with live keys will cause:
+```
+Error: No such payment_intent: 'pi_xxx'; a similar object exists
+in live mode, but a test mode key was used to make this request.
+```
+
+### Test vs Live Mode Summary
+
+| Environment | API Keys | Test Cards to Use |
+|-------------|----------|-------------------|
+| **Local Development** | `sk_test_...`, `pk_test_...` | `4242 4242 4242 4242` |
+| **Production (Vercel)** | `sk_live_...`, `pk_live_...` | `4000 0566 5566 5556` |
+
+### Additional Live Mode Test Scenarios
+
+**Declined Payment:**
+- Card: `4000 0000 0000 0341`
+- Triggers: Card declined error
+
+**Insufficient Funds:**
+- Card: `4000 0000 0000 9995`
+- Triggers: Insufficient funds error
 
 **3D Secure Required:**
-- Card: `4000 0025 0000 3155`
+- Card: `4000 0027 6000 3184`
+- Triggers: 3D Secure authentication flow
 
-For more test cards, see: https://stripe.com/docs/testing
+For more test scenarios, see: https://stripe.com/docs/testing#international-cards
 
 ## Monitoring & Troubleshooting
 
