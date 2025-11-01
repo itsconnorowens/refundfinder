@@ -3,8 +3,6 @@ import { withSentryConfig } from "@sentry/nextjs";
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   // PostHog proxy is handled by middleware.ts
-  // Ensure Next.js resolves the correct project root when multiple lockfiles exist
-  outputFileTracingRoot: "/Users/connorowens/Desktop/flghtly",
   eslint: {
     ignoreDuringBuilds: true,
   },

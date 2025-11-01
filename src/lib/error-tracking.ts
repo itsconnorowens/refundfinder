@@ -453,9 +453,11 @@ export function trackPerformance(
     });
   }
 
-  Sentry.metrics.distribution('operation.duration', duration, {
-    unit: 'millisecond',
-  });
+  // Note: Sentry.metrics is not available in all versions of @sentry/nextjs
+  // Commenting out for now to prevent build errors
+  // Sentry.metrics.distribution('operation.duration', duration, {
+  //   unit: 'millisecond',
+  // });
 
   if (duration > 5000) {
     logger.warn(`Slow operation: ${operation} took ${duration}ms`, {
@@ -508,9 +510,10 @@ export async function trackDatabaseOperation<T>(
 
     // Track successful operation
     Sentry.setTags({ operation, table, db_status: 'success' });
-    Sentry.metrics.distribution('database.operation.duration', duration, {
-      unit: 'millisecond',
-    });
+    // Note: Sentry.metrics is not available in all versions of @sentry/nextjs
+    // Sentry.metrics.distribution('database.operation.duration', duration, {
+    //   unit: 'millisecond',
+    // });
 
     // Log slow queries
     if (duration > 2000) {
@@ -526,9 +529,10 @@ export async function trackDatabaseOperation<T>(
 
     // Track failed operation
     Sentry.setTags({ operation, table, db_status: 'error' });
-    Sentry.metrics.distribution('database.operation.duration', duration, {
-      unit: 'millisecond',
-    });
+    // Note: Sentry.metrics is not available in all versions of @sentry/nextjs
+    // Sentry.metrics.distribution('database.operation.duration', duration, {
+    //   unit: 'millisecond',
+    // });
 
     throw new DatabaseError(
       `Database operation failed: ${operation}`,
@@ -554,9 +558,10 @@ export async function trackAPICall<T>(
 
     // Track successful API call
     Sentry.setTags({ service, endpoint, api_status: 'success' });
-    Sentry.metrics.distribution('api.call.duration', duration, {
-      unit: 'millisecond',
-    });
+    // Note: Sentry.metrics is not available in all versions of @sentry/nextjs
+    // Sentry.metrics.distribution('api.call.duration', duration, {
+    //   unit: 'millisecond',
+    // });
 
     // Log slow API calls
     if (duration > 3000) {
@@ -572,9 +577,10 @@ export async function trackAPICall<T>(
 
     // Track failed API call
     Sentry.setTags({ service, endpoint, api_status: 'error' });
-    Sentry.metrics.distribution('api.call.duration', duration, {
-      unit: 'millisecond',
-    });
+    // Note: Sentry.metrics is not available in all versions of @sentry/nextjs
+    // Sentry.metrics.distribution('api.call.duration', duration, {
+    //   unit: 'millisecond',
+    // });
 
     throw new ExternalAPIError(
       `API call failed: ${service}/${endpoint}`,
@@ -601,9 +607,10 @@ export async function trackEmailDelivery<T>(
 
     // Track successful email delivery
     Sentry.setTags({ email_type: emailType, email_status: 'success' });
-    Sentry.metrics.distribution('email.delivery.duration', duration, {
-      unit: 'millisecond',
-    });
+    // Note: Sentry.metrics is not available in all versions of @sentry/nextjs
+    // Sentry.metrics.distribution('email.delivery.duration', duration, {
+    //   unit: 'millisecond',
+    // });
 
     // Log successful delivery
     logger.info('[Email] Successfully sent ${emailType} to ${recipient} in ms', { duration: duration });
@@ -614,9 +621,10 @@ export async function trackEmailDelivery<T>(
 
     // Track failed email delivery
     Sentry.setTags({ email_type: emailType, email_status: 'error' });
-    Sentry.metrics.distribution('email.delivery.duration', duration, {
-      unit: 'millisecond',
-    });
+    // Note: Sentry.metrics is not available in all versions of @sentry/nextjs
+    // Sentry.metrics.distribution('email.delivery.duration', duration, {
+    //   unit: 'millisecond',
+    // });
 
     // Log failed delivery
     logger.error(`Failed to send email`, undefined, {
