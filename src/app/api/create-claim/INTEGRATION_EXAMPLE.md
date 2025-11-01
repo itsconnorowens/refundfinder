@@ -9,10 +9,10 @@ Allow users to paste their flight confirmation email, auto-fill the form, then s
 ### Frontend Component Example
 
 ```typescript
-// In your ClaimSubmissionForm.tsx or similar component
+// In your FlightLookupForm.tsx component (homepage eligibility form)
 import { useState } from 'react';
 
-function ClaimForm() {
+function FlightLookupForm() {
   const [emailText, setEmailText] = useState('');
   const [formData, setFormData] = useState({
     flightNumber: '',
