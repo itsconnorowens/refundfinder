@@ -50,6 +50,7 @@ next-env.d.ts
 !DEVELOPER_GUIDE.md
 !SESSION_SUMMARY_CODE_QUALITY_CLEANUP.md
 !MONITORING_*.md
+!STRIPE_PRODUCTION_SETUP.md
 
 # Sentry
 .sentryclirc
