@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { writeFile } from 'fs/promises';
 import { join } from 'path';
-import { updateAirtableRecord, getAirtableRecordByField } from '@/lib/airtable';
+import { updateClaim, getClaimByClaimId } from '@/lib/airtable';
 
 export async function POST(request: NextRequest) {
   try {
@@ -62,11 +62,12 @@ export async function POST(request: NextRequest) {
 
     // Update claim record in Airtable with document URLs
     try {
-      const claimRecord = await getAirtableRecordByField('Claims', 'claimId', claimId);
+      const claimRecord = await getClaimByClaimId(claimId);
 
       if (claimRecord) {
-        await updateAirtableRecord('Claims', claimRecord.id, {
-          ...documentUrls,
+        await updateClaim(claimId, {
+          boardingPassUrl: documentUrls.boardingPassUrl,
+          delayProofUrl: documentUrls.delayProofUrl,
           ...(bookingReference && { bookingReference }),
           documentsUploaded: true,
           documentsUploadedAt: new Date().toISOString(),
