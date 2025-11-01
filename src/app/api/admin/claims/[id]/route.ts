@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { getClaimByClaimId, updateClaim } from '@/lib/airtable';
 import { addBreadcrumb, withErrorTracking } from '@/lib/error-tracking';
 import { logger } from '@/lib/logger';
+import { ErrorCode, getErrorDetails } from '@/lib/error-codes';
 
 /**
  * GET /api/admin/claims/[id]
@@ -18,7 +19,9 @@ export const GET = withErrorTracking(async (
     const claim = await getClaimByClaimId(claimId);
 
     if (!claim) {
-      return NextResponse.json({ error: 'Claim not found' }, { status: 404 });
+      const errorCode = ErrorCode.VALIDATION_ERROR;
+      const errorDetails = getErrorDetails(errorCode);
+      return NextResponse.json({ success: false, errorCode, errorDetails: { ...errorDetails, userMessage: 'Claim not found' } }, { status: 404 });
     }
 
     return NextResponse.json({
@@ -31,7 +34,9 @@ export const GET = withErrorTracking(async (
   } catch (error: unknown) {
     const { captureError } = await import('@/lib/error-tracking');
     captureError(error, { level: 'error', tags: { service: 'admin', operation: 'claim_management', route: '/api/admin/claims/[id]' } });
-    return NextResponse.json({ error: 'Failed to fetch claim' }, { status: 500 });
+    const errorCode = ErrorCode.SERVER_ERROR;
+    const errorDetails = getErrorDetails(errorCode);
+    return NextResponse.json({ success: false, errorCode, errorDetails: { ...errorDetails, userMessage: 'Failed to fetch claim' } }, { status: 500 });
   }
 }, {
   route: '/api/admin/claims/[id]',
@@ -57,7 +62,9 @@ export const PUT = withErrorTracking(async (
 
     const claim = await getClaimByClaimId(claimId);
     if (!claim) {
-      return NextResponse.json({ error: 'Claim not found' }, { status: 404 });
+      const errorCode = ErrorCode.VALIDATION_ERROR;
+      const errorDetails = getErrorDetails(errorCode);
+      return NextResponse.json({ success: false, errorCode, errorDetails: { ...errorDetails, userMessage: 'Claim not found' } }, { status: 404 });
     }
 
     await updateClaim(claim.id!, body);

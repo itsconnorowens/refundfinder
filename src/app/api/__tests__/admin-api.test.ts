@@ -167,7 +167,7 @@ describe('Admin API Integration Tests', () => {
 
       expect(response.status).toBe(500);
       expect(data.success).toBe(false);
-      expect(data.error).toContain('Error fetching claims');
+      expect(data.errorCode).toBeDefined();
     });
   });
 
@@ -255,7 +255,8 @@ describe('Admin API Integration Tests', () => {
       const data = await response.json();
 
       expect(response.status).toBe(404);
-      expect(data.error).toBe('Claim not found');
+      expect(data.success).toBe(false);
+      expect(data.errorCode).toBeDefined();
     });
   });
 
@@ -554,7 +555,8 @@ describe('Admin API Integration Tests', () => {
       const data = await response.json();
 
       expect(response.status).toBe(404);
-      expect(data.error).toBe('Airline configuration not found');
+      expect(data.success).toBe(false);
+      expect(data.errorCode).toBeDefined();
     });
   });
 
@@ -573,7 +575,8 @@ describe('Admin API Integration Tests', () => {
       const data = await response.json();
 
       expect(response.status).toBe(400);
-      expect(data.error).toContain('Invalid JSON');
+      expect(data.success).toBe(false);
+      expect(data.errorCode).toBeDefined();
     });
 
     it('should handle missing required fields', async () => {
@@ -590,7 +593,8 @@ describe('Admin API Integration Tests', () => {
       const data = await response.json();
 
       expect(response.status).toBe(400);
-      expect(data.error).toContain('Missing required fields');
+      expect(data.success).toBe(false);
+      expect(data.errorCode).toBeDefined();
     });
 
     it('should handle service errors gracefully', async () => {
@@ -607,7 +611,7 @@ describe('Admin API Integration Tests', () => {
 
       expect(response.status).toBe(500);
       expect(data.success).toBe(false);
-      expect(data.error).toContain('Error fetching claims');
+      expect(data.errorCode).toBeDefined();
     });
   });
 });

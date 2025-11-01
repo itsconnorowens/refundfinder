@@ -6,6 +6,7 @@ import {
 } from '@/lib/email-service';
 import { withErrorTracking, addBreadcrumb, captureError } from '@/lib/error-tracking';
 import { logger } from '@/lib/logger';
+import { ErrorCode, getErrorDetails } from '@/lib/error-codes';
 
 /**
  * POST /api/cron/check-follow-ups
@@ -29,7 +30,9 @@ export const POST = withErrorTracking(async (request: NextRequest) => {
         monitorSlug,
         status: 'error',
       });
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+      const errorCode = ErrorCode.UNAUTHORIZED;
+      const errorDetails = getErrorDetails(errorCode);
+      return NextResponse.json({ success: false, errorCode, errorDetails }, { status: 401 });
     }
 
     addBreadcrumb('Starting follow-up check cron job', 'cron');

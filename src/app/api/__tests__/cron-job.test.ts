@@ -218,7 +218,8 @@ describe('Cron Job Integration Tests', () => {
       const data = await response.json();
 
       expect(response.status).toBe(401);
-      expect(data.error).toBe('Unauthorized');
+      expect(data.success).toBe(false);
+      expect(data.errorCode).toBeDefined();
     });
 
     it('should handle missing authorization header', async () => {
@@ -235,7 +236,8 @@ describe('Cron Job Integration Tests', () => {
       const data = await response.json();
 
       expect(response.status).toBe(401);
-      expect(data.error).toBe('Unauthorized');
+      expect(data.success).toBe(false);
+      expect(data.errorCode).toBeDefined();
     });
 
     it('should handle missing cron secret environment variable', async () => {
@@ -257,7 +259,8 @@ describe('Cron Job Integration Tests', () => {
       const data = await response.json();
 
       expect(response.status).toBe(401);
-      expect(data.error).toBe('Unauthorized');
+      expect(data.success).toBe(false);
+      expect(data.errorCode).toBeDefined();
     });
 
     it('should handle missing admin email configuration', async () => {

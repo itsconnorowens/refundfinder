@@ -8,6 +8,7 @@ import { sendAdminReadyToFileAlert } from '@/lib/email-service';
 import { withErrorTracking, addBreadcrumb, captureError, setUser } from '@/lib/error-tracking';
 import { trackServerEvent } from '@/lib/posthog';
 import { logger } from '@/lib/logger';
+import { ErrorCode, getErrorDetails } from '@/lib/error-codes';
 
 // Initialize Stripe only if environment variables are available
 const stripe = process.env.STRIPE_SECRET_KEY
@@ -20,8 +21,10 @@ const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET;
 
 export const POST = withErrorTracking(async (request: NextRequest) => {
   if (!stripe || !webhookSecret) {
+    const errorCode = ErrorCode.SERVICE_UNAVAILABLE;
+    const errorDetails = getErrorDetails(errorCode);
     return NextResponse.json(
-      { error: 'Stripe not configured' },
+      { success: false, errorCode, errorDetails },
       { status: 503 }
     );
   }
@@ -31,8 +34,10 @@ export const POST = withErrorTracking(async (request: NextRequest) => {
     const signature = headersList.get('stripe-signature');
 
     if (!signature) {
+      const errorCode = ErrorCode.VALIDATION_ERROR;
+      const errorDetails = getErrorDetails(errorCode);
       return NextResponse.json(
-        { error: 'Missing stripe-signature header' },
+        { success: false, errorCode, errorDetails: { ...errorDetails, userMessage: 'Missing stripe-signature header' } },
         { status: 400 }
       );
     }
@@ -44,7 +49,9 @@ export const POST = withErrorTracking(async (request: NextRequest) => {
   } catch (err: unknown) {
     captureError(err, { level: 'warning', tags: { service: 'stripe', error_type: 'signature_verification' } });
     logger.error('Webhook signature verification failed', err);
-    return NextResponse.json({ error: 'Invalid signature' }, { status: 400 });
+    const errorCode = ErrorCode.VALIDATION_ERROR;
+    const errorDetails = getErrorDetails(errorCode);
+    return NextResponse.json({ success: false, errorCode, errorDetails: { ...errorDetails, userMessage: 'Invalid signature' } }, { status: 400 });
   }
 
   // Handle the event

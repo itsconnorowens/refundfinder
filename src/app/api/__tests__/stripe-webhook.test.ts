@@ -408,7 +408,8 @@ describe('Stripe Webhook Integration Tests', () => {
       const data = await response.json();
 
       expect(response.status).toBe(400);
-      expect(data.error).toContain('Invalid signature');
+      expect(data.success).toBe(false);
+      expect(data.errorCode).toBeDefined();
     });
 
     it('should handle missing webhook secret', async () => {
