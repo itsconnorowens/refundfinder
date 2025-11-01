@@ -11,9 +11,10 @@ import { getAttributionProperties } from '@/lib/marketing-attribution';
 
 interface EligibilityResultsProps {
   results: CheckEligibilityResponse;
+  formData?: any;
 }
 
-export default function EligibilityResults({ results }: EligibilityResultsProps) {
+export default function EligibilityResults({ results, formData }: EligibilityResultsProps) {
   const { currency, isEURegion } = useCurrency();
   const [showPaymentForm, setShowPaymentForm] = useState(false);
 
@@ -390,7 +391,9 @@ export default function EligibilityResults({ results }: EligibilityResultsProps)
               </p>
             </div>
           ) : (
-            <PaymentForm 
+            <PaymentForm
+              formData={formData}
+              eligibilityResults={results.data}
               onSuccess={() => {
                 // Handle successful payment
                 // Payment successful - handle success

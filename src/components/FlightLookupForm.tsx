@@ -21,61 +21,63 @@ import { useFormAbandonment } from '@/hooks/useFormAbandonment';
 import { parseApiError, ErrorDetails } from '@/lib/error-messages';
 
 interface FlightLookupFormProps {
-  onResults: (results: CheckEligibilityResponse) => void;
+  onResults: (results: CheckEligibilityResponse, formData?: typeof initialFormData) => void;
   onLoading: (loading: boolean) => void;
 }
 
+const initialFormData = {
+  flightNumber: '',
+  airline: '',
+  departureDate: '',
+  departureAirport: '',
+  arrivalAirport: '',
+  delayHours: '',
+  delayMinutes: '',
+  delayReason: '',
+  passengerEmail: '',
+  firstName: '',
+  lastName: '',
+  // Disruption type fields
+  disruptionType: 'delay' as 'delay' | 'cancellation' | 'denied_boarding' | 'downgrade',
+  // Cancellation fields
+  notificationDate: '',
+  noticeGiven: '',
+  alternativeOffered: false,
+  alternativeFlightNumber: '',
+  alternativeDepartureTime: '',
+  alternativeArrivalTime: '',
+  alternativeTiming: '',
+  // Structured alternative timing fields
+  alternativeDepartureHours: '',
+  alternativeDepartureMinutes: '',
+  alternativeArrivalHours: '',
+  alternativeArrivalMinutes: '',
+  alternativeNextDay: false,
+  careProvided: {
+    meals: false,
+    hotel: false,
+    transport: false,
+    communication: false
+  },
+  passengerChoice: '',
+  // Denied boarding fields
+  boardingType: 'involuntary' as 'involuntary' | 'voluntary',
+  volunteersRequested: false,
+  deniedBoardingReason: '',
+  alternativeArrivalDelay: '',
+  checkedInOnTime: '',
+  ticketPrice: '',
+  // Downgrade fields
+  classPaidFor: '',
+  classReceived: '',
+  downgradeTiming: '',
+  downgradeReason: '',
+  // Ticket price helpers
+  isRoundTrip: false
+};
+
 export default function FlightLookupForm({ onResults, onLoading }: FlightLookupFormProps) {
-  const [formData, setFormData] = useState({
-    flightNumber: '',
-    airline: '',
-    departureDate: '',
-    departureAirport: '',
-    arrivalAirport: '',
-    delayHours: '',
-    delayMinutes: '',
-    delayReason: '',
-    passengerEmail: '',
-    firstName: '',
-    lastName: '',
-    // Disruption type fields
-    disruptionType: 'delay' as 'delay' | 'cancellation' | 'denied_boarding' | 'downgrade',
-    // Cancellation fields
-    notificationDate: '',
-    noticeGiven: '',
-    alternativeOffered: false,
-    alternativeFlightNumber: '',
-    alternativeDepartureTime: '',
-    alternativeArrivalTime: '',
-    alternativeTiming: '',
-    // Structured alternative timing fields
-    alternativeDepartureHours: '',
-    alternativeDepartureMinutes: '',
-    alternativeArrivalHours: '',
-    alternativeArrivalMinutes: '',
-    alternativeNextDay: false,
-    careProvided: {
-      meals: false,
-      hotel: false,
-      transport: false,
-      communication: false
-    },
-    passengerChoice: '',
-    // Denied boarding fields
-    boardingType: 'involuntary' as 'involuntary' | 'voluntary',
-    volunteersRequested: false,
-    deniedBoardingReason: '',
-    alternativeArrivalDelay: '',
-    checkedInOnTime: '',
-    ticketPrice: '',
-    // Downgrade fields
-    classPaidFor: '',
-    classReceived: '',
-    downgradeTiming: '',
-    downgradeReason: '',
-    // Ticket price helpers
-    isRoundTrip: false
-  });
+  const [formData, setFormData] = useState(initialFormData);
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [loading, setLoading] = useState(false);
   const [fieldValid, setFieldValid] = useState<Record<string, boolean>>({});
@@ -500,7 +502,7 @@ export default function FlightLookupForm({ onResults, onLoading }: FlightLookupF
       // Mark form as completed (prevents abandonment tracking)
       markCompleted();
 
-      onResults(result);
+      onResults(result, formData);
     } catch (error: unknown) {
       console.error('Error checking eligibility:', error);
 

@@ -3,10 +3,13 @@
 import { Elements, CardElement, useStripe, useElements } from '@stripe/react-stripe-js';
 import { loadStripe } from '@stripe/stripe-js';
 import { useState } from 'react';
+import { useRouter } from 'next/navigation';
 import { useCurrency } from '@/contexts/CurrencyContext';
 import { getServiceFeeFormatted } from '@/lib/currency';
 
 interface PaymentFormProps {
+  formData?: any;
+  eligibilityResults?: any;
   onSuccess: () => void;
   onCancel: () => void;
 }
@@ -14,24 +17,44 @@ interface PaymentFormProps {
 // Initialize Stripe
 const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY || '');
 
-function PaymentFormContent({ onSuccess, onCancel }: PaymentFormProps) {
+function PaymentFormContent({ formData, eligibilityResults, onSuccess, onCancel }: PaymentFormProps) {
   const stripe = useStripe();
   const elements = useElements();
+  const router = useRouter();
   const { currency } = useCurrency();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [hasSubmitted, setHasSubmitted] = useState(false);
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
+
+    // Prevent double submission
+    if (hasSubmitted || loading) {
+      console.warn('Payment already processing or submitted');
+      return;
+    }
 
     if (!stripe || !elements) {
       return;
     }
 
+    setHasSubmitted(true);
     setLoading(true);
     setError(null);
 
     try {
+      // Generate claim ID with idempotency
+      const timestamp = Date.now();
+      const randomStr = Math.random().toString(36).substring(7).toUpperCase();
+      const claimId = `FL-${timestamp}-${randomStr}`;
+
+      // Create idempotency key for duplicate prevention
+      const email = formData?.passengerEmail || 'unknown@example.com';
+      const idempotencyKey = `pi_${claimId}_${email.replace(/[^a-zA-Z0-9]/g, '_')}`.slice(0, 255);
+
+      console.log('Creating payment intent for claim:', claimId);
+
       // Create payment intent
       const response = await fetch('/api/create-payment-intent', {
         method: 'POST',
@@ -39,30 +62,56 @@ function PaymentFormContent({ onSuccess, onCancel }: PaymentFormProps) {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          email: 'user@example.com', // This would come from form data
-          claimId: `claim_${Date.now()}`, // This would be generated
-          firstName: 'John', // This would come from form data
-          lastName: 'Doe', // This would come from form data
-          currency
+          email,
+          claimId,
+          firstName: formData?.firstName || 'Unknown',
+          lastName: formData?.lastName || 'Unknown',
+          currency,
+          idempotencyKey,
+          // Include all form data for claim creation
+          formData,
+          flightData: eligibilityResults?.flightData,
+          eligibilityData: eligibilityResults?.eligibility,
+          disruptionType: formData?.disruptionType,
         }),
       });
 
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || 'Failed to create payment intent');
+      }
+
       const { clientSecret } = await response.json();
+
+      console.log('Confirming payment...');
 
       // Confirm payment
       const result = await stripe.confirmCardPayment(clientSecret, {
         payment_method: {
           card: elements.getElement(CardElement)!,
-        }
+        },
+        receipt_email: email,
       });
 
       if (result.error) {
+        console.error('Payment error:', result.error);
         setError(result.error.message || 'Payment failed');
-      } else {
+        setHasSubmitted(false); // Allow retry on error
+      } else if (result.paymentIntent?.status === 'succeeded') {
+        console.log('Payment succeeded! Redirecting to document upload...');
+        // Call onSuccess callback
         onSuccess();
+        // Redirect to document upload page with payment intent ID
+        router.push(`/claim/${claimId}/documents?paymentIntentId=${result.paymentIntent.id}`);
+      } else {
+        console.warn('Unexpected payment status:', result.paymentIntent?.status);
+        setError('Payment status unclear. Please contact support.');
+        setHasSubmitted(false);
       }
-    } catch {
-      setError('Payment failed. Please try again.');
+    } catch (err) {
+      console.error('Payment submission error:', err);
+      setError(err instanceof Error ? err.message : 'Payment failed. Please try again.');
+      setHasSubmitted(false); // Allow retry on error
     } finally {
       setLoading(false);
     }
@@ -188,10 +237,15 @@ function PaymentFormContent({ onSuccess, onCancel }: PaymentFormProps) {
   );
 }
 
-export default function PaymentForm({ onSuccess, onCancel }: PaymentFormProps) {
+export default function PaymentForm({ formData, eligibilityResults, onSuccess, onCancel }: PaymentFormProps) {
   return (
     <Elements stripe={stripePromise}>
-      <PaymentFormContent onSuccess={onSuccess} onCancel={onCancel} />
+      <PaymentFormContent
+        formData={formData}
+        eligibilityResults={eligibilityResults}
+        onSuccess={onSuccess}
+        onCancel={onCancel}
+      />
     </Elements>
   );
 }

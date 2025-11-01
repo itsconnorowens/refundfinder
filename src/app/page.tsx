@@ -24,6 +24,7 @@ export default function Home() {
   const { currency, isEURegion } = useCurrency();
   const [activeTab, setActiveTab] = useState<'flight' | 'email'>('flight');
   const [results, setResults] = useState<CheckEligibilityResponse | null>(null);
+  const [formData, setFormData] = useState<any>(null);
   const [_loading, setLoading] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
@@ -46,8 +47,9 @@ export default function Home() {
     }
   };
 
-  const handleResults = (response: CheckEligibilityResponse) => {
+  const handleResults = (response: CheckEligibilityResponse, userData?: any) => {
     setResults(response);
+    setFormData(userData);
   };
 
   const handleLoading = (isLoading: boolean) => {
@@ -342,7 +344,7 @@ export default function Home() {
               {/* Results */}
               {results && (
                 <div className="mt-8">
-                  <EligibilityResults results={results} />
+                  <EligibilityResults results={results} formData={formData} />
                 </div>
               )}
             </InlineErrorBoundary>

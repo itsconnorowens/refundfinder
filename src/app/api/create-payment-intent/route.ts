@@ -22,7 +22,17 @@ export const POST = withErrorTracking(async (request: NextRequest) => {
   }
 
   const body = await request.json();
-  const { email, firstName, lastName, currency = 'EUR' } = body;
+  const {
+    email,
+    firstName,
+    lastName,
+    currency = 'EUR',
+    claimId: clientClaimId,
+    idempotencyKey: clientIdempotencyKey,
+    formData,
+    flightData,
+    disruptionType,
+  } = body;
 
   // Set user context for error tracking
   setUser({ email, name: `${firstName} ${lastName}` });
@@ -55,8 +65,8 @@ export const POST = withErrorTracking(async (request: NextRequest) => {
     );
   }
 
-  // Generate claim ID for payment intent metadata
-  const claimId = generateClaimId();
+  // Use client-provided claim ID or generate new one
+  const claimId = clientClaimId || generateClaimId();
 
   // Get service fee for the currency
   const amount = getServiceFee(currency as Currency);
@@ -64,21 +74,31 @@ export const POST = withErrorTracking(async (request: NextRequest) => {
   addBreadcrumb('Generating payment intent', 'payment', { claimId, email, currency, amount });
   logger.info('Creating payment intent', { claimId, email, firstName, lastName, currency, amount });
 
-  // Create idempotency key to prevent duplicate charges
-  // Using claimId + email ensures that retries return the same payment intent
-  const idempotencyKey = `pi_${claimId}_${email.replace(/[^a-zA-Z0-9]/g, '_')}`.slice(0, 255);
+  // Use client-provided idempotency key or create one
+  const idempotencyKey = clientIdempotencyKey || `pi_${claimId}_${email.replace(/[^a-zA-Z0-9]/g, '_')}`.slice(0, 255);
+
+  // Prepare metadata - Stripe has a 500 char limit per metadata value
+  const metadata: Record<string, string> = {
+    claimId,
+    email,
+    firstName,
+    lastName,
+    currency,
+    disruptionType: disruptionType || 'unknown',
+    flightNumber: flightData?.flightNumber || formData?.flightNumber || '',
+    departureAirport: flightData?.departureAirport || formData?.departureAirport || '',
+    arrivalAirport: flightData?.arrivalAirport || formData?.arrivalAirport || '',
+    departureDate: flightData?.departureDate || formData?.departureDate || '',
+    airline: flightData?.airline || formData?.airline || '',
+  };
 
   // Create payment intent with idempotency key
   const paymentIntent = await stripe.paymentIntents.create({
     amount,
     currency: currency.toLowerCase(),
-    metadata: {
-      claimId,
-      email,
-      firstName,
-      lastName,
-      currency,
-    },
+    metadata,
+    description: `Flight compensation claim: ${metadata.flightNumber} (${metadata.departureAirport} → ${metadata.arrivalAirport})`,
+    receipt_email: email,
     automatic_payment_methods: {
       enabled: true,
     },
