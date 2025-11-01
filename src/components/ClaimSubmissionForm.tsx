@@ -1132,7 +1132,7 @@ export default function ClaimSubmissionForm() {
           )}
 
           {/* Navigation Buttons - Only show if not on payment step */}
-          {currentStep !== 5 && (
+          {currentStep !== 6 && (
             <div className="flex justify-between mt-8">
               <Button
                 type="button"
