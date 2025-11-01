@@ -69,8 +69,6 @@ export async function POST(request: NextRequest) {
           boardingPassUrl: documentUrls.boardingPassUrl,
           delayProofUrl: documentUrls.delayProofUrl,
           ...(bookingReference && { bookingReference }),
-          documentsUploaded: true,
-          documentsUploadedAt: new Date().toISOString(),
         });
 
         console.log('Claim updated with documents');
