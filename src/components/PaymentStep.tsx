@@ -40,6 +40,7 @@ export default function PaymentStep({
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [isProcessing, setIsProcessing] = useState(false);
   const [paymentReady, setPaymentReady] = useState(false);
+  const [hasSubmitted, setHasSubmitted] = useState(false); // Prevent double submission
 
   useEffect(() => {
     if (!stripe || !elements) {
@@ -57,6 +58,13 @@ export default function PaymentStep({
       return;
     }
 
+    // Prevent double submission
+    if (hasSubmitted || isProcessing) {
+      console.warn('Payment already processing or submitted');
+      return;
+    }
+
+    setHasSubmitted(true);
     setIsProcessing(true);
     setErrorMessage(null);
 
@@ -88,6 +96,7 @@ export default function PaymentStep({
         }
         setErrorMessage(error.message || 'Payment failed. Please try again.');
         setIsProcessing(false);
+        setHasSubmitted(false); // Allow retry on error
       } else if (paymentIntent) {
         // Log payment intent status for debugging
         console.log('Payment Intent Status:', paymentIntent.status);
@@ -102,12 +111,14 @@ export default function PaymentStep({
           console.log('Payment processing:', paymentIntent.id);
           setErrorMessage('Your payment is being processed. This may take a few moments. Please check your email for confirmation.');
           setIsProcessing(false);
+          setHasSubmitted(false); // Allow user to check status or contact support
           // Could optionally call onPaymentSuccess here depending on your flow
         } else if (paymentIntent.status === 'requires_action') {
           // Should not happen with redirect: 'if_required', but handle just in case
           console.warn('Payment requires action:', paymentIntent.status);
           setErrorMessage('Additional authentication is required. Please try again.');
           setIsProcessing(false);
+          setHasSubmitted(false); // Allow retry
         } else {
           // Track incomplete payment
           console.error('Unexpected payment status:', paymentIntent.status);
@@ -122,12 +133,14 @@ export default function PaymentStep({
           }
           setErrorMessage(`Payment status: ${paymentIntent.status}. Please check your email or contact support.`);
           setIsProcessing(false);
+          setHasSubmitted(false); // Allow retry
         }
       } else {
         // No error and no payment intent - unexpected
         console.error('No error and no payment intent returned');
         setErrorMessage('Unable to confirm payment. Please try again.');
         setIsProcessing(false);
+        setHasSubmitted(false); // Allow retry
       }
     } catch (err: unknown) {
       logger.error('Payment error', err);
@@ -142,6 +155,7 @@ export default function PaymentStep({
       }
       setErrorMessage('An unexpected error occurred. Please try again.');
       setIsProcessing(false);
+      setHasSubmitted(false); // Allow retry
     }
   };
 

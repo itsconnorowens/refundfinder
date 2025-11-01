@@ -515,11 +515,22 @@ export default function ClaimSubmissionForm() {
 
   const handlePaymentSuccess = async (paymentIntentId: string) => {
     try {
+      console.log('Payment success callback triggered', { paymentIntentId });
+
       // Validate that files have been uploaded
       if (!formData.boardingPassUrl || !formData.delayProofUrl) {
+        console.error('Files not uploaded', {
+          boardingPassUrl: formData.boardingPassUrl,
+          delayProofUrl: formData.delayProofUrl,
+        });
         showError('Please ensure all files have been uploaded successfully before proceeding.');
         return;
       }
+
+      console.log('Submitting claim to API...', {
+        paymentIntentId,
+        email: formData.email,
+      });
 
       // Submit claim to API
       const apiResponse = await fetch('/api/create-claim', {
@@ -546,7 +557,9 @@ export default function ClaimSubmissionForm() {
         }),
       });
 
+      console.log('API response status:', apiResponse.status);
       const response = await apiResponse.json();
+      console.log('API response data:', response);
 
       if (apiResponse.ok && response.claimId) {
         // Track payment completed

@@ -64,7 +64,11 @@ export const POST = withErrorTracking(async (request: NextRequest) => {
   addBreadcrumb('Generating payment intent', 'payment', { claimId, email, currency, amount });
   logger.info('Creating payment intent', { claimId, email, firstName, lastName, currency, amount });
 
-  // Create payment intent
+  // Create idempotency key to prevent duplicate charges
+  // Using claimId + email ensures that retries return the same payment intent
+  const idempotencyKey = `pi_${claimId}_${email.replace(/[^a-zA-Z0-9]/g, '_')}`.slice(0, 255);
+
+  // Create payment intent with idempotency key
   const paymentIntent = await stripe.paymentIntents.create({
     amount,
     currency: currency.toLowerCase(),
@@ -78,6 +82,8 @@ export const POST = withErrorTracking(async (request: NextRequest) => {
     automatic_payment_methods: {
       enabled: true,
     },
+  }, {
+    idempotencyKey, // Prevents duplicate payment intents if user retries
   });
 
   logger.info('Payment intent created successfully', {
