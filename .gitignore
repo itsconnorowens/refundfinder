@@ -51,6 +51,7 @@ next-env.d.ts
 !SESSION_SUMMARY_CODE_QUALITY_CLEANUP.md
 !MONITORING_*.md
 !STRIPE_PRODUCTION_SETUP.md
+!VERCEL_ENV_SETUP.md
 
 # Sentry
 .sentryclirc
