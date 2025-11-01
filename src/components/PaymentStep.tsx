@@ -76,6 +76,7 @@ export default function PaymentStep({
 
       if (error) {
         // Track payment error
+        console.error('Stripe payment error:', error);
         if (typeof window !== 'undefined') {
           posthog.capture('payment_failed', {
             error_type: error.type || 'stripe_error',
@@ -87,21 +88,45 @@ export default function PaymentStep({
         }
         setErrorMessage(error.message || 'Payment failed. Please try again.');
         setIsProcessing(false);
-      } else if (paymentIntent && paymentIntent.status === 'succeeded') {
-        // Payment successful
-        onPaymentSuccess(paymentIntent.id);
-      } else {
-        // Track incomplete payment
-        if (typeof window !== 'undefined') {
-          posthog.capture('payment_failed', {
-            error_type: 'incomplete_payment',
-            error_message: 'Payment could not be completed',
-            payment_status: paymentIntent?.status || 'unknown',
-            amount_cents: amount,
-            currency,
-          });
+      } else if (paymentIntent) {
+        // Log payment intent status for debugging
+        console.log('Payment Intent Status:', paymentIntent.status);
+
+        // Handle different payment statuses
+        if (paymentIntent.status === 'succeeded') {
+          // Payment successful
+          console.log('Payment succeeded:', paymentIntent.id);
+          onPaymentSuccess(paymentIntent.id);
+        } else if (paymentIntent.status === 'processing') {
+          // Payment is processing (common for certain payment methods)
+          console.log('Payment processing:', paymentIntent.id);
+          setErrorMessage('Your payment is being processed. This may take a few moments. Please check your email for confirmation.');
+          setIsProcessing(false);
+          // Could optionally call onPaymentSuccess here depending on your flow
+        } else if (paymentIntent.status === 'requires_action') {
+          // Should not happen with redirect: 'if_required', but handle just in case
+          console.warn('Payment requires action:', paymentIntent.status);
+          setErrorMessage('Additional authentication is required. Please try again.');
+          setIsProcessing(false);
+        } else {
+          // Track incomplete payment
+          console.error('Unexpected payment status:', paymentIntent.status);
+          if (typeof window !== 'undefined') {
+            posthog.capture('payment_failed', {
+              error_type: 'incomplete_payment',
+              error_message: 'Payment could not be completed',
+              payment_status: paymentIntent.status,
+              amount_cents: amount,
+              currency,
+            });
+          }
+          setErrorMessage(`Payment status: ${paymentIntent.status}. Please check your email or contact support.`);
+          setIsProcessing(false);
         }
-        setErrorMessage('Payment could not be completed. Please try again.');
+      } else {
+        // No error and no payment intent - unexpected
+        console.error('No error and no payment intent returned');
+        setErrorMessage('Unable to confirm payment. Please try again.');
         setIsProcessing(false);
       }
     } catch (err: unknown) {
